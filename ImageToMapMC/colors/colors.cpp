@@ -69,7 +69,7 @@ char toHexChar(unsigned char val)
     }
 }
 
-std::string colors::colorToHex(Color color)
+string colors::colorToHex(Color color)
 {
     char hex[8];
     unsigned char B;
@@ -97,10 +97,10 @@ std::string colors::colorToHex(Color color)
 
     hex[7] = '\0';
 
-    return std::string(hex);
+    return string(hex);
 }
 
-Color colors::colorFromHex(std::string hexStr)
+Color colors::colorFromHex(string hexStr)
 {
     if (hexStr.size() < 7 || hexStr[0] != '#')
     {
@@ -121,15 +121,15 @@ Color colors::colorFromHex(std::string hexStr)
     return color;
 }
 
-double colors::colorDistance(Color colorA, Color colorB, short algo)
+double colors::colorDistance(Color colorA, Color colorB, ColorDistanceAlgorithm algo)
 {
     switch (algo)
     {
-    case COLOR_DISTANCE_DELTA_E_CIE:
+    case ColorDistanceAlgorithm::DeltaE:
     {
         return cielab::deltaE(colorA, colorB);
     }
-    case COLOR_DISTANCE_EUCLIDEAN:
+    case ColorDistanceAlgorithm::Euclidean:
     default:
     {
         double r = colorA.red - colorB.red;

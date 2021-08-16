@@ -71,13 +71,18 @@ namespace colors
 
     /* Distance */
 
+    enum class ColorDistanceAlgorithm {
+        Euclidean,
+        DeltaE,
+    };
+
     /**
      * @brief  Computes distance between 2 colors
      * @note   
      * @param  colorA: Color 1
      * @param  colorB: Color 2
-     * @param  algo: Algorithm to use: COLOR_DISTANCE_EUCLIDEAN
+     * @param  algo: Algorithm to use
      * @retval The distance
      */
-    double colorDistance(Color colorA, Color colorB, short algo);
+    double colorDistance(Color colorA, Color colorB, ColorDistanceAlgorithm algo);
 }

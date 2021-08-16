@@ -23,21 +23,50 @@
 
 #include "ImageToMapMC.h"
 #include "colors/colors.h"
+#include "minecraft/mc_colors.h"
+
+#include <vector>
+#include <string>
 
 using namespace std;
 using namespace colors;
+using namespace minecraft;
+
+void printColors()
+{
+    // Load colors
+    vector<Color> baseColors = loadBaseColors(McVersion::MC_1_12);
+    vector<FinalColor> finalColors = loadFinalColors(baseColors);
+
+    // Iterate
+    int size = finalColors.size();
+    for (int i = 0; i < size; i++)
+    {
+        string hex = colorToHex(finalColors[i].color);
+        cout << "&" << i << " | Base: " << finalColors[i].baseColorIndex << " | ";
+        switch (finalColors[i].colorType)
+        {
+        case McColorType::DARK:
+            cout << "DARK  ";
+            break;
+        case McColorType::DARKER:
+            cout << "DARKER";
+            break;
+        case McColorType::LIGHT:
+            cout << "LIGHT ";
+            break;
+        case McColorType::NORMAL:
+        default:
+            cout << "NORMAL";
+        }
+        cout << " | R: " << ((unsigned int)finalColors[i].color.red) << " | G: " << ((unsigned int)finalColors[i].color.green) << " | B: " << ((unsigned int)finalColors[i].color.blue) << " | HEX: " << hex;
+        cout << endl;
+    }
+}
 
 int main()
 {
-    cout << "Hello CMake." << endl;
-
-    Color color;
-
-    color = colorFromHex(string("#AABBCC"));
-
-    string str = colorToHex(color);
-
-    cout << "Color is: " << str << endl;
+    printColors();
 
     return 0;
 }
