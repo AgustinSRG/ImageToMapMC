@@ -183,4 +183,23 @@ namespace minecraft
      * @retval The index inside the list
      */
     size_t findClosestColor(std::vector<minecraft::FinalColor> &colors, colors::Color color, colors::ColorDistanceAlgorithm algo);
+
+    /**
+     * @brief  Initializaes colors list enabled properties
+     * @note   
+     * @param  &colors: Colors list
+     * @param  blacklist: true if blacklist, false if whitelist
+     * @retval None
+     */
+    void initializeEnabledColors(std::vector<minecraft::FinalColor> &colors, bool blacklist);
+
+    /**
+     * @brief  Sets enabled property
+     * @note   
+     * @param  &colors: List of colors
+     * @param  color: Base color
+     * @param  enabled: Enabled?
+     * @retval None
+     */
+    void setBaseColorEnabled(std::vector<minecraft::FinalColor> &colors, short color, bool enabled);
 }

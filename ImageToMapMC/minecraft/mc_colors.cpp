@@ -194,8 +194,12 @@ size_t minecraft::findClosestColor(std::vector<minecraft::FinalColor> &colors, c
     // Start with i = 4 to skip all VOID blocks
     for (size_t i = 4; i < size; i++)
     {
+        if (!colors[i].enabled) {
+            // If disabled, skip
+            continue;
+        }
         double d = colorDistance(colors[i].color, color, algo);
-        if (i > 1)
+        if (result > 1)
         {
             if (distance > d)
             {
@@ -206,9 +210,29 @@ size_t minecraft::findClosestColor(std::vector<minecraft::FinalColor> &colors, c
         else
         {
             distance = d;
-            result = 1;
+            result = i;
         }
     }
 
     return result;
+}
+
+void minecraft::initializeEnabledColors(std::vector<minecraft::FinalColor> &colors, bool blacklist) {
+    size_t size = colors.size();
+
+    for (size_t i = 0; i < size; i++) {
+        colors[i].enabled = blacklist;
+    }
+}
+
+void minecraft::setBaseColorEnabled(std::vector<minecraft::FinalColor> &colors, short color, bool enabled) {
+    size_t start = color * 4;
+    size_t end = start + 4;
+    size_t size = colors.size();
+
+    for (size_t i = start; i < end; i++) {
+        if (i >= 0 && i < size) {
+            colors[i].enabled = enabled;
+        }
+    }
 }
