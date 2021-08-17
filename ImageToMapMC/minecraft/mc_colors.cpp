@@ -191,7 +191,8 @@ size_t minecraft::findClosestColor(std::vector<minecraft::FinalColor> &colors, c
     size_t size = colors.size();
     size_t result = 0;
 
-    for (size_t i = 1; i < size; i++)
+    // Start with i = 4 to skip all VOID blocks
+    for (size_t i = 4; i < size; i++)
     {
         double d = colorDistance(colors[i].color, color, algo);
         if (i > 1)
