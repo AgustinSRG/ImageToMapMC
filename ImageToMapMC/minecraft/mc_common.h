@@ -23,6 +23,8 @@
 
 #pragma once
 
+#define MC_LAST_VERSION (McVersion::MC_1_17)
+
 namespace minecraft
 {
     /**
