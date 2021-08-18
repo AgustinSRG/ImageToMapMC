@@ -1,2 +1,9 @@
 out
+build
+release
+.vscode
 .vs
+subprojects
+CMakeFiles
+**/CMakeFiles
+**/Makefile

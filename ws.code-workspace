@@ -7,7 +7,12 @@
 	"settings": {
 		"files.exclude": {
 			".vs/**": true,
-			"out/**": true
+			"out/**": true,
+			"**/CMakeFiles": true,
+			"**/Makefile": true,
+			"subprojects": true,
+			"build": true,
+			"release": true
 		},
 		"files.associations": {
 			"string": "cpp",
