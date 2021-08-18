@@ -194,7 +194,8 @@ size_t minecraft::findClosestColor(std::vector<minecraft::FinalColor> &colors, c
     // Start with i = 4 to skip all VOID blocks
     for (size_t i = 4; i < size; i++)
     {
-        if (!colors[i].enabled) {
+        if (!colors[i].enabled)
+        {
             // If disabled, skip
             continue;
         }
@@ -217,21 +218,39 @@ size_t minecraft::findClosestColor(std::vector<minecraft::FinalColor> &colors, c
     return result;
 }
 
-void minecraft::initializeEnabledColors(std::vector<minecraft::FinalColor> &colors, bool blacklist) {
+void minecraft::initializeEnabledColors(std::vector<minecraft::FinalColor> &colors, bool blacklist)
+{
     size_t size = colors.size();
 
-    for (size_t i = 0; i < size; i++) {
+    for (size_t i = 0; i < size; i++)
+    {
         colors[i].enabled = blacklist;
     }
 }
 
-void minecraft::setBaseColorEnabled(std::vector<minecraft::FinalColor> &colors, short color, bool enabled) {
+void minecraft::setColorTypesEnabled(std::vector<minecraft::FinalColor> &colors, McColorType colorType, bool enabled)
+{
+    size_t size = colors.size();
+
+    for (size_t i = 0; i < size; i++)
+    {
+        if (colors[i].colorType == colorType)
+        {
+            colors[i].enabled = enabled;
+        }
+    }
+}
+
+void minecraft::setBaseColorEnabled(std::vector<minecraft::FinalColor> &colors, short color, bool enabled)
+{
     size_t start = color * 4;
     size_t end = start + 4;
     size_t size = colors.size();
 
-    for (size_t i = start; i < end; i++) {
-        if (i >= 0 && i < size) {
+    for (size_t i = start; i < end; i++)
+    {
+        if (i >= 0 && i < size)
+        {
             colors[i].enabled = enabled;
         }
     }

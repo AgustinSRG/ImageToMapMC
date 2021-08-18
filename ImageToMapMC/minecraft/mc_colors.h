@@ -146,16 +146,17 @@ namespace minecraft
      * @note   
      * @retval None
      */
-    class FinalColor {
-        public:
-            short baseColorIndex; // Index of base color (for block selection)
-            McColorType colorType; // Color type
-            bool enabled; // Enabled for use?
-            colors::Color color; // RGB
+    class FinalColor
+    {
+    public:
+        short baseColorIndex;  // Index of base color (for block selection)
+        McColorType colorType; // Color type
+        bool enabled;          // Enabled for use?
+        colors::Color color;   // RGB
 
-            // Methods
+        // Methods
 
-            /**
+        /**
              * @brief  Sets the color
              * @note   
              * @param  &baseColors: List of base colors
@@ -163,7 +164,7 @@ namespace minecraft
              * @param  colorType: Color type (light)
              * @retval None
              */
-            void setColor(std::vector<colors::Color> &baseColors, size_t index, McColorType colorType);
+        void setColor(std::vector<colors::Color> &baseColors, size_t index, McColorType colorType);
     };
 
     /**
@@ -202,4 +203,14 @@ namespace minecraft
      * @retval None
      */
     void setBaseColorEnabled(std::vector<minecraft::FinalColor> &colors, short color, bool enabled);
+
+    /**
+     * @brief  Changes enabled for all the colors of a type
+     * @note   
+     * @param  &colors: List of colors
+     * @param  colorType: Type of color
+     * @param  enabled: Enabled?
+     * @retval None
+     */
+    void setColorTypesEnabled(std::vector<minecraft::FinalColor> &colors, McColorType colorType, bool enabled);
 }
