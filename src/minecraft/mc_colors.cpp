@@ -27,6 +27,7 @@
 
 #include "mc_colors.h"
 #include <cmath>
+#include <algorithm>
 
 using namespace colors;
 using namespace minecraft;
@@ -167,6 +168,104 @@ void FinalColor::setColor(std::vector<Color> &baseColors, size_t index, McColorT
     this->colorType = colorType;
     this->enabled = true;
     this->color = getMinecraftColor(baseColors, index, colorType);
+}
+
+std::vector<std::string> minecraft::loadBaseColorNames(std::vector<colors::Color> &baseColors)
+{
+    size_t size = baseColors.size();
+    std::vector<std::string> res(size);
+
+    res[(size_t)McColors::VOID] = std::string("VOID");
+    res[(size_t)McColors::GRASS] = std::string("GRASS");
+    res[(size_t)McColors::SAND] = std::string("SAND");
+    res[(size_t)McColors::WOOL] = std::string("WOOL");
+    res[(size_t)McColors::FIRE] = std::string("FIRE");
+    res[(size_t)McColors::ICE] = std::string("ICE");
+    res[(size_t)McColors::METAL] = std::string("METAL");
+    res[(size_t)McColors::PLANT] = std::string("PLANT");
+    res[(size_t)McColors::SNOW] = std::string("SNOW");
+    res[(size_t)McColors::DIRT] = std::string("DIRT");
+    res[(size_t)McColors::STONE] = std::string("STONE");
+    res[(size_t)McColors::WATER] = std::string("WATER");
+    res[(size_t)McColors::WOOD] = std::string("WOOD");
+    res[(size_t)McColors::QUARTZ] = std::string("QUARTZ");
+
+    res[(size_t)McColors::COLOR_ORANGE] = std::string("COLOR_ORANGE");
+    res[(size_t)McColors::COLOR_MAGENTA] = std::string("COLOR_MAGENTA");
+    res[(size_t)McColors::COLOR_LIGHT_BLUE] = std::string("COLOR_LIGHT_BLUE");
+    res[(size_t)McColors::COLOR_YELLOW] = std::string("COLOR_YELLOW");
+    res[(size_t)McColors::COLOR_LIGHT_GREEN] = std::string("COLOR_LIGHT_GREEN");
+    res[(size_t)McColors::COLOR_PINK] = std::string("COLOR_PINK");
+    res[(size_t)McColors::COLOR_GRAY] = std::string("COLOR_GRAY");
+    res[(size_t)McColors::COLOR_LIGHT_GRAY] = std::string("COLOR_LIGHT_GRAY");
+    res[(size_t)McColors::COLOR_CYAN] = std::string("COLOR_CYAN");
+    res[(size_t)McColors::COLOR_PURPLE] = std::string("COLOR_PURPLE");
+    res[(size_t)McColors::COLOR_BLUE] = std::string("COLOR_BLUE");
+    res[(size_t)McColors::COLOR_BROWN] = std::string("COLOR_BROWN");
+    res[(size_t)McColors::COLOR_GREEN] = std::string("COLOR_GREEN");
+    res[(size_t)McColors::COLOR_RED] = std::string("COLOR_RED");
+    res[(size_t)McColors::COLOR_BLACK] = std::string("COLOR_BLACK");
+
+    res[(size_t)McColors::GOLD] = std::string("GOLD");
+    res[(size_t)McColors::DIAMOND] = std::string("DIAMOND");
+    res[(size_t)McColors::LAPIS] = std::string("LAPIS");
+    res[(size_t)McColors::EMERALD] = std::string("EMERALD");
+
+    res[(size_t)McColors::PODZOL] = std::string("PODZOL");
+    res[(size_t)McColors::NETHER] = std::string("NETHER");
+
+    res[(size_t)McColors::TERRACOTTA_WHITE] = std::string("TERRACOTTA_WHITE");
+    res[(size_t)McColors::TERRACOTTA_ORANGE] = std::string("TERRACOTTA_ORANGE");
+    res[(size_t)McColors::TERRACOTTA_MAGENTA] = std::string("TERRACOTTA_MAGENTA");
+    res[(size_t)McColors::TERRACOTTA_LIGHT_BLUE] = std::string("TERRACOTTA_LIGHT_BLUE");
+    res[(size_t)McColors::TERRACOTTA_YELLOW] = std::string("TERRACOTTA_YELLOW");
+    res[(size_t)McColors::TERRACOTTA_LIGHT_GREEN] = std::string("TERRACOTTA_LIGHT_GREEN");
+    res[(size_t)McColors::TERRACOTTA_PINK] = std::string("TERRACOTTA_PINK");
+    res[(size_t)McColors::TERRACOTTA_GRAY] = std::string("TERRACOTTA_GRAY");
+    res[(size_t)McColors::TERRACOTTA_LIGHT_GRAY] = std::string("TERRACOTTA_LIGHT_GRAY");
+    res[(size_t)McColors::TERRACOTTA_CYAN] = std::string("TERRACOTTA_CYAN");
+    res[(size_t)McColors::TERRACOTTA_PURPLE] = std::string("TERRACOTTA_PURPLE");
+    res[(size_t)McColors::TERRACOTTA_BLUE] = std::string("TERRACOTTA_BLUE");
+    res[(size_t)McColors::TERRACOTTA_BROWN] = std::string("TERRACOTTA_BROWN");
+    res[(size_t)McColors::TERRACOTTA_GREEN] = std::string("TERRACOTTA_GREEN");
+    res[(size_t)McColors::TERRACOTTA_RED] = std::string("TERRACOTTA_RED");
+    res[(size_t)McColors::TERRACOTTA_BLACK] = std::string("TERRACOTTA_BLACK");
+
+    if (size > (size_t)McColors::CRIMSON_NYLIUM)
+    {
+        // 1.16 +
+        res[(size_t)McColors::CRIMSON_NYLIUM] = std::string("CRIMSON_NYLIUM");
+        res[(size_t)McColors::CRIMSON_STEM] = std::string("CRIMSON_STEM");
+        res[(size_t)McColors::CRIMSON_HYPHAE] = std::string("CRIMSON_HYPHAE");
+        res[(size_t)McColors::WARPED_NYLIUM] = std::string("WARPED_NYLIUM");
+        res[(size_t)McColors::WARPED_STEM] = std::string("WARPED_STEM");
+        res[(size_t)McColors::WARPED_HYPHAE] = std::string("WARPED_HYPHAE");
+        res[(size_t)McColors::WARPED_WART_BLOCK] = std::string("WARPED_WART_BLOCK");
+
+        if (size > (size_t)McColors::DEEPSLATE)
+        {
+            res[(size_t)McColors::DEEPSLATE] = std::string("DEEPSLATE");
+            res[(size_t)McColors::RAW_IRON] = std::string("RAW_IRON");
+            res[(size_t)McColors::GLOW_LICHEN] = std::string("GLOW_LICHEN");
+        }
+    }
+
+    return res;
+}
+
+size_t minecraft::findColorByName(std::vector<std::string> &colorNames, std::string name) {
+    size_t size = colorNames.size();
+    std::string nameUpper(name);
+    std::transform(nameUpper.begin(), nameUpper.end(),nameUpper.begin(), ::toupper);
+
+    for (size_t i = 0; i < size; i++)
+    {
+       if (nameUpper.compare(colorNames[i]) == 0) {
+           return i;
+       }
+    }
+
+    return -1;
 }
 
 std::vector<FinalColor> minecraft::loadFinalColors(std::vector<Color> &baseColors)

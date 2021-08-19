@@ -53,7 +53,22 @@
 			"xstring": "cpp",
 			"xtr1common": "cpp",
 			"xutility": "cpp",
-			"vector": "cpp"
+			"vector": "cpp",
+			"algorithm": "cpp",
+			"atomic": "cpp",
+			"deque": "cpp",
+			"functional": "cpp",
+			"hash_map": "cpp",
+			"hash_set": "cpp",
+			"list": "cpp",
+			"numeric": "cpp",
+			"queue": "cpp",
+			"stack": "cpp",
+			"unordered_map": "cpp",
+			"unordered_set": "cpp",
+			"xhash": "cpp",
+			"map": "cpp",
+			"xtree": "cpp"
 		},
 	}
 }

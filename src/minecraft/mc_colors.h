@@ -28,6 +28,7 @@
 #include "mc_common.h"
 
 #include <vector>
+#include <map>
 
 namespace minecraft
 {
@@ -140,6 +141,23 @@ namespace minecraft
      * @retval List of base colors
      */
     std::vector<colors::Color> loadBaseColors(McVersion version);
+
+    /**
+     * @brief  Load base color names to display them in GUI or text output
+     * @note   
+     * @param  &baseColors: List of base colors
+     * @retval List of base color names
+     */
+    std::vector<std::string> loadBaseColorNames(std::vector<colors::Color> &baseColors);
+
+    /**
+     * @brief  Finds color by name
+     * @note   
+     * @param  &colorNames: List of color names
+     * @param  name: Color name
+     * @retval The index of the color, or -1 if not found
+     */
+    size_t findColorByName(std::vector<std::string> &colorNames, std::string name);
 
     /**
      * @brief  Final color
