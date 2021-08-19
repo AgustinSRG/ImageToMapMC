@@ -37,10 +37,11 @@ namespace minecraft
      * @note   
      * @retval None
      */
-    class NBTProp {
-        public:
-            std::string name;
-            std::string value;
+    class NBTProp
+    {
+    public:
+        std::string name;
+        std::string value;
     };
 
     /**
@@ -48,31 +49,32 @@ namespace minecraft
      * @note   Needed to create the final results
      * @retval None
      */
-    class BlockDescription {
-        public:
-            // Name
-            std::string name;
+    class BlockDescription
+    {
+    public:
+        // Name
+        std::string name;
 
-            // Version
-            minecraft::McVersion minVersion;
-            minecraft::McVersion maxVersion;
+        // Version
+        minecraft::McVersion minVersion;
+        minecraft::McVersion maxVersion;
 
-            // NBT data
-            std::string nbtName;
-            std::vector<minecraft::NBTProp> nbtTags;
+        // NBT data
+        std::string nbtName;
+        std::vector<minecraft::NBTProp> nbtTags;
 
-            // Id and data value for 1.12
-            short blockId;
-            short dataValue;
+        // Id and data value for 1.12
+        short blockId;
+        short dataValue;
 
-            /**
+        /**
              * @brief  Adds NBT tag
              * @note   
              * @param  name: Tag name
              * @param  value: Tag value
              * @retval None
              */
-            void addTag(std::string name, std::string value);
+        void addTag(std::string name, std::string value);
     };
 
     /**
@@ -80,26 +82,27 @@ namespace minecraft
      * @note   
      * @retval None
      */
-    class Block {
-        public:
-            // Unique identifier for the block
-            std::string id;
+    class Block
+    {
+    public:
+        // Unique identifier for the block
+        std::string id;
 
-            // Index of base color
-            short baseColorIndex;
+        // Index of base color
+        short baseColorIndex;
 
-            // Block descriptions to create it
-            std::vector<minecraft::BlockDescription> descriptions;
+        // Block descriptions to create it
+        std::vector<minecraft::BlockDescription> descriptions;
 
-            /**
+        /**
              * @brief  Gets the block description for a minecraft version
              * @note   
              * @param  version: Version
              * @retval The block description. Returns NULL if it is not available for the version.
              */
-            minecraft::BlockDescription * getBlockDescription(minecraft::McVersion version);
+        minecraft::BlockDescription *getBlockDescription(minecraft::McVersion version);
 
-            /**
+        /**
              * @brief  Adds block description
              * @note   
              * @param  name: Block name
@@ -108,9 +111,9 @@ namespace minecraft
              * @param  nbtName: NBT name for nbt files
              * @retval The created block description
              */
-            minecraft::BlockDescription * addBlockDescription(std::string name, minecraft::McVersion minVersion, minecraft::McVersion maxVersion, std::string nbtName);
+        minecraft::BlockDescription *addBlockDescription(std::string name, minecraft::McVersion minVersion, minecraft::McVersion maxVersion, std::string nbtName);
 
-            /**
+        /**
              * @brief  Adds block description
              * @note   
              * @param  name: Block name
@@ -121,7 +124,7 @@ namespace minecraft
              * @param  dataValue: Data value
              * @retval The created block description
              */
-            minecraft::BlockDescription * addBlockDescription(std::string name, minecraft::McVersion minVersion, minecraft::McVersion maxVersion, std::string nbtName, short blockId, short dataValue);
+        minecraft::BlockDescription *addBlockDescription(std::string name, minecraft::McVersion minVersion, minecraft::McVersion maxVersion, std::string nbtName, short blockId, short dataValue);
     };
 
     /**
@@ -129,32 +132,41 @@ namespace minecraft
      * @note   
      * @retval None
      */
-    class BlockList {
-        public:
-            // Base color
-            short baseColorIndex;
+    class BlockList
+    {
+    public:
+        // Base color
+        short baseColorIndex;
 
-            // List of blocks that produce the color
-            std::vector<minecraft::Block> blocks;
+        // List of blocks that produce the color
+        std::vector<minecraft::Block> blocks;
 
-            // Default block to use
-            short useBlockIndex;
+        // Default block to use
+        short useBlockIndex;
 
-            /**
+        /**
              * @brief  Gets the block description 
              * @note   
              * @param  version: Minecraft version
              * @retval Th block description
              */
-            minecraft::BlockDescription * getBlockDescription(minecraft::McVersion version);
+        minecraft::BlockDescription *getBlockDescription(minecraft::McVersion version);
 
-            /**
+        /**
              * @brief  Adds a block
              * @note   
              * @param  id: Block ID
              * @retval The block
              */
-            minecraft::Block * addBlock(std::string id);
+        minecraft::Block *addBlock(std::string id);
+
+        /**
+             * @brief  Finds block by ID
+             * @note   
+             * @param  id: Block ID
+             * @retval The block index in the list or -1 if not found
+             */
+        short findBlock(std::string id);
     };
 
     /**

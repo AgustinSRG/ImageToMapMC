@@ -25,6 +25,8 @@
 
 #define MC_LAST_VERSION (McVersion::MC_1_17)
 
+#include <string>
+
 namespace minecraft
 {
     /**
@@ -32,12 +34,30 @@ namespace minecraft
      * @note   
      * @retval None
      */
-    enum class McVersion: short {
-        MC_1_12 = 12, 
+    enum class McVersion : short
+    {
+        UNKNOWN = 0,
+        MC_1_12 = 12,
         MC_1_13 = 13,
         MC_1_14 = 14,
         MC_1_15 = 15,
         MC_1_16 = 16,
         MC_1_17 = 17
     };
+
+    /**
+     * @brief  Parses version from string
+     * @note   
+     * @param  versionStr: Version string
+     * @retval Version (enum). Returns UNKNOWN if version str is invalid
+     */
+    minecraft::McVersion getVersionFromText(std::string versionStr);
+
+    /**
+     * @brief  Gets version as string
+     * @note   
+     * @param  version: Version
+     * @retval Version as string
+     */
+    std::string versionToString(minecraft::McVersion version);
 }

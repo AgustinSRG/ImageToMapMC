@@ -110,6 +110,20 @@ minecraft::Block *BlockList::addBlock(std::string id)
     return res;
 }
 
+short BlockList::findBlock(std::string id)
+{
+    size_t size = this->blocks.size();
+    for (size_t i = 0; i < size; i++)
+    {
+        if (id.compare(this->blocks[i].id) == 0)
+        {
+            return (short)i;
+        }
+    }
+
+    return -1;
+}
+
 std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Color> &baseColors)
 {
     size_t size = baseColors.size();
