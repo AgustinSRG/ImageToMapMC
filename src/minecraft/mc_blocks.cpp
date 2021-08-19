@@ -229,6 +229,15 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     // ---------------
     blockList = &(list[(size_t)McColors::WOOL]);
 
+    // Mushroom Stem (1.13+)
+    block = blockList->addBlock(string("mushroom_stem"));
+
+    desc = block->addBlockDescription(
+        "Mushroom Stem",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "mushroom_stem" // NBT name
+    );
+
     // Cobweb
     block = blockList->addBlock(string("web"));
 
@@ -244,15 +253,6 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Cobweb",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "cobweb" // NBT name
-    );
-
-    // Mushroom Stem (1.13+)
-    block = blockList->addBlock(string("mushroom_stem"));
-
-    desc = block->addBlockDescription(
-        "Mushroom Stem",
-        McVersion::MC_1_13, MC_LAST_VERSION,
-        "mushroom_stem" // NBT name
     );
 
     // White candle (1.17+)
