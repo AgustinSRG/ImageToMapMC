@@ -747,58 +747,825 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     // ---------------
     blockList = &(list[(size_t)McColors::COLOR_MAGENTA]);
 
-    // Orange wool
-    block = blockList->addBlock(string("orange_wool"));
+    // Magenta wool
+    block = blockList->addBlock(string("magenta_wool"));
 
     desc = block->addBlockDescription(
-        "Orange Wool",
+        "Magenta Wool",
         McVersion::MC_1_12, McVersion::MC_1_12,
         "wool", // NBT name
         35,     // Block ID
         2       // Data value
     );
-    desc->addTag(string("color"), string("orange"));
+    desc->addTag(string("color"), string("magenta"));
 
     desc = block->addBlockDescription(
-        "Orange Wool",
+        "Magenta Wool",
         McVersion::MC_1_13, MC_LAST_VERSION,
-        "orange_wool" // NBT name
+        "magenta_wool" // NBT name
     );
 
-    // Orange carpet
-    block = blockList->addBlock(string("orange_carpet"));
+    // Magenta carpet
+    block = blockList->addBlock(string("magenta_carpet"));
 
     desc = block->addBlockDescription(
-        "Orange Carpet",
+        "Magenta Carpet",
         McVersion::MC_1_12, McVersion::MC_1_12,
         "carpet", // NBT name
         171,      // Block ID
         2         // Data value
     );
-    desc->addTag(string("color"), string("orange"));
+    desc->addTag(string("color"), string("magenta"));
 
     desc = block->addBlockDescription(
-        "Orange Carpet",
+        "Magenta Carpet",
         McVersion::MC_1_13, MC_LAST_VERSION,
-        "orange_carpet" // NBT name
+        "magenta_carpet" // NBT name
     );
 
-    // Orange concrete
-    block = blockList->addBlock(string("orange_concrete"));
+    // Magenta concrete
+    block = blockList->addBlock(string("magenta_concrete"));
 
     desc = block->addBlockDescription(
-        "Orange Concrete",
+        "Magenta Concrete",
         McVersion::MC_1_12, McVersion::MC_1_12,
         "concrete", // NBT name
         251,        // Block ID
         2           // Data value
     );
-    desc->addTag(string("color"), string("orange"));
+    desc->addTag(string("color"), string("magenta"));
 
     desc = block->addBlockDescription(
-        "Orange Concrete",
+        "Magenta Concrete",
         McVersion::MC_1_13, MC_LAST_VERSION,
-        "orange_concrete" // NBT name
+        "magenta_concrete" // NBT name
+    );
+
+    // ---------------
+    // ---- COLOR_LIGHT_BLUE ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::COLOR_LIGHT_BLUE]);
+
+    // Light Blue wool
+    block = blockList->addBlock(string("light_blue_wool"));
+
+    desc = block->addBlockDescription(
+        "Light Blue Wool",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "wool", // NBT name
+        35,     // Block ID
+        3       // Data value
+    );
+    desc->addTag(string("color"), string("light_blue"));
+
+    desc = block->addBlockDescription(
+        "Light Blue Wool",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "light_blue_wool" // NBT name
+    );
+
+    // Light Blue carpet
+    block = blockList->addBlock(string("light_blue_carpet"));
+
+    desc = block->addBlockDescription(
+        "Light Blue Carpet",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "carpet", // NBT name
+        171,      // Block ID
+        3         // Data value
+    );
+    desc->addTag(string("color"), string("light_blue"));
+
+    desc = block->addBlockDescription(
+        "Light Blue Carpet",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "light_blue_carpet" // NBT name
+    );
+
+    // Light Blue concrete
+    block = blockList->addBlock(string("light_blue_concrete"));
+
+    desc = block->addBlockDescription(
+        "Light Blue Concrete",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete", // NBT name
+        251,        // Block ID
+        3           // Data value
+    );
+    desc->addTag(string("color"), string("light_blue"));
+
+    desc = block->addBlockDescription(
+        "Light Blue Concrete",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "light_blue_concrete" // NBT name
+    );
+
+    // ---------------
+    // ---- COLOR_YELLOW ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::COLOR_YELLOW]);
+
+    // Yellow wool
+    block = blockList->addBlock(string("yellow_wool"));
+
+    desc = block->addBlockDescription(
+        "Yellow Wool",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "wool", // NBT name
+        35,     // Block ID
+        4       // Data value
+    );
+    desc->addTag(string("color"), string("yellow"));
+
+    desc = block->addBlockDescription(
+        "Yellow Wool",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "yellow_wool" // NBT name
+    );
+
+    // Yellow carpet
+    block = blockList->addBlock(string("yellow_carpet"));
+
+    desc = block->addBlockDescription(
+        "Yellow Carpet",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "carpet", // NBT name
+        171,      // Block ID
+        4         // Data value
+    );
+    desc->addTag(string("color"), string("yellow"));
+
+    desc = block->addBlockDescription(
+        "Yellow Carpet",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "yellow_carpet" // NBT name
+    );
+
+    // Yellow concrete
+    block = blockList->addBlock(string("yellow_concrete"));
+
+    desc = block->addBlockDescription(
+        "Yellow Concrete",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete", // NBT name
+        251,        // Block ID
+        4           // Data value
+    );
+    desc->addTag(string("color"), string("yellow"));
+
+    desc = block->addBlockDescription(
+        "Yellow Concrete",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "yellow_concrete" // NBT name
+    );
+
+    // ---------------
+    // ---- COLOR_LIGHT_GREEN ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::COLOR_LIGHT_GREEN]);
+
+    // Lime wool
+    block = blockList->addBlock(string("lime_wool"));
+
+    desc = block->addBlockDescription(
+        "Lime Wool",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "wool", // NBT name
+        35,     // Block ID
+        5       // Data value
+    );
+    desc->addTag(string("color"), string("lime"));
+
+    desc = block->addBlockDescription(
+        "Lime Wool",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "lime_wool" // NBT name
+    );
+
+    // Lime carpet
+    block = blockList->addBlock(string("lime_carpet"));
+
+    desc = block->addBlockDescription(
+        "Lime Carpet",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "carpet", // NBT name
+        171,      // Block ID
+        5         // Data value
+    );
+    desc->addTag(string("color"), string("lime"));
+
+    desc = block->addBlockDescription(
+        "Lime Carpet",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "lime_carpet" // NBT name
+    );
+
+    // Lime concrete
+    block = blockList->addBlock(string("lime_concrete"));
+
+    desc = block->addBlockDescription(
+        "Lime Concrete",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete", // NBT name
+        251,        // Block ID
+        5           // Data value
+    );
+    desc->addTag(string("color"), string("lime"));
+
+    desc = block->addBlockDescription(
+        "Lime Concrete",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "lime_concrete" // NBT name
+    );
+
+    // ---------------
+    // ---- COLOR_PINK ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::COLOR_PINK]);
+
+    // Pink wool
+    block = blockList->addBlock(string("pink_wool"));
+
+    desc = block->addBlockDescription(
+        "Pink Wool",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "wool", // NBT name
+        35,     // Block ID
+        6       // Data value
+    );
+    desc->addTag(string("color"), string("pink"));
+
+    desc = block->addBlockDescription(
+        "Pink Wool",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "pink_wool" // NBT name
+    );
+
+    // Pink carpet
+    block = blockList->addBlock(string("pink_carpet"));
+
+    desc = block->addBlockDescription(
+        "Pink Carpet",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "carpet", // NBT name
+        171,      // Block ID
+        6         // Data value
+    );
+    desc->addTag(string("color"), string("pink"));
+
+    desc = block->addBlockDescription(
+        "Pink Carpet",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "pink_carpet" // NBT name
+    );
+
+    // Pink concrete
+    block = blockList->addBlock(string("pink_concrete"));
+
+    desc = block->addBlockDescription(
+        "Pink Concrete",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete", // NBT name
+        251,        // Block ID
+        6           // Data value
+    );
+    desc->addTag(string("color"), string("pink"));
+
+    desc = block->addBlockDescription(
+        "Pink Concrete",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "pink_concrete" // NBT name
+    );
+
+    // ---------------
+    // ---- COLOR_GRAY ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::COLOR_GRAY]);
+
+    // Gray wool
+    block = blockList->addBlock(string("gray_wool"));
+
+    desc = block->addBlockDescription(
+        "Gray Wool",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "wool", // NBT name
+        35,     // Block ID
+        7       // Data value
+    );
+    desc->addTag(string("color"), string("gray"));
+
+    desc = block->addBlockDescription(
+        "Gray Wool",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "gray_wool" // NBT name
+    );
+
+    // Gray carpet
+    block = blockList->addBlock(string("gray_carpet"));
+
+    desc = block->addBlockDescription(
+        "Gray Carpet",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "carpet", // NBT name
+        171,      // Block ID
+        7         // Data value
+    );
+    desc->addTag(string("color"), string("gray"));
+
+    desc = block->addBlockDescription(
+        "Gray Carpet",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "gray_carpet" // NBT name
+    );
+
+    // Gray concrete
+    block = blockList->addBlock(string("gray_concrete"));
+
+    desc = block->addBlockDescription(
+        "Gray Concrete",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete", // NBT name
+        251,        // Block ID
+        7           // Data value
+    );
+    desc->addTag(string("color"), string("gray"));
+
+    desc = block->addBlockDescription(
+        "Gray Concrete",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "gray_concrete" // NBT name
+    );
+
+    // ---------------
+    // ---- COLOR_LIGHT_GRAY ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::COLOR_LIGHT_GRAY]);
+
+    // Light Gray wool
+    block = blockList->addBlock(string("light_gray_wool"));
+
+    desc = block->addBlockDescription(
+        "Light Gray Wool",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "wool", // NBT name
+        35,     // Block ID
+        8       // Data value
+    );
+    desc->addTag(string("color"), string("light_gray"));
+
+    desc = block->addBlockDescription(
+        "Light Gray Wool",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "light_gray_wool" // NBT name
+    );
+
+    // Light Gray carpet
+    block = blockList->addBlock(string("light_gray_carpet"));
+
+    desc = block->addBlockDescription(
+        "Light Gray Carpet",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "carpet", // NBT name
+        171,      // Block ID
+        8         // Data value
+    );
+    desc->addTag(string("color"), string("light_gray"));
+
+    desc = block->addBlockDescription(
+        "Light Gray Carpet",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "light_gray_carpet" // NBT name
+    );
+
+    // Light Gray concrete
+    block = blockList->addBlock(string("light_gray_concrete"));
+
+    desc = block->addBlockDescription(
+        "Light Gray Concrete",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete", // NBT name
+        251,        // Block ID
+        8           // Data value
+    );
+    desc->addTag(string("color"), string("light_gray"));
+
+    desc = block->addBlockDescription(
+        "Light Gray Concrete",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "light_gray_concrete" // NBT name
+    );
+
+    // ---------------
+    // ---- COLOR_CYAN ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::COLOR_CYAN]);
+
+    // Cyan wool
+    block = blockList->addBlock(string("cyan_wool"));
+
+    desc = block->addBlockDescription(
+        "Cyan Wool",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "wool", // NBT name
+        35,     // Block ID
+        9       // Data value
+    );
+    desc->addTag(string("color"), string("cyan"));
+
+    desc = block->addBlockDescription(
+        "Cyan Wool",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "cyan_wool" // NBT name
+    );
+
+    // Cyan carpet
+    block = blockList->addBlock(string("cyan_carpet"));
+
+    desc = block->addBlockDescription(
+        "Cyan Carpet",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "carpet", // NBT name
+        171,      // Block ID
+        9         // Data value
+    );
+    desc->addTag(string("color"), string("cyan"));
+
+    desc = block->addBlockDescription(
+        "Cyan Carpet",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "cyan_carpet" // NBT name
+    );
+
+    // Cyan concrete
+    block = blockList->addBlock(string("cyan_concrete"));
+
+    desc = block->addBlockDescription(
+        "Cyan Concrete",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete", // NBT name
+        251,        // Block ID
+        9           // Data value
+    );
+    desc->addTag(string("color"), string("cyan"));
+
+    desc = block->addBlockDescription(
+        "Cyan Concrete",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "cyan_concrete" // NBT name
+    );
+
+    // ---------------
+    // ---- COLOR_PURPLE ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::COLOR_PURPLE]);
+
+    // Purple wool
+    block = blockList->addBlock(string("purple_wool"));
+
+    desc = block->addBlockDescription(
+        "Purple Wool",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "wool", // NBT name
+        35,     // Block ID
+        10      // Data value
+    );
+    desc->addTag(string("color"), string("purple"));
+
+    desc = block->addBlockDescription(
+        "Purple Wool",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "purple_wool" // NBT name
+    );
+
+    // Purple carpet
+    block = blockList->addBlock(string("purple_carpet"));
+
+    desc = block->addBlockDescription(
+        "Purple Carpet",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "carpet", // NBT name
+        171,      // Block ID
+        10        // Data value
+    );
+    desc->addTag(string("color"), string("purple"));
+
+    desc = block->addBlockDescription(
+        "Purple Carpet",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "purple_carpet" // NBT name
+    );
+
+    // Purple concrete
+    block = blockList->addBlock(string("purple_concrete"));
+
+    desc = block->addBlockDescription(
+        "Purple Concrete",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete", // NBT name
+        251,        // Block ID
+        10          // Data value
+    );
+    desc->addTag(string("color"), string("purple"));
+
+    desc = block->addBlockDescription(
+        "Purple Concrete",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "purple_concrete" // NBT name
+    );
+
+    // ---------------
+    // ---- COLOR_BLUE ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::COLOR_BLUE]);
+
+    // Blue wool
+    block = blockList->addBlock(string("blue_wool"));
+
+    desc = block->addBlockDescription(
+        "Blue Wool",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "wool", // NBT name
+        35,     // Block ID
+        11      // Data value
+    );
+    desc->addTag(string("color"), string("blue"));
+
+    desc = block->addBlockDescription(
+        "Blue Wool",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "blue_wool" // NBT name
+    );
+
+    // Blue carpet
+    block = blockList->addBlock(string("blue_carpet"));
+
+    desc = block->addBlockDescription(
+        "Blue Carpet",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "carpet", // NBT name
+        171,      // Block ID
+        11        // Data value
+    );
+    desc->addTag(string("color"), string("blue"));
+
+    desc = block->addBlockDescription(
+        "Blue Carpet",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "blue_carpet" // NBT name
+    );
+
+    // Blue concrete
+    block = blockList->addBlock(string("blue_concrete"));
+
+    desc = block->addBlockDescription(
+        "Blue Concrete",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete", // NBT name
+        251,        // Block ID
+        11          // Data value
+    );
+    desc->addTag(string("color"), string("blue"));
+
+    desc = block->addBlockDescription(
+        "Blue Concrete",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "blue_concrete" // NBT name
+    );
+
+    // ---------------
+    // ---- COLOR_BROWN ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::COLOR_BROWN]);
+
+    // Brown wool
+    block = blockList->addBlock(string("brown_wool"));
+
+    desc = block->addBlockDescription(
+        "Brown Wool",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "wool", // NBT name
+        35,     // Block ID
+        12      // Data value
+    );
+    desc->addTag(string("color"), string("brown"));
+
+    desc = block->addBlockDescription(
+        "Brown Wool",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "brown_wool" // NBT name
+    );
+
+    // Brown carpet
+    block = blockList->addBlock(string("brown_carpet"));
+
+    desc = block->addBlockDescription(
+        "Brown Carpet",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "carpet", // NBT name
+        171,      // Block ID
+        12        // Data value
+    );
+    desc->addTag(string("color"), string("brown"));
+
+    desc = block->addBlockDescription(
+        "Brown Carpet",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "brown_carpet" // NBT name
+    );
+
+    // Brown concrete
+    block = blockList->addBlock(string("brown_concrete"));
+
+    desc = block->addBlockDescription(
+        "Brown Concrete",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete", // NBT name
+        251,        // Block ID
+        12          // Data value
+    );
+    desc->addTag(string("color"), string("brown"));
+
+    desc = block->addBlockDescription(
+        "Brown Concrete",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "brown_concrete" // NBT name
+    );
+
+    // ---------------
+    // ---- COLOR_GREEN ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::COLOR_GREEN]);
+
+    // Green wool
+    block = blockList->addBlock(string("green_wool"));
+
+    desc = block->addBlockDescription(
+        "Green Wool",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "wool", // NBT name
+        35,     // Block ID
+        13      // Data value
+    );
+    desc->addTag(string("color"), string("green"));
+
+    desc = block->addBlockDescription(
+        "Green Wool",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "green_wool" // NBT name
+    );
+
+    // Green carpet
+    block = blockList->addBlock(string("green_carpet"));
+
+    desc = block->addBlockDescription(
+        "Green Carpet",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "carpet", // NBT name
+        171,      // Block ID
+        13        // Data value
+    );
+    desc->addTag(string("color"), string("green"));
+
+    desc = block->addBlockDescription(
+        "Green Carpet",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "green_carpet" // NBT name
+    );
+
+    // Green concrete
+    block = blockList->addBlock(string("green_concrete"));
+
+    desc = block->addBlockDescription(
+        "Green Concrete",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete", // NBT name
+        251,        // Block ID
+        13          // Data value
+    );
+    desc->addTag(string("color"), string("green"));
+
+    desc = block->addBlockDescription(
+        "Green Concrete",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "green_concrete" // NBT name
+    );
+
+    // ---------------
+    // ---- COLOR_RED ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::COLOR_RED]);
+
+    // Red wool
+    block = blockList->addBlock(string("red_wool"));
+
+    desc = block->addBlockDescription(
+        "Red Wool",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "wool", // NBT name
+        35,     // Block ID
+        14      // Data value
+    );
+    desc->addTag(string("color"), string("red"));
+
+    desc = block->addBlockDescription(
+        "Red Wool",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "red_wool" // NBT name
+    );
+
+    // Red carpet
+    block = blockList->addBlock(string("red_carpet"));
+
+    desc = block->addBlockDescription(
+        "Red Carpet",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "carpet", // NBT name
+        171,      // Block ID
+        14        // Data value
+    );
+    desc->addTag(string("color"), string("red"));
+
+    desc = block->addBlockDescription(
+        "Red Carpet",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "red_carpet" // NBT name
+    );
+
+    // Red concrete
+    block = blockList->addBlock(string("red_concrete"));
+
+    desc = block->addBlockDescription(
+        "Red Concrete",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete", // NBT name
+        251,        // Block ID
+        14          // Data value
+    );
+    desc->addTag(string("color"), string("red"));
+
+    desc = block->addBlockDescription(
+        "Red Concrete",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "red_concrete" // NBT name
+    );
+
+    // ---------------
+    // ---- COLOR_BLACK ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::COLOR_BLACK]);
+
+    // Black wool
+    block = blockList->addBlock(string("black_wool"));
+
+    desc = block->addBlockDescription(
+        "Black Wool",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "wool", // NBT name
+        35,     // Block ID
+        15      // Data value
+    );
+    desc->addTag(string("color"), string("black"));
+
+    desc = block->addBlockDescription(
+        "Black Wool",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "black_wool" // NBT name
+    );
+
+    // Black carpet
+    block = blockList->addBlock(string("black_carpet"));
+
+    desc = block->addBlockDescription(
+        "Black Carpet",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "carpet", // NBT name
+        171,      // Block ID
+        15        // Data value
+    );
+    desc->addTag(string("color"), string("black"));
+
+    desc = block->addBlockDescription(
+        "Black Carpet",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "black_carpet" // NBT name
+    );
+
+    // Black concrete
+    block = blockList->addBlock(string("black_concrete"));
+
+    desc = block->addBlockDescription(
+        "Black Concrete",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete", // NBT name
+        251,        // Block ID
+        15          // Data value
+    );
+    desc->addTag(string("color"), string("black"));
+
+    desc = block->addBlockDescription(
+        "Black Concrete",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "black_concrete" // NBT name
     );
 
     return list; // Return the list of blocks
