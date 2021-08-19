@@ -2148,5 +2148,156 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "black_terracotta" // NBT name
     );
 
+    if (size > (size_t)McColors::CRIMSON_NYLIUM)
+    {
+        // 1.16+
+
+        // ---------------
+        // ---- CRIMSON_NYLIUM ----
+        // ---------------
+        blockList = &(list[(size_t)McColors::CRIMSON_NYLIUM]);
+
+        // Crimson Nylium
+        block = blockList->addBlock(string("crimson_nylium"));
+
+        desc = block->addBlockDescription(
+            "Crimson Nylium",
+            McVersion::MC_1_16, MC_LAST_VERSION,
+            "crimson_nylium" // NBT name
+        );
+
+        // ---------------
+        // ---- CRIMSON_STEM ----
+        // ---------------
+        blockList = &(list[(size_t)McColors::CRIMSON_STEM]);
+
+        // Crimson Planks
+        block = blockList->addBlock(string("crimson_planks"));
+
+        desc = block->addBlockDescription(
+            "Crimson Planks",
+            McVersion::MC_1_16, MC_LAST_VERSION,
+            "crimson_planks" // NBT name
+        );
+
+        // ---------------
+        // ---- CRIMSON_HYPHAE ----
+        // ---------------
+        blockList = &(list[(size_t)McColors::CRIMSON_HYPHAE]);
+
+        // Crimson Hyphae
+        block = blockList->addBlock(string("crimson_hyphae"));
+
+        desc = block->addBlockDescription(
+            "Crimson Hyphae",
+            McVersion::MC_1_16, MC_LAST_VERSION,
+            "crimson_hyphae" // NBT name
+        );
+
+        // ---------------
+        // ---- WARPED_NYLIUM ----
+        // ---------------
+        blockList = &(list[(size_t)McColors::WARPED_NYLIUM]);
+
+        // Warped Nylium
+        block = blockList->addBlock(string("warped_nylium"));
+
+        desc = block->addBlockDescription(
+            "Warped Nylium",
+            McVersion::MC_1_16, MC_LAST_VERSION,
+            "warped_nylium" // NBT name
+        );
+
+        // ---------------
+        // ---- WARPED_STEM ----
+        // ---------------
+        blockList = &(list[(size_t)McColors::WARPED_STEM]);
+
+        // Warped Planks
+        block = blockList->addBlock(string("warped_planks"));
+
+        desc = block->addBlockDescription(
+            "Warped Planks",
+            McVersion::MC_1_16, MC_LAST_VERSION,
+            "warped_planks" // NBT name
+        );
+
+        // ---------------
+        // ---- WARPED_HYPHAE ----
+        // ---------------
+        blockList = &(list[(size_t)McColors::WARPED_HYPHAE]);
+
+        // Warped Hyphae
+        block = blockList->addBlock(string("warped_hyphae"));
+
+        desc = block->addBlockDescription(
+            "Warped Hyphae",
+            McVersion::MC_1_16, MC_LAST_VERSION,
+            "warped_hyphae" // NBT name
+        );
+
+        // ---------------
+        // ---- WARPED_WART_BLOCK ----
+        // ---------------
+        blockList = &(list[(size_t)McColors::WARPED_WART_BLOCK]);
+
+        // Warped Wart Block
+        block = blockList->addBlock(string("warped_wart_block"));
+
+        desc = block->addBlockDescription(
+            "Warped Wart Block",
+            McVersion::MC_1_16, MC_LAST_VERSION,
+            "warped_wart_block" // NBT name
+        );
+
+        if (size > (size_t)McColors::DEEPSLATE)
+        {
+            // 1.17+
+
+            // ---------------
+            // ---- DEEPSLATE ----
+            // ---------------
+            blockList = &(list[(size_t)McColors::DEEPSLATE]);
+
+            // Deepslate
+            block = blockList->addBlock(string("deepslate"));
+
+            desc = block->addBlockDescription(
+                "Deepslate",
+                McVersion::MC_1_17, MC_LAST_VERSION,
+                "deepslate" // NBT name
+            );
+
+            // ---------------
+            // ---- RAW_IRON ----
+            // ---------------
+            blockList = &(list[(size_t)McColors::RAW_IRON]);
+
+            // Block of Raw Iron
+            block = blockList->addBlock(string("raw_iron_block"));
+
+            desc = block->addBlockDescription(
+                "Block of Raw Iron",
+                McVersion::MC_1_17, MC_LAST_VERSION,
+                "raw_iron_block" // NBT name
+            );
+
+            // ---------------
+            // ---- GLOW_LICHEN ----
+            // ---------------
+            blockList = &(list[(size_t)McColors::GLOW_LICHEN]);
+
+            // Glow Lichen
+            block = blockList->addBlock(string("glow_lichen"));
+
+            desc = block->addBlockDescription(
+                "Glow Lichen",
+                McVersion::MC_1_17, MC_LAST_VERSION,
+                "glow_lichen" // NBT name
+            );
+            desc->addTag(string("down"), string("true"));
+        }
+    }
+
     return list; // Return the list of blocks
 }
