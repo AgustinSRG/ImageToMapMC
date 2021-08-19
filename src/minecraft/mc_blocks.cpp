@@ -1568,5 +1568,585 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "black_concrete" // NBT name
     );
 
+    // Coal block
+    block = blockList->addBlock(string("coal_block"));
+
+    desc = block->addBlockDescription(
+        "Block of Coal",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "coal_block", // NBT name
+        173,          // Block ID
+        0             // Data value
+    );
+
+    // Obsidian
+    block = blockList->addBlock(string("obsidian"));
+
+    desc = block->addBlockDescription(
+        "Block of Coal",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "obsidian", // NBT name
+        49,         // Block ID
+        0           // Data value
+    );
+
+    // ---------------
+    // ---- GOLD ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::GOLD]);
+
+    // Gold
+    block = blockList->addBlock(string("gold_block"));
+
+    desc = block->addBlockDescription(
+        "Block of Gold",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "gold_block", // NBT name
+        41,           // Block ID
+        0             // Data value
+    );
+
+    // Gold plate
+    block = blockList->addBlock(string("light_weighted_pressure_plate"));
+
+    desc = block->addBlockDescription(
+        "Weighted Pressure Plate (Light)",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "light_weighted_pressure_plate", // NBT name
+        147,                             // Block ID
+        0                                // Data value
+    );
+
+    // Raw Gold
+    block = blockList->addBlock(string("gold_block"));
+
+    desc = block->addBlockDescription(
+        "Block of Raw Gold",
+        McVersion::MC_1_17, MC_LAST_VERSION,
+        "raw_gold_block" // NBT name
+    );
+
+    // ---------------
+    // ---- DIAMOND ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::DIAMOND]);
+
+    // Prismarine Bricks
+    block = blockList->addBlock(string("prismarine_bricks"));
+
+    desc = block->addBlockDescription(
+        "Prismarine Bricks",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "prismarine", // NBT name
+        168,          // Block ID
+        1             // Data value
+    );
+    desc->addTag(string("variant"), string("prismarine_bricks"));
+
+    desc = block->addBlockDescription(
+        "Prismarine Bricks",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "prismarine_bricks" // NBT name
+    );
+
+    // Block of Diamond
+    block = blockList->addBlock(string("diamond_block"));
+
+    desc = block->addBlockDescription(
+        "Block of Diamond",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "diamond_block", // NBT name
+        57,              // Block ID
+        0                // Data value
+    );
+
+    // Beacon
+    block = blockList->addBlock(string("beacon"));
+
+    desc = block->addBlockDescription(
+        "Beacon",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "beacon", // NBT name
+        138,      // Block ID
+        0         // Data value
+    );
+
+    // ---------------
+    // ---- LAPIS ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::LAPIS]);
+
+    // Lapis Lazuli Block
+    block = blockList->addBlock(string("lapis_block"));
+
+    desc = block->addBlockDescription(
+        "Lapis Lazuli Block",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "lapis_block", // NBT name
+        22,            // Block ID
+        0              // Data value
+    );
+
+    // ---------------
+    // ---- EMERALD ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::EMERALD]);
+
+    // Block of Emerald
+    block = blockList->addBlock(string("emerald_block"));
+
+    desc = block->addBlockDescription(
+        "Block of Emerald",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "emerald_block", // NBT name
+        133,             // Block ID
+        0                // Data value
+    );
+
+    // ---------------
+    // ---- PODZOL ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::PODZOL]);
+
+    // Spruce planks
+    block = blockList->addBlock(string("spruce_planks"));
+
+    desc = block->addBlockDescription(
+        "Spruce Planks",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "planks", // NBT name
+        5,        // Block ID
+        1         // Data value
+    );
+    desc->addTag(string("variant"), string("spruce"));
+
+    desc = block->addBlockDescription(
+        "Spruce Planks",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "spruce_planks" // NBT name
+    );
+
+    // Podzol
+    block = blockList->addBlock(string("podzol"));
+
+    desc = block->addBlockDescription(
+        "Podzol",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "dirt", // NBT name
+        3,      // Block ID
+        2       // Data value
+    );
+    desc->addTag(string("variant"), string("podzol"));
+
+    desc = block->addBlockDescription(
+        "Podzol",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "podzol" // NBT name
+    );
+
+    // Spruce log
+    block = blockList->addBlock(string("spruce_log"));
+
+    desc = block->addBlockDescription(
+        "Spruce Log (vertical)",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "log", // NBT name
+        17,    // Block ID
+        1      // Data value
+    );
+    desc->addTag(string("variant"), string("spruce"));
+    desc->addTag(string("axis"), string("y"));
+
+    desc = block->addBlockDescription(
+        "Spruce Log (vertical)",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "spruce_log" // NBT name
+    );
+    desc->addTag(string("axis"), string("y"));
+
+    // ---------------
+    // ---- NETHER ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::NETHER]);
+
+    // Netherrack
+    block = blockList->addBlock(string("netherrack"));
+
+    desc = block->addBlockDescription(
+        "Netherrack",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "netherrack", // NBT name
+        87,           // Block ID
+        0             // Data value
+    );
+
+    // ---------------
+    // ---- TERRACOTTA_WHITE ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::TERRACOTTA_WHITE]);
+
+    // White Terracotta
+    block = blockList->addBlock(string("white_terracotta"));
+
+    desc = block->addBlockDescription(
+        "White Terracotta",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_hardened_clay", // NBT name
+        159,                     // Block ID
+        0                        // Data value
+    );
+    desc->addTag(string("color"), string("white"));
+
+    desc = block->addBlockDescription(
+        "White Terracotta",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "white_terracotta" // NBT name
+    );
+
+    // ---------------
+    // ---- TERRACOTTA_ORANGE ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::TERRACOTTA_ORANGE]);
+
+    // Orange Terracotta
+    block = blockList->addBlock(string("orange_terracotta"));
+
+    desc = block->addBlockDescription(
+        "Orange Terracotta",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_hardened_clay", // NBT name
+        159,                     // Block ID
+        1                        // Data value
+    );
+    desc->addTag(string("color"), string("orange"));
+
+    desc = block->addBlockDescription(
+        "Orange Terracotta",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "orange_terracotta" // NBT name
+    );
+
+    // ---------------
+    // ---- TERRACOTTA_MAGENTA ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::TERRACOTTA_MAGENTA]);
+
+    // Magenta Terracotta
+    block = blockList->addBlock(string("magenta_terracotta"));
+
+    desc = block->addBlockDescription(
+        "Magenta Terracotta",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_hardened_clay", // NBT name
+        159,                     // Block ID
+        2                        // Data value
+    );
+    desc->addTag(string("color"), string("magenta"));
+
+    desc = block->addBlockDescription(
+        "Magenta Terracotta",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "magenta_terracotta" // NBT name
+    );
+
+    // ---------------
+    // ---- TERRACOTTA_LIGHT_BLUE ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::TERRACOTTA_LIGHT_BLUE]);
+
+    // Light Blue Terracotta
+    block = blockList->addBlock(string("light_blue_terracotta"));
+
+    desc = block->addBlockDescription(
+        "Light Blue Terracotta",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_hardened_clay", // NBT name
+        159,                     // Block ID
+        3                        // Data value
+    );
+    desc->addTag(string("color"), string("light_blue"));
+
+    desc = block->addBlockDescription(
+        "Light Blue Terracotta",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "light_blue_terracotta" // NBT name
+    );
+
+    // ---------------
+    // ---- TERRACOTTA_YELLOW ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::TERRACOTTA_YELLOW]);
+
+    // Yellow Terracotta
+    block = blockList->addBlock(string("yellow_terracotta"));
+
+    desc = block->addBlockDescription(
+        "Yellow Terracotta",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_hardened_clay", // NBT name
+        159,                     // Block ID
+        4                        // Data value
+    );
+    desc->addTag(string("color"), string("yellow"));
+
+    desc = block->addBlockDescription(
+        "Yellow Terracotta",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "yellow_terracotta" // NBT name
+    );
+
+    // ---------------
+    // ---- TERRACOTTA_LIGHT_GREEN ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::TERRACOTTA_LIGHT_GREEN]);
+
+    // Lime Terracotta
+    block = blockList->addBlock(string("lime_terracotta"));
+
+    desc = block->addBlockDescription(
+        "Lime Terracotta",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_hardened_clay", // NBT name
+        159,                     // Block ID
+        5                        // Data value
+    );
+    desc->addTag(string("color"), string("lime"));
+
+    desc = block->addBlockDescription(
+        "Lime Terracotta",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "lime_terracotta" // NBT name
+    );
+
+    // ---------------
+    // ---- TERRACOTTA_PINK ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::TERRACOTTA_PINK]);
+
+    // Pink Terracotta
+    block = blockList->addBlock(string("pink_terracotta"));
+
+    desc = block->addBlockDescription(
+        "Pink Terracotta",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_hardened_clay", // NBT name
+        159,                     // Block ID
+        6                        // Data value
+    );
+    desc->addTag(string("color"), string("pink"));
+
+    desc = block->addBlockDescription(
+        "Pink Terracotta",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "pink_terracotta" // NBT name
+    );
+
+    // ---------------
+    // ---- TERRACOTTA_GRAY ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::TERRACOTTA_GRAY]);
+
+    // Gray Terracotta
+    block = blockList->addBlock(string("gray_terracotta"));
+
+    desc = block->addBlockDescription(
+        "Gray Terracotta",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_hardened_clay", // NBT name
+        159,                     // Block ID
+        7                        // Data value
+    );
+    desc->addTag(string("color"), string("gray"));
+
+    desc = block->addBlockDescription(
+        "Gray Terracotta",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "gray_terracotta" // NBT name
+    );
+
+    // ---------------
+    // ---- TERRACOTTA_LIGHT_GRAY ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::TERRACOTTA_LIGHT_GRAY]);
+
+    // Light Gray Terracotta
+    block = blockList->addBlock(string("light_gray_terracotta"));
+
+    desc = block->addBlockDescription(
+        "Light Gray Terracotta",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_hardened_clay", // NBT name
+        159,                     // Block ID
+        8                        // Data value
+    );
+    desc->addTag(string("color"), string("light_gray"));
+
+    desc = block->addBlockDescription(
+        "Light Gray Terracotta",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "light_gray_terracotta" // NBT name
+    );
+
+    // ---------------
+    // ---- TERRACOTTA_CYAN ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::TERRACOTTA_CYAN]);
+
+    // Cyan Terracotta
+    block = blockList->addBlock(string("cyan_terracotta"));
+
+    desc = block->addBlockDescription(
+        "Cyan Terracotta",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_hardened_clay", // NBT name
+        159,                     // Block ID
+        9                        // Data value
+    );
+    desc->addTag(string("color"), string("cyan"));
+
+    desc = block->addBlockDescription(
+        "Cyan Terracotta",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "cyan_terracotta" // NBT name
+    );
+
+    // ---------------
+    // ---- TERRACOTTA_PURPLE ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::TERRACOTTA_PURPLE]);
+
+    // Purple Terracotta
+    block = blockList->addBlock(string("purple_terracotta"));
+
+    desc = block->addBlockDescription(
+        "Purple Terracotta",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_hardened_clay", // NBT name
+        159,                     // Block ID
+        10                       // Data value
+    );
+    desc->addTag(string("color"), string("purple"));
+
+    desc = block->addBlockDescription(
+        "Purple Terracotta",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "purple_terracotta" // NBT name
+    );
+
+    // ---------------
+    // ---- TERRACOTTA_BLUE ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::TERRACOTTA_BLUE]);
+
+    // Blue Terracotta
+    block = blockList->addBlock(string("blue_terracotta"));
+
+    desc = block->addBlockDescription(
+        "Blue Terracotta",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_hardened_clay", // NBT name
+        159,                     // Block ID
+        11                       // Data value
+    );
+    desc->addTag(string("color"), string("blue"));
+
+    desc = block->addBlockDescription(
+        "Blue Terracotta",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "blue_terracotta" // NBT name
+    );
+
+    // ---------------
+    // ---- TERRACOTTA_BROWN ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::TERRACOTTA_BROWN]);
+
+    // Brown Terracotta
+    block = blockList->addBlock(string("brown_terracotta"));
+
+    desc = block->addBlockDescription(
+        "Brown Terracotta",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_hardened_clay", // NBT name
+        159,                     // Block ID
+        12                       // Data value
+    );
+    desc->addTag(string("color"), string("brown"));
+
+    desc = block->addBlockDescription(
+        "Brown Terracotta",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "brown_terracotta" // NBT name
+    );
+
+    // ---------------
+    // ---- TERRACOTTA_GREEN ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::TERRACOTTA_GREEN]);
+
+    // Green Terracotta
+    block = blockList->addBlock(string("green_terracotta"));
+
+    desc = block->addBlockDescription(
+        "Green Terracotta",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_hardened_clay", // NBT name
+        159,                     // Block ID
+        13                       // Data value
+    );
+    desc->addTag(string("color"), string("green"));
+
+    desc = block->addBlockDescription(
+        "Green Terracotta",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "green_terracotta" // NBT name
+    );
+
+    // ---------------
+    // ---- TERRACOTTA_RED ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::TERRACOTTA_RED]);
+
+    // Green Terracotta
+    block = blockList->addBlock(string("red_terracotta"));
+
+    desc = block->addBlockDescription(
+        "Red Terracotta",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_hardened_clay", // NBT name
+        159,                     // Block ID
+        14                       // Data value
+    );
+    desc->addTag(string("color"), string("red"));
+
+    desc = block->addBlockDescription(
+        "Red Terracotta",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "red_terracotta" // NBT name
+    );
+
+    // ---------------
+    // ---- TERRACOTTA_BLACK ----
+    // ---------------
+    blockList = &(list[(size_t)McColors::TERRACOTTA_BLACK]);
+
+    // Black Terracotta
+    block = blockList->addBlock(string("black_terracotta"));
+
+    desc = block->addBlockDescription(
+        "Black Terracotta",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_hardened_clay", // NBT name
+        159,                     // Block ID
+        15                       // Data value
+    );
+    desc->addTag(string("color"), string("black"));
+
+    desc = block->addBlockDescription(
+        "Black Terracotta",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "black_terracotta" // NBT name
+    );
+
     return list; // Return the list of blocks
 }
