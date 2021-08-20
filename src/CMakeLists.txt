@@ -9,6 +9,7 @@ if (DEFINED ENV_WX_CONFIG)
 endif()
 
 set(wxWidgets_USE_STATIC 1)
+SET(wxWidgets_USE_LIBS)
 
 find_package(wxWidgets REQUIRED)
 include(${wxWidgets_USE_FILE})
@@ -22,6 +23,7 @@ add_executable (ImageToMapMC
     "colors/colors.h" "colors/colors.cpp" "colors/cielab.h" "colors/cielab.cpp" 
     "minecraft/mc_common.h" "minecraft/mc_common.h" "minecraft/mc_colors.h" "minecraft/mc_colors.cpp" "minecraft/mc_blocks.h" "minecraft/mc_blocks.h"
     "mapart/map_art.h" "mapart/map_art.cpp"
+    "wx/img_display_window.h" "wx/img_display_window.cpp"
 )
 
 target_link_libraries(ImageToMapMC ${wxWidgets_LIBRARIES})

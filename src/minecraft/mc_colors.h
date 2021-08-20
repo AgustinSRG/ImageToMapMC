@@ -63,7 +63,7 @@ namespace minecraft
      */
     enum class McColors : short
     {
-        VOID = 0,
+        NONE = 0,
 
         GRASS = 1,
         SAND = 2,

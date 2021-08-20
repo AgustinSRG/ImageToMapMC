@@ -23,7 +23,7 @@
 
 #pragma once
 
-#define MC_LAST_VERSION (McVersion::MC_1_17)
+#define MC_LAST_VERSION (minecraft::McVersion::MC_1_17)
 
 #include <string>
 

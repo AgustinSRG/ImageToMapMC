@@ -1,82 +1,59 @@
 ﻿// wxWidgets "Hello world" Program
 // For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-class MyApp : public wxApp
-{
-public:
-    virtual bool OnInit();
-};
-class MyFrame : public wxFrame
-{
-public:
-    MyFrame(const wxString &title, const wxPoint &pos, const wxSize &size);
 
-private:
-    void OnHello(wxCommandEvent &event);
-    void OnExit(wxCommandEvent &event);
-    void OnAbout(wxCommandEvent &event);
-    wxDECLARE_EVENT_TABLE();
-};
-enum
-{
-    ID_Hello = 1
-};
-wxBEGIN_EVENT_TABLE(MyFrame, wxFrame)
-    EVT_MENU(ID_Hello, MyFrame::OnHello)
-        EVT_MENU(wxID_EXIT, MyFrame::OnExit)
-            EVT_MENU(wxID_ABOUT, MyFrame::OnAbout)
-                wxEND_EVENT_TABLE()
+#include "wx/img_display_window.h"
+#include <iostream>
 
-                    bool MyApp::OnInit()
-{
-    MyFrame *frame = new MyFrame("Hello World", wxPoint(50, 50), wxSize(450, 340));
-    frame->Show(true);
-    return true;
-}
-MyFrame::MyFrame(const wxString &title, const wxPoint &pos, const wxSize &size)
-    : wxFrame(NULL, wxID_ANY, title, pos, size)
-{
-    wxMenu *menuFile = new wxMenu;
-    menuFile->Append(ID_Hello, "&Hello...\tCtrl-H",
-                     "Help string shown in status bar for this menu item");
-    menuFile->AppendSeparator();
-    menuFile->Append(wxID_EXIT);
-    wxMenu *menuHelp = new wxMenu;
-    menuHelp->Append(wxID_ABOUT);
-    wxMenuBar *menuBar = new wxMenuBar;
-    menuBar->Append(menuFile, "&File");
-    menuBar->Append(menuHelp, "&Help");
-    SetMenuBar(menuBar);
-    CreateStatusBar();
-    SetStatusText("Welcome to wxWidgets!");
-}
-void MyFrame::OnExit(wxCommandEvent &event)
-{
-    Close(true);
-}
-void MyFrame::OnAbout(wxCommandEvent &event)
-{
-    wxMessageBox("This is a wxWidgets' Hello world sample",
-                 "About Hello World", wxOK | wxICON_INFORMATION);
-}
-void MyFrame::OnHello(wxCommandEvent &event)
-{
-    wxLogMessage("Hello world from wxWidgets!");
-}
+using namespace std;
 
 int main(int argc, char *argv[])
 {
-    // MyWxApp derives from wxApp
-    wxApp::SetInstance(new MyApp());
-    wxEntryStart(argc, argv);
-    wxTheApp->CallOnInit();
+    if (argc < 2)
+    {
+        cerr << "You must specify a map file to open" << endl;
+        return 1;
+    }
 
+    // Load colors
+    std::vector<colors::Color> baseColors = minecraft::loadBaseColors(MC_LAST_VERSION);
+    std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
 
-    wxTheApp->OnRun();
-    wxTheApp->OnExit();
-    wxEntryCleanup();
+    try
+    {
+        std::vector<map_color_t> fileData = mapart::readMapNBTFile(argv[1]);
+        std::vector<minecraft::FinalColor *> testVector = mapart::mapColorsToRGB(colorSet, fileData);
+
+        widgets::displayMapImage(testVector, argc, argv);
+    }
+    catch (int code)
+    {
+        switch (code)
+        {
+        case -1:
+            cerr << "Cannot open file: " << argv[1] << endl;
+            break;
+        case -2:
+            cerr << "Invalid file: " << argv[1] << " is not a valid map NBT file." << endl;
+            break;
+        }
+
+        return 1;
+    }
+    catch (const std::exception &ex)
+    {
+        cerr << "Oops, an error ocurred." << ex.what() << endl;
+        return 1;
+    }
+    catch (const std::string &ex)
+    {
+        cerr << "Oops, an error ocurred." << ex << endl;
+        return 1;
+    }
+    catch (...)
+    {
+        cerr << "Oops, an error ocurred." << endl;
+        return 1;
+    }
+
     return 0;
 }

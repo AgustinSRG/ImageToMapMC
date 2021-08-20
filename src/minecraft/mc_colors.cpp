@@ -79,7 +79,7 @@ std::vector<Color> minecraft::loadBaseColors(McVersion version)
 {
     std::vector<Color> baseColors(52);
 
-    baseColors[(short)McColors::VOID] = rgb(0, 0, 0);
+    baseColors[(short)McColors::NONE] = rgb(0, 0, 0);
 
     baseColors[(short)McColors::GRASS] = rgb(127, 178, 56);
     baseColors[(short)McColors::SAND] = rgb(247, 233, 163);
@@ -175,7 +175,7 @@ std::vector<std::string> minecraft::loadBaseColorNames(std::vector<colors::Color
     size_t size = baseColors.size();
     std::vector<std::string> res(size);
 
-    res[(size_t)McColors::VOID] = std::string("VOID");
+    res[(size_t)McColors::NONE] = std::string("NONE");
     res[(size_t)McColors::GRASS] = std::string("GRASS");
     res[(size_t)McColors::SAND] = std::string("SAND");
     res[(size_t)McColors::WOOL] = std::string("WOOL");
@@ -290,7 +290,7 @@ size_t minecraft::findClosestColor(std::vector<minecraft::FinalColor> &colors, c
     size_t size = colors.size();
     size_t result = 0;
 
-    // Start with i = 4 to skip all VOID blocks
+    // Start with i = 4 to skip all NONE blocks
     for (size_t i = 4; i < size; i++)
     {
         if (!colors[i].enabled)
