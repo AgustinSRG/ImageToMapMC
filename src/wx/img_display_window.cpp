@@ -26,6 +26,7 @@
 #include <wx/sizer.h>
 #include <wx/rawbmp.h>
 #include <iostream>
+#include "../resources/icon.xpm"
 
 using namespace std;
 
@@ -133,6 +134,8 @@ DisplayImageFrame::DisplayImageFrame(const wxString &title, const wxPoint &pos, 
     // make sure to call this first
     wxInitAllImageHandlers();
 
+    this->SetIcon(wxIcon(_ICON_ICO_XPM));
+
     //wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
 
     drawPane = new wxImagePanel(this, colorsMatrix);
@@ -155,6 +158,6 @@ void DisplayImageFrame::OnSize(wxSizeEvent &event)
 
 void widgets::displayMapImage(std::vector<minecraft::FinalColor *> &colorsMatrix, wxApp &app)
 {
-    DisplayImageFrame *frame = new DisplayImageFrame("Hello World", wxPoint(50, 50), wxSize(800, 600), colorsMatrix);
+    DisplayImageFrame *frame = new DisplayImageFrame((string("Rendering minecraft map: ") + string(app.argv[1])), wxPoint(50, 50), wxSize(800, 600), colorsMatrix);
     frame->Show(true);
 }
