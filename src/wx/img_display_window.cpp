@@ -25,7 +25,6 @@
 
 #include <wx/sizer.h>
 #include <wx/rawbmp.h>
-#include <iostream>
 #include "../resources/icon.xpm"
 
 using namespace std;
@@ -95,8 +94,6 @@ void wxImagePanel::paintNow()
 
 void wxImagePanel::render(wxDC &dc)
 {
-    cout << "Render called" << endl;
-
     double scale = 1;
     int offsetX = 0;
     int offsetY = 0;
@@ -151,7 +148,6 @@ void DisplayImageFrame::OnExit(wxCommandEvent &event)
 
 void DisplayImageFrame::OnSize(wxSizeEvent &event)
 {
-    cout << "Resized / W: " << this->GetSize().GetWidth() << " / H: " << this->GetSize().GetHeight() << endl;
     drawPane->SetSize(this->GetClientSize());
     drawPane->Refresh();
 }
