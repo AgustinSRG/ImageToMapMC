@@ -1,16 +1,37 @@
 ﻿// wxWidgets "Hello world" Program
 // For compilers that support precompilation, includes "wx/wx.h".
 
+#include "ImageToMapMC.h"
 #include "wx/img_display_window.h"
-#include <iostream>
+#include <wx/msgdlg.h>
 
 using namespace std;
 
-int main(int argc, char *argv[])
+int mainEntryPoint(App &app, int argc, char *argv[]);
+void displayError();
+
+wxIMPLEMENT_APP(App);
+// clang-format on
+
+bool App::OnInit()
+{
+    if (mainEntryPoint(*this, this->argc, this->argv) != 0) {
+        this->Exit();
+    }
+
+    return true;
+}
+
+void displayError(string str)
+{
+    wxMessageBox(wxString(str), wxT("Error"), wxICON_ERROR);
+}
+
+int mainEntryPoint(App &app, int argc, char *argv[])
 {
     if (argc < 2)
     {
-        cerr << "You must specify a map file to open" << endl;
+        displayError(string("You must specify a map file to open"));
         return 1;
     }
 
@@ -23,17 +44,17 @@ int main(int argc, char *argv[])
         std::vector<map_color_t> fileData = mapart::readMapNBTFile(argv[1]);
         std::vector<minecraft::FinalColor *> testVector = mapart::mapColorsToRGB(colorSet, fileData);
 
-        widgets::displayMapImage(testVector, argc, argv);
+        widgets::displayMapImage(testVector, app);
     }
     catch (int code)
     {
         switch (code)
         {
         case -1:
-            cerr << "Cannot open file: " << argv[1] << endl;
+            displayError(string("Cannot open file: ") + string(argv[1]));
             break;
         case -2:
-            cerr << "Invalid file: " << argv[1] << " is not a valid map NBT file." << endl;
+            displayError(string("Invalid file: ") + string(argv[1]) + string(" is not a valid map NBT file."));
             break;
         }
 
@@ -41,17 +62,17 @@ int main(int argc, char *argv[])
     }
     catch (const std::exception &ex)
     {
-        cerr << "Oops, an error ocurred." << ex.what() << endl;
+        displayError(string(ex.what()));
         return 1;
     }
     catch (const std::string &ex)
     {
-        cerr << "Oops, an error ocurred." << ex << endl;
+        displayError(ex);
         return 1;
     }
     catch (...)
     {
-        cerr << "Oops, an error ocurred." << endl;
+        displayError(string("Oops, an error ocurred."));
         return 1;
     }
 

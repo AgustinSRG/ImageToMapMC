@@ -18,7 +18,7 @@ include_directories(3rdparty/libnbtplusplus/include)
 add_subdirectory(3rdparty/libnbtplusplus)
 
 # Source files
-add_executable (ImageToMapMC 
+add_executable (ImageToMapMC WIN32 
     "ImageToMapMC.cpp" "ImageToMapMC.h"
     "colors/colors.h" "colors/colors.cpp" "colors/cielab.h" "colors/cielab.cpp" 
     "minecraft/mc_common.h" "minecraft/mc_common.h" "minecraft/mc_colors.h" "minecraft/mc_colors.cpp" "minecraft/mc_blocks.h" "minecraft/mc_blocks.h"

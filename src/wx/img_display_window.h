@@ -65,22 +65,11 @@ public:
     DisplayImageFrame(const wxString &title, const wxPoint &pos, const wxSize &size, std::vector<minecraft::FinalColor *> &colorsMatrix);
 
 private:
-    void OnHello(wxCommandEvent &event);
     void OnExit(wxCommandEvent &event);
-    void OnAbout(wxCommandEvent &event);
+    void OnSize( wxSizeEvent& event );
     wxDECLARE_EVENT_TABLE();
 };
 
-class DisplayImageApp : public wxApp
-{
-public:
-    DisplayImageApp(std::vector<minecraft::FinalColor *> &cm);
-
-    DisplayImageFrame *frame;
-    std::vector<minecraft::FinalColor *> *colorsMatrix;
-    virtual bool OnInit();
-};
-
 namespace widgets {
-    void displayMapImage(std::vector<minecraft::FinalColor *> &colorsMatrix, int argc, char ** argv);
+    void displayMapImage(std::vector<minecraft::FinalColor *> &colorsMatrix, wxApp &app);
 }

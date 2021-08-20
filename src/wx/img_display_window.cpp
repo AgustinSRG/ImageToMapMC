@@ -25,20 +25,16 @@
 
 #include <wx/sizer.h>
 #include <wx/rawbmp.h>
+#include <iostream>
+
+using namespace std;
 
 /* Define IDS */
-
-enum
-{
-    ID_Hello = 1
-};
 
 /* Events */
 
 BEGIN_EVENT_TABLE(DisplayImageFrame, wxFrame)
-EVT_MENU(ID_Hello, DisplayImageFrame::OnHello)
-EVT_MENU(wxID_EXIT, DisplayImageFrame::OnExit)
-EVT_MENU(wxID_ABOUT, DisplayImageFrame::OnAbout)
+EVT_SIZE(DisplayImageFrame::OnSize)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(wxImagePanel, wxPanel)
@@ -61,17 +57,17 @@ END_EVENT_TABLE()
 
 /* Implementation */
 
-wxImagePanel::wxImagePanel(wxFrame* parent, std::vector<minecraft::FinalColor *> &colorsMatrix) :
-wxPanel(parent)
+wxImagePanel::wxImagePanel(wxFrame *parent, std::vector<minecraft::FinalColor *> &colorsMatrix) : wxPanel(parent)
 {
     // load the file... ideally add a check to see if loading was successful
 
     wxImage image(MAP_WIDTH, MAP_HEIGH);
-    unsigned char* rawData = image.GetData();
+    unsigned char *rawData = image.GetData();
     size_t size = colorsMatrix.size();
 
     size_t j = 0;
-    for (size_t i = 0; i < size; i++) {
+    for (size_t i = 0; i < size; i++)
+    {
         colors::Color color = colorsMatrix[i]->color;
 
         rawData[j++] = color.red;
@@ -79,12 +75,10 @@ wxPanel(parent)
         rawData[j++] = color.blue;
     }
 
-
     bitmap = new wxBitmap(image);
 }
 
-
-void wxImagePanel::paintEvent(wxPaintEvent & evt)
+void wxImagePanel::paintEvent(wxPaintEvent &evt)
 {
     // depending on your system you may need to look at double-buffered dcs
     wxPaintDC dc(this);
@@ -98,70 +92,69 @@ void wxImagePanel::paintNow()
     render(dc);
 }
 
-void wxImagePanel::render(wxDC&  dc)
+void wxImagePanel::render(wxDC &dc)
 {
-    dc.DrawBitmap( *bitmap, 0, 0, false );
+    cout << "Render called" << endl;
+
+    double scale = 1;
+    int offsetX = 0;
+    int offsetY = 0;
+
+    int width = this->GetSize().GetWidth();
+    int height = this->GetSize().GetHeight();
+
+    if (height > width)
+    {
+        scale = (double)width / MAP_WIDTH;
+        double yPad =  height - width;
+        yPad = (yPad / 2) / scale;
+        offsetY += static_cast<int>(yPad);
+    }
+    else if (width > height)
+    {
+        scale = (double)height/ MAP_HEIGH;
+        double xPad = width - height;
+        xPad = (xPad / 2) / scale;
+        offsetX += static_cast<int>(xPad);
+    }
+    else
+    {
+        scale = (double)width / MAP_WIDTH;
+    }
+
+    dc.Clear();
+    dc.SetUserScale(scale, scale);
+    dc.DrawBitmap(*bitmap, offsetX, offsetY, false);
 }
 
-DisplayImageApp::DisplayImageApp(std::vector<minecraft::FinalColor *> &cm) {
-    colorsMatrix = &cm;
-}
-
-bool DisplayImageApp::OnInit()
-{
-    frame = new DisplayImageFrame("Hello World", wxPoint(50, 50), wxSize(450, 340), *colorsMatrix);
-    frame->Show(true);
-    return true;
-}
 DisplayImageFrame::DisplayImageFrame(const wxString &title, const wxPoint &pos, const wxSize &size, std::vector<minecraft::FinalColor *> &colorsMatrix)
     : wxFrame(NULL, wxID_ANY, title, pos, size)
 {
     // make sure to call this first
     wxInitAllImageHandlers();
 
-    wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
+    //wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
 
-    drawPane = new wxImagePanel( this, colorsMatrix);
-    sizer->Add(drawPane, 1, wxEXPAND);
-    this->SetSizer(sizer);
-
-    wxMenu *menuFile = new wxMenu;
-    menuFile->Append(ID_Hello, "&Hello...\tCtrl-H",
-                     "Help string shown in status bar for this menu item");
-    menuFile->AppendSeparator();
-    menuFile->Append(wxID_EXIT);
-    wxMenu *menuHelp = new wxMenu;
-    menuHelp->Append(wxID_ABOUT);
-    wxMenuBar *menuBar = new wxMenuBar;
-    menuBar->Append(menuFile, "&File");
-    menuBar->Append(menuHelp, "&Help");
-    SetMenuBar(menuBar);
-    CreateStatusBar();
-    SetStatusText("Welcome to wxWidgets!");
-
-
+    drawPane = new wxImagePanel(this, colorsMatrix);
+    drawPane->SetPosition(wxPoint(0, 0));
+    drawPane->SetSize(this->GetSize());
+    //sizer->Add(drawPane, 1, wxEXPAND);
+    //this->SetSizer(sizer);
 }
 void DisplayImageFrame::OnExit(wxCommandEvent &event)
 {
     Close(true);
 }
-void DisplayImageFrame::OnAbout(wxCommandEvent &event)
+
+void DisplayImageFrame::OnSize(wxSizeEvent &event)
 {
-    wxMessageBox("This is a wxWidgets' Hello world sample",
-                 "About Hello World", wxOK | wxICON_INFORMATION);
-}
-void DisplayImageFrame::OnHello(wxCommandEvent &event)
-{
-    wxLogMessage("Hello world from wxWidgets!");
+    cout << "Resized / W: " << this->GetSize().GetWidth() << " / H: " << this->GetSize().GetHeight() << endl;
+    drawPane->SetSize(this->GetClientSize());
+    drawPane->Refresh();
 }
 
-void widgets::displayMapImage(std::vector<minecraft::FinalColor *> &colorsMatrix, int argc, char **argv)
+void widgets::displayMapImage(std::vector<minecraft::FinalColor *> &colorsMatrix, wxApp &app)
 {
-    wxApp::SetInstance(new DisplayImageApp(colorsMatrix));
-    wxEntryStart(argc, argv);
-    wxTheApp->CallOnInit();
-
-    wxTheApp->OnRun();
-    wxTheApp->OnExit();
-    wxEntryCleanup();
+    DisplayImageFrame *frame = new DisplayImageFrame("Hello World", wxPoint(50, 50), wxSize(800, 600), colorsMatrix);
+    frame->Show(true);
 }
