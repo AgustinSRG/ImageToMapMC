@@ -60,7 +60,7 @@ std::vector<map_color_t> mapart::readMapNBTFile(std::string fileName)
 
         for (int i = 0; i < map_size; i++)
         {
-            result[i] = int8_t(colorsBytes.at(i));
+            result[i] = uint8_t(colorsBytes.at(i));
         }
     }
     catch (...)
