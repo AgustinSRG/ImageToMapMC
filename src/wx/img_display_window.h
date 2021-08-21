@@ -33,11 +33,12 @@
 
 class wxImagePanel : public wxPanel
 {
+
+public:
     wxBitmap * bitmap;
     size_t matrixWidth;
     size_t matrixHeight;
 
-public:
     wxImagePanel(wxFrame *parent);
     ~wxImagePanel();
 

@@ -25,6 +25,7 @@
 
 #include <wx/sizer.h>
 #include <wx/rawbmp.h>
+#include <wx/clipbrd.h>
 #include "../resources/icon.xpm"
 
 using namespace std;
@@ -282,15 +283,21 @@ void DisplayImageFrame::OnContextMenuSelected(wxCommandEvent &event)
     switch (event.GetId())
     {
     case MENU_ID_CONTEXT_1:
-        str = "Context Menu command 1";
+        // Save to file
         break;
     case MENU_ID_CONTEXT_2:
-        str = "Context Menu command 2";
+        // Copy to clipboard
+        if (wxTheClipboard->Open())
+        {
+            // This data objects are held by the clipboard,
+            // so do not delete them in the app.
+            wxDataObject * data = new wxBitmapDataObject(*drawPane->bitmap);
+            wxTheClipboard->SetData(data);
+            wxTheClipboard->Flush();
+            wxTheClipboard->Close();
+        }
         break;
-    default:
-        str = "Uknown command?!";
     }
-    wxMessageBox(str);
 }
 
 DisplayImageFrame::~DisplayImageFrame()
