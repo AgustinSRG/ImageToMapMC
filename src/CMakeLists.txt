@@ -31,15 +31,22 @@ SET(SOURCES_RC
     "resources/resources.rc"
 )
 
-# Source files
-add_executable (ImageToMapMC WIN32 
-    "ImageToMapMC.cpp" "ImageToMapMC.h"
+# Win app
+add_executable (mcmap-gui WIN32 
+    "main_win.cpp" "main_win.h"
     ${SOURCES_COMMON}
     ${SOURCES_WX}
     ${SOURCES_RC}
 )
 
-target_link_libraries(ImageToMapMC ${wxWidgets_LIBRARIES})
-target_link_libraries(ImageToMapMC nbt++)
+target_link_libraries(mcmap-gui ${wxWidgets_LIBRARIES})
+target_link_libraries(mcmap-gui nbt++)
 
-# TODO: Tests / Installations.
+# Console app
+add_executable (mcmap 
+    "main_console.cpp" "main_console.h"
+    ${SOURCES_COMMON}
+)
+
+target_link_libraries(mcmap ${wxWidgets_LIBRARIES})
+target_link_libraries(mcmap nbt++)
