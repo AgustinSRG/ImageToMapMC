@@ -70,6 +70,7 @@ class DisplayImageFrame : public wxFrame
 public:
     wxImagePanel * drawPane;
     wxMenu * menu;
+    std::string defaultFile;
     DisplayImageFrame(const wxString &title, const wxPoint &pos, const wxSize &size);
     ~DisplayImageFrame();
 
@@ -78,6 +79,7 @@ public:
 
     void OnShowContextMenu(wxContextMenuEvent& event);
     void OnContextMenuSelected(wxCommandEvent& event);
+    void OnSaveImage();
 
 private:
     void OnExit(wxCommandEvent &event);

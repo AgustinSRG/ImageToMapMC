@@ -257,6 +257,8 @@ DisplayImageFrame::DisplayImageFrame(const wxString &title, const wxPoint &pos, 
 {
     wxInitAllImageHandlers();
 
+    defaultFile = "map.png";
+
     this->SetIcon(wxIcon(_ICON_ICO_XPM));
 
     menu = new wxMenu();
@@ -276,6 +278,21 @@ void DisplayImageFrame::OnShowContextMenu(wxContextMenuEvent &event)
     PopupMenu(menu);
 }
 
+void DisplayImageFrame::OnSaveImage()
+{
+    wxFileDialog saveFileDialog(this, _("Save Image"), "", defaultFile, "PNG Images (*.png)|*.png", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    if (saveFileDialog.ShowModal() == wxID_CANCEL)
+    {
+        return; // the user changed idea...
+    }
+
+    bool ok = drawPane->bitmap->ConvertToImage().SaveFile(saveFileDialog.GetPath());
+
+    if (!ok) {
+        wxMessageBox(wxString("Could not save the image due to a file system error."), wxT("Error"), wxICON_ERROR);
+    }
+}
+
 void DisplayImageFrame::OnContextMenuSelected(wxCommandEvent &event)
 {
     wxString str;
@@ -284,6 +301,7 @@ void DisplayImageFrame::OnContextMenuSelected(wxCommandEvent &event)
     {
     case MENU_ID_CONTEXT_1:
         // Save to file
+        this->OnSaveImage();
         break;
     case MENU_ID_CONTEXT_2:
         // Copy to clipboard
@@ -291,7 +309,7 @@ void DisplayImageFrame::OnContextMenuSelected(wxCommandEvent &event)
         {
             // This data objects are held by the clipboard,
             // so do not delete them in the app.
-            wxDataObject * data = new wxBitmapDataObject(*drawPane->bitmap);
+            wxDataObject *data = new wxBitmapDataObject(*drawPane->bitmap);
             wxTheClipboard->SetData(data);
             wxTheClipboard->Flush();
             wxTheClipboard->Close();
@@ -331,5 +349,6 @@ void widgets::displayMapImage(std::vector<const minecraft::FinalColor *> &colors
 {
     DisplayImageFrame *frame = new DisplayImageFrame((string("Rendering minecraft map: ") + string(app.argv[1])), wxPoint(50, 50), wxSize(800, 600));
     frame->setColors(colorsMatrix, MAP_WIDTH, MAP_HEIGH);
+    frame->defaultFile = string(app.argv[1]) + string(".png");
     frame->Show(true);
 }
