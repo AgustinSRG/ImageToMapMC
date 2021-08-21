@@ -62,9 +62,9 @@ int mainEntryPoint(App &app, int argc, char *argv[])
     try
     {
         std::vector<map_color_t> fileData = mapart::readMapNBTFile(argv[1]);
-        std::vector<const minecraft::FinalColor *> testVector = mapart::mapColorsToRGB(colorSet, fileData);
+        std::vector<const minecraft::FinalColor *> colorMatrix = mapart::mapColorsToRGB(colorSet, fileData);
 
-        widgets::displayMapImage(testVector, app);
+        widgets::displayMapImage(colorMatrix, app);
     }
     catch (int code)
     {

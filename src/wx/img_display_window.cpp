@@ -31,6 +31,12 @@ using namespace std;
 
 /* Define IDS */
 
+enum MenuIDs
+{
+    MENU_ID_CONTEXT_1 = 1,
+    MENU_ID_CONTEXT_2 = 2
+};
+
 /* Events */
 
 BEGIN_EVENT_TABLE(DisplayImageFrame, wxFrame)
@@ -57,13 +63,29 @@ END_EVENT_TABLE()
 
 /* Implementation */
 
-wxImagePanel::wxImagePanel(wxFrame *parent, std::vector<const minecraft::FinalColor *> &colorsMatrix) : wxPanel(parent)
+wxImagePanel::wxImagePanel(wxFrame *parent) : wxPanel(parent)
 {
     // load the file... ideally add a check to see if loading was successful
 
-    wxImage image(MAP_WIDTH, MAP_HEIGH);
+    matrixHeight = 0;
+    matrixWidth = 0;
+    bitmap = NULL;
+}
+
+void wxImagePanel::setColors(std::vector<const minecraft::FinalColor *> &colorsMatrix, size_t width, size_t height)
+{
+    if (bitmap != NULL)
+    {
+        delete bitmap;
+        bitmap = NULL;
+    }
+
+    matrixHeight = height;
+    matrixWidth = width;
+
+    wxImage image(width, height);
     unsigned char *rawData = image.GetData();
-    size_t size = colorsMatrix.size();
+    size_t size = width * height;
 
     size_t j = 0;
     for (size_t i = 0; i < size; i++)
@@ -76,6 +98,46 @@ wxImagePanel::wxImagePanel(wxFrame *parent, std::vector<const minecraft::FinalCo
     }
 
     bitmap = new wxBitmap(image);
+
+    this->Refresh();
+}
+
+void wxImagePanel::setColors(std::vector<colors::Color> &colorsMatrix, size_t width, size_t height)
+{
+    if (bitmap != NULL)
+    {
+        delete bitmap;
+        bitmap = NULL;
+    }
+
+    matrixHeight = height;
+    matrixWidth = width;
+
+    wxImage image(width, height);
+    unsigned char *rawData = image.GetData();
+    size_t size = colorsMatrix.size();
+
+    size_t j = 0;
+    for (size_t i = 0; i < size; i++)
+    {
+        colors::Color color = colorsMatrix[i];
+
+        rawData[j++] = color.red;
+        rawData[j++] = color.green;
+        rawData[j++] = color.blue;
+    }
+
+    bitmap = new wxBitmap(image);
+
+    this->Refresh();
+}
+
+wxImagePanel::~wxImagePanel()
+{
+    if (bitmap != NULL)
+    {
+        delete bitmap;
+    }
 }
 
 void wxImagePanel::paintEvent(wxPaintEvent &evt)
@@ -94,53 +156,159 @@ void wxImagePanel::paintNow()
 
 void wxImagePanel::render(wxDC &dc)
 {
-    double scale = 1;
-    int offsetX = 0;
-    int offsetY = 0;
-
-    int width = this->GetSize().GetWidth();
-    int height = this->GetSize().GetHeight();
-
-    if (height > width)
+    if (bitmap != NULL && matrixWidth > 0 && matrixHeight > 0)
     {
-        scale = (double)width / MAP_WIDTH;
-        double yPad =  height - width;
-        yPad = (yPad / 2) / scale;
-        offsetY += static_cast<int>(yPad);
-    }
-    else if (width > height)
-    {
-        scale = (double)height/ MAP_HEIGH;
-        double xPad = width - height;
-        xPad = (xPad / 2) / scale;
-        offsetX += static_cast<int>(xPad);
+        double scale = 1;
+        int offsetX = 0;
+        int offsetY = 0;
+
+        int width = this->GetSize().GetWidth();
+        int height = this->GetSize().GetHeight();
+
+        if (height > width)
+        {
+            if (matrixHeight > matrixWidth)
+            {
+                scale = (double)height / matrixHeight;
+                if (width > matrixWidth * scale)
+                {
+                    double xPad = width - (matrixWidth * scale);
+                    xPad = (xPad / 2) / scale;
+                    offsetX += static_cast<int>(xPad);
+                }
+                else
+                {
+                    scale = (double)width / matrixWidth;
+                    double yPad = height - (matrixHeight * scale);
+                    yPad = (yPad / 2) / scale;
+                    offsetY += static_cast<int>(yPad);
+                }
+            }
+            else
+            {
+                scale = (double)width / matrixWidth;
+                double yPad = height - (matrixHeight * scale);
+                yPad = (yPad / 2) / scale;
+                offsetY += static_cast<int>(yPad);
+            }
+        }
+        else if (width > height)
+        {
+            if (matrixWidth > matrixHeight)
+            {
+                scale = (double)width / matrixWidth;
+                if (height > (matrixHeight * scale))
+                {
+                    double yPad = height - (matrixHeight * scale);
+                    yPad = (yPad / 2) / scale;
+                    offsetY += static_cast<int>(yPad);
+                }
+                else
+                {
+                    scale = (double)height / matrixHeight;
+                    double xPad = width - (matrixWidth * scale);
+                    xPad = (xPad / 2) / scale;
+                    offsetX += static_cast<int>(xPad);
+                }
+            }
+            else
+            {
+                scale = (double)height / matrixHeight;
+                double xPad = width - (matrixWidth * scale);
+                xPad = (xPad / 2) / scale;
+                offsetX += static_cast<int>(xPad);
+            }
+        }
+        else
+        {
+            if (matrixWidth > matrixHeight)
+            {
+                scale = (double)width / matrixWidth;
+                double yPad = height - (matrixHeight * scale);
+                yPad = (yPad / 2) / scale;
+                offsetY += static_cast<int>(yPad);
+            }
+            else if (matrixHeight > matrixWidth)
+            {
+                scale = (double)height / matrixHeight;
+                double xPad = width - (matrixWidth * scale);
+                xPad = (xPad / 2) / scale;
+                offsetX += static_cast<int>(xPad);
+            }
+            else
+            {
+                scale = (double)width / matrixWidth;
+            }
+        }
+
+        dc.Clear();
+        dc.SetUserScale(scale, scale);
+        dc.DrawBitmap(*bitmap, offsetX, offsetY, false);
     }
     else
     {
-        scale = (double)width / MAP_WIDTH;
+        dc.Clear();
     }
-
-    dc.Clear();
-    dc.SetUserScale(scale, scale);
-    dc.DrawBitmap(*bitmap, offsetX, offsetY, false);
 }
 
-DisplayImageFrame::DisplayImageFrame(const wxString &title, const wxPoint &pos, const wxSize &size, std::vector<const minecraft::FinalColor *> &colorsMatrix)
+DisplayImageFrame::DisplayImageFrame(const wxString &title, const wxPoint &pos, const wxSize &size)
     : wxFrame(NULL, wxID_ANY, title, pos, size)
 {
-    // make sure to call this first
     wxInitAllImageHandlers();
 
     this->SetIcon(wxIcon(_ICON_ICO_XPM));
 
-    //wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
+    menu = new wxMenu();
+    menu->Append(MENU_ID_CONTEXT_1, "Save image to file");
+    menu->Append(MENU_ID_CONTEXT_2, "Copy to clipboard");
 
-    drawPane = new wxImagePanel(this, colorsMatrix);
+    drawPane = new wxImagePanel(this);
     drawPane->SetPosition(wxPoint(0, 0));
     drawPane->SetSize(this->GetSize());
-    //sizer->Add(drawPane, 1, wxEXPAND);
-    //this->SetSizer(sizer);
+
+    drawPane->Bind(wxEVT_CONTEXT_MENU, &DisplayImageFrame::OnShowContextMenu, this);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &DisplayImageFrame::OnContextMenuSelected, this, MENU_ID_CONTEXT_1, MENU_ID_CONTEXT_2);
 }
+
+void DisplayImageFrame::OnShowContextMenu(wxContextMenuEvent &event)
+{
+    PopupMenu(menu);
+}
+
+void DisplayImageFrame::OnContextMenuSelected(wxCommandEvent &event)
+{
+    wxString str;
+
+    switch (event.GetId())
+    {
+    case MENU_ID_CONTEXT_1:
+        str = "Context Menu command 1";
+        break;
+    case MENU_ID_CONTEXT_2:
+        str = "Context Menu command 2";
+        break;
+    default:
+        str = "Uknown command?!";
+    }
+    wxMessageBox(str);
+}
+
+DisplayImageFrame::~DisplayImageFrame()
+{
+    delete drawPane;
+    delete menu;
+}
+
+void DisplayImageFrame::setColors(std::vector<const minecraft::FinalColor *> &colorsMatrix, size_t width, size_t height)
+{
+    drawPane->setColors(colorsMatrix, width, height);
+}
+
+void DisplayImageFrame::setColors(std::vector<colors::Color> &colorsMatrix, size_t width, size_t height)
+{
+    drawPane->setColors(colorsMatrix, width, height);
+}
+
 void DisplayImageFrame::OnExit(wxCommandEvent &event)
 {
     Close(true);
@@ -154,6 +322,7 @@ void DisplayImageFrame::OnSize(wxSizeEvent &event)
 
 void widgets::displayMapImage(std::vector<const minecraft::FinalColor *> &colorsMatrix, wxApp &app)
 {
-    DisplayImageFrame *frame = new DisplayImageFrame((string("Rendering minecraft map: ") + string(app.argv[1])), wxPoint(50, 50), wxSize(800, 600), colorsMatrix);
+    DisplayImageFrame *frame = new DisplayImageFrame((string("Rendering minecraft map: ") + string(app.argv[1])), wxPoint(50, 50), wxSize(800, 600));
+    frame->setColors(colorsMatrix, MAP_WIDTH, MAP_HEIGH);
     frame->Show(true);
 }

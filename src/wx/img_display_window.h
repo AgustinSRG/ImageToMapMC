@@ -34,14 +34,20 @@
 class wxImagePanel : public wxPanel
 {
     wxBitmap * bitmap;
+    size_t matrixWidth;
+    size_t matrixHeight;
 
 public:
-    wxImagePanel(wxFrame *parent, std::vector<const minecraft::FinalColor *> &colorsMatrix);
+    wxImagePanel(wxFrame *parent);
+    ~wxImagePanel();
 
     void paintEvent(wxPaintEvent &evt);
     void paintNow();
 
     void render(wxDC &dc);
+
+    void setColors(std::vector<const minecraft::FinalColor *> &colorsMatrix, size_t width, size_t height);
+    void setColors(std::vector<colors::Color> &colorsMatrix, size_t width, size_t height);
 
     // some useful events
     /*
@@ -62,7 +68,15 @@ class DisplayImageFrame : public wxFrame
 {
 public:
     wxImagePanel * drawPane;
-    DisplayImageFrame(const wxString &title, const wxPoint &pos, const wxSize &size, std::vector<const minecraft::FinalColor *> &colorsMatrix);
+    wxMenu * menu;
+    DisplayImageFrame(const wxString &title, const wxPoint &pos, const wxSize &size);
+    ~DisplayImageFrame();
+
+    void setColors(std::vector<const minecraft::FinalColor *> &colorsMatrix, size_t width, size_t height);
+    void setColors(std::vector<colors::Color> &colorsMatrix, size_t width, size_t height);
+
+    void OnShowContextMenu(wxContextMenuEvent& event);
+    void OnContextMenuSelected(wxCommandEvent& event);
 
 private:
     void OnExit(wxCommandEvent &event);
