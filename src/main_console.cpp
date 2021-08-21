@@ -53,6 +53,7 @@ int main(int argc, char **argv)
     }
     else if (firstArg.compare(string("-r")) == 0 || firstArg.compare(string("--render")) == 0)
     {
+        return renderMap(argc, argv);
     }
     else if (firstArg.compare(string("-h")) == 0 || firstArg.compare(string("--help")) == 0)
     {
@@ -146,6 +147,85 @@ int printHelp()
     cout << "Color set files documentation: https://github.com/AgustinSRG/ImageToMapMC" << endl;
 
     cout << endl;
+
+    return 0;
+}
+
+int renderMap(int argc, char ** argv) {
+    if (argc < 4) {
+        cerr << "Usage: mcmap --render [input-map.dat] [output-image.png]" << endl;
+        return 1;
+    }
+
+    // Image library init
+    wxInitAllImageHandlers();
+
+    // Load colors
+    std::vector<colors::Color> baseColors = minecraft::loadBaseColors(MC_LAST_VERSION);
+    std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
+
+    // Colors
+    std::vector<const minecraft::FinalColor *> colorsMatrix;
+
+    // Load map file
+    try
+    {
+        std::vector<map_color_t> fileData = mapart::readMapNBTFile(argv[2]);
+        colorsMatrix = mapart::mapColorsToRGB(colorSet, fileData);
+    }
+    catch (int code)
+    {
+        switch (code)
+        {
+        case -1:
+            cerr << "Cannot open file: " << argv[1] << endl;
+            break;
+        case -2:
+            cerr << "Invalid file: " << argv[1] << " is not a valid map NBT file." << endl;
+            break;
+        }
+
+        return 1;
+    }
+    catch (const std::exception &ex)
+    {
+        cerr << ex.what() << endl;
+        return 1;
+    }
+    catch (const std::string &ex)
+    {
+        cerr << ex << endl;
+        return 1;
+    }
+    catch (...)
+    {
+        cerr << "Oops, an error ocurred." << endl;
+        return 1;
+    }
+
+    // Convert colors to image
+    wxImage image(MAP_WIDTH, MAP_HEIGH);
+    unsigned char *rawData = image.GetData();
+    size_t size = colorsMatrix.size();
+
+    size_t j = 0;
+    for (size_t i = 0; i < size; i++)
+    {
+        colors::Color color = colorsMatrix[i]->color;
+
+        rawData[j++] = color.red;
+        rawData[j++] = color.green;
+        rawData[j++] = color.blue;
+    }
+
+    // Save the image to file (PNG)
+
+    bool ok = image.SaveFile(wxString(argv[3]), wxBitmapType::wxBITMAP_TYPE_PNG);
+
+    if (!ok) {
+        cerr << "Cannot save to file: " << argv[3] << endl;
+        return 1;
+    }
 
     return 0;
 }

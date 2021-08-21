@@ -30,3 +30,4 @@
 
 int printHelp();
 int printVersion();
+int renderMap(int argc, char ** argv);
