@@ -57,7 +57,7 @@ END_EVENT_TABLE()
 
 /* Implementation */
 
-wxImagePanel::wxImagePanel(wxFrame *parent, std::vector<minecraft::FinalColor *> &colorsMatrix) : wxPanel(parent)
+wxImagePanel::wxImagePanel(wxFrame *parent, std::vector<const minecraft::FinalColor *> &colorsMatrix) : wxPanel(parent)
 {
     // load the file... ideally add a check to see if loading was successful
 
@@ -125,7 +125,7 @@ void wxImagePanel::render(wxDC &dc)
     dc.DrawBitmap(*bitmap, offsetX, offsetY, false);
 }
 
-DisplayImageFrame::DisplayImageFrame(const wxString &title, const wxPoint &pos, const wxSize &size, std::vector<minecraft::FinalColor *> &colorsMatrix)
+DisplayImageFrame::DisplayImageFrame(const wxString &title, const wxPoint &pos, const wxSize &size, std::vector<const minecraft::FinalColor *> &colorsMatrix)
     : wxFrame(NULL, wxID_ANY, title, pos, size)
 {
     // make sure to call this first
@@ -152,7 +152,7 @@ void DisplayImageFrame::OnSize(wxSizeEvent &event)
     drawPane->Refresh();
 }
 
-void widgets::displayMapImage(std::vector<minecraft::FinalColor *> &colorsMatrix, wxApp &app)
+void widgets::displayMapImage(std::vector<const minecraft::FinalColor *> &colorsMatrix, wxApp &app)
 {
     DisplayImageFrame *frame = new DisplayImageFrame((string("Rendering minecraft map: ") + string(app.argv[1])), wxPoint(50, 50), wxSize(800, 600), colorsMatrix);
     frame->Show(true);

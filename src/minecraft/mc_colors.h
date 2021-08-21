@@ -201,7 +201,19 @@ namespace minecraft
      * @param  algo: Algorithm to compute the distance
      * @retval The index inside the list
      */
-    size_t findClosestColor(std::vector<minecraft::FinalColor> &colors, colors::Color color, colors::ColorDistanceAlgorithm algo);
+    size_t findClosestColor(const std::vector<minecraft::FinalColor> &colors, colors::Color color, colors::ColorDistanceAlgorithm algo);
+
+    /**
+     * @brief  Finds the 2 closest colors
+     * @note   
+     * @param  &colors: List of colors
+     * @param  color: Original color (RGB)
+     * @param  algo: Algorithm to compute the distance
+     * @param  distFirst: Variable to store distance
+     * @param  distSecond: Variable to store distance
+     * @retval Vector. 1st element is the closest color, 2nd is the 2nd closest color
+     */
+    std::vector<size_t> find2ClosestColors(const std::vector<minecraft::FinalColor> &colors, colors::Color color, colors::ColorDistanceAlgorithm algo, double * distFirst, double * distSecond);
 
     /**
      * @brief  Initializaes colors list enabled properties

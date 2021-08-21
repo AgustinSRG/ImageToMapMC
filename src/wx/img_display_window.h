@@ -36,7 +36,7 @@ class wxImagePanel : public wxPanel
     wxBitmap * bitmap;
 
 public:
-    wxImagePanel(wxFrame *parent, std::vector<minecraft::FinalColor *> &colorsMatrix);
+    wxImagePanel(wxFrame *parent, std::vector<const minecraft::FinalColor *> &colorsMatrix);
 
     void paintEvent(wxPaintEvent &evt);
     void paintNow();
@@ -62,7 +62,7 @@ class DisplayImageFrame : public wxFrame
 {
 public:
     wxImagePanel * drawPane;
-    DisplayImageFrame(const wxString &title, const wxPoint &pos, const wxSize &size, std::vector<minecraft::FinalColor *> &colorsMatrix);
+    DisplayImageFrame(const wxString &title, const wxPoint &pos, const wxSize &size, std::vector<const minecraft::FinalColor *> &colorsMatrix);
 
 private:
     void OnExit(wxCommandEvent &event);
@@ -71,5 +71,5 @@ private:
 };
 
 namespace widgets {
-    void displayMapImage(std::vector<minecraft::FinalColor *> &colorsMatrix, wxApp &app);
+    void displayMapImage(std::vector<const minecraft::FinalColor *> &colorsMatrix, wxApp &app);
 }

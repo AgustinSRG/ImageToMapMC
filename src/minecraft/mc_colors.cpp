@@ -253,16 +253,18 @@ std::vector<std::string> minecraft::loadBaseColorNames(std::vector<colors::Color
     return res;
 }
 
-size_t minecraft::findColorByName(std::vector<std::string> &colorNames, std::string name) {
+size_t minecraft::findColorByName(std::vector<std::string> &colorNames, std::string name)
+{
     size_t size = colorNames.size();
     std::string nameUpper(name);
-    std::transform(nameUpper.begin(), nameUpper.end(),nameUpper.begin(), ::toupper);
+    std::transform(nameUpper.begin(), nameUpper.end(), nameUpper.begin(), ::toupper);
 
     for (size_t i = 0; i < size; i++)
     {
-       if (nameUpper.compare(colorNames[i]) == 0) {
-           return i;
-       }
+        if (nameUpper.compare(colorNames[i]) == 0)
+        {
+            return i;
+        }
     }
 
     return -1;
@@ -284,7 +286,7 @@ std::vector<FinalColor> minecraft::loadFinalColors(std::vector<Color> &baseColor
     return colors;
 }
 
-size_t minecraft::findClosestColor(std::vector<minecraft::FinalColor> &colors, colors::Color color, colors::ColorDistanceAlgorithm algo)
+size_t minecraft::findClosestColor(const std::vector<minecraft::FinalColor> &colors, colors::Color color, colors::ColorDistanceAlgorithm algo)
 {
     double distance;
     size_t size = colors.size();
@@ -315,6 +317,71 @@ size_t minecraft::findClosestColor(std::vector<minecraft::FinalColor> &colors, c
     }
 
     return result;
+}
+
+std::vector<size_t> minecraft::find2ClosestColors(const std::vector<minecraft::FinalColor> &colors, colors::Color color, colors::ColorDistanceAlgorithm algo, double * distFirst, double * distSecond)
+{
+    size_t size = colors.size();
+    size_t res1 = 0;
+    size_t res2 = 0;
+    double distance1;
+    double distance2;
+
+    // Start with i = 4 to skip all NONE blocks
+    for (size_t i = 4; i < size; i++)
+    {
+        if (!colors[i].enabled)
+        {
+            // If disabled, skip
+            continue;
+        }
+        double d = colorDistance(colors[i].color, color, algo);
+        if (res1 > 1)
+        {
+            if (distance1 > d)
+            {
+                distance1 = d;
+                res1 = i;
+            }
+        }
+        else
+        {
+            distance1 = d;
+            res1 = i;
+        }
+
+        if (i != res1)
+        {
+            if (res2 > 0)
+            {
+                if (distance2 > d)
+                {
+                    distance2 = d;
+                    res2 = i;
+                }
+            }
+            else
+            {
+                distance2 = d;
+                res2 = i;
+            }
+        }
+    }
+
+    if (res2 == 0) {
+        res2 = res1;
+        distance2 = distance1;
+    }
+
+    *distFirst = distance1;
+    *distSecond = distance2;
+
+    std::vector<size_t> v(2);
+
+    v[0] = res1;
+    v[1] = res2;
+
+    return v;
 }
 
 void minecraft::initializeEnabledColors(std::vector<minecraft::FinalColor> &colors, bool blacklist)

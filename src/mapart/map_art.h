@@ -33,10 +33,78 @@ typedef short map_color_t;
 #define MAP_WIDTH (128)
 #define MAP_HEIGH (128)
 
-#define MAP_COORD_TO_INDEX(x, y) ((y) * MAP_WIDTH + (x))
-
+/**
+ * @brief  Map art namespace
+ * @note   
+ * @retval None
+ */
 namespace mapart {
+
+    /**
+     * @brief  Reds map data from nbt file
+     * @note   
+     * @param  fileName: File name
+     * @retval Map data
+     */
     std::vector<map_color_t> readMapNBTFile(std::string fileName);
 
-    std::vector<minecraft::FinalColor *> mapColorsToRGB(std::vector<minecraft::FinalColor> &colorSet, std::vector<map_color_t> &mapColors);
+    /**
+     * @brief  Turns array of map colors to final colors with RGB info
+     * @note   
+     * @param  &colorSet: Color set (minecraft)
+     * @param  &mapColors: Array of map colors
+     * @retval Array of final colors
+     */
+    std::vector<const minecraft::FinalColor *> mapColorsToRGB(const std::vector<minecraft::FinalColor> &colorSet, const std::vector<map_color_t> &mapColors);
+
+    /**
+     * @brief  Different dithering methods
+     * @note   
+     * @retval None
+     */
+    enum class DitheringMethod: short {
+        None = 0,
+
+        FloydSteinberg = 1,
+        MinAvgErr = 2,
+        Burkes = 3,
+        SierraLite = 4,
+        Stucki = 5,
+        Atkinson = 6,
+
+        Bayer44 = 7,
+        Bayer22 = 8,
+        Ordered33 = 9,
+
+        Unknown = 99
+    };
+
+    /**
+     * @brief  Gets string representation for dithering method
+     * @note   
+     * @param  method: Dithering method
+     * @retval String
+     */
+    std::string ditheringMethodToString(mapart::DitheringMethod method);
+
+    /**
+     * @brief  Parses dithering method from string
+     * @note   
+     * @param  str: String
+     * @retval Dithering method
+     */
+    mapart::DitheringMethod parseDitheringMethodFromString(std::string str);
+
+    /**
+     * @brief  Builds map art
+     * @note   
+     * @param  &colorSet: Color set
+     * @param  &colorMatrix: Original color matrix
+     * @param  width: Image width
+     * @param  height: Image height
+     * @param  colorDistanceAlgo: Color distance algorithm
+     * @param  ditheringMethod: Dithering method
+     * @retval Array of final colors
+     */
+    std::vector<const minecraft::FinalColor *> buildMapArt(const std::vector<minecraft::FinalColor> &colorSet, const std::vector<colors::Color> &colorMatrix, size_t width, size_t height, colors::ColorDistanceAlgorithm colorDistanceAlgo, mapart::DitheringMethod ditheringMethod);
 }
