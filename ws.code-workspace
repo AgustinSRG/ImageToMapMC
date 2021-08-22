@@ -75,7 +75,13 @@
 			"set": "cpp",
 			"sstream": "cpp",
 			"xlocmon": "cpp",
-			"xloctime": "cpp"
+			"xloctime": "cpp",
+			"chrono": "cpp",
+			"filesystem": "cpp",
+			"locale": "cpp",
+			"ratio": "cpp",
+			"xlocbuf": "cpp",
+			"xlocmes": "cpp"
 		},
 	}
 }

@@ -31,7 +31,7 @@
 typedef short map_color_t;
 
 #define MAP_WIDTH (128)
-#define MAP_HEIGH (128)
+#define MAP_HEIGHT (128)
 
 /**
  * @brief  Map art namespace

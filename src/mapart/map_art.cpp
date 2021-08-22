@@ -113,7 +113,7 @@ static double ATKINSON_DIVISOR = 8;
 
 std::vector<map_color_t> mapart::readMapNBTFile(std::string fileName)
 {
-    std::vector<map_color_t> result(MAP_WIDTH * MAP_HEIGH);
+    std::vector<map_color_t> result(MAP_WIDTH * MAP_HEIGHT);
 
     std::ifstream file(fileName, std::ios::binary);
 
@@ -133,7 +133,7 @@ std::vector<map_color_t> mapart::readMapNBTFile(std::string fileName)
 
         nbt::tag_byte_array colorsBytes = colorsArray->as<nbt::tag_byte_array>();
 
-        size_t map_size = MAP_WIDTH * MAP_HEIGH;
+        size_t map_size = MAP_WIDTH * MAP_HEIGHT;
 
         for (int i = 0; i < map_size; i++)
         {
