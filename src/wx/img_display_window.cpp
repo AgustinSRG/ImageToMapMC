@@ -286,7 +286,7 @@ void DisplayImageFrame::OnSaveImage()
         return; // the user changed idea...
     }
 
-    bool ok = drawPane->bitmap->ConvertToImage().SaveFile(saveFileDialog.GetPath());
+    bool ok = drawPane->bitmap->ConvertToImage().SaveFile(saveFileDialog.GetPath(), wxBITMAP_TYPE_PNG);
 
     if (!ok) {
         wxMessageBox(wxString("Could not save the image due to a file system error."), wxT("Error"), wxICON_ERROR);
@@ -343,7 +343,7 @@ void DisplayImageFrame::OnSize(wxSizeEvent &event)
 void widgets::displayMapImage(std::vector<const minecraft::FinalColor *> &colorsMatrix, wxApp &app)
 {
     DisplayImageFrame *frame = new DisplayImageFrame((string("Rendering minecraft map: ") + string(app.argv[1])), wxPoint(50, 50), wxSize(800, 600));
-    frame->setColors(colorsMatrix, MAP_WIDTH, MAP_HEIGH);
+    frame->setColors(colorsMatrix, MAP_WIDTH, MAP_HEIGHT);
     frame->defaultFile = string(app.argv[1]) + string(".png");
     frame->Show(true);
 }
