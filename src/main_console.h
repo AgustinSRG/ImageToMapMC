@@ -31,3 +31,10 @@
 int printHelp();
 int printVersion();
 int renderMap(int argc, char ** argv);
+int buildMap(int argc, char ** argv);
+
+enum class MapOutputFormat {
+    Map,
+    World,
+    Structure
+};

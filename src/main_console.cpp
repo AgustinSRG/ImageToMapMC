@@ -23,8 +23,10 @@
 
 #include "main_console.h"
 #include <iostream>
+#include <filesystem>
 #include <string>
 #include "mapart/map_art.h"
+#include "mapart/map_image.h"
 
 using namespace std;
 using namespace colors;
@@ -50,6 +52,7 @@ int main(int argc, char **argv)
     // Check first arg
     if (firstArg.compare(string("-b")) == 0 || firstArg.compare(string("--build")) == 0)
     {
+        return buildMap(argc, argv);
     }
     else if (firstArg.compare(string("-r")) == 0 || firstArg.compare(string("--render")) == 0)
     {
@@ -97,11 +100,12 @@ int printHelp()
 
     cout << endl;
 
-    cout << "Build map usage: mcmap --build [input-image] [OPTIONS]" << endl;
+    cout << "Build map usage: mcmap --build [input-image] [OPTIONS]..." << endl;
     cout << "Note: You have to manually resize the image first if it's too large" << endl;
     cout << "This tool will assume a 1:1 scale unless you use the --resize option" << endl;
     cout << "Available options:" << endl;
-    cout << "    -o, --output [path]            Specifies the output folder (REQUIRED)" << endl;
+    cout << "    -o, --output [path]            Specifies the output folder." << endl;
+    cout << "                                     By default the folder name is 'mapart'" << endl;
     cout << "    -f, --format [format]          Specifies the output format. By defaulty is 'map'" << endl;
     cout << "                                     'map' format creates '.dat' files for the maps" << endl;
     cout << "                                     'world' format creates a minecraft world with the maps" << endl;
@@ -151,8 +155,10 @@ int printHelp()
     return 0;
 }
 
-int renderMap(int argc, char ** argv) {
-    if (argc < 4) {
+int renderMap(int argc, char **argv)
+{
+    if (argc < 4)
+    {
         cerr << "Usage: mcmap --render [input-map.dat] [output-image.png]" << endl;
         return 1;
     }
@@ -204,7 +210,7 @@ int renderMap(int argc, char ** argv) {
     }
 
     // Convert colors to image
-    wxImage image(MAP_WIDTH, MAP_HEIGH);
+    wxImage image(MAP_WIDTH, MAP_HEIGHT);
     unsigned char *rawData = image.GetData();
     size_t size = colorsMatrix.size();
 
@@ -222,10 +228,293 @@ int renderMap(int argc, char ** argv) {
 
     bool ok = image.SaveFile(wxString(argv[3]), wxBitmapType::wxBITMAP_TYPE_PNG);
 
-    if (!ok) {
+    if (!ok)
+    {
         cerr << "Cannot save to file: " << argv[3] << endl;
         return 1;
     }
+
+    return 0;
+}
+
+int buildMap(int argc, char **argv)
+{
+    if (argc < 3)
+    {
+        cerr << "Usage: mcmap --build [input-image] [OPTIONS]..." << endl;
+        return 1;
+    }
+
+    string inputImageFile(argv[2]);
+    string outputPath = "mapart";
+    string colorSetFilename = "";
+    MapOutputFormat outFormat = MapOutputFormat::Map;
+    McVersion version = MC_LAST_VERSION;
+    int mapNumber = -1;
+    ColorDistanceAlgorithm colorAlgo = ColorDistanceAlgorithm::Euclidean;
+    DitheringMethod ditheringMethod = DitheringMethod::None;
+    string levelName = "Map Art World";
+    int rsW = -1;
+    int rsH = -1;
+
+    // Load arguments
+    for (int i = 3; i < argc; i++)
+    {
+        string arg(argv[i]);
+
+        if (arg.compare(string("-o")) == 0 || arg.compare(string("--output")) == 0)
+        {
+            if ((i + 1) < argc)
+            {
+                outputPath = argv[i + 1];
+                i++;
+            }
+            else
+            {
+                cerr << "Option " << arg << " requires a parameter." << endl;
+                cerr << "For help type: mcmap --help" << endl;
+                return 1;
+            }
+        }
+        else if (arg.compare(string("-f")) == 0 || arg.compare(string("--format")) == 0)
+        {
+            if ((i + 1) < argc)
+            {
+                string outputFormatStr(argv[i + 1]);
+
+                if (outputFormatStr.compare(string("map")) == 0)
+                {
+                    outFormat = MapOutputFormat::Map;
+                }
+                else if (outputFormatStr.compare(string("world")) == 0)
+                {
+                    outFormat = MapOutputFormat::World;
+                }
+                else if (outputFormatStr.compare(string("structure")) == 0)
+                {
+                    outFormat = MapOutputFormat::Structure;
+                }
+                else
+                {
+                    cerr << "Urecornized outout format: " << argv[i + 1] << endl;
+                    cerr << "Available formats: map, world, structure" << endl;
+                    return 1;
+                }
+
+                i++;
+            }
+            else
+            {
+                cerr << "Option " << arg << " requires a parameter." << endl;
+                cerr << "For help type: mcmap --help" << endl;
+                return 1;
+            }
+        }
+        else if (arg.compare(string("-v")) == 0 || arg.compare(string("--version")) == 0)
+        {
+            if ((i + 1) < argc)
+            {
+                version = getVersionFromText(string(argv[i + 1]));
+                i++;
+                if (version == McVersion::UNKNOWN)
+                {
+                    cerr << "Urecornized version: " << argv[i + 1] << endl;
+                    cerr << "Available versions: last, 1.17, 1.16, 1.15, 1.14, 1.13, 1.12" << endl;
+                    return 1;
+                }
+            }
+            else
+            {
+                cerr << "Option " << arg << " requires a parameter." << endl;
+                cerr << "For help type: mcmap --help" << endl;
+                return 1;
+            }
+        }
+        else if (arg.compare(string("-rs")) == 0 || arg.compare(string("--resize")) == 0)
+        {
+            if ((i + 1) < argc)
+            {
+                string resizeString(argv[i + 1]);
+                int xIndex;
+
+                xIndex = resizeString.find("x");
+
+                if (xIndex < 1)
+                {
+                    xIndex = resizeString.find("X");
+                    if (xIndex < 1)
+                    {
+                        cerr << "Size must be provided using the WIDTHxHEIGHT format. Example: '128x128'" << endl;
+                        cerr << "For help type: mcmap --help" << endl;
+                        return 1;
+                    }
+                }
+
+                string wStr = resizeString.substr(0, xIndex);
+                string hStr = resizeString.substr(xIndex + 1);
+
+                rsW = atoi(wStr.c_str());
+                rsH = atoi(hStr.c_str());
+
+                i++;
+            }
+            else
+            {
+                cerr << "Option " << arg << " requires a parameter." << endl;
+                cerr << "For help type: mcmap --help" << endl;
+                return 1;
+            }
+        }
+        else if (arg.compare(string("-cm")) == 0 || arg.compare(string("--color-method")) == 0)
+        {
+            if ((i + 1) < argc)
+            {
+                string colorMethodStr(argv[i + 1]);
+
+                if (colorMethodStr.compare(string("delta-e")) == 0)
+                {
+                    colorAlgo = ColorDistanceAlgorithm::DeltaE;
+                }
+                else if (colorMethodStr.compare(string("euclidean")) == 0)
+                {
+                    colorAlgo = ColorDistanceAlgorithm::Euclidean;
+                }
+                else
+                {
+                    cerr << "Urecornized color medthod: " << argv[i + 1] << endl;
+                    cerr << "Available methods: euclidean, delta-e" << endl;
+                    return 1;
+                }
+
+                i++;
+            }
+            else
+            {
+                cerr << "Option " << arg << " requires a parameter." << endl;
+                cerr << "For help type: mcmap --help" << endl;
+                return 1;
+            }
+        }
+        else if (arg.compare(string("-d")) == 0 || arg.compare(string("--dithering")) == 0)
+        {
+            if ((i + 1) < argc)
+            {
+                ditheringMethod = parseDitheringMethodFromString(string(argv[i + 1]));
+                i++;
+                if (ditheringMethod == DitheringMethod::Unknown)
+                {
+                    cerr << "Urecornized dithering: " << argv[i + 1] << endl;
+                    cerr << "Available dithering methods: none, floyd-steinberg, min-average-error, burkes, sierra-lite, stucki, atkinson, bayer-44, bayer-22, ordered-33" << endl;
+                    return 1;
+                }
+            }
+            else
+            {
+                cerr << "Option " << arg << " requires a parameter." << endl;
+                cerr << "For help type: mcmap --help" << endl;
+                return 1;
+            }
+        }
+        else if (arg.compare(string("-mn")) == 0 || arg.compare(string("--map-number")) == 0)
+        {
+            if ((i + 1) < argc)
+            {
+                mapNumber = atoi(argv[i + 1]);
+                i++;
+            }
+            else
+            {
+                cerr << "Option " << arg << " requires a parameter." << endl;
+                cerr << "For help type: mcmap --help" << endl;
+                return 1;
+            }
+        }
+        else if (arg.compare(string("-bm")) == 0 || arg.compare(string("--build-method")) == 0)
+        {
+        }
+        else if (arg.compare(string("-ln")) == 0 || arg.compare(string("--level-name")) == 0)
+        {
+            if ((i + 1) < argc)
+            {
+                levelName = argv[i + 1];
+                i++;
+            }
+            else
+            {
+                cerr << "Option " << arg << " requires a parameter." << endl;
+                cerr << "For help type: mcmap --help" << endl;
+                return 1;
+            }
+        }
+        else if (arg.compare(string("-cs")) == 0 || arg.compare(string("--color-set")) == 0)
+        {
+            if ((i + 1) < argc)
+            {
+                colorSetFilename = argv[i + 1];
+                i++;
+            }
+            else
+            {
+                cerr << "Option " << arg << " requires a parameter." << endl;
+                cerr << "For help type: mcmap --help" << endl;
+                return 1;
+            }
+        }
+        else
+        {
+            cerr << "Unrecognized option: " << arg << endl;
+            cerr << "For help type: mcmap --help" << endl;
+            return 1;
+        }
+    }
+
+    // Image library init
+    wxInitAllImageHandlers();
+
+    // Load input image
+    wxImage image;
+    if (!image.LoadFile(inputImageFile))
+    {
+        cerr << "Cannot load image: " << inputImageFile << endl;
+        return 1;
+    }
+
+    // Resize image if required
+    if (rsW > 0 || rsH > 0)
+    {
+        if (rsW <= 0)
+        {
+            rsW = static_cast<int>(((double)rsH / image.GetSize().GetHeight()) * image.GetSize().GetWidth());
+        }
+        else if (rsH <= 0)
+        {
+            rsH = static_cast<int>(((double)rsW / image.GetSize().GetWidth()) * image.GetSize().GetHeight());
+        }
+
+        image.Rescale(rsW, rsH);
+    }
+
+    // Convert image to color matrix and pad if needed
+    int matrixW;
+    int matrixH;
+    vector<Color> imageColorsMatrix = loadColorMatrixFromImageAndPad(image, &matrixW, &matrixH);
+
+    // Test
+    wxImage imgSave(matrixW, matrixH);
+    unsigned char *imgSaveData = imgSave.GetData();
+    size_t size = imageColorsMatrix.size();
+
+    size_t j = 0;
+    for (size_t i = 0; i < size; i++)
+    {
+        colors::Color color = imageColorsMatrix[i];
+
+        imgSaveData[j++] = color.red;
+        imgSaveData[j++] = color.green;
+        imgSaveData[j++] = color.blue;
+    }
+
+    imgSave.SaveFile("test.png", wxBITMAP_TYPE_PNG);
 
     return 0;
 }
