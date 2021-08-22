@@ -82,7 +82,6 @@ public:
     void OnSaveImage();
 
 private:
-    void OnExit(wxCommandEvent &event);
     void OnSize( wxSizeEvent& event );
     wxDECLARE_EVENT_TABLE();
 };

@@ -334,11 +334,6 @@ void DisplayImageFrame::setColors(std::vector<colors::Color> &colorsMatrix, size
     drawPane->setColors(colorsMatrix, width, height);
 }
 
-void DisplayImageFrame::OnExit(wxCommandEvent &event)
-{
-    Close(true);
-}
-
 void DisplayImageFrame::OnSize(wxSizeEvent &event)
 {
     drawPane->SetSize(this->GetClientSize());
