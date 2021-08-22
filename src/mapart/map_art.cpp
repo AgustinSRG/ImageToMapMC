@@ -382,7 +382,7 @@ void applyErrorDiffussion(std::vector<colors::Color> &colorMatrix, size_t width,
     }
 }
 
-std::vector<const minecraft::FinalColor *> mapart::buildMapArt(const std::vector<minecraft::FinalColor> &colorSet, const std::vector<colors::Color> &colorMatrix, size_t width, size_t height, colors::ColorDistanceAlgorithm colorDistanceAlgo, mapart::DitheringMethod ditheringMethod)
+std::vector<const minecraft::FinalColor *> mapart::generateMapArt(const std::vector<minecraft::FinalColor> &colorSet, const std::vector<colors::Color> &colorMatrix, size_t width, size_t height, colors::ColorDistanceAlgorithm colorDistanceAlgo, mapart::DitheringMethod ditheringMethod)
 {
     std::vector<colors::Color> matrix(colorMatrix); // Make a copy of colorMatrix to work with
     std::vector<const minecraft::FinalColor *> result(width * height);
@@ -472,4 +472,22 @@ std::vector<const minecraft::FinalColor *> mapart::buildMapArt(const std::vector
     }
 
     return result;
+}
+
+void mapart::applyBuildRestrictions(std::vector<minecraft::FinalColor> &colorSet, MapBuildMethod method) {
+    if (method == MapBuildMethod::None) {
+        return;
+    }
+    
+    // Darker colors are unobtainable with blocks, so cannot be built
+    setColorTypesEnabled(colorSet, McColorType::DARKER, false);
+
+    if (method == MapBuildMethod::Flat) {
+        // If flat, only normal are obtainable
+        setColorTypesEnabled(colorSet, McColorType::LIGHT, false);
+        setColorTypesEnabled(colorSet, McColorType::DARK, false);
+    } else {
+        // If 3d, water is a pain
+        setBaseColorEnabled(colorSet, (short) McColors::WATER, false);
+    }
 }

@@ -96,7 +96,7 @@ namespace mapart {
     mapart::DitheringMethod parseDitheringMethodFromString(std::string str);
 
     /**
-     * @brief  Builds map art
+     * @brief  Generates map art
      * @note   
      * @param  &colorSet: Color set
      * @param  &colorMatrix: Original color matrix
@@ -106,5 +106,26 @@ namespace mapart {
      * @param  ditheringMethod: Dithering method
      * @retval Array of final colors
      */
-    std::vector<const minecraft::FinalColor *> buildMapArt(const std::vector<minecraft::FinalColor> &colorSet, const std::vector<colors::Color> &colorMatrix, size_t width, size_t height, colors::ColorDistanceAlgorithm colorDistanceAlgo, mapart::DitheringMethod ditheringMethod);
+    std::vector<const minecraft::FinalColor *> generateMapArt(const std::vector<minecraft::FinalColor> &colorSet, const std::vector<colors::Color> &colorMatrix, size_t width, size_t height, colors::ColorDistanceAlgorithm colorDistanceAlgo, mapart::DitheringMethod ditheringMethod);
+
+    /**
+     * @brief  Map art building method
+     * @note   
+     * @retval None
+     */
+    enum class MapBuildMethod {
+        None, // No build, only export to map
+        Flat, // Flat (2d)
+        Staircased, // Staircased
+        Chaos // 3D with Y level jumps
+    };
+
+    /**
+     * @brief  Applies building restrictions
+     * @note   
+     * @param  &colorSet: Color set
+     * @param  method: Build method
+     * @retval None
+     */
+    void applyBuildRestrictions(std::vector<minecraft::FinalColor> &colorSet, MapBuildMethod method);
 }

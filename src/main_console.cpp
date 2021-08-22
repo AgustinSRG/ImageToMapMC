@@ -253,6 +253,7 @@ int buildMap(int argc, char **argv)
     int mapNumber = -1;
     ColorDistanceAlgorithm colorAlgo = ColorDistanceAlgorithm::Euclidean;
     DitheringMethod ditheringMethod = DitheringMethod::None;
+    MapBuildMethod buildMethod = MapBuildMethod::None;
     string levelName = "Map Art World";
     int rsW = -1;
     int rsH = -1;
@@ -289,10 +290,18 @@ int buildMap(int argc, char **argv)
                 else if (outputFormatStr.compare(string("world")) == 0)
                 {
                     outFormat = MapOutputFormat::World;
+                    if (buildMethod == MapBuildMethod::None)
+                    {
+                        buildMethod = MapBuildMethod::Chaos;
+                    }
                 }
                 else if (outputFormatStr.compare(string("structure")) == 0)
                 {
                     outFormat = MapOutputFormat::Structure;
+                    if (buildMethod == MapBuildMethod::None)
+                    {
+                        buildMethod = MapBuildMethod::Chaos;
+                    }
                 }
                 else
                 {
@@ -431,6 +440,28 @@ int buildMap(int argc, char **argv)
         }
         else if (arg.compare(string("-bm")) == 0 || arg.compare(string("--build-method")) == 0)
         {
+            string buildMethodStr(argv[i + 1]);
+
+            if (buildMethodStr.compare(string("3d")) == 0 || buildMethodStr.compare(string("chaos")) == 0)
+            {
+                buildMethod = MapBuildMethod::Chaos;
+            }
+            else if (buildMethodStr.compare(string("2d")) == 0 || buildMethodStr.compare(string("flat")) == 0)
+            {
+                buildMethod = MapBuildMethod::Flat;
+            }
+            else if (buildMethodStr.compare(string("stair")) == 0 || buildMethodStr.compare(string("staircase")) == 0 || buildMethodStr.compare(string("staircased")) == 0)
+            {
+                buildMethod = MapBuildMethod::Staircased;
+            }
+            else
+            {
+                cerr << "Urecornized building medthod: " << argv[i + 1] << endl;
+                cerr << "Available methods: 3d, 2d, stair" << endl;
+                return 1;
+            }
+
+            i++;
         }
         else if (arg.compare(string("-ln")) == 0 || arg.compare(string("--level-name")) == 0)
         {
@@ -499,22 +530,35 @@ int buildMap(int argc, char **argv)
     int matrixH;
     vector<Color> imageColorsMatrix = loadColorMatrixFromImageAndPad(image, &matrixW, &matrixH);
 
-    // Test
-    wxImage imgSave(matrixW, matrixH);
-    unsigned char *imgSaveData = imgSave.GetData();
-    size_t size = imageColorsMatrix.size();
+    // Load colors
+    std::vector<colors::Color> baseColors = minecraft::loadBaseColors(version);
+    std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
+
+    // Apply color set
+
+    // Apply color restructions based on build method
+    applyBuildRestrictions(colorSet, buildMethod);
+
+    // Generate map art
+    std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, imageColorsMatrix, matrixW, matrixH, colorAlgo, ditheringMethod);
+
+    // Save as image (test)
+    wxImage imageSave(matrixW, matrixH);
+    unsigned char *rawData = imageSave.GetData();
+    size_t size = matrixW * matrixH;
 
     size_t j = 0;
     for (size_t i = 0; i < size; i++)
     {
-        colors::Color color = imageColorsMatrix[i];
+        colors::Color color = mapArtColorMatrix[i]->color;
 
-        imgSaveData[j++] = color.red;
-        imgSaveData[j++] = color.green;
-        imgSaveData[j++] = color.blue;
+        rawData[j++] = color.red;
+        rawData[j++] = color.green;
+        rawData[j++] = color.blue;
     }
 
-    imgSave.SaveFile("test.png", wxBITMAP_TYPE_PNG);
+    imageSave.SaveFile("test_2.png", wxBITMAP_TYPE_PNG);
+    cout << "Saved!" << endl;
 
     return 0;
 }
