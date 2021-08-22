@@ -409,13 +409,13 @@ int buildMap(int argc, char **argv)
             if ((i + 1) < argc)
             {
                 ditheringMethod = parseDitheringMethodFromString(string(argv[i + 1]));
-                i++;
                 if (ditheringMethod == DitheringMethod::Unknown)
                 {
                     cerr << "Urecornized dithering: " << argv[i + 1] << endl;
                     cerr << "Available dithering methods: none, floyd-steinberg, min-average-error, burkes, sierra-lite, stucki, atkinson, bayer-44, bayer-22, ordered-33" << endl;
                     return 1;
                 }
+                i++;
             }
             else
             {

@@ -50,6 +50,18 @@ namespace colors
         unsigned char green;
     };
 
+    /**
+     * @brief  Struct to store color error
+     * @note   
+     * @retval None
+     */
+    struct ColorError
+    {
+        short red;
+        short blue;
+        short green;
+    };
+
     /* HEX */
 
     /**

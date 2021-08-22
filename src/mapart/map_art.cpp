@@ -31,6 +31,7 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <cmath>
 
 using namespace std;
 using namespace nbt;
@@ -203,43 +204,43 @@ mapart::DitheringMethod mapart::parseDitheringMethodFromString(std::string str)
     std::string nameLower(str);
     std::transform(nameLower.begin(), nameLower.end(), nameLower.begin(), ::tolower);
 
-    if (nameLower.compare(string("floyd-steinberg")))
+    if (nameLower.compare(string("floyd-steinberg")) == 0)
     {
         return DitheringMethod::FloydSteinberg;
     }
-    else if (nameLower.compare(string("min-average-error")))
+    else if (nameLower.compare(string("min-average-error")) == 0)
     {
         return DitheringMethod::MinAvgErr;
     }
-    else if (nameLower.compare(string("burkes")))
+    else if (nameLower.compare(string("burkes")) == 0)
     {
         return DitheringMethod::Burkes;
     }
-    else if (nameLower.compare(string("sierra-lite")))
+    else if (nameLower.compare(string("sierra-lite")) == 0)
     {
         return DitheringMethod::SierraLite;
     }
-    else if (nameLower.compare(string("stucki")))
+    else if (nameLower.compare(string("stucki")) == 0)
     {
         return DitheringMethod::Stucki;
     }
-    else if (nameLower.compare(string("atkinson")))
+    else if (nameLower.compare(string("atkinson")) == 0)
     {
         return DitheringMethod::Atkinson;
     }
-    else if (nameLower.compare(string("bayer-44")))
+    else if (nameLower.compare(string("bayer-44")) == 0)
     {
         return DitheringMethod::Bayer44;
     }
-    else if (nameLower.compare(string("bayer-22")))
+    else if (nameLower.compare(string("bayer-22")) == 0)
     {
         return DitheringMethod::Bayer22;
     }
-    else if (nameLower.compare(string("ordered-33")))
+    else if (nameLower.compare(string("ordered-33")) == 0)
     {
-        return DitheringMethod::FloydSteinberg;
+        return DitheringMethod::Ordered33;
     }
-    else if (nameLower.compare(string("none")))
+    else if (nameLower.compare(string("none")) == 0)
     {
         return DitheringMethod::None;
     }
@@ -249,12 +250,38 @@ mapart::DitheringMethod mapart::parseDitheringMethodFromString(std::string str)
     }
 }
 
+inline Color applyErrorSimple(Color color, ColorError quantError, double weight)
+{
+    Color result;
+    result.red = static_cast<unsigned char>(
+        min(
+            max(
+                (double)color.red + (weight * quantError.red),
+                (double)0),
+            (double)255));
+    result.green = static_cast<unsigned char>(
+        min(
+            max(
+                (double)color.green + (weight * quantError.green),
+                (double)0),
+            (double)255));
+
+    result.blue = static_cast<unsigned char>(
+        min(
+            max(
+                (double)color.blue + (weight * quantError.blue),
+                (double)0),
+            (double)255));
+
+    return result;
+}
+
 void applyErrorDiffussion(std::vector<colors::Color> &colorMatrix, size_t width, size_t height, Color oldPixel, Color newPixel, size_t x, size_t z, double matrix[ERROR_DIFFUSSION_MATRIX_H][ERROR_DIFFUSSION_MATRIX_W], double divisor)
 {
-    Color quantError;
-    quantError.red = oldPixel.red - newPixel.red;
-    quantError.green = oldPixel.green - newPixel.green;
-    quantError.blue = oldPixel.blue - newPixel.blue;
+    ColorError quantError;
+    quantError.red = (short)oldPixel.red - (short)newPixel.red;
+    quantError.green = (short)oldPixel.green - (short)newPixel.green;
+    quantError.blue = (short)oldPixel.blue - (short)newPixel.blue;
 
     double weight;
     size_t index;
@@ -264,18 +291,14 @@ void applyErrorDiffussion(std::vector<colors::Color> &colorMatrix, size_t width,
     {
         index = (z)*width + (x + 1);
         weight = matrix[0][3] / divisor;
-        colorMatrix[index].red += (weight * quantError.red);
-        colorMatrix[index].green += (weight * quantError.green);
-        colorMatrix[index].blue += (weight * quantError.blue);
+        colorMatrix[index] = applyErrorSimple(colorMatrix[index], quantError, weight);
 
         // 2 right
         if ((x + 2) < width)
         {
             index = (z)*width + (x + 2);
             weight = matrix[0][4] / divisor;
-            colorMatrix[index].red += (weight * quantError.red);
-            colorMatrix[index].green += (weight * quantError.green);
-            colorMatrix[index].blue += (weight * quantError.blue);
+            colorMatrix[index] = applyErrorSimple(colorMatrix[index], quantError, weight);
         }
     }
 
@@ -287,9 +310,7 @@ void applyErrorDiffussion(std::vector<colors::Color> &colorMatrix, size_t width,
         {
             index = (z + 1) * width + (x - 1);
             weight = matrix[1][1] / divisor;
-            colorMatrix[index].red += (weight * quantError.red);
-            colorMatrix[index].green += (weight * quantError.green);
-            colorMatrix[index].blue += (weight * quantError.blue);
+            colorMatrix[index] = applyErrorSimple(colorMatrix[index], quantError, weight);
         }
 
         // 1 down, 2 left
@@ -297,26 +318,20 @@ void applyErrorDiffussion(std::vector<colors::Color> &colorMatrix, size_t width,
         {
             index = (z + 1) * width + (x - 2);
             weight = matrix[1][0] / divisor;
-            colorMatrix[index].red += (weight * quantError.red);
-            colorMatrix[index].green += (weight * quantError.green);
-            colorMatrix[index].blue += (weight * quantError.blue);
+            colorMatrix[index] = applyErrorSimple(colorMatrix[index], quantError, weight);
         }
 
         // 1 down
         index = (z + 1) * width + (x);
         weight = matrix[1][2] / divisor;
-        colorMatrix[index].red += (weight * quantError.red);
-        colorMatrix[index].green += (weight * quantError.green);
-        colorMatrix[index].blue += (weight * quantError.blue);
+        colorMatrix[index] = applyErrorSimple(colorMatrix[index], quantError, weight);
 
         // 1 down, 1 right
         if ((x + 1) < width)
         {
             index = (z + 1) * width + (x + 1);
             weight = matrix[1][3] / divisor;
-            colorMatrix[index].red += (weight * quantError.red);
-            colorMatrix[index].green += (weight * quantError.green);
-            colorMatrix[index].blue += (weight * quantError.blue);
+            colorMatrix[index] = applyErrorSimple(colorMatrix[index], quantError, weight);
         }
 
         // 1 down, 2 right
@@ -324,9 +339,7 @@ void applyErrorDiffussion(std::vector<colors::Color> &colorMatrix, size_t width,
         {
             index = (z + 1) * width + (x + 2);
             weight = matrix[1][4] / divisor;
-            colorMatrix[index].red += (weight * quantError.red);
-            colorMatrix[index].green += (weight * quantError.green);
-            colorMatrix[index].blue += (weight * quantError.blue);
+            colorMatrix[index] = applyErrorSimple(colorMatrix[index], quantError, weight);
         }
     }
 
@@ -338,46 +351,36 @@ void applyErrorDiffussion(std::vector<colors::Color> &colorMatrix, size_t width,
         {
             index = (z + 2) * width + (x - 1);
             weight = matrix[2][1] / divisor;
-            colorMatrix[index].red += (weight * quantError.red);
-            colorMatrix[index].green += (weight * quantError.green);
-            colorMatrix[index].blue += (weight * quantError.blue);
+            colorMatrix[index] = applyErrorSimple(colorMatrix[index], quantError, weight);
         }
 
-        // 1 down, 2 left
+        // 2 down, 2 left
         if (x > 1)
         {
             index = (z + 2) * width + (x - 2);
             weight = matrix[2][0] / divisor;
-            colorMatrix[index].red += (weight * quantError.red);
-            colorMatrix[index].green += (weight * quantError.green);
-            colorMatrix[index].blue += (weight * quantError.blue);
+            colorMatrix[index] = applyErrorSimple(colorMatrix[index], quantError, weight);
         }
 
-        // 1 down
+        // 2 down
         index = (z + 2) * width + (x);
         weight = matrix[2][2] / divisor;
-        colorMatrix[index].red += (weight * quantError.red);
-        colorMatrix[index].green += (weight * quantError.green);
-        colorMatrix[index].blue += (weight * quantError.blue);
+        colorMatrix[index] = applyErrorSimple(colorMatrix[index], quantError, weight);
 
-        // 1 down, 1 right
+        // 2 down, 1 right
         if ((x + 1) < width)
         {
             index = (z + 2) * width + (x + 1);
             weight = matrix[2][3] / divisor;
-            colorMatrix[index].red += (weight * quantError.red);
-            colorMatrix[index].green += (weight * quantError.green);
-            colorMatrix[index].blue += (weight * quantError.blue);
+            colorMatrix[index] = applyErrorSimple(colorMatrix[index], quantError, weight);
         }
 
-        // 1 down, 2 right
+        // 2 down, 2 right
         if ((x + 1) < width)
         {
             index = (z + 2) * width + (x + 2);
             weight = matrix[2][4] / divisor;
-            colorMatrix[index].red += (weight * quantError.red);
-            colorMatrix[index].green += (weight * quantError.green);
-            colorMatrix[index].blue += (weight * quantError.blue);
+            colorMatrix[index] = applyErrorSimple(colorMatrix[index], quantError, weight);
         }
     }
 }
@@ -436,32 +439,32 @@ std::vector<const minecraft::FinalColor *> mapart::generateMapArt(const std::vec
             case DitheringMethod::FloydSteinberg:
                 closest = findClosestColor(colorSet, matrix[index], colorDistanceAlgo);
                 result[index] = &(colorSet[closest]);
-                applyErrorDiffussion(matrix, width, height, colorMatrix[index], colorSet[closest].color, x, z, FLOYD_STEINBERG_MATRIX, FLOYD_STEINBERG_DIVISOR);
+                applyErrorDiffussion(matrix, width, height, matrix[index], colorSet[closest].color, x, z, FLOYD_STEINBERG_MATRIX, FLOYD_STEINBERG_DIVISOR);
                 break;
             case DitheringMethod::MinAvgErr:
                 closest = findClosestColor(colorSet, matrix[index], colorDistanceAlgo);
                 result[index] = &(colorSet[closest]);
-                applyErrorDiffussion(matrix, width, height, colorMatrix[index], colorSet[closest].color, x, z, MINAVGERR_MATRIX, MINAVGERR_DIVISOR);
+                applyErrorDiffussion(matrix, width, height, matrix[index], colorSet[closest].color, x, z, MINAVGERR_MATRIX, MINAVGERR_DIVISOR);
                 break;
             case DitheringMethod::Burkes:
                 closest = findClosestColor(colorSet, matrix[index], colorDistanceAlgo);
                 result[index] = &(colorSet[closest]);
-                applyErrorDiffussion(matrix, width, height, colorMatrix[index], colorSet[closest].color, x, z, BURKES_MATRIX, BURKES_DIVISOR);
+                applyErrorDiffussion(matrix, width, height, matrix[index], colorSet[closest].color, x, z, BURKES_MATRIX, BURKES_DIVISOR);
                 break;
             case DitheringMethod::SierraLite:
                 closest = findClosestColor(colorSet, matrix[index], colorDistanceAlgo);
                 result[index] = &(colorSet[closest]);
-                applyErrorDiffussion(matrix, width, height, colorMatrix[index], colorSet[closest].color, x, z, SIERRA_LITE_MATRIX, SIERRA_LITE_DIVISOR);
+                applyErrorDiffussion(matrix, width, height, matrix[index], colorSet[closest].color, x, z, SIERRA_LITE_MATRIX, SIERRA_LITE_DIVISOR);
                 break;
             case DitheringMethod::Stucki:
                 closest = findClosestColor(colorSet, matrix[index], colorDistanceAlgo);
                 result[index] = &(colorSet[closest]);
-                applyErrorDiffussion(matrix, width, height, colorMatrix[index], colorSet[closest].color, x, z, STUCKI_MATRIX, STUCKI_DIVISOR);
+                applyErrorDiffussion(matrix, width, height, matrix[index], colorSet[closest].color, x, z, STUCKI_MATRIX, STUCKI_DIVISOR);
                 break;
             case DitheringMethod::Atkinson:
                 closest = findClosestColor(colorSet, matrix[index], colorDistanceAlgo);
                 result[index] = &(colorSet[closest]);
-                applyErrorDiffussion(matrix, width, height, colorMatrix[index], colorSet[closest].color, x, z, ATKINSON_MATRIX, ATKINSON_DIVISOR);
+                applyErrorDiffussion(matrix, width, height, matrix[index], colorSet[closest].color, x, z, ATKINSON_MATRIX, ATKINSON_DIVISOR);
                 break;
             default:
                 // None (No dithering)
@@ -474,20 +477,25 @@ std::vector<const minecraft::FinalColor *> mapart::generateMapArt(const std::vec
     return result;
 }
 
-void mapart::applyBuildRestrictions(std::vector<minecraft::FinalColor> &colorSet, MapBuildMethod method) {
-    if (method == MapBuildMethod::None) {
+void mapart::applyBuildRestrictions(std::vector<minecraft::FinalColor> &colorSet, MapBuildMethod method)
+{
+    if (method == MapBuildMethod::None)
+    {
         return;
     }
-    
+
     // Darker colors are unobtainable with blocks, so cannot be built
     setColorTypesEnabled(colorSet, McColorType::DARKER, false);
 
-    if (method == MapBuildMethod::Flat) {
+    if (method == MapBuildMethod::Flat)
+    {
         // If flat, only normal are obtainable
         setColorTypesEnabled(colorSet, McColorType::LIGHT, false);
         setColorTypesEnabled(colorSet, McColorType::DARK, false);
-    } else {
+    }
+    else
+    {
         // If 3d, water is a pain
-        setBaseColorEnabled(colorSet, (short) McColors::WATER, false);
+        setBaseColorEnabled(colorSet, (short)McColors::WATER, false);
     }
 }
