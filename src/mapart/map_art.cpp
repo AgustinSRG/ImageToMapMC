@@ -385,7 +385,7 @@ void applyErrorDiffussion(std::vector<colors::Color> &colorMatrix, size_t width,
     }
 }
 
-std::vector<const minecraft::FinalColor *> mapart::generateMapArt(const std::vector<minecraft::FinalColor> &colorSet, const std::vector<colors::Color> &colorMatrix, size_t width, size_t height, colors::ColorDistanceAlgorithm colorDistanceAlgo, mapart::DitheringMethod ditheringMethod)
+std::vector<const minecraft::FinalColor *> mapart::generateMapArt(const std::vector<minecraft::FinalColor> &colorSet, const std::vector<colors::Color> &colorMatrix, size_t width, size_t height, colors::ColorDistanceAlgorithm colorDistanceAlgo, mapart::DitheringMethod ditheringMethod, size_t threadNum, threading::Progress &progress)
 {
     std::vector<colors::Color> matrix(colorMatrix); // Make a copy of colorMatrix to work with
     std::vector<const minecraft::FinalColor *> result(width * height);
@@ -472,6 +472,7 @@ std::vector<const minecraft::FinalColor *> mapart::generateMapArt(const std::vec
                 result[index] = &(colorSet[closest]);
             }
         }
+        progress.setProgress(0, z);
     }
 
     return result;

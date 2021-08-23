@@ -81,7 +81,9 @@
 			"locale": "cpp",
 			"ratio": "cpp",
 			"xlocbuf": "cpp",
-			"xlocmes": "cpp"
+			"xlocmes": "cpp",
+			"mutex": "cpp",
+			"thread": "cpp"
 		},
 	}
 }

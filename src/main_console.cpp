@@ -22,11 +22,6 @@
  */
 
 #include "main_console.h"
-#include <iostream>
-#include <filesystem>
-#include <string>
-#include "mapart/map_art.h"
-#include "mapart/map_image.h"
 
 using namespace std;
 using namespace colors;
@@ -499,20 +494,28 @@ int buildMap(int argc, char **argv)
         }
     }
 
+    // Initializae progress report thread
+    threading::Progress p;
+    thread progressReportThread(progressReporter, std::ref(p));
+
     // Image library init
     wxInitAllImageHandlers();
 
     // Load input image
+    p.startTask("Loading image...", 0, 0);
     wxImage image;
     if (!image.LoadFile(inputImageFile))
     {
-        cerr << "Cannot load image: " << inputImageFile << endl;
+        p.setEnded();
+        progressReportThread.join();
+        cerr << endl << "Cannot load image: " << inputImageFile << endl;
         return 1;
     }
 
     // Resize image if required
     if (rsW > 0 || rsH > 0)
     {
+        p.startTask("Resizing image...", 0, 0);
         if (rsW <= 0)
         {
             rsW = static_cast<int>(((double)rsH / image.GetSize().GetHeight()) * image.GetSize().GetWidth());
@@ -526,23 +529,28 @@ int buildMap(int argc, char **argv)
     }
 
     // Convert image to color matrix and pad if needed
+    p.startTask("Adjusting image size...", 0, 0);
     int matrixW;
     int matrixH;
     vector<Color> imageColorsMatrix = loadColorMatrixFromImageAndPad(image, &matrixW, &matrixH);
 
     // Load colors
+    p.startTask("Loading minecraft colors...", 0, 0);
     std::vector<colors::Color> baseColors = minecraft::loadBaseColors(version);
     std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
 
     // Apply color set
+    p.startTask("Loading custom configuration...", 0, 0);
 
     // Apply color restructions based on build method
     applyBuildRestrictions(colorSet, buildMethod);
 
     // Generate map art
-    std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, imageColorsMatrix, matrixW, matrixH, colorAlgo, ditheringMethod);
+    p.startTask("Adjusting image colors...", matrixH, 1);
+    std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, imageColorsMatrix, matrixW, matrixH, colorAlgo, ditheringMethod, 1, p);
 
     // Save as image (test)
+    p.startTask("Saving result...", 0, 0);
     wxImage imageSave(matrixW, matrixH);
     unsigned char *rawData = imageSave.GetData();
     size_t size = matrixW * matrixH;
@@ -557,8 +565,36 @@ int buildMap(int argc, char **argv)
         rawData[j++] = color.blue;
     }
 
+    p.setEnded();
+    progressReportThread.join();
     imageSave.SaveFile("test_2.png", wxBITMAP_TYPE_PNG);
-    cout << "Saved!" << endl;
+    cerr << endl << "Saved!" << endl;
 
     return 0;
+}
+
+void progressReporter(threading::Progress &progress) {
+    bool ended = false;
+    pair<string, unsigned int> p;
+
+    while (!ended) {
+        // Sleep
+        std::this_thread::sleep_for(std::chrono::milliseconds(33));
+
+        // Get progress
+        p = progress.getProgress();
+
+        // Print progress
+        fprintf(stderr, "\r                                        "); // Erase current line
+        if (p.second == NO_PROGRESS) {
+            fprintf(stderr, "\r%s", p.first.c_str());
+        } else {
+            fprintf(stderr, "\r%s (%u%%)", p.first.c_str(), p.second);
+        }
+
+        // Check ended
+        ended = progress.hasEnded();
+    }
+
+    fprintf(stderr, "\r                                        "); // Erase current line
 }

@@ -23,28 +23,29 @@
 
 #pragma once
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
-#include <iostream>
-#include <filesystem>
 #include <string>
-#include <chrono>
-#include <thread>
-#include "mapart/map_art.h"
-#include "mapart/map_image.h"
-#include "threads/progress.h"
+#include <vector>
+#include <mutex>
 
-int printHelp();
-int printVersion();
-int renderMap(int argc, char ** argv);
-int buildMap(int argc, char ** argv);
-void progressReporter(threading::Progress &progress);
+#define NO_PROGRESS (101)
 
-enum class MapOutputFormat {
-    Map,
-    World,
-    Structure
-};
+namespace threading {
+    class Progress {
+        private:
+            bool ended;
+            unsigned int total_threads;
+            std::string task_name;
+            std::vector<unsigned int> progress;
+            unsigned int total_progress;
+            std::mutex mtx;
+        public:
+            Progress();
+
+            bool hasEnded();
+            std::pair<std::string, unsigned int> getProgress();
+
+            void startTask(std::string name, unsigned int totalP, unsigned int threadsNum);
+            void setProgress(unsigned int thread_num, unsigned int p);
+            void setEnded();
+    };
+}
