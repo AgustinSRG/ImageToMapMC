@@ -33,6 +33,7 @@
 #include <string>
 #include <chrono>
 #include <thread>
+#include <sstream>
 #include "mapart/map_art.h"
 #include "mapart/map_image.h"
 #include "threads/progress.h"
@@ -48,3 +49,5 @@ enum class MapOutputFormat {
     World,
     Structure
 };
+
+#define REPORT_THREAD_DELAY (33)

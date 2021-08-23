@@ -508,7 +508,8 @@ int buildMap(int argc, char **argv)
     {
         p.setEnded();
         progressReportThread.join();
-        cerr << endl << "Cannot load image: " << inputImageFile << endl;
+        cerr << endl
+             << "Cannot load image: " << inputImageFile << endl;
         return 1;
     }
 
@@ -568,33 +569,56 @@ int buildMap(int argc, char **argv)
     p.setEnded();
     progressReportThread.join();
     imageSave.SaveFile("test_2.png", wxBITMAP_TYPE_PNG);
-    cerr << endl << "Saved!" << endl;
+    cerr << endl
+         << "Saved!" << endl;
 
     return 0;
 }
 
-void progressReporter(threading::Progress &progress) {
+void progressReporter(threading::Progress &progress)
+{
     bool ended = false;
     pair<string, unsigned int> p;
+    string progressLine = "";
+    size_t old_line_size = 0;
 
-    while (!ended) {
+    while (!ended)
+    {
         // Sleep
-        std::this_thread::sleep_for(std::chrono::milliseconds(33));
+        std::this_thread::sleep_for(std::chrono::milliseconds(REPORT_THREAD_DELAY));
 
         // Get progress
         p = progress.getProgress();
 
         // Print progress
-        fprintf(stderr, "\r                                        "); // Erase current line
-        if (p.second == NO_PROGRESS) {
-            fprintf(stderr, "\r%s", p.first.c_str());
-        } else {
-            fprintf(stderr, "\r%s (%u%%)", p.first.c_str(), p.second);
+        if (p.second == NO_PROGRESS)
+        {
+            progressLine = p.first;
         }
+        else
+        {
+            stringstream ss;
+            ss << p.first << "(" << p.second << "%)";
+            progressLine = ss.str();
+        }
+
+        while (progressLine.length() < old_line_size) {
+            progressLine.append(" ");
+        }
+
+        cerr << "\r" << progressLine;
+
+        old_line_size = progressLine.length();
 
         // Check ended
         ended = progress.hasEnded();
     }
 
-    fprintf(stderr, "\r                                        "); // Erase current line
+    // Erase line
+    string eraser = "\r";
+    for (int i = 0; i < progressLine.length(); i++)
+    {
+        eraser.append(" ");
+    }
+    cerr << eraser;
 }
