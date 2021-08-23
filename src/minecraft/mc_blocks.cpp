@@ -38,13 +38,13 @@ void BlockDescription::addTag(std::string name, std::string value)
     this->nbtTags[size].value = value;
 }
 
-minecraft::BlockDescription *Block::getBlockDescription(minecraft::McVersion version)
+const minecraft::BlockDescription *Block::getBlockDescription(minecraft::McVersion version) const
 {
     size_t size = this->descriptions.size();
 
     for (size_t i = 0; i < size; i++)
     {
-        minecraft::BlockDescription *bd = &(this->descriptions[i]);
+        const minecraft::BlockDescription *bd = &(this->descriptions[i]);
 
         if (bd->minVersion <= version && bd->maxVersion >= version)
         {
@@ -77,9 +77,9 @@ minecraft::BlockDescription *Block::addBlockDescription(std::string name, minecr
     return bd;
 }
 
-minecraft::BlockDescription *BlockList::getBlockDescription(minecraft::McVersion version)
+const minecraft::BlockDescription *BlockList::getBlockDescription(minecraft::McVersion version) const
 {
-    minecraft::BlockDescription *res;
+    const minecraft::BlockDescription *res;
     size_t size = this->blocks.size();
     if (this->useBlockIndex >= 0 && this->useBlockIndex < size)
     {

@@ -100,7 +100,7 @@ namespace minecraft
              * @param  version: Version
              * @retval The block description. Returns NULL if it is not available for the version.
              */
-        minecraft::BlockDescription *getBlockDescription(minecraft::McVersion version);
+        const minecraft::BlockDescription *getBlockDescription(minecraft::McVersion version) const;
 
         /**
              * @brief  Adds block description
@@ -150,7 +150,7 @@ namespace minecraft
              * @param  version: Minecraft version
              * @retval Th block description
              */
-        minecraft::BlockDescription *getBlockDescription(minecraft::McVersion version);
+        const minecraft::BlockDescription *getBlockDescription(minecraft::McVersion version) const;
 
         /**
              * @brief  Adds a block

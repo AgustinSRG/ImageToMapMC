@@ -27,6 +27,7 @@
 #include <vector>
 #include "../colors/colors.h"
 #include "../minecraft/mc_colors.h"
+#include "../minecraft/mc_blocks.h"
 #include "../threads/progress.h"
 
 typedef short map_color_t;
@@ -151,4 +152,62 @@ namespace mapart {
      * @retval None
      */
     void applyBuildRestrictions(std::vector<minecraft::FinalColor> &colorSet, MapBuildMethod method);
+
+    /**
+     * @brief  Building block
+     * @note   
+     * @retval None
+     */
+    struct MapBuildingBlock {
+        const minecraft::BlockDescription * block_ptr;
+        int x;
+        int y;
+        int z;
+    };
+
+    /**
+     * @brief  Represents a plateau
+     * @note   
+     * @retval None
+     */
+    struct Plateau {
+        size_t start;
+        size_t end;
+    };
+
+    /**
+     * @brief  Builds map row
+     * @note   
+     * @param  version: 
+     * @param  &blockSet: 
+     * @param  &blockMatrix: 
+     * @param  &matrix: 
+     * @param  matrixW: 
+     * @param  matrixH: 
+     * @param  mapX: 
+     * @param  mapZ: 
+     * @param  x: 
+     * @param  smooth: 
+     * @retval None
+     */
+    void buildMapRow(minecraft::McVersion version, const std::vector<minecraft::BlockList> &blockSet, std::vector<mapart::MapBuildingBlock> &blockMatrix, const std::vector<const minecraft::FinalColor *> &matrix, size_t matrixW, size_t matrixH, size_t mapX, size_t mapZ, size_t x, bool smooth);
+    
+    /**
+     * @brief  Builds map
+     * @note   
+     * @param  version: 
+     * @param  &blockSet: 
+     * @param  &matrix: 
+     * @param  matrixW: 
+     * @param  matrixH: 
+     * @param  mapX: 
+     * @param  mapZ: 
+     * @param  buildMethod: 
+     * @param  threadsNum: 
+     * @param  &p: 
+     * @retval 
+     */
+    std::vector<mapart::MapBuildingBlock> buildMap(minecraft::McVersion version, const std::vector<minecraft::BlockList> &blockSet, const std::vector<const minecraft::FinalColor *> &matrix, size_t matrixW, size_t matrixH, size_t mapX, size_t mapZ, mapart::MapBuildMethod buildMethod, size_t threadsNum, threading::Progress &p);
+
+    //void writeStructureNBTFile(std::string fileName, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version);
 }
