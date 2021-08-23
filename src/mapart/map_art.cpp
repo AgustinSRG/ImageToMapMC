@@ -549,7 +549,7 @@ void mapart::writeMapNBTFile(std::string fileName, const std::vector<map_color_t
 
     try
     {
-        zlib::ozlibstream ogzs(file);
+        zlib::ozlibstream ogzs(file, -1, true);
         nbt::io::write_tag("", root, ogzs);
     }
     catch (...)
