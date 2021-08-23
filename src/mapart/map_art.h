@@ -50,6 +50,16 @@ namespace mapart {
     std::vector<map_color_t> readMapNBTFile(std::string fileName);
 
     /**
+     * @brief  Saves map data to file
+     * @note   
+     * @param  fileName: File name
+     * @param  &mapColors: Map data
+     * @param version: Minecraft version
+     * @retval None
+     */
+    void writeMapNBTFile(std::string fileName, const std::vector<map_color_t> &mapColors, minecraft::McVersion version);
+
+    /**
      * @brief  Turns array of map colors to final colors with RGB info
      * @note   
      * @param  &colorSet: Color set (minecraft)
@@ -57,6 +67,18 @@ namespace mapart {
      * @retval Array of final colors
      */
     std::vector<const minecraft::FinalColor *> mapColorsToRGB(const std::vector<minecraft::FinalColor> &colorSet, const std::vector<map_color_t> &mapColors);
+
+    /**
+     * @brief  Gets map data to save to map file
+     * @note   
+     * @param  &matrix: Color matrix
+     * @param  matrixW: Matrix width
+     * @param  matrixH: Matrix height
+     * @param  mapX: Map X coordinate
+     * @param  mapZ: Map Z coordinate
+     * @retval Map data
+     */
+    std::vector<map_color_t> getMapDataFromColorMatrix(const std::vector<const minecraft::FinalColor *> &matrix, size_t matrixW, size_t matrixH, size_t mapX, size_t mapZ);
 
     /**
      * @brief  Different dithering methods

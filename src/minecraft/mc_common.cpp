@@ -83,3 +83,23 @@ std::string minecraft::versionToString(minecraft::McVersion version)
         return std::string("???");
     }
 }
+
+int minecraft::versionToDataVersion(minecraft::McVersion version) {
+    switch (version)
+    {
+    case McVersion::MC_1_12:
+        return 1343;
+    case McVersion::MC_1_13:
+        return 1631;
+    case McVersion::MC_1_14:
+        return 1976;
+    case McVersion::MC_1_15:
+        return 2230;
+    case McVersion::MC_1_16:
+        return 2586;
+    case McVersion::MC_1_17:
+        return 2730;
+    default:
+        return 1343;
+    }
+}

@@ -170,6 +170,21 @@ void FinalColor::setColor(std::vector<Color> &baseColors, size_t index, McColorT
     this->color = getMinecraftColor(baseColors, index, colorType);
 }
 
+short FinalColor::getMapColor() const
+{
+    switch (colorType)
+    {
+    case McColorType::DARK:
+        return baseColorIndex * 4;
+    case McColorType::LIGHT:
+        return baseColorIndex * 4 + 2;
+    case McColorType::DARKER:
+        return baseColorIndex * 4 + 3;
+    default:
+        return baseColorIndex * 4 + 1;
+    }
+}
+
 std::vector<std::string> minecraft::loadBaseColorNames(std::vector<colors::Color> &baseColors)
 {
     size_t size = baseColors.size();
@@ -319,7 +334,7 @@ size_t minecraft::findClosestColor(const std::vector<minecraft::FinalColor> &col
     return result;
 }
 
-std::vector<size_t> minecraft::find2ClosestColors(const std::vector<minecraft::FinalColor> &colors, colors::Color color, colors::ColorDistanceAlgorithm algo, double * distFirst, double * distSecond)
+std::vector<size_t> minecraft::find2ClosestColors(const std::vector<minecraft::FinalColor> &colors, colors::Color color, colors::ColorDistanceAlgorithm algo, double *distFirst, double *distSecond)
 {
     size_t size = colors.size();
     size_t res1 = 0;
@@ -368,7 +383,8 @@ std::vector<size_t> minecraft::find2ClosestColors(const std::vector<minecraft::F
         }
     }
 
-    if (res2 == 0) {
+    if (res2 == 0)
+    {
         res2 = res1;
         distance2 = distance1;
     }

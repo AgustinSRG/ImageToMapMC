@@ -183,6 +183,8 @@ namespace minecraft
              * @retval None
              */
         void setColor(std::vector<colors::Color> &baseColors, size_t index, McColorType colorType);
+
+        short getMapColor()  const;
     };
 
     /**

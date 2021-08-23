@@ -60,4 +60,12 @@ namespace minecraft
      * @retval Version as string
      */
     std::string versionToString(minecraft::McVersion version);
+
+    /**
+     * @brief  Gets the data version for the version
+     * @note   
+     * @param  version: Version
+     * @retval 
+     */
+    int versionToDataVersion(minecraft::McVersion version);
 }

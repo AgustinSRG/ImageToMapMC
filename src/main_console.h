@@ -34,6 +34,7 @@
 #include <chrono>
 #include <thread>
 #include <sstream>
+#include <cmath>
 #include "mapart/map_art.h"
 #include "mapart/map_image.h"
 #include "threads/progress.h"

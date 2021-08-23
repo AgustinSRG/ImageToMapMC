@@ -135,6 +135,9 @@ int printHelp()
     cout << "                                     Color sets can enable or disable colors and" << endl;
     cout << "                                     set the blocks to build each color." << endl;
     cout << "                                     By default all available colors are used" << endl;
+    cout << "    -t, --threads [num]            Specifies the number of threads to use." << endl;
+    cout << "                                     By default only a single thread will be used" << endl;
+    cout << "    -y, --yes [num]                Prevents asking any user input." << endl;
 
     cout << endl;
 
@@ -245,13 +248,15 @@ int buildMap(int argc, char **argv)
     string colorSetFilename = "";
     MapOutputFormat outFormat = MapOutputFormat::Map;
     McVersion version = MC_LAST_VERSION;
-    int mapNumber = -1;
+    int mapNumber = 0;
     ColorDistanceAlgorithm colorAlgo = ColorDistanceAlgorithm::Euclidean;
     DitheringMethod ditheringMethod = DitheringMethod::None;
     MapBuildMethod buildMethod = MapBuildMethod::None;
     string levelName = "Map Art World";
     int rsW = -1;
     int rsH = -1;
+    bool yesForced = false;
+    unsigned int threadNum = 1;
 
     // Load arguments
     for (int i = 3; i < argc; i++)
@@ -433,6 +438,24 @@ int buildMap(int argc, char **argv)
                 return 1;
             }
         }
+        else if (arg.compare(string("-t")) == 0 || arg.compare(string("--threads")) == 0)
+        {
+            if ((i + 1) < argc)
+            {
+                threadNum = atoi(argv[i + 1]);
+                if (threadNum == 0)
+                {
+                    threadNum = max((unsigned int)1, std::thread::hardware_concurrency());
+                }
+                i++;
+            }
+            else
+            {
+                cerr << "Option " << arg << " requires a parameter." << endl;
+                cerr << "For help type: mcmap --help" << endl;
+                return 1;
+            }
+        }
         else if (arg.compare(string("-bm")) == 0 || arg.compare(string("--build-method")) == 0)
         {
             string buildMethodStr(argv[i + 1]);
@@ -486,12 +509,32 @@ int buildMap(int argc, char **argv)
                 return 1;
             }
         }
+        else if (arg.compare(string("-y")) == 0 || arg.compare(string("--yes")) == 0)
+        {
+            yesForced = true;
+        }
         else
         {
             cerr << "Unrecognized option: " << arg << endl;
             cerr << "For help type: mcmap --help" << endl;
             return 1;
         }
+    }
+
+    if (!yesForced && filesystem::exists(filesystem::path(outputPath))) {
+        cerr << "The folder '" << outputPath << "' already exists. May contain another map art." << endl;
+        cerr << "Do you want to overwrite? (Y/N): ";
+        string line;
+        getline(cin, line);
+        if (line.at(0) != 'Y' && line.at(0) != 'y') {
+            // Cancel
+            return 0;
+        }
+    }
+
+    if (!filesystem::exists(filesystem::path(outputPath))) {
+        // Create dir if not found
+        filesystem::create_directory(filesystem::path(outputPath));
     }
 
     // Initializae progress report thread
@@ -548,29 +591,80 @@ int buildMap(int argc, char **argv)
 
     // Generate map art
     p.startTask("Adjusting image colors...", matrixH, 1);
-    std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, imageColorsMatrix, matrixW, matrixH, colorAlgo, ditheringMethod, 1, p);
+    std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, imageColorsMatrix, matrixW, matrixH, colorAlgo, ditheringMethod, threadNum, p);
 
-    // Save as image (test)
-    p.startTask("Saving result...", 0, 0);
-    wxImage imageSave(matrixW, matrixH);
-    unsigned char *rawData = imageSave.GetData();
-    size_t size = matrixW * matrixH;
+    // Compute total maps
+    int mapsCountX = matrixW / MAP_WIDTH;
+    int mapsCountZ = matrixH / MAP_HEIGHT;
 
-    size_t j = 0;
-    for (size_t i = 0; i < size; i++)
+    // Do somethiong different depending on the outout format
+    if (outFormat == MapOutputFormat::Map)
     {
-        colors::Color color = mapArtColorMatrix[i]->color;
+        // No need to build, just export to nbt map files
+        p.startTask("Saving to map files...", mapsCountZ * mapsCountX, 1);
+        int total = 0;
+        for (int mapZ = 0; mapZ < mapsCountZ; mapZ++)
+        {
+            for (int mapX = 0; mapX < mapsCountX; mapX++)
+            {
+                // Get map data
+                std::vector<map_color_t> mapDataToSave = getMapDataFromColorMatrix(mapArtColorMatrix, matrixW, matrixH, mapX, mapZ);
 
-        rawData[j++] = color.red;
-        rawData[j++] = color.green;
-        rawData[j++] = color.blue;
+                // Save to file
+                stringstream ss;
+                ss << "map_" << (mapNumber++) << ".dat";
+                filesystem::path outFilePath(outputPath);
+
+                outFilePath /= ss.str();
+
+                try
+                {
+                    writeMapNBTFile(outFilePath.string(), mapDataToSave, version);
+                }
+                catch (...)
+                {
+                    p.setEnded();
+                    progressReportThread.join();
+                    cerr << endl
+                         << "Cannot write file: " << outFilePath.string() << endl;
+                    return 1;
+                }
+
+                total++;
+                p.setProgress(0, total);
+            }
+        }
+
+        // Finish
+        p.setEnded();
+        progressReportThread.join();
+        cerr << endl << "Successfully saved as map files to: " << outputPath << endl;
+        cerr << "Note: The map numbers are sorted up to down, left to right" << endl;
     }
+    else
+    {
+        // Map must be built
+        p.startTask("Saving result...", 0, 0);
+        wxImage imageSave(matrixW, matrixH);
+        unsigned char *rawData = imageSave.GetData();
+        size_t size = matrixW * matrixH;
 
-    p.setEnded();
-    progressReportThread.join();
-    imageSave.SaveFile("test_2.png", wxBITMAP_TYPE_PNG);
-    cerr << endl
-         << "Saved!" << endl;
+        size_t j = 0;
+        for (size_t i = 0; i < size; i++)
+        {
+            colors::Color color = mapArtColorMatrix[i]->color;
+
+            rawData[j++] = color.red;
+            rawData[j++] = color.green;
+            rawData[j++] = color.blue;
+        }
+
+        p.setEnded();
+        progressReportThread.join();
+        imageSave.SaveFile("test_2.png", wxBITMAP_TYPE_PNG);
+        cerr << endl
+             << "Saved!" << endl;
+    }
 
     return 0;
 }
@@ -602,7 +696,8 @@ void progressReporter(threading::Progress &progress)
             progressLine = ss.str();
         }
 
-        while (progressLine.length() < old_line_size) {
+        while (progressLine.length() < old_line_size)
+        {
             progressLine.append(" ");
         }
 
