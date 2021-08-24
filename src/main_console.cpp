@@ -157,7 +157,7 @@ int renderMap(int argc, char **argv)
 {
     if (argc < 4)
     {
-        cerr << "Usage: mcmap --render [input-map.dat] [output-image.png]" << endl;
+        std::cerr << "Usage: mcmap --render [input-map.dat] [output-image.png]" << endl;
         return 1;
     }
 
@@ -182,10 +182,10 @@ int renderMap(int argc, char **argv)
         switch (code)
         {
         case -1:
-            cerr << "Cannot open file: " << argv[1] << endl;
+            std::cerr << "Cannot open file: " << argv[1] << endl;
             break;
         case -2:
-            cerr << "Invalid file: " << argv[1] << " is not a valid map NBT file." << endl;
+            std::cerr << "Invalid file: " << argv[1] << " is not a valid map NBT file." << endl;
             break;
         }
 
@@ -193,17 +193,17 @@ int renderMap(int argc, char **argv)
     }
     catch (const std::exception &ex)
     {
-        cerr << ex.what() << endl;
+        std::cerr << ex.what() << endl;
         return 1;
     }
     catch (const std::string &ex)
     {
-        cerr << ex << endl;
+        std::cerr << ex << endl;
         return 1;
     }
     catch (...)
     {
-        cerr << "Oops, an error ocurred." << endl;
+        std::cerr << "Oops, an error ocurred." << endl;
         return 1;
     }
 
@@ -228,7 +228,7 @@ int renderMap(int argc, char **argv)
 
     if (!ok)
     {
-        cerr << "Cannot save to file: " << argv[3] << endl;
+        std::cerr << "Cannot save to file: " << argv[3] << endl;
         return 1;
     }
 
@@ -239,7 +239,7 @@ int buildMap(int argc, char **argv)
 {
     if (argc < 3)
     {
-        cerr << "Usage: mcmap --build [input-image] [OPTIONS]..." << endl;
+        std::cerr << "Usage: mcmap --build [input-image] [OPTIONS]..." << endl;
         return 1;
     }
 
@@ -272,8 +272,8 @@ int buildMap(int argc, char **argv)
             }
             else
             {
-                cerr << "Option " << arg << " requires a parameter." << endl;
-                cerr << "For help type: mcmap --help" << endl;
+                std::cerr << "Option " << arg << " requires a parameter." << endl;
+                std::cerr << "For help type: mcmap --help" << endl;
                 return 1;
             }
         }
@@ -305,8 +305,8 @@ int buildMap(int argc, char **argv)
                 }
                 else
                 {
-                    cerr << "Urecornized outout format: " << argv[i + 1] << endl;
-                    cerr << "Available formats: map, world, structure" << endl;
+                    std::cerr << "Urecornized outout format: " << argv[i + 1] << endl;
+                    std::cerr << "Available formats: map, world, structure" << endl;
                     return 1;
                 }
 
@@ -314,8 +314,8 @@ int buildMap(int argc, char **argv)
             }
             else
             {
-                cerr << "Option " << arg << " requires a parameter." << endl;
-                cerr << "For help type: mcmap --help" << endl;
+                std::cerr << "Option " << arg << " requires a parameter." << endl;
+                std::cerr << "For help type: mcmap --help" << endl;
                 return 1;
             }
         }
@@ -327,15 +327,15 @@ int buildMap(int argc, char **argv)
                 i++;
                 if (version == McVersion::UNKNOWN)
                 {
-                    cerr << "Urecornized version: " << argv[i + 1] << endl;
-                    cerr << "Available versions: last, 1.17, 1.16, 1.15, 1.14, 1.13, 1.12" << endl;
+                    std::cerr << "Urecornized version: " << argv[i + 1] << endl;
+                    std::cerr << "Available versions: last, 1.17, 1.16, 1.15, 1.14, 1.13, 1.12" << endl;
                     return 1;
                 }
             }
             else
             {
-                cerr << "Option " << arg << " requires a parameter." << endl;
-                cerr << "For help type: mcmap --help" << endl;
+                std::cerr << "Option " << arg << " requires a parameter." << endl;
+                std::cerr << "For help type: mcmap --help" << endl;
                 return 1;
             }
         }
@@ -353,8 +353,8 @@ int buildMap(int argc, char **argv)
                     xIndex = resizeString.find("X");
                     if (xIndex < 1)
                     {
-                        cerr << "Size must be provided using the WIDTHxHEIGHT format. Example: '128x128'" << endl;
-                        cerr << "For help type: mcmap --help" << endl;
+                        std::cerr << "Size must be provided using the WIDTHxHEIGHT format. Example: '128x128'" << endl;
+                        std::cerr << "For help type: mcmap --help" << endl;
                         return 1;
                     }
                 }
@@ -369,8 +369,8 @@ int buildMap(int argc, char **argv)
             }
             else
             {
-                cerr << "Option " << arg << " requires a parameter." << endl;
-                cerr << "For help type: mcmap --help" << endl;
+                std::cerr << "Option " << arg << " requires a parameter." << endl;
+                std::cerr << "For help type: mcmap --help" << endl;
                 return 1;
             }
         }
@@ -390,8 +390,8 @@ int buildMap(int argc, char **argv)
                 }
                 else
                 {
-                    cerr << "Urecornized color medthod: " << argv[i + 1] << endl;
-                    cerr << "Available methods: euclidean, delta-e" << endl;
+                    std::cerr << "Urecornized color medthod: " << argv[i + 1] << endl;
+                    std::cerr << "Available methods: euclidean, delta-e" << endl;
                     return 1;
                 }
 
@@ -399,8 +399,8 @@ int buildMap(int argc, char **argv)
             }
             else
             {
-                cerr << "Option " << arg << " requires a parameter." << endl;
-                cerr << "For help type: mcmap --help" << endl;
+                std::cerr << "Option " << arg << " requires a parameter." << endl;
+                std::cerr << "For help type: mcmap --help" << endl;
                 return 1;
             }
         }
@@ -411,16 +411,16 @@ int buildMap(int argc, char **argv)
                 ditheringMethod = parseDitheringMethodFromString(string(argv[i + 1]));
                 if (ditheringMethod == DitheringMethod::Unknown)
                 {
-                    cerr << "Urecornized dithering: " << argv[i + 1] << endl;
-                    cerr << "Available dithering methods: none, floyd-steinberg, min-average-error, burkes, sierra-lite, stucki, atkinson, bayer-44, bayer-22, ordered-33" << endl;
+                    std::cerr << "Urecornized dithering: " << argv[i + 1] << endl;
+                    std::cerr << "Available dithering methods: none, floyd-steinberg, min-average-error, burkes, sierra-lite, stucki, atkinson, bayer-44, bayer-22, ordered-33" << endl;
                     return 1;
                 }
                 i++;
             }
             else
             {
-                cerr << "Option " << arg << " requires a parameter." << endl;
-                cerr << "For help type: mcmap --help" << endl;
+                std::cerr << "Option " << arg << " requires a parameter." << endl;
+                std::cerr << "For help type: mcmap --help" << endl;
                 return 1;
             }
         }
@@ -433,8 +433,8 @@ int buildMap(int argc, char **argv)
             }
             else
             {
-                cerr << "Option " << arg << " requires a parameter." << endl;
-                cerr << "For help type: mcmap --help" << endl;
+                std::cerr << "Option " << arg << " requires a parameter." << endl;
+                std::cerr << "For help type: mcmap --help" << endl;
                 return 1;
             }
         }
@@ -451,8 +451,8 @@ int buildMap(int argc, char **argv)
             }
             else
             {
-                cerr << "Option " << arg << " requires a parameter." << endl;
-                cerr << "For help type: mcmap --help" << endl;
+                std::cerr << "Option " << arg << " requires a parameter." << endl;
+                std::cerr << "For help type: mcmap --help" << endl;
                 return 1;
             }
         }
@@ -474,8 +474,8 @@ int buildMap(int argc, char **argv)
             }
             else
             {
-                cerr << "Urecornized building medthod: " << argv[i + 1] << endl;
-                cerr << "Available methods: 3d, 2d, stair" << endl;
+                std::cerr << "Urecornized building medthod: " << argv[i + 1] << endl;
+                std::cerr << "Available methods: 3d, 2d, stair" << endl;
                 return 1;
             }
 
@@ -490,8 +490,8 @@ int buildMap(int argc, char **argv)
             }
             else
             {
-                cerr << "Option " << arg << " requires a parameter." << endl;
-                cerr << "For help type: mcmap --help" << endl;
+                std::cerr << "Option " << arg << " requires a parameter." << endl;
+                std::cerr << "For help type: mcmap --help" << endl;
                 return 1;
             }
         }
@@ -504,8 +504,8 @@ int buildMap(int argc, char **argv)
             }
             else
             {
-                cerr << "Option " << arg << " requires a parameter." << endl;
-                cerr << "For help type: mcmap --help" << endl;
+                std::cerr << "Option " << arg << " requires a parameter." << endl;
+                std::cerr << "For help type: mcmap --help" << endl;
                 return 1;
             }
         }
@@ -515,24 +515,27 @@ int buildMap(int argc, char **argv)
         }
         else
         {
-            cerr << "Unrecognized option: " << arg << endl;
-            cerr << "For help type: mcmap --help" << endl;
+            std::cerr << "Unrecognized option: " << arg << endl;
+            std::cerr << "For help type: mcmap --help" << endl;
             return 1;
         }
     }
 
-    if (!yesForced && filesystem::exists(filesystem::path(outputPath))) {
-        cerr << "The folder '" << outputPath << "' already exists. May contain another map art." << endl;
-        cerr << "Do you want to overwrite? (Y/N): ";
+    if (!yesForced && filesystem::exists(filesystem::path(outputPath)))
+    {
+        std::cerr << "The folder '" << outputPath << "' already exists. May contain another map art." << endl;
+        std::cerr << "Do you want to overwrite? (Y/N): ";
         string line;
         getline(cin, line);
-        if (line.at(0) != 'Y' && line.at(0) != 'y') {
+        if (line.at(0) != 'Y' && line.at(0) != 'y')
+        {
             // Cancel
             return 0;
         }
     }
 
-    if (!filesystem::exists(filesystem::path(outputPath))) {
+    if (!filesystem::exists(filesystem::path(outputPath)))
+    {
         // Create dir if not found
         filesystem::create_directory(filesystem::path(outputPath));
     }
@@ -551,8 +554,8 @@ int buildMap(int argc, char **argv)
     {
         p.setEnded();
         progressReportThread.join();
-        cerr << endl
-             << "Cannot load image: " << inputImageFile << endl;
+        std::cerr << endl
+                  << "Cannot load image: " << inputImageFile << endl;
         return 1;
     }
 
@@ -582,6 +585,7 @@ int buildMap(int argc, char **argv)
     p.startTask("Loading minecraft colors...", 0, 0);
     std::vector<colors::Color> baseColors = minecraft::loadBaseColors(version);
     std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
+    std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
 
     // Apply color set
     p.startTask("Loading custom configuration...", 0, 0);
@@ -590,7 +594,7 @@ int buildMap(int argc, char **argv)
     applyBuildRestrictions(colorSet, buildMethod);
 
     // Generate map art
-    p.startTask("Adjusting image colors...", matrixH, 1);
+    p.startTask("Adjusting image colors...", matrixH, threadNum);
     std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, imageColorsMatrix, matrixW, matrixH, colorAlgo, ditheringMethod, threadNum, p);
 
     // Compute total maps
@@ -625,8 +629,8 @@ int buildMap(int argc, char **argv)
                 {
                     p.setEnded();
                     progressReportThread.join();
-                    cerr << endl
-                         << "Cannot write file: " << outFilePath.string() << endl;
+                    std::cerr << endl
+                              << "Cannot write file: " << outFilePath.string() << endl;
                     return 1;
                 }
 
@@ -638,32 +642,86 @@ int buildMap(int argc, char **argv)
         // Finish
         p.setEnded();
         progressReportThread.join();
-        cerr << endl << "Successfully saved as map files to: " << outputPath << endl;
-        cerr << "Note: The map numbers are sorted up to down, left to right" << endl;
+        std::cerr << endl
+                  << "Successfully saved as map files to: " << outputPath << endl;
+        std::cerr << "Note: The map numbers are sorted up to down, left to right" << endl;
     }
     else
     {
-        // Map must be built
-        p.startTask("Saving result...", 0, 0);
-        wxImage imageSave(matrixW, matrixH);
-        unsigned char *rawData = imageSave.GetData();
-        size_t size = matrixW * matrixH;
-
-        size_t j = 0;
-        for (size_t i = 0; i < size; i++)
+        p.startTask("Building maps...", 0, 0);
+        int total = 0;
+        int totalMapsCount = mapsCountX * mapsCountZ;
+        for (int mapZ = 0; mapZ < mapsCountZ; mapZ++)
         {
-            colors::Color color = mapArtColorMatrix[i]->color;
+            for (int mapX = 0; mapX < mapsCountX; mapX++)
+            {
+                stringstream ss;
+                ss << "Building map (" << (total + 1) << "/" << totalMapsCount << ")...";
+                p.startTask(ss.str(), MAP_WIDTH, threadNum);
 
-            rawData[j++] = color.red;
-            rawData[j++] = color.green;
-            rawData[j++] = color.blue;
+                std::vector<mapart::MapBuildingBlock> buildingBlocks = mapart::buildMap(version, blockSet, mapArtColorMatrix, matrixW, matrixH, mapX, mapZ, buildMethod, threadNum, p);
+
+                // Save
+                if (outFormat == MapOutputFormat::Structure)
+                {
+                    // Save as structure file
+                    stringstream ss2;
+                    ss2 << "map_" << (total + 1) << ".nbt";
+                    filesystem::path outFilePath(outputPath);
+
+                    outFilePath /= ss2.str();
+
+                    try
+                    {
+                        writeStructureNBTFile(outFilePath.string(), buildingBlocks, version);
+                    }
+                    catch (...)
+                    {
+                        p.setEnded();
+                        progressReportThread.join();
+                        std::cerr << endl
+                                  << "Cannot write file: " << outFilePath.string() << endl;
+                        return 1;
+                    }
+                }
+                else if (outFormat == MapOutputFormat::World)
+                {
+                    // Save as minecraft world
+                    p.startTask("Saving result...", 0, 0);
+                    wxImage imageSave(matrixW, matrixH);
+                    unsigned char *rawData = imageSave.GetData();
+                    size_t size = matrixW * matrixH;
+
+                    size_t j = 0;
+                    for (size_t i = 0; i < size; i++)
+                    {
+                        colors::Color color = mapArtColorMatrix[i]->color;
+
+                        rawData[j++] = color.red;
+                        rawData[j++] = color.green;
+                        rawData[j++] = color.blue;
+                    }
+                    imageSave.SaveFile("test_2.png", wxBITMAP_TYPE_PNG);
+                }
+
+                total++;
+            }
         }
 
         p.setEnded();
         progressReportThread.join();
-        imageSave.SaveFile("test_2.png", wxBITMAP_TYPE_PNG);
-        cerr << endl
-             << "Saved!" << endl;
+
+        if (outFormat == MapOutputFormat::Structure)
+        {
+            std::cerr << endl
+                      << "Successfully saved as structure files to: " << outputPath << endl;
+            std::cerr << "Note: The map numbers are sorted up to down, left to right" << endl;
+        }
+        else
+        {
+            std::cerr << endl
+                      << "Saved!" << endl;
+        }
     }
 
     return 0;
@@ -701,7 +759,7 @@ void progressReporter(threading::Progress &progress)
             progressLine.append(" ");
         }
 
-        cerr << "\r" << progressLine;
+        std::cerr << "\r" << progressLine;
 
         old_line_size = progressLine.length();
 
@@ -715,5 +773,5 @@ void progressReporter(threading::Progress &progress)
     {
         eraser.append(" ");
     }
-    cerr << eraser;
+    std::cerr << eraser;
 }
