@@ -68,6 +68,7 @@ minecraft::BlockDescription *Block::addBlockDescription(std::string name, minecr
     minecraft::BlockDescription *bd = &(this->descriptions[size]);
 
     bd->name = name;
+    bd->baseColorIndex = this->baseColorIndex;
     bd->minVersion = minVersion;
     bd->maxVersion = maxVersion;
     bd->nbtName = nbtName;

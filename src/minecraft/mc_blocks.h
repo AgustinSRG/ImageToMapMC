@@ -55,6 +55,9 @@ namespace minecraft
         // Name
         std::string name;
 
+        // Base color
+        short baseColorIndex;
+
         // Version
         minecraft::McVersion minVersion;
         minecraft::McVersion maxVersion;

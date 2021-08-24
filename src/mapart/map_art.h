@@ -209,5 +209,13 @@ namespace mapart {
      */
     std::vector<mapart::MapBuildingBlock> buildMap(minecraft::McVersion version, const std::vector<minecraft::BlockList> &blockSet, const std::vector<const minecraft::FinalColor *> &matrix, size_t matrixW, size_t matrixH, size_t mapX, size_t mapZ, mapart::MapBuildMethod buildMethod, size_t threadsNum, threading::Progress &p);
 
-    //void writeStructureNBTFile(std::string fileName, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version);
+    /**
+     * @brief  Writes structure to file
+     * @note   
+     * @param  fileName: File name
+     * @param  &buildData: Building data
+     * @param  version: Minecraft version
+     * @retval None
+     */
+    void writeStructureNBTFile(std::string fileName, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version);
 }
