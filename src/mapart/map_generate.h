@@ -23,33 +23,20 @@
 
 #pragma once
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
+#include "common.h"
+#include "../threads/progress.h"
 
-#include <iostream>
-#include <filesystem>
-#include <string>
-#include <chrono>
-#include <thread>
-#include <sstream>
-#include <cmath>
-#include "mapart/map_art.h"
-#include "mapart/map_image.h"
-#include "threads/progress.h"
-#include "minecraft/structure.h"
-
-int printHelp();
-int printVersion();
-int renderMap(int argc, char ** argv);
-int buildMap(int argc, char ** argv);
-void progressReporter(threading::Progress &progress);
-
-enum class MapOutputFormat {
-    Map,
-    World,
-    Structure
-};
-
-#define REPORT_THREAD_DELAY (33)
+namespace mapart {
+    /**
+     * @brief  Generates map art
+     * @note   
+     * @param  &colorSet: Color set
+     * @param  &colorMatrix: Original color matrix
+     * @param  width: Image width
+     * @param  height: Image height
+     * @param  colorDistanceAlgo: Color distance algorithm
+     * @param  ditheringMethod: Dithering method
+     * @retval Array of final colors
+     */
+    std::vector<const minecraft::FinalColor *> generateMapArt(const std::vector<minecraft::FinalColor> &colorSet, const std::vector<colors::Color> &colorMatrix, size_t width, size_t height, colors::ColorDistanceAlgorithm colorDistanceAlgo, mapart::DitheringMethod ditheringMethod, size_t threadNum, threading::Progress &progress);
+}

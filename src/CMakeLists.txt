@@ -18,10 +18,23 @@ include_directories(3rdparty/libnbtplusplus/include)
 add_subdirectory(3rdparty/libnbtplusplus)
 
 SET(SOURCES_COMMON 
-    "colors/colors.h" "colors/colors.cpp" "colors/cielab.h" "colors/cielab.cpp" 
+    "colors/colors.h" "colors/colors.cpp" 
+    "colors/cielab.h" "colors/cielab.cpp" 
+
     "threads/progress.h" "threads/progress.cpp"
-    "minecraft/mc_common.h" "minecraft/mc_common.cpp" "minecraft/mc_colors.h" "minecraft/mc_colors.cpp" "minecraft/mc_blocks.h" "minecraft/mc_blocks.cpp"
-    "mapart/map_art.h" "mapart/map_art.cpp" "mapart/map_image.h" "mapart/map_image.cpp"
+
+    "minecraft/mc_common.h" "minecraft/mc_common.cpp"
+    "minecraft/mc_colors.h" "minecraft/mc_colors.cpp" 
+    "minecraft/mc_blocks.h" "minecraft/mc_blocks.cpp"
+    "minecraft/structure.h" "minecraft/structure.cpp"
+
+    "mapart/map_art.h" 
+    "mapart/common.h" "mapart/common.cpp" 
+    "mapart/map_image.h" "mapart/map_image.cpp" 
+    "mapart/dithering.h" 
+    "mapart/map_generate.h" "mapart/map_generate.cpp"
+    "mapart/map_build.h" "mapart/map_build.cpp"
+    "mapart/map_nbt.h" "mapart/map_nbt.cpp"
 )
 
 SET(SOURCES_WX 

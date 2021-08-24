@@ -23,33 +23,16 @@
 
 #pragma once
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
+#include "../mapart/common.h"
 
-#include <iostream>
-#include <filesystem>
-#include <string>
-#include <chrono>
-#include <thread>
-#include <sstream>
-#include <cmath>
-#include "mapart/map_art.h"
-#include "mapart/map_image.h"
-#include "threads/progress.h"
-#include "minecraft/structure.h"
-
-int printHelp();
-int printVersion();
-int renderMap(int argc, char ** argv);
-int buildMap(int argc, char ** argv);
-void progressReporter(threading::Progress &progress);
-
-enum class MapOutputFormat {
-    Map,
-    World,
-    Structure
-};
-
-#define REPORT_THREAD_DELAY (33)
+namespace minecraft {
+    /**
+     * @brief  Writes structure to file
+     * @note   
+     * @param  fileName: File name
+     * @param  &buildData: Building data
+     * @param  version: Minecraft version
+     * @retval None
+     */
+    void writeStructureNBTFile(std::string fileName, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version);
+}
