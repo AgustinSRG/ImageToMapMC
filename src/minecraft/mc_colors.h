@@ -157,7 +157,7 @@ namespace minecraft
      * @param  name: Color name
      * @retval The index of the color, or -1 if not found
      */
-    size_t findColorByName(std::vector<std::string> &colorNames, std::string name);
+    size_t findColorByName(const std::vector<std::string> &colorNames, std::string name);
 
     /**
      * @brief  Final color

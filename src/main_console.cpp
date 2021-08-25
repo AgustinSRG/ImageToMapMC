@@ -27,6 +27,7 @@ using namespace std;
 using namespace colors;
 using namespace minecraft;
 using namespace mapart;
+using namespace tools;
 
 /**
  * @brief  Main (Console)
@@ -344,14 +345,14 @@ int buildMap(int argc, char **argv)
             if ((i + 1) < argc)
             {
                 string resizeString(argv[i + 1]);
-                int xIndex;
+                size_t xIndex;
 
                 xIndex = resizeString.find("x");
 
-                if (xIndex < 1)
+                if (xIndex == string::npos || xIndex < 1)
                 {
                     xIndex = resizeString.find("X");
-                    if (xIndex < 1)
+                    if (xIndex == string::npos || xIndex < 1)
                     {
                         std::cerr << "Size must be provided using the WIDTHxHEIGHT format. Example: '128x128'" << endl;
                         std::cerr << "For help type: mcmap --help" << endl;
@@ -586,9 +587,48 @@ int buildMap(int argc, char **argv)
     std::vector<colors::Color> baseColors = minecraft::loadBaseColors(version);
     std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
     std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
+    std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
+    std::vector<bool> enabledConf(baseColors.size());
+
+    for (int i = 0; i < enabledConf.size(); i++)
+    {
+        enabledConf[i] = true;
+    }
 
     // Apply color set
     p.startTask("Loading custom configuration...", 0, 0);
+    bool isBlacklist = true;
+    if (colorSetFilename.size() > 0)
+    {
+        filesystem::path setsPath(getExecutableDir());
+        string setFn = colorSetFilename + ".txt";
+
+        setsPath /= "presets";
+        setsPath /= setFn;
+
+        string bsStr = readTextFile(setsPath.string());
+
+        if (bsStr.size() > 0)
+        {
+            applyColorSet(bsStr, &isBlacklist, enabledConf, colorSet, blockSet, baseColorNames);
+        }
+        else
+        {
+            bsStr = readTextFile(colorSetFilename);
+            if (bsStr.size() > 0)
+            {
+                applyColorSet(bsStr, &isBlacklist, enabledConf, colorSet, blockSet, baseColorNames);
+            }
+            else
+            {
+                p.setEnded();
+                progressReportThread.join();
+                std::cerr << endl
+                          << "Custom configuration file not found or empty: " << colorSetFilename << endl;
+                return 1;
+            }
+        }
+    }
 
     // Apply color restructions based on build method
     applyBuildRestrictions(colorSet, buildMethod);

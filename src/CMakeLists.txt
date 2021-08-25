@@ -35,6 +35,9 @@ SET(SOURCES_COMMON
     "mapart/map_generate.h" "mapart/map_generate.cpp"
     "mapart/map_build.h" "mapart/map_build.cpp"
     "mapart/map_nbt.h" "mapart/map_nbt.cpp"
+    "mapart/map_color_set.h" "mapart/map_color_set.cpp"
+
+    "tools/basedir.h" "tools/basedir.cpp"
 )
 
 SET(SOURCES_WX 

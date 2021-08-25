@@ -125,11 +125,11 @@ void minecraft::writeStructureNBTFile(std::string fileName, std::vector<mapart::
                 paletteTag.push_back(blockDescriptionToTag(blockPtr));
             }
 
-            // Real block
-            blocksTag.push_back(blockToTag(buildData[i], palette, false));
-
             // Placeholder block
             blocksTag.push_back(blockToTag(buildData[i], palette, true));
+
+            // Real block
+            blocksTag.push_back(blockToTag(buildData[i], palette, false));
         }
     }
 

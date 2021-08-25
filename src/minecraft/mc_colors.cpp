@@ -268,7 +268,7 @@ std::vector<std::string> minecraft::loadBaseColorNames(std::vector<colors::Color
     return res;
 }
 
-size_t minecraft::findColorByName(std::vector<std::string> &colorNames, std::string name)
+size_t minecraft::findColorByName(const std::vector<std::string> &colorNames, std::string name)
 {
     size_t size = colorNames.size();
     std::string nameUpper(name);

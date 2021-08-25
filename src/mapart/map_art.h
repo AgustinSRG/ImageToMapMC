@@ -27,3 +27,4 @@
 #include "map_nbt.h"
 #include "map_generate.h"
 #include "map_build.h"
+#include "map_color_set.h"

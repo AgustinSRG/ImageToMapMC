@@ -23,34 +23,21 @@
 
 #pragma once
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
-#include <iostream>
-#include <filesystem>
 #include <string>
-#include <chrono>
-#include <thread>
-#include <sstream>
-#include <cmath>
-#include "mapart/map_art.h"
-#include "mapart/map_image.h"
-#include "threads/progress.h"
-#include "minecraft/structure.h"
-#include "tools/basedir.h"
 
-int printHelp();
-int printVersion();
-int renderMap(int argc, char ** argv);
-int buildMap(int argc, char ** argv);
-void progressReporter(threading::Progress &progress);
+namespace tools
+{
+    /**
+     * @brief  Get path to executable file
+     * @note   
+     * @retval 
+     */
+    std::string getExecutablePath();
 
-enum class MapOutputFormat {
-    Map,
-    World,
-    Structure
-};
-
-#define REPORT_THREAD_DELAY (33)
+    /**
+     * @brief  Get executable dir
+     * @note   
+     * @retval 
+     */
+    std::string getExecutableDir();
+}
