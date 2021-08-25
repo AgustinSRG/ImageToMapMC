@@ -58,6 +58,10 @@ int main(int argc, char **argv)
     {
         return printHelp();
     }
+    else if (firstArg.compare(string("--print-blocks")) == 0)
+    {
+        return printBlocks(argc, argv);
+    }
     else
     {
         return printVersion();
@@ -90,9 +94,10 @@ int printHelp()
     cout << endl;
 
     cout << "Available options:" << endl;
-    cout << "    -h, --help        Displays help" << endl;
-    cout << "    -b, --build       Builds a map from input image" << endl;
-    cout << "    -r, --render      Renders image from input map file in '.dat' format" << endl;
+    cout << "    -h, --help              Displays help" << endl;
+    cout << "    --print-blocks [ver]    Prints all available base colors with its associated blocks" << endl;
+    cout << "    -b, --build             Builds a map from input image" << endl;
+    cout << "    -r, --render            Renders image from input map file in '.dat' format" << endl;
 
     cout << endl;
 
@@ -150,6 +155,46 @@ int printHelp()
     cout << "Color set files documentation: https://github.com/AgustinSRG/ImageToMapMC" << endl;
 
     cout << endl;
+
+    return 0;
+}
+
+int printBlocks(int argc, char **argv)
+{
+    McVersion version = MC_LAST_VERSION;
+
+    if (argc > 2)
+    {
+        version = getVersionFromText(string(argv[2]));
+        if (version == McVersion::UNKNOWN)
+        {
+            std::cerr << "Urecornized version: " << argv[2] << endl;
+            std::cerr << "Available versions: last, 1.17, 1.16, 1.15, 1.14, 1.13, 1.12" << endl;
+            return 1;
+        }
+    }
+
+    std::vector<colors::Color> baseColors = minecraft::loadBaseColors(version);
+    std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
+    std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
+
+    printf(BLOCKS_PRINT_TEMPLATE, "COLOR", "HEX", "BLOCKS");
+    printf(BLOCKS_PRINT_TEMPLATE, "", "", "");
+
+    for (int i = 1; i < baseColors.size(); i++) {
+        string name = baseColorNames[i];
+        string hex = colors::colorToHex(baseColors[i]);
+        string blocks = "";
+        for (int j = 0; j < blockSet[i].blocks.size(); j++) {
+            if (blockSet[i].blocks[j].getBlockDescription(version) != NULL) {
+                if (blocks.size() > 0) {
+                    blocks += ", ";
+                }
+                blocks += blockSet[i].blocks[j].id;
+            }
+        }
+        printf(BLOCKS_PRINT_TEMPLATE, name.c_str(), hex.c_str(), blocks.c_str());
+    }
 
     return 0;
 }

@@ -44,6 +44,7 @@
 
 int printHelp();
 int printVersion();
+int printBlocks(int argc, char **argv);
 int renderMap(int argc, char ** argv);
 int buildMap(int argc, char ** argv);
 void progressReporter(threading::Progress &progress);
@@ -55,3 +56,5 @@ enum class MapOutputFormat {
 };
 
 #define REPORT_THREAD_DELAY (33)
+
+#define BLOCKS_PRINT_TEMPLATE ("| %-25s | %-7s | %s\n")
