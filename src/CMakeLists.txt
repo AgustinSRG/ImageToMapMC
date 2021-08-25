@@ -38,6 +38,7 @@ SET(SOURCES_COMMON
     "mapart/map_color_set.h" "mapart/map_color_set.cpp"
 
     "tools/basedir.h" "tools/basedir.cpp"
+    "tools/text_file.h" "tools/text_file.cpp"
 )
 
 SET(SOURCES_WX 

@@ -27,14 +27,6 @@
 
 namespace mapart {
     /**
-     * @brief  Read text file
-     * @note   
-     * @param  fileName: File name
-     * @retval 
-     */
-    std::string readTextFile(std::string fileName);
-
-    /**
      * @brief  Apply color set
      * @note   
      * @param  &colorSetFileContent: Color set contents
@@ -72,13 +64,4 @@ namespace mapart {
      * @retval 
      */
     std::string buildColorSetString(const std::vector<minecraft::BlockList> &blockSet, bool blacklist, const std::vector<bool> &enabledConf, const std::vector<std::string> baseColorNames, minecraft::McVersion version);
-
-    /**
-     * @brief  Writes text file
-     * @note   
-     * @param  fileName: File name
-     * @param  &colorSetFileContent: Content
-     * @retval 
-     */
-    bool writeTextFile(std::string fileName, const std::string &colorSetFileContent);
 }

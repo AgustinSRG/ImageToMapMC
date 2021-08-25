@@ -23,7 +23,6 @@
 
 #include "map_color_set.h"
 #include <iostream>
-#include <fstream>
 #include <sstream>
 #include <streambuf>
 #include <algorithm>
@@ -32,17 +31,6 @@
 
 using namespace std;
 using namespace mapart;
-
-std::string mapart::readTextFile(std::string fileName)
-{
-    std::ifstream t(fileName);
-    if (!t)
-    {
-        return string("");
-    }
-    std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
-    return str;
-}
 
 void mapart::applyColorSet(const std::string &colorSetFileContent, bool * blacklist, std::vector<bool> &enabledConf, std::vector<minecraft::FinalColor> &finalColors, std::vector<minecraft::BlockList> &blockSet, const std::vector<std::string> baseColorNames)
 {
@@ -264,18 +252,4 @@ std::string mapart::buildColorSetString(const std::vector<minecraft::BlockList> 
     }
 
     return ss.str();
-}
-
-bool mapart::writeTextFile(std::string fileName, const std::string &colorSetFileContent)
-{
-    ofstream out(fileName);
-
-    if (!out)
-    {
-        return false;
-    }
-
-    out << colorSetFileContent;
-
-    return 0; // Out is closed by the destructor of the class
 }

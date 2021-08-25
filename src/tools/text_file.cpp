@@ -21,37 +21,32 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#include "text_file.h"
+#include <fstream>
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
+using namespace std;
 
-#include <iostream>
-#include <filesystem>
-#include <string>
-#include <chrono>
-#include <thread>
-#include <sstream>
-#include <cmath>
-#include "mapart/map_art.h"
-#include "mapart/map_image.h"
-#include "threads/progress.h"
-#include "minecraft/structure.h"
-#include "tools/basedir.h"
-#include "tools/text_file.h"
+std::string tools::readTextFile(std::string fileName)
+{
+    std::ifstream t(fileName);
+    if (!t)
+    {
+        return string("");
+    }
+    std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+    return str;
+}
 
-int printHelp();
-int printVersion();
-int renderMap(int argc, char ** argv);
-int buildMap(int argc, char ** argv);
-void progressReporter(threading::Progress &progress);
+bool tools::writeTextFile(std::string fileName, const std::string &colorSetFileContent)
+{
+    ofstream out(fileName);
 
-enum class MapOutputFormat {
-    Map,
-    World,
-    Structure
-};
+    if (!out)
+    {
+        return false;
+    }
 
-#define REPORT_THREAD_DELAY (33)
+    out << colorSetFileContent;
+
+    return 0; // Out is closed by the destructor of the class
+}
