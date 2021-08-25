@@ -199,6 +199,7 @@ std::vector<std::string> minecraft::loadBaseColorNames(std::vector<colors::Color
     res[(size_t)McColors::METAL] = std::string("METAL");
     res[(size_t)McColors::PLANT] = std::string("PLANT");
     res[(size_t)McColors::SNOW] = std::string("SNOW");
+    res[(size_t)McColors::CLAY] = std::string("CLAY");
     res[(size_t)McColors::DIRT] = std::string("DIRT");
     res[(size_t)McColors::STONE] = std::string("STONE");
     res[(size_t)McColors::WATER] = std::string("WATER");
