@@ -36,6 +36,7 @@ SET(SOURCES_COMMON
     "mapart/map_build.h" "mapart/map_build.cpp"
     "mapart/map_nbt.h" "mapart/map_nbt.cpp"
     "mapart/map_color_set.h" "mapart/map_color_set.cpp"
+    "mapart/materials.h" "mapart/materials.cpp"
 
     "tools/basedir.h" "tools/basedir.cpp"
     "tools/text_file.h" "tools/text_file.cpp"

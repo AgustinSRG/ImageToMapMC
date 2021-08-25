@@ -141,6 +141,8 @@ int printHelp()
     cout << "                                     Color sets can enable or disable colors and" << endl;
     cout << "                                     set the blocks to build each color." << endl;
     cout << "                                     By default all available colors are used" << endl;
+    cout << "    -m, --materials [file]         Specifies a file to print the list of required materials." << endl;
+    cout << "                                     This applies only when --format is set to 'world' or 'structure'" << endl;
     cout << "    -t, --threads [num]            Specifies the number of threads to use." << endl;
     cout << "                                     By default only a single thread will be used" << endl;
     cout << "    -y, --yes [num]                Prevents asking any user input." << endl;
@@ -181,13 +183,17 @@ int printBlocks(int argc, char **argv)
     printf(BLOCKS_PRINT_TEMPLATE, "COLOR", "HEX", "BLOCKS");
     printf(BLOCKS_PRINT_TEMPLATE, "", "", "");
 
-    for (int i = 1; i < baseColors.size(); i++) {
+    for (int i = 1; i < baseColors.size(); i++)
+    {
         string name = baseColorNames[i];
         string hex = colors::colorToHex(baseColors[i]);
         string blocks = "";
-        for (int j = 0; j < blockSet[i].blocks.size(); j++) {
-            if (blockSet[i].blocks[j].getBlockDescription(version) != NULL) {
-                if (blocks.size() > 0) {
+        for (int j = 0; j < blockSet[i].blocks.size(); j++)
+        {
+            if (blockSet[i].blocks[j].getBlockDescription(version) != NULL)
+            {
+                if (blocks.size() > 0)
+                {
                     blocks += ", ";
                 }
                 blocks += blockSet[i].blocks[j].id;
@@ -303,6 +309,7 @@ int buildMap(int argc, char **argv)
     int rsH = -1;
     bool yesForced = false;
     unsigned int threadNum = 1;
+    string materialsOutFile = "";
 
     // Load arguments
     for (int i = 3; i < argc; i++)
@@ -559,6 +566,20 @@ int buildMap(int argc, char **argv)
         {
             yesForced = true;
         }
+        else if (arg.compare(string("-m")) == 0 || arg.compare(string("--materials")) == 0)
+        {
+            if ((i + 1) < argc)
+            {
+                materialsOutFile = argv[i + 1];
+                i++;
+            }
+            else
+            {
+                std::cerr << "Option " << arg << " requires a parameter." << endl;
+                std::cerr << "For help type: mcmap --help" << endl;
+                return 1;
+            }
+        }
         else
         {
             std::cerr << "Unrecognized option: " << arg << endl;
@@ -634,6 +655,7 @@ int buildMap(int argc, char **argv)
     std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
     std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
     std::vector<bool> enabledConf(baseColors.size());
+    MaterialsList materials(baseColorNames);
 
     for (int i = 0; i < enabledConf.size(); i++)
     {
@@ -746,6 +768,9 @@ int buildMap(int argc, char **argv)
 
                 std::vector<mapart::MapBuildingBlock> buildingBlocks = mapart::buildMap(version, blockSet, mapArtColorMatrix, matrixW, matrixH, mapX, mapZ, buildMethod, threadNum, p);
 
+                // Add to materials list
+                materials.addBlocks(buildingBlocks);
+
                 // Save
                 if (outFormat == MapOutputFormat::Structure)
                 {
@@ -796,10 +821,24 @@ int buildMap(int argc, char **argv)
         p.setEnded();
         progressReportThread.join();
 
+        if (materialsOutFile.size() > 0)
+        {
+            // Save materials
+            if (!tools::writeTextFile(materialsOutFile, materials.toString())) {
+                std::cerr << endl
+                                  << "Cannot write file: " << materialsOutFile << endl;
+                return 1;
+            }
+        }
+
         if (outFormat == MapOutputFormat::Structure)
         {
             std::cerr << endl
                       << "Successfully saved as structure files to: " << outputPath << endl;
+            if (materialsOutFile.size() > 0)
+            {
+                std::cerr << "Materials list saved to: " << materialsOutFile << endl;
+            }
             std::cerr << "Note: The map numbers are sorted up to down, left to right" << endl;
         }
         else

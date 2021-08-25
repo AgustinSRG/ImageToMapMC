@@ -60,11 +60,11 @@ mapart::DitheringMethod mapart::parseDitheringMethodFromString(std::string str)
     std::string nameLower(str);
     std::transform(nameLower.begin(), nameLower.end(), nameLower.begin(), ::tolower);
 
-    if (nameLower.compare(string("floyd-steinberg")) == 0)
+    if (nameLower.compare(string("floyd-steinberg")) == 0 || nameLower.compare(string("floyd")) == 0 || nameLower.compare(string("fs")) == 0)
     {
         return DitheringMethod::FloydSteinberg;
     }
-    else if (nameLower.compare(string("min-average-error")) == 0)
+    else if (nameLower.compare(string("min-average-error")) == 0 || nameLower.compare(string("mae")) == 0)
     {
         return DitheringMethod::MinAvgErr;
     }
@@ -72,7 +72,7 @@ mapart::DitheringMethod mapart::parseDitheringMethodFromString(std::string str)
     {
         return DitheringMethod::Burkes;
     }
-    else if (nameLower.compare(string("sierra-lite")) == 0)
+    else if (nameLower.compare(string("sierra-lite")) == 0 || nameLower.compare(string("sierra")) == 0)
     {
         return DitheringMethod::SierraLite;
     }

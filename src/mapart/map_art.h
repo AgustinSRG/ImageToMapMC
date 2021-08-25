@@ -28,3 +28,4 @@
 #include "map_generate.h"
 #include "map_build.h"
 #include "map_color_set.h"
+#include "materials.h"

@@ -21,32 +21,43 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "text_file.h"
-#include <fstream>
+#pragma once
 
-using namespace std;
+#include "common.h"
 
-std::string tools::readTextFile(std::string fileName)
+namespace mapart
 {
-    std::ifstream t(fileName);
-    if (!t)
+    /**
+     * @brief  Materials list item
+     * @note   
+     * @retval None
+     */
+    struct MaterialListItem
     {
-        return string("");
-    }
-    std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
-    return str;
+        short id;
+        std::string name;
+        size_t count;
+    };
+
+    /**
+     * @brief  Materials list
+     * @note   
+     * @retval None
+     */
+    class MaterialsList
+    {
+    public:
+        std::vector<MaterialListItem> materials;
+        size_t total;
+        size_t placeholder;
+
+        MaterialsList(const std::vector<std::string> baseColorNames);
+
+        void addBlocks(std::vector<mapart::MapBuildingBlock> &buildingBlocks);
+
+        std::string toString();
+    };
 }
 
-bool tools::writeTextFile(std::string fileName, const std::string &colorSetFileContent)
-{
-    ofstream out(fileName);
-
-    if (!out)
-    {
-        return false;
-    }
-
-    out << colorSetFileContent;
-
-    return true; // Out is closed by the destructor of the class
-}
+#define STACK_AMOUNT (64)
+#define SHULKER_BOX_AMOUNT (STACK_AMOUNT * 27)
