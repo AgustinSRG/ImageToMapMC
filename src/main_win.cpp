@@ -23,6 +23,7 @@
 
 #include "main_win.h"
 #include "wx/img_display_window.h"
+#include "wx/main_window.h"
 #include <wx/msgdlg.h>
 
 using namespace std;
@@ -51,8 +52,8 @@ int mainEntryPoint(App &app, int argc, char *argv[])
 {
     if (argc < 2)
     {
-        displayError(string("You must specify a map file to open"));
-        return 1;
+        widgets::displayMainWindow(app);
+        return 0;
     }
 
     // Load colors

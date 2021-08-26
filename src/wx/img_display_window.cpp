@@ -252,11 +252,9 @@ void wxImagePanel::render(wxDC &dc)
     }
 }
 
-DisplayImageFrame::DisplayImageFrame(const wxString &title, const wxPoint &pos, const wxSize &size)
-    : wxFrame(NULL, wxID_ANY, title, pos, size)
+DisplayImageFrame::DisplayImageFrame(wxWindow * parent, const wxString &title, const wxPoint &pos, const wxSize &size)
+    : wxFrame(parent, wxID_ANY, title, pos, size)
 {
-    wxInitAllImageHandlers();
-
     defaultFile = "map.png";
 
     this->SetIcon(wxIcon(_ICON_ICO_XPM));
@@ -342,7 +340,8 @@ void DisplayImageFrame::OnSize(wxSizeEvent &event)
 
 void widgets::displayMapImage(std::vector<const minecraft::FinalColor *> &colorsMatrix, wxApp &app)
 {
-    DisplayImageFrame *frame = new DisplayImageFrame((string("Rendering minecraft map: ") + string(app.argv[1])), wxPoint(50, 50), wxSize(800, 600));
+    wxInitAllImageHandlers();
+    DisplayImageFrame *frame = new DisplayImageFrame(NULL, (string("Rendering minecraft map: ") + string(app.argv[1])), wxPoint(50, 50), wxSize(800, 600));
     frame->setColors(colorsMatrix, MAP_WIDTH, MAP_HEIGHT);
     frame->defaultFile = string(app.argv[1]) + string(".png");
     frame->Show(true);

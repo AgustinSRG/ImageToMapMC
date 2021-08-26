@@ -71,7 +71,7 @@ public:
     wxImagePanel * drawPane;
     wxMenu * menu;
     std::string defaultFile;
-    DisplayImageFrame(const wxString &title, const wxPoint &pos, const wxSize &size);
+    DisplayImageFrame(wxWindow * parent, const wxString &title, const wxPoint &pos, const wxSize &size);
     ~DisplayImageFrame();
 
     void setColors(std::vector<const minecraft::FinalColor *> &colorsMatrix, size_t width, size_t height);
