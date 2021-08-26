@@ -318,8 +318,6 @@ void DisplayImageFrame::OnContextMenuSelected(wxCommandEvent &event)
 
 DisplayImageFrame::~DisplayImageFrame()
 {
-    delete drawPane;
-    delete menu;
 }
 
 void DisplayImageFrame::setColors(std::vector<const minecraft::FinalColor *> &colorsMatrix, size_t width, size_t height)

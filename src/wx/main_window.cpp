@@ -139,15 +139,11 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     menuImage->Append(ID_Edit_Image, "&Brightness, Saturation, Contrast", "");
     menuBar->Append(menuImage, "&Image");
 
-    // Config
-    wxMenu *menuConfig = new wxMenu();
-    menuConfig->Append(ID_Blocks_Custom, "&Customize blocks and colors", "");
-    menuBar->Append(menuConfig, "&Config");
-
     // Materials
     wxMenu *menuMaterials = new wxMenu();
-    menuMaterials->Append(ID_Materials_Show, "&Count required materials", "");
+    menuMaterials->Append(ID_Blocks_Custom, "&Customize materials", "");
     menuMaterials->AppendSeparator();
+    menuMaterials->Append(ID_Materials_Show, "&Count required materials", "");
     menuMaterials->Append(ID_Materials_Save, "&Export materials list", "");
     menuBar->Append(menuMaterials, "&Materials");
 
@@ -168,7 +164,7 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Stucki), "&Stucki", "");
     menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::SierraLite), "&Sierra Lite", "");
     menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Burkes), "&Burkes", "");
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Bayer22), "&bayer (2x2)", "");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Bayer22), "&Bayer (2x2)", "");
     menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Bayer44), "&Bayer (4x4)", "");
     menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Ordered33), "&Ordered (3x3)", "");
     menuBar->Append(menuDithering, "&Dithering");
@@ -232,7 +228,6 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
 
 MainWindow::~MainWindow()
 {
-    delete menuBar;
 }
 
 void MainWindow::openProject(wxCommandEvent &evt)
