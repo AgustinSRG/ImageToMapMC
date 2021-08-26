@@ -46,27 +46,48 @@ enum Identifiers
 
     ID_Preferences = 15,
     ID_Export = 16,
+    ID_Resize_Image = 17,
+    ID_Edit_Image = 18,
+    ID_Blocks_Custom = 19,
 
-    ID_Window_Original_Img = 21,
-    ID_Window_Preview = 22,
-    ID_Window_Settings = 23,
-    ID_Window_ColorSet = 24,
-    ID_Window_Materials_List = 25
+    ID_Materials_Show = 21,
+    ID_Materials_Save = 22
 };
+
+#define VERSION_ID_PREFIX (1500)
+#define COLOR_METHOD_ID_PREFIX (1600)
+#define BUILD_METHOD_ID_PREFIX (1700)
+#define DITHERING_ID_PREFIX (1800)
 
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
 EVT_MENU(ID_File_Open, MainWindow::openProject)
 EVT_MENU(ID_Load_Image, MainWindow::onLoadImage)
-EVT_MENU_RANGE(1500, 1600, MainWindow::onChangeVersion)
+EVT_MENU_RANGE(VERSION_ID_PREFIX, VERSION_ID_PREFIX + 99, MainWindow::onChangeVersion)
+EVT_MENU_RANGE(COLOR_METHOD_ID_PREFIX, COLOR_METHOD_ID_PREFIX + 99, MainWindow::onChangeColorAlgo)
+EVT_MENU_RANGE(BUILD_METHOD_ID_PREFIX, BUILD_METHOD_ID_PREFIX + 99, MainWindow::onChangeBuildMethod)
+EVT_MENU_RANGE(DITHERING_ID_PREFIX, DITHERING_ID_PREFIX + 99, MainWindow::onChangeDithering)
 EVT_MENU(wxID_EXIT, MainWindow::onExit)
 EVT_SIZE(MainWindow::OnSize)
 END_EVENT_TABLE()
 
-#define VERSION_ID_PREFIX (1500)
-
 int getIdForVersionMenu(McVersion version)
 {
     return VERSION_ID_PREFIX + (short)version;
+}
+
+int getIdForColorAlgoMenu(ColorDistanceAlgorithm a)
+{
+    return COLOR_METHOD_ID_PREFIX + (short)a;
+}
+
+int getIdForBuildMethodMenu(MapBuildMethod a)
+{
+    return BUILD_METHOD_ID_PREFIX + (short)a;
+}
+
+int getIdForDitheringMenu(DitheringMethod a)
+{
+    return DITHERING_ID_PREFIX + (short)a;
 }
 
 MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Tool"), wxPoint(50, 50), wxSize(800, 600))
@@ -84,9 +105,11 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     wxMenu *menuFile = new wxMenu();
 
     menuFile->Append(ID_File_New, "&New Project\tCtrl+N", "");
-    menuFile->Append(ID_File_Open, "&Open Project\tCtrl+O", "");
+
     menuFile->AppendSeparator();
-    menuFile->Append(ID_Load_Image, "&Load Image\tCtrl+L", "");
+
+    menuFile->Append(ID_File_Open, "&Open Project\tCtrl+O", "");
+
     menuFile->AppendSeparator();
     menuFile->Append(ID_File_Save, "&Save Project\tCtrl+S", "");
     menuFile->Append(ID_File_Save_As, "&Save Project As...\tCtrl+Shift+S", "");
@@ -108,33 +131,67 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
 
     menuBar->Append(menuFile, "&File");
 
-    // View
-    wxMenu *menuView = new wxMenu();
-    menuView->Append(ID_Window_Original_Img, "&Original Image", "");
-    menuView->Append(ID_Window_Preview, "&Preview", "");
-    menuView->Append(ID_Window_Settings, "&Settings", "");
-    menuView->Append(ID_Window_ColorSet, "&Customize blocks", "");
-    menuView->Append(ID_Window_Materials_List, "&List of materials", "");
-    menuBar->Append(menuView, "&View");
+    // Image
+    wxMenu *menuImage = new wxMenu();
+    menuImage->Append(ID_Load_Image, "&Load Image\tCtrl+L", "");
+    menuImage->AppendSeparator();
+    menuImage->Append(ID_Resize_Image, "&Resize Image", "");
+    menuImage->Append(ID_Edit_Image, "&Brightness, Saturation, Contrast", "");
+    menuBar->Append(menuImage, "&Image");
+
+    // Config
+    wxMenu *menuConfig = new wxMenu();
+    menuConfig->Append(ID_Blocks_Custom, "&Customize blocks and colors", "");
+    menuBar->Append(menuConfig, "&Config");
+
+    // Materials
+    wxMenu *menuMaterials = new wxMenu();
+    menuMaterials->Append(ID_Materials_Show, "&Count required materials", "");
+    menuMaterials->AppendSeparator();
+    menuMaterials->Append(ID_Materials_Save, "&Export materials list", "");
+    menuBar->Append(menuMaterials, "&Materials");
+
+    // Color distance
+    colorDistanceAlgorithm = ColorDistanceAlgorithm::Euclidean;
+    wxMenu *menuColorDistance = new wxMenu();
+    menuColorDistance->AppendRadioItem(getIdForColorAlgoMenu(ColorDistanceAlgorithm::Euclidean), "&Euclidean", "")->Check(true);
+    menuColorDistance->AppendRadioItem(getIdForColorAlgoMenu(ColorDistanceAlgorithm::DeltaE), "&Delta E", "");
+    menuBar->Append(menuColorDistance, "&Color aproximation");
+
+    // Dithering
+    ditheringMethod = DitheringMethod::None;
+    wxMenu *menuDithering = new wxMenu();
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::None), "&None", "")->Check(true);
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::FloydSteinberg), "&Floyd Steinberg", "");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::MinAvgErr), "&Min Average Error", "");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Atkinson), "&Atkinson", "");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Stucki), "&Stucki", "");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::SierraLite), "&Sierra Lite", "");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Burkes), "&Burkes", "");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Bayer22), "&bayer (2x2)", "");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Bayer44), "&Bayer (4x4)", "");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Ordered33), "&Ordered (3x3)", "");
+    menuBar->Append(menuDithering, "&Dithering");
+
+    // Build method
+    buildMethod = MapBuildMethod::Chaos;
+    wxMenu *menuBuildMethod = new wxMenu();
+    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Chaos), "&3D (Complex)", "")->Check(true);
+    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Staircased), "&Staircased", "");
+    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Flat), "&Flat", "");
+    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::None), "&None", "");
+    menuBar->Append(menuBuildMethod, "&Build Method");
 
     // Version
     version = MC_LAST_VERSION;
     wxMenu *menuVersion = new wxMenu();
-    wxMenuItem *ptrMenuVer;
-    versionMenuItems.resize(6);
-    ptrMenuVer = menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_17), "&1.17", "");
-    ptrMenuVer->Check(true);
-    versionMenuItems[0] = ptrMenuVer;
-    ptrMenuVer = menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_16), "&1.16", "");
-    versionMenuItems[1] = ptrMenuVer;
-    ptrMenuVer = menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_15), "&1.15", "");
-    versionMenuItems[2] = ptrMenuVer;
-    ptrMenuVer = menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_14), "&1.14", "");
-    versionMenuItems[3] = ptrMenuVer;
-    ptrMenuVer = menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_13), "&1.13", "");
-    versionMenuItems[4] = ptrMenuVer;
-    ptrMenuVer = menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_12), "&1.12", "");
-    versionMenuItems[5] = ptrMenuVer;
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_17), "&1.17", "")->Check(true);
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_16), "&1.16", "");
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_15), "&1.15", "");
+    ;
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_14), "&1.14", "");
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_13), "&1.13", "");
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_12), "&1.12", "");
     menuBar->Append(menuVersion, "&Version");
 
     SetIcon(wxIcon(_ICON_ICO_XPM));
@@ -142,7 +199,7 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     wxStatusBar *statusBar = CreateStatusBar();
     statusBar->SetFieldsCount(3);
     statusBar->SetStatusText("Status: Ready", 0);
-    statusBar->SetStatusText("Version: " + minecraft::versionToString(MC_LAST_VERSION), 1);
+    statusBar->SetStatusText("Size: 1 x 1", 1);
     statusBar->SetStatusText("Project: (not saved yet)", 2);
 
     SetMenuBar(menuBar);
@@ -210,6 +267,10 @@ void MainWindow::loadImage(std::string file)
     originalImagePanel->setColors(originalImageColors, originalImageWidth, originalImageHeight);
     originalImagePanel->Refresh();
 
+    stringstream ss;
+    ss << "Size: " << (matrixW / MAP_WIDTH) << " x " << (matrixW / MAP_HEIGHT);
+    GetStatusBar()->SetStatusText(ss.str(), 1);
+
     RequestPreviewGeneration();
 }
 
@@ -221,7 +282,24 @@ void MainWindow::onExit(wxCommandEvent &evt)
 void MainWindow::onChangeVersion(wxCommandEvent &evt)
 {
     version = static_cast<McVersion>(evt.GetId() - VERSION_ID_PREFIX);
-    GetStatusBar()->SetStatusText("Version: " + minecraft::versionToString(version), 1);
+    RequestPreviewGeneration();
+}
+
+void MainWindow::onChangeBuildMethod(wxCommandEvent &evt)
+{
+    buildMethod = static_cast<MapBuildMethod>(evt.GetId() - BUILD_METHOD_ID_PREFIX);
+    RequestPreviewGeneration();
+}
+
+void MainWindow::onChangeColorAlgo(wxCommandEvent &evt)
+{
+    colorDistanceAlgorithm = static_cast<ColorDistanceAlgorithm>(evt.GetId() - COLOR_METHOD_ID_PREFIX);
+    RequestPreviewGeneration();
+}
+
+void MainWindow::onChangeDithering(wxCommandEvent &evt)
+{
+    ditheringMethod = static_cast<DitheringMethod>(evt.GetId() - DITHERING_ID_PREFIX);
     RequestPreviewGeneration();
 }
 
@@ -249,6 +327,7 @@ void MainWindow::RequestPreviewGeneration()
     if (previewInProgress)
     {
         requiresPreviewGneration = true;
+        previewProgress.terminate();
     }
     else
     {
@@ -303,43 +382,55 @@ void MainWindow::GeneratePreview()
 
     while (!finished)
     {
-        Progress p;
         int threadNum = 1;
 
-        thread progressReportThread(&MainWindow::ReportProgress, this, std::ref(p));
+        previewProgress.reset();
 
-        p.startTask("Loading minecraft colors...", 0, 0);
-        std::vector<colors::Color> baseColors = minecraft::loadBaseColors(version);
-        std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
-        std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
-        std::vector<bool> enabledConf(baseColors.size());
-        bool blacklist = true;
+        thread progressReportThread(&MainWindow::ReportProgress, this, std::ref(previewProgress));
 
-        p.startTask("Loading custom configuration...", 0, 0);
-        // TODO
+        try
+        {
+            previewProgress.startTask("Loading minecraft colors...", 0, 0);
+            std::vector<colors::Color> baseColors = minecraft::loadBaseColors(version);
+            std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
+            std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
+            std::vector<bool> enabledConf(baseColors.size());
+            bool blacklist = true;
 
-        p.startTask("Adjusting image colors...", originalImageHeight, threadNum);
-        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, ColorDistanceAlgorithm::Euclidean, DitheringMethod::None, threadNum, p);
+            previewProgress.startTask("Loading custom configuration...", 0, 0);
+            // TODO
 
-        p.setEnded();
+            // Apply color restructions based on build method
+            applyBuildRestrictions(colorSet, buildMethod);
+
+            previewProgress.startTask("Generating preview...", originalImageHeight, threadNum);
+            std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, colorDistanceAlgorithm, ditheringMethod, threadNum, previewProgress);
+
+            previewPanel->setColors(mapArtColorMatrix, originalImageWidth, originalImageHeight);
+            previewPanel->Refresh();
+        }
+        catch (int e)
+        {
+            previewProgress.reset();
+        }
+
+        previewProgress.setEnded();
         progressReportThread.join();
-
-        previewPanel->setColors(mapArtColorMatrix, originalImageWidth, originalImageHeight);
-        previewPanel->Refresh();
 
         mutexPreviewGeneration.lock();
 
-        if (requiresPreviewGneration) {
+        if (requiresPreviewGneration)
+        {
             requiresPreviewGneration = false;
-        } else {
+        }
+        else
+        {
             previewInProgress = false;
             finished = true;
         }
 
         mutexPreviewGeneration.unlock();
     }
-
-
 }
 
 void widgets::displayMainWindow(wxApp &app)

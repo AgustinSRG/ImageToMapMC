@@ -33,6 +33,7 @@ namespace threading {
     class Progress {
         private:
             bool ended;
+            bool terminated;
             unsigned int total_threads;
             std::string task_name;
             std::vector<unsigned int> progress;
@@ -47,5 +48,9 @@ namespace threading {
             void startTask(std::string name, unsigned int totalP, unsigned int threadsNum);
             void setProgress(unsigned int thread_num, unsigned int p);
             void setEnded();
+
+            void terminate();
+
+            void reset();
     };
 }

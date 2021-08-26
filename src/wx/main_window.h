@@ -44,6 +44,9 @@ public:
     void openProject(wxCommandEvent &evt);
 
     void onChangeVersion(wxCommandEvent &evt);
+    void onChangeColorAlgo(wxCommandEvent &evt);
+    void onChangeDithering(wxCommandEvent &evt);
+    void onChangeBuildMethod(wxCommandEvent &evt);
 
     void onExit(wxCommandEvent &evt);
     void onLoadImage(wxCommandEvent &evt);
@@ -59,21 +62,24 @@ public:
 
 private:
     minecraft::McVersion version;
+    colors::ColorDistanceAlgorithm colorDistanceAlgorithm;
+    mapart::DitheringMethod ditheringMethod;
+    mapart::MapBuildMethod buildMethod;
 
     std::mutex mutexPreviewGeneration;
     std::thread * previewGenerationThread;
     bool requiresPreviewGneration;
     bool previewInProgress;
+    threading::Progress previewProgress;
 
     wxImagePanel * originalImagePanel;
+    wxImagePanel * previewPanel;
     size_t originalImageWidth;
     size_t originalImageHeight;
     std::vector<colors::Color> originalImageColors;
 
-    wxImagePanel * previewPanel;
-
     wxMenuBar * menuBar;
-    std::vector<wxMenuItem *> versionMenuItems;
+
     wxDECLARE_EVENT_TABLE();
 };
 

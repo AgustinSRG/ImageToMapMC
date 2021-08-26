@@ -31,6 +31,15 @@ Progress::Progress()
     task_name = "Initializing...";
     total_threads = 0;
     ended = false;
+    terminated = false;
+    total_progress = 0;
+}
+
+void Progress::reset() {
+    task_name = "Initializing...";
+    total_threads = 0;
+    ended = false;
+    terminated = false;
     total_progress = 0;
 }
 
@@ -41,6 +50,9 @@ bool Progress::hasEnded()
 
 void Progress::startTask(std::string name, unsigned int totalP, unsigned int threadsNum)
 {
+    if (terminated) {
+        throw -1;
+    }
     mtx.lock();
     task_name = name;
     total_threads = threadsNum;
@@ -55,6 +67,9 @@ void Progress::startTask(std::string name, unsigned int totalP, unsigned int thr
 
 void Progress::setProgress(unsigned int thread_num, unsigned int p)
 {
+    if (terminated) {
+        throw -1;
+    }
     mtx.lock();
     progress[thread_num] = p;
     mtx.unlock();
@@ -91,4 +106,8 @@ std::pair<std::string, unsigned int> Progress::getProgress()
 
 void Progress::setEnded() {
     ended = true;
+}
+
+void Progress::terminate() {
+    terminated = true;
 }
