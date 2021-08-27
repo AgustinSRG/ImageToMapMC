@@ -23,7 +23,6 @@
 
 #include "colors.h"
 #include "cielab.h"
-
 #include <cmath>
 
 using namespace std;
@@ -69,7 +68,7 @@ char toHexChar(unsigned char val)
     }
 }
 
-string colors::colorToHex(Color color)
+string colors::colorToHex(colors::Color color)
 {
     char hex[8];
     unsigned char B;
@@ -100,7 +99,7 @@ string colors::colorToHex(Color color)
     return string(hex);
 }
 
-Color colors::colorFromHex(string hexStr)
+colors::Color colors::colorFromHex(string hexStr)
 {
     if (hexStr.size() < 7 || hexStr[0] != '#')
     {
@@ -121,21 +120,17 @@ Color colors::colorFromHex(string hexStr)
     return color;
 }
 
-double colors::colorDistance(Color colorA, Color colorB, ColorDistanceAlgorithm algo)
+double colors::colorDistance(colors::Color colorA, colors::Color colorB)
 {
-    switch (algo)
-    {
-    case ColorDistanceAlgorithm::DeltaE:
-    {
-        return cielab::deltaE(colorA, colorB);
-    }
-    case ColorDistanceAlgorithm::Euclidean:
-    default:
-    {
-        double r = colorA.red - colorB.red;
-        double g = colorA.green - colorB.green;
-        double b = colorA.blue - colorB.blue;
-        return (r * r) + (g * g) + (b * b);
-    }
-    }
+    double r = colorA.red - colorB.red;
+    double g = colorA.green - colorB.green;
+    double b = colorA.blue - colorB.blue;
+    return (r * r) + (g * g) + (b * b);
+}
+
+double colors::colorDistance(colors::Color colorA, const colors::Lab * colorB)
+{
+    colors::Lab colorALab;
+    cielab::rgbToLab(colorA, &colorALab);
+    return cielab::deltaE(&colorALab, colorB);
 }

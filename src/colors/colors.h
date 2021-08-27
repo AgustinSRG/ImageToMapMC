@@ -62,6 +62,28 @@ namespace colors
         short green;
     };
 
+     /**
+     * @brief  L*ab color
+     * @note   
+     * @retval None
+     */
+    struct Lab {
+        double L;
+        double a;
+        double b;
+    };
+
+    /**
+     * @brief  XYZ color
+     * @note   
+     * @retval None
+     */
+    struct XYZ {
+        double x;
+        double y;
+        double z;
+    };
+
     /* HEX */
 
     /**
@@ -93,8 +115,16 @@ namespace colors
      * @note   
      * @param  colorA: Color 1
      * @param  colorB: Color 2
-     * @param  algo: Algorithm to use
      * @retval The distance
      */
-    double colorDistance(Color colorA, Color colorB, ColorDistanceAlgorithm algo);
+    double colorDistance(colors::Color colorA, colors::Color colorB);
+
+    /**
+     * @brief  Computes distance between 2 colors
+     * @note   
+     * @param  colorA: Color 1
+     * @param  colorB: Color 2
+     * @retval The distance
+     */
+    double colorDistance(colors::Color colorA, const colors::Lab * colorB);
 }

@@ -25,6 +25,7 @@
 #include <cmath>
 
 using namespace cielab;
+using namespace colors;
 
 double xyzParseRGBComponent(char c);
 double labParseXYZComponent(double v);
@@ -87,7 +88,7 @@ double cielab::deltaE(colors::Color colorA, colors::Color colorB) {
     return deltaE(&a, &b);
 }
 
-double cielab::deltaE(Lab * colorA, Lab * colorB) {
+double cielab::deltaE(const Lab * colorA, const Lab * colorB) {
     double L = colorA->L - colorB->L;
     double a = colorA->a - colorB->a;
     double b = colorA->b - colorB->b;

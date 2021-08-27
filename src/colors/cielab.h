@@ -32,35 +32,13 @@
  */
 namespace cielab {
     /**
-     * @brief  L*ab color
-     * @note   
-     * @retval None
-     */
-    struct Lab {
-        double L;
-        double a;
-        double b;
-    };
-
-    /**
-     * @brief  XYZ color
-     * @note   
-     * @retval None
-     */
-    struct XYZ {
-        double x;
-        double y;
-        double z;
-    };
-
-    /**
      * @brief  RGB color to XYZ coordinates
      * @note   
      * @param  color: RGB color
      * @param  xyz: Reference to XYZ struct to store the result
      * @retval None
      */
-    void rgbToXYZ(colors::Color color, XYZ * xyz);
+    void rgbToXYZ(colors::Color color, colors::XYZ * xyz);
 
     /**
      * @brief  XYZ coordinates to L*ab color
@@ -69,7 +47,7 @@ namespace cielab {
      * @param  lab: Reference to L*ab struct to store the result
      * @retval None
      */
-    void xyzToLab(const XYZ * xyz, Lab * lab);
+    void xyzToLab(const colors::XYZ * xyz, colors::Lab * lab);
 
     /**
      * @brief  RGB color to L*ab
@@ -78,7 +56,7 @@ namespace cielab {
      * @param  lab: Reference to L*ab struct to store the result
      * @retval None
      */
-    void rgbToLab(colors::Color color, Lab * lab);
+    void rgbToLab(colors::Color color, colors::Lab * lab);
 
     /**
      * @brief  Delta*E color distance algorithm
@@ -96,5 +74,5 @@ namespace cielab {
      * @param  colorB: Color 2
      * @retval Distance
      */
-    double deltaE(Lab * colorA, Lab * colorB);
+    double deltaE(const colors::Lab * colorA, const colors::Lab * colorB);
 }

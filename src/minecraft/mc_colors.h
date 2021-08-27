@@ -171,6 +171,7 @@ namespace minecraft
         McColorType colorType; // Color type
         bool enabled;          // Enabled for use?
         colors::Color color;   // RGB
+        colors::Lab lab;       // LAB
 
         // Methods
 
