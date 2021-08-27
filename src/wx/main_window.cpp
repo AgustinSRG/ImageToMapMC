@@ -98,6 +98,8 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     requiresPreviewGneration = false;
     previewInProgress = false;
 
+    threadNum = max((unsigned int)1, std::thread::hardware_concurrency());
+
     /* Menu Bar */
     menuBar = new wxMenuBar();
 
@@ -377,8 +379,6 @@ void MainWindow::GeneratePreview()
 
     while (!finished)
     {
-        int threadNum = 1;
-
         previewProgress.reset();
 
         thread progressReportThread(&MainWindow::ReportProgress, this, std::ref(previewProgress));
@@ -404,7 +404,7 @@ void MainWindow::GeneratePreview()
             previewPanel->setColors(mapArtColorMatrix, originalImageWidth, originalImageHeight);
             previewPanel->Refresh();
         }
-        catch (int e)
+        catch (int)
         {
             previewProgress.reset();
         }

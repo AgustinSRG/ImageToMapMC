@@ -165,11 +165,11 @@ std::vector<Color> minecraft::loadBaseColors(McVersion version)
 
 void FinalColor::setColor(std::vector<Color> &baseColors, size_t index, McColorType colorType)
 {
-    baseColorIndex = index;
-    colorType = colorType;
-    enabled = true;
-    color = getMinecraftColor(baseColors, index, colorType);
-    cielab::rgbToLab(color, &lab);
+    this->baseColorIndex = index;
+    this->colorType = colorType;
+    this->enabled = true;
+    this->color = getMinecraftColor(baseColors, index, colorType);
+    cielab::rgbToLab(this->color, &lab);
 }
 
 short FinalColor::getMapColor() const
@@ -310,6 +310,12 @@ size_t minecraft::findClosestColor(const std::vector<minecraft::FinalColor> &col
     size_t size = colors.size();
     size_t result = 0;
 
+    colors::Lab colorALab;
+
+    if (algo == ColorDistanceAlgorithm::DeltaE) {
+        cielab::rgbToLab(color, &colorALab);
+    }
+
     // Start with i = 4 to skip all NONE blocks
     for (size_t i = 4; i < size; i++)
     {
@@ -318,7 +324,7 @@ size_t minecraft::findClosestColor(const std::vector<minecraft::FinalColor> &col
             // If disabled, skip
             continue;
         }
-        double d = (algo == ColorDistanceAlgorithm::DeltaE) ? colorDistance(color, &(colors[i].lab)) : colorDistance(colors[i].color, color);
+        double d = (algo == ColorDistanceAlgorithm::DeltaE) ? colorDistance(&colorALab, &(colors[i].lab)) : colorDistance(colors[i].color, color);
         if (result > 1)
         {
             if (distance > d)
@@ -345,6 +351,12 @@ std::vector<size_t> minecraft::find2ClosestColors(const std::vector<minecraft::F
     double distance1;
     double distance2;
 
+    colors::Lab colorALab;
+
+    if (algo == ColorDistanceAlgorithm::DeltaE) {
+        cielab::rgbToLab(color, &colorALab);
+    }
+
     // Start with i = 4 to skip all NONE blocks
     for (size_t i = 4; i < size; i++)
     {
@@ -353,7 +365,7 @@ std::vector<size_t> minecraft::find2ClosestColors(const std::vector<minecraft::F
             // If disabled, skip
             continue;
         }
-        double d = (algo == ColorDistanceAlgorithm::DeltaE) ? colorDistance(color, &(colors[i].lab)) : colorDistance(colors[i].color, color);
+        double d = (algo == ColorDistanceAlgorithm::DeltaE) ? colorDistance(&colorALab, &(colors[i].lab)) : colorDistance(colors[i].color, color);
         if (res1 > 1)
         {
             if (distance1 > d)

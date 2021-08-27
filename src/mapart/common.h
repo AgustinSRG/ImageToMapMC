@@ -80,12 +80,12 @@ namespace mapart
      * @note   
      * @retval None
      */
-    enum class MapBuildMethod
+    enum class MapBuildMethod: short
     {
-        None,       // No build, only export to map
-        Flat,       // Flat (2d)
-        Staircased, // Staircased
-        Chaos       // 3D with Y level jumps
+        None = 0,       // No build, only export to map
+        Flat = 1,       // Flat (2d)
+        Staircased = 2, // Staircased
+        Chaos = 3       // 3D with Y level jumps
     };
 
     /**

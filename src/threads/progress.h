@@ -43,6 +43,7 @@ namespace threading {
             Progress();
 
             bool hasEnded();
+            bool isTerminated();
             std::pair<std::string, unsigned int> getProgress();
 
             void startTask(std::string name, unsigned int totalP, unsigned int threadsNum);

@@ -111,3 +111,7 @@ void Progress::setEnded() {
 void Progress::terminate() {
     terminated = true;
 }
+
+bool Progress::isTerminated() {
+    return terminated;
+}

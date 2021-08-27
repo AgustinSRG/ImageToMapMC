@@ -126,5 +126,5 @@ namespace colors
      * @param  colorB: Color 2
      * @retval The distance
      */
-    double colorDistance(colors::Color colorA, const colors::Lab * colorB);
+    double colorDistance(const colors::Lab * colorA, const colors::Lab * colorB);
 }

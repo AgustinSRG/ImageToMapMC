@@ -128,9 +128,7 @@ double colors::colorDistance(colors::Color colorA, colors::Color colorB)
     return (r * r) + (g * g) + (b * b);
 }
 
-double colors::colorDistance(colors::Color colorA, const colors::Lab * colorB)
+double colors::colorDistance(const colors::Lab * colorA, const colors::Lab * colorB)
 {
-    colors::Lab colorALab;
-    cielab::rgbToLab(colorA, &colorALab);
-    return cielab::deltaE(&colorALab, colorB);
+    return cielab::deltaE(colorA, colorB);
 }

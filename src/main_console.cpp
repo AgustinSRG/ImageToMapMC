@@ -308,7 +308,7 @@ int buildMap(int argc, char **argv)
     int rsW = -1;
     int rsH = -1;
     bool yesForced = false;
-    unsigned int threadNum = 1;
+    unsigned int threadNum = max((unsigned int)1, std::thread::hardware_concurrency());
     string materialsOutFile = "";
 
     // Load arguments

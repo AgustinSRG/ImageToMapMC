@@ -29,6 +29,7 @@
 #endif
 
 #include <mutex>
+#include <thread>
 
 #include "../mapart/map_art.h"
 #include "../mapart/map_image.h"
@@ -77,6 +78,8 @@ private:
     size_t originalImageWidth;
     size_t originalImageHeight;
     std::vector<colors::Color> originalImageColors;
+
+    int threadNum;
 
     wxMenuBar * menuBar;
 
