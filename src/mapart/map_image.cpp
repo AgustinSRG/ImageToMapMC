@@ -36,6 +36,9 @@ std::vector<colors::Color> mapart::loadColorMatrixFromImageAndPad(wxImage &image
     int finalHeight = height + ((height % MAP_HEIGHT > 0) ? (MAP_HEIGHT - (height % MAP_HEIGHT)) : 0 );
     size_t size = finalWidth * finalHeight;
 
+    int imagePosX = (finalWidth - width) / 2;
+    int imagePosZ = (finalHeight - height) / 2;
+
     vector<Color> result(size);
 
     // Init colors to white
@@ -53,7 +56,7 @@ std::vector<colors::Color> mapart::loadColorMatrixFromImageAndPad(wxImage &image
         for (int x = 0; x < width; x++)
         {
             int indexImage = (z * width + x) * 3;
-            int indexFinal = z * finalWidth + x;
+            int indexFinal = (imagePosZ + z) * finalWidth + (imagePosX + x);
 
             result[indexFinal].red = rawData[indexImage];
             result[indexFinal].green = rawData[indexImage + 1];

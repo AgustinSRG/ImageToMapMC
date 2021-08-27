@@ -75,6 +75,7 @@ private:
     bool previewInProgress;
     threading::Progress previewProgress;
 
+    wxImage originalImage;
     wxImagePanel * originalImagePanel;
     wxImagePanel * previewPanel;
     size_t originalImageWidth;

@@ -251,8 +251,7 @@ void MainWindow::onLoadImage(wxCommandEvent &evt)
 
 void MainWindow::loadImage(std::string file)
 {
-    wxImage image;
-    if (!image.LoadFile(file))
+    if (!originalImage.LoadFile(file))
     {
         wxMessageBox(string("Invalid image file: ") + file, wxT("Error"), wxICON_ERROR);
         return;
@@ -260,7 +259,7 @@ void MainWindow::loadImage(std::string file)
 
     int matrixW;
     int matrixH;
-    originalImageColors = loadColorMatrixFromImageAndPad(image, &matrixW, &matrixH);
+    originalImageColors = loadColorMatrixFromImageAndPad(originalImage, &matrixW, &matrixH);
     originalImageWidth = matrixW;
     originalImageHeight = matrixH;
 
@@ -268,7 +267,7 @@ void MainWindow::loadImage(std::string file)
     originalImagePanel->Refresh();
 
     stringstream ss;
-    ss << "Size: " << (matrixW / MAP_WIDTH) << " x " << (matrixW / MAP_HEIGHT);
+    ss << "Size: " << (matrixW / MAP_WIDTH) << " x " << (matrixH / MAP_HEIGHT);
     GetStatusBar()->SetStatusText(ss.str(), 1);
 
     RequestPreviewGeneration();
