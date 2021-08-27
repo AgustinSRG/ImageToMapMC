@@ -61,6 +61,8 @@ public:
 
     void ReportProgress(threading::Progress &progress);
 
+    void handleDropFile(wxDropFilesEvent& event);
+
 private:
     minecraft::McVersion version;
     colors::ColorDistanceAlgorithm colorDistanceAlgorithm;

@@ -68,6 +68,7 @@ EVT_MENU_RANGE(BUILD_METHOD_ID_PREFIX, BUILD_METHOD_ID_PREFIX + 99, MainWindow::
 EVT_MENU_RANGE(DITHERING_ID_PREFIX, DITHERING_ID_PREFIX + 99, MainWindow::onChangeDithering)
 EVT_MENU(wxID_EXIT, MainWindow::onExit)
 EVT_SIZE(MainWindow::OnSize)
+EVT_DROP_FILES(MainWindow::handleDropFile)
 END_EVENT_TABLE()
 
 int getIdForVersionMenu(McVersion version)
@@ -226,6 +227,8 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     previewPanel->setColors(originalImageColors, originalImageWidth, originalImageHeight);
 
     Maximize();
+
+    DragAcceptFiles(true);
 }
 
 MainWindow::~MainWindow()
@@ -425,6 +428,12 @@ void MainWindow::GeneratePreview()
         }
 
         mutexPreviewGeneration.unlock();
+    }
+}
+
+void MainWindow::handleDropFile(wxDropFilesEvent& event) {
+    if (event.GetNumberOfFiles() > 0) {
+        loadImage(string(event.GetFiles()[0]));
     }
 }
 
