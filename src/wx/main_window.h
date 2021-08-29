@@ -36,6 +36,8 @@
 
 #include "img_display_window.h"
 
+class MaterialsWindow;
+
 class MainWindow : public wxFrame
 {
 public:
@@ -48,6 +50,7 @@ public:
     void onChangeColorAlgo(wxCommandEvent &evt);
     void onChangeDithering(wxCommandEvent &evt);
     void onChangeBuildMethod(wxCommandEvent &evt);
+    void onCustomBlocks(wxCommandEvent &evt);
 
     void onExit(wxCommandEvent &evt);
     void onLoadImage(wxCommandEvent &evt);
@@ -62,6 +65,8 @@ public:
     void ReportProgress(threading::Progress &progress);
 
     void handleDropFile(wxDropFilesEvent& event);
+
+    void changeColorSetConf(std::string conf);
 
 private:
     minecraft::McVersion version;
@@ -82,9 +87,13 @@ private:
     size_t originalImageHeight;
     std::vector<colors::Color> originalImageColors;
 
+    std::string colorSetConf;
+
     int threadNum;
 
     wxMenuBar * menuBar;
+
+    MaterialsWindow * materialsWindow;
 
     wxDECLARE_EVENT_TABLE();
 };
@@ -95,3 +104,5 @@ namespace widgets {
 
 #define FRAME_PAD_PIXELS (5)
 #define REPORT_THREAD_DELAY (33)
+
+#include "materials_window.h"

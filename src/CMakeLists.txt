@@ -45,6 +45,7 @@ SET(SOURCES_COMMON
 SET(SOURCES_WX 
     "wx/main_window.h" "wx/main_window.cpp"
     "wx/img_display_window.h" "wx/img_display_window.cpp"
+    "wx/materials_window.h" "wx/materials_window.cpp"
 )
 
 SET(SOURCES_RC 

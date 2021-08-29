@@ -67,6 +67,7 @@ EVT_MENU_RANGE(COLOR_METHOD_ID_PREFIX, COLOR_METHOD_ID_PREFIX + 99, MainWindow::
 EVT_MENU_RANGE(BUILD_METHOD_ID_PREFIX, BUILD_METHOD_ID_PREFIX + 99, MainWindow::onChangeBuildMethod)
 EVT_MENU_RANGE(DITHERING_ID_PREFIX, DITHERING_ID_PREFIX + 99, MainWindow::onChangeDithering)
 EVT_MENU(wxID_EXIT, MainWindow::onExit)
+EVT_MENU(ID_Blocks_Custom, MainWindow::onCustomBlocks)
 EVT_SIZE(MainWindow::OnSize)
 EVT_DROP_FILES(MainWindow::handleDropFile)
 END_EVENT_TABLE()
@@ -100,6 +101,11 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     previewInProgress = false;
 
     threadNum = max((unsigned int)1, std::thread::hardware_concurrency());
+
+    // Materials window
+    materialsWindow = new MaterialsWindow(this);
+
+    colorSetConf = "MODE(BLACKLIST)\n";
 
     /* Menu Bar */
     menuBar = new wxMenuBar();
@@ -187,7 +193,6 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_17), "&1.17", "")->Check(true);
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_16), "&1.16", "");
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_15), "&1.15", "");
-    ;
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_14), "&1.14", "");
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_13), "&1.13", "");
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_12), "&1.12", "");
@@ -229,6 +234,8 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     Maximize();
 
     DragAcceptFiles(true);
+
+    materialsWindow->setMaterialsConf(version, colorSetConf);
 }
 
 MainWindow::~MainWindow()
@@ -278,9 +285,16 @@ void MainWindow::onExit(wxCommandEvent &evt)
     Close(true);
 }
 
+void MainWindow::onCustomBlocks(wxCommandEvent &evt)
+{
+    materialsWindow->Show();
+    materialsWindow->Raise();
+}
+
 void MainWindow::onChangeVersion(wxCommandEvent &evt)
 {
     version = static_cast<McVersion>(evt.GetId() - VERSION_ID_PREFIX);
+    materialsWindow->setMaterialsConf(version, colorSetConf);
     RequestPreviewGeneration();
 }
 
@@ -390,13 +404,13 @@ void MainWindow::GeneratePreview()
             previewProgress.startTask("Loading minecraft colors...", 0, 0);
             std::vector<colors::Color> baseColors = minecraft::loadBaseColors(version);
             std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
+            std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
             std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
             std::vector<bool> enabledConf(baseColors.size());
             bool blacklist = true;
 
             previewProgress.startTask("Loading custom configuration...", 0, 0);
-            // TODO
-
+            mapart::applyColorSet(colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
             // Apply color restructions based on build method
             applyBuildRestrictions(colorSet, buildMethod);
 
@@ -430,10 +444,17 @@ void MainWindow::GeneratePreview()
     }
 }
 
-void MainWindow::handleDropFile(wxDropFilesEvent& event) {
-    if (event.GetNumberOfFiles() > 0) {
+void MainWindow::handleDropFile(wxDropFilesEvent &event)
+{
+    if (event.GetNumberOfFiles() > 0)
+    {
         loadImage(string(event.GetFiles()[0]));
     }
+}
+
+void MainWindow::changeColorSetConf(std::string conf) {
+    colorSetConf = conf;
+    RequestPreviewGeneration();
 }
 
 void widgets::displayMainWindow(wxApp &app)
