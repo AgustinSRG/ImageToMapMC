@@ -34,6 +34,8 @@
 #include "../mapart/map_art.h"
 #include "../mapart/map_image.h"
 
+#include "../tools/text_file.h"
+
 #include "img_display_window.h"
 
 class MaterialsWindow;
@@ -61,6 +63,9 @@ public:
     void RequestPreviewGeneration();
 
     void GeneratePreview();
+    void SaveMaterialsList();
+
+    void OnSaveMaterialsList(wxCommandEvent &evt);
 
     void ReportProgress(threading::Progress &progress);
 
@@ -73,6 +78,8 @@ private:
     colors::ColorDistanceAlgorithm colorDistanceAlgorithm;
     mapart::DitheringMethod ditheringMethod;
     mapart::MapBuildMethod buildMethod;
+
+    std::mutex mutexProgress;
 
     std::mutex mutexPreviewGeneration;
     std::thread * previewGenerationThread;

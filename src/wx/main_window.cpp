@@ -62,6 +62,7 @@ enum Identifiers
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
 EVT_MENU(ID_File_Open, MainWindow::openProject)
 EVT_MENU(ID_Load_Image, MainWindow::onLoadImage)
+EVT_MENU(ID_Materials_Save, MainWindow::OnSaveMaterialsList)
 EVT_MENU_RANGE(VERSION_ID_PREFIX, VERSION_ID_PREFIX + 99, MainWindow::onChangeVersion)
 EVT_MENU_RANGE(COLOR_METHOD_ID_PREFIX, COLOR_METHOD_ID_PREFIX + 99, MainWindow::onChangeColorAlgo)
 EVT_MENU_RANGE(BUILD_METHOD_ID_PREFIX, BUILD_METHOD_ID_PREFIX + 99, MainWindow::onChangeBuildMethod)
@@ -129,10 +130,6 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     exportMenu->Append(ID_Export_Structure, "&Export as structures", "");
     exportMenu->Append(ID_Export_World, "&Export as minecraft world", "");
     menuFile->AppendSubMenu(exportMenu, "&Export", "");
-
-    menuFile->AppendSeparator();
-
-    menuFile->Append(ID_Preferences, "&Preferences\tCtrl+P", "");
 
     menuFile->AppendSeparator();
 
@@ -378,14 +375,18 @@ void MainWindow::ReportProgress(Progress &progress)
             progressLine = ss.str();
         }
 
+        mutexProgress.lock();
         GetStatusBar()->SetStatusText(progressLine, 0);
+        mutexProgress.unlock();
 
         // Check ended
         ended = progress.hasEnded();
     }
 
     // Erase line
+    mutexProgress.lock();
     GetStatusBar()->SetStatusText("Ready", 0);
+    mutexProgress.unlock();
 }
 
 void MainWindow::GeneratePreview()
@@ -446,6 +447,87 @@ void MainWindow::GeneratePreview()
     }
 }
 
+void MainWindow::OnSaveMaterialsList(wxCommandEvent &evt)
+{
+    if (buildMethod == MapBuildMethod::None)
+    {
+        wxMessageBox(wxString("You must choose a build method to create the materials list"), wxT("Error"), wxICON_ERROR);
+        return;
+    }
+
+    std::thread *t = new std::thread(&MainWindow::SaveMaterialsList, this);
+}
+
+void MainWindow::SaveMaterialsList()
+{
+    threading::Progress p;
+
+    thread progressReportThread(&MainWindow::ReportProgress, this, std::ref(p));
+
+    try
+    {
+        p.startTask("Loading minecraft colors...", 0, 0);
+        std::vector<colors::Color> baseColors = minecraft::loadBaseColors(version);
+        std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
+        std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
+        std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
+        std::vector<bool> enabledConf(baseColors.size());
+        std::vector<size_t> countsMats(MAX_COLOR_GROUPS);
+        bool blacklist = true;
+
+        p.startTask("Loading custom configuration...", 0, 0);
+        mapart::applyColorSet(colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
+        // Apply color restructions based on build method
+        applyBuildRestrictions(colorSet, buildMethod);
+
+        p.startTask("Adjusting colors...", originalImageHeight, threadNum);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, colorDistanceAlgorithm, ditheringMethod, threadNum, p, countsMats);
+
+        // Compute total maps
+        int mapsCountX = originalImageWidth / MAP_WIDTH;
+        int mapsCountZ = originalImageHeight / MAP_HEIGHT;
+
+        int total = 0;
+        int totalMapsCount = mapsCountX * mapsCountZ;
+
+        MaterialsList materials(baseColorNames);
+
+        for (int mapZ = 0; mapZ < mapsCountZ; mapZ++)
+        {
+            for (int mapX = 0; mapX < mapsCountX; mapX++)
+            {
+                stringstream ss;
+                ss << "Building map (" << (total + 1) << "/" << totalMapsCount << ")...";
+                p.startTask(ss.str(), MAP_WIDTH, threadNum);
+
+                std::vector<mapart::MapBuildingBlock> buildingBlocks = mapart::buildMap(version, blockSet, mapArtColorMatrix, originalImageWidth, originalImageHeight, mapX, mapZ, buildMethod, threadNum, p);
+
+                // Add to materials list
+                materials.addBlocks(buildingBlocks);
+
+                total++;
+            }
+        }
+
+        p.startTask("Saving...", 0, 0);
+
+        wxFileDialog saveFileDialog(this, _("Save materials list"), "", "", "Text file (*.txt)|*.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+        if (saveFileDialog.ShowModal() != wxID_CANCEL)
+        {
+            if (!tools::writeTextFile(saveFileDialog.GetPath(), materials.toString()))
+            {
+                wxMessageBox(wxString("Could not save the materials due to a file system error."), wxT("Error"), wxICON_ERROR);
+            }
+        }
+    }
+    catch (int)
+    {
+    }
+
+    p.setEnded();
+    progressReportThread.join();
+}
+
 void MainWindow::handleDropFile(wxDropFilesEvent &event)
 {
     if (event.GetNumberOfFiles() > 0)
@@ -454,7 +536,8 @@ void MainWindow::handleDropFile(wxDropFilesEvent &event)
     }
 }
 
-void MainWindow::changeColorSetConf(std::string conf) {
+void MainWindow::changeColorSetConf(std::string conf)
+{
     colorSetConf = conf;
     RequestPreviewGeneration();
 }
