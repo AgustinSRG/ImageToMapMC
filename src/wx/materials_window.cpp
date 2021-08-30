@@ -23,6 +23,7 @@
 
 #include "materials_window.h"
 #include "../resources/icon.xpm"
+#include "../tools/text_file.h"
 #include <wx/sizer.h>
 
 #define MAX_COLOR_GROUPS (64)
@@ -192,6 +193,13 @@ void MaterialsPanel::onConfigChanged() {
     this->materialsWindow->mainWindow->changeColorSetConf(getMaterialsConf());
 }
 
+void MaterialsPanel::setBlacklistMode(bool blacklist) {
+    for (int i = 1; i < MAX_COLOR_GROUPS; i++) {
+        enabledConf[i] = blacklist;
+        groups[i].checkBox->SetValue(blacklist);
+    }
+}
+
 void MaterialsPanel::setMaterialsConf(minecraft::McVersion version, std::string conf)
 {
     this->version = version;
@@ -282,20 +290,38 @@ void MaterialsWindow::setMaterialsConf(minecraft::McVersion version, std::string
 
 void MaterialsWindow::onLoadFile(wxCommandEvent &evt)
 {
+    wxFileDialog
+        openFileDialog(this, _("Load configuration"), "", "",
+                       "Configuration files (*.txt, *.conf)|*.txt;*.conf|All files|*.*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+    if (openFileDialog.ShowModal() == wxID_CANCEL)
+        return; // the user changed idea...
+
+    panel->setMaterialsConf( panel->version, tools::readTextFile(openFileDialog.GetPath()));
+    mainWindow->changeColorSetConf(panel->getMaterialsConf());
 }
 
 void MaterialsWindow::onSaveFile(wxCommandEvent &evt)
 {
+    wxFileDialog saveFileDialog(this, _("Save Configuration"), "", "", "Configuration file (*.txt)|*.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    if (saveFileDialog.ShowModal() == wxID_CANCEL)
+    {
+        return; // the user changed idea...
+    }
+    if (!tools::writeTextFile(saveFileDialog.GetPath(), panel->getMaterialsConf())) {
+        wxMessageBox(wxString("Could not save the configuration due to a file system error."), wxT("Error"), wxICON_ERROR);
+    }
 }
 
 void MaterialsWindow::SetBlackList(wxCommandEvent &evt)
 {
     panel->blacklist = true;
+    panel->setBlacklistMode(true);
     panel->onConfigChanged();
 }
 
 void MaterialsWindow::SetWhiteList(wxCommandEvent &evt)
 {
     panel->blacklist = false;
+    panel->setBlacklistMode(false);
     panel->onConfigChanged();
 }

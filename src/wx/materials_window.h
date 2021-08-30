@@ -59,12 +59,15 @@ public:
 
     void onConfigChanged();
 
+    void setBlacklistMode(bool blacklist);
+
     bool blacklist;
+    minecraft::McVersion version;
 
 private:
     std::vector<MaterialCustomGroup> groups;
     MaterialsWindow *materialsWindow;
-    minecraft::McVersion version;
+    
     std::vector<colors::Color> baseColors;
     std::vector<minecraft::BlockList> blockSet;
     std::vector<minecraft::FinalColor> colorSet;
