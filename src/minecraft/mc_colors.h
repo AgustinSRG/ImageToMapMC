@@ -30,6 +30,8 @@
 #include <vector>
 #include <map>
 
+#define MAX_COLOR_GROUPS (64)
+
 namespace minecraft
 {
 

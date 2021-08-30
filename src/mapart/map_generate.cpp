@@ -164,7 +164,7 @@ void applyErrorDiffussion(std::vector<colors::Color> &colorMatrix, size_t width,
     }
 }
 
-void threadGenerateMapFunc(int id, size_t fromZ, size_t toZ, std::vector<const minecraft::FinalColor *> &result, const std::vector<minecraft::FinalColor> &colorSet, std::vector<colors::Color> &matrix, size_t width, size_t height, colors::ColorDistanceAlgorithm colorDistanceAlgo, mapart::DitheringMethod ditheringMethod, threading::Progress &progress)
+void threadGenerateMapFunc(int id, size_t fromZ, size_t toZ, std::vector<const minecraft::FinalColor *> &result, const std::vector<minecraft::FinalColor> &colorSet, std::vector<colors::Color> &matrix, size_t width, size_t height, colors::ColorDistanceAlgorithm colorDistanceAlgo, mapart::DitheringMethod ditheringMethod, threading::Progress &progress, std::vector<size_t> &counts)
 {
     size_t closest;
     vector<size_t> closest2;
@@ -248,19 +248,29 @@ void threadGenerateMapFunc(int id, size_t fromZ, size_t toZ, std::vector<const m
                 closest = findClosestColor(colorSet, matrix[index], colorDistanceAlgo);
                 result[index] = &(colorSet[closest]);
             }
+
+            counts[result[index]->baseColorIndex]++;
         }
-        try {
+        try
+        {
             progress.setProgress(static_cast<unsigned int>(id), static_cast<unsigned int>(z - fromZ + 1));
-        } catch (int e) {
+        }
+        catch (int)
+        {
             return;
         }
     }
 }
 
-std::vector<const minecraft::FinalColor *> mapart::generateMapArt(const std::vector<minecraft::FinalColor> &colorSet, const std::vector<colors::Color> &colorMatrix, size_t width, size_t height, colors::ColorDistanceAlgorithm colorDistanceAlgo, mapart::DitheringMethod ditheringMethod, size_t threadNum, threading::Progress &progress)
+std::vector<const minecraft::FinalColor *> mapart::generateMapArt(const std::vector<minecraft::FinalColor> &colorSet, const std::vector<colors::Color> &colorMatrix, size_t width, size_t height, colors::ColorDistanceAlgorithm colorDistanceAlgo, mapart::DitheringMethod ditheringMethod, size_t threadNum, threading::Progress &progress, std::vector<size_t> &counts)
 {
     std::vector<colors::Color> matrix(colorMatrix); // Make a copy of colorMatrix to work with
     std::vector<const minecraft::FinalColor *> result(width * height);
+
+    for (int j = 0; j < MAX_COLOR_GROUPS; j++)
+    {
+        counts[j] = 0;
+    }
 
     switch (ditheringMethod)
     {
@@ -276,12 +286,19 @@ std::vector<const minecraft::FinalColor *> mapart::generateMapArt(const std::vec
     }
 
     std::vector<std::thread> threads(threadNum);
+    std::vector<std::vector<size_t>> countParts(threadNum);
 
     size_t amountPerThread = height / threadNum;
 
     // Create threads
     for (int i = 0; i < threadNum; i++)
     {
+        countParts[i].resize(MAX_COLOR_GROUPS);
+        for (int j = 0; j < MAX_COLOR_GROUPS; j++)
+        {
+            countParts[i][j] = 0;
+        }
+
         size_t startZ = i * amountPerThread;
         size_t endZ = startZ + amountPerThread;
 
@@ -290,16 +307,21 @@ std::vector<const minecraft::FinalColor *> mapart::generateMapArt(const std::vec
             // Last thread, get the rest
             endZ = height;
         }
-        threads[i] = std::thread(threadGenerateMapFunc, i, startZ, endZ, std::ref(result), std::ref(colorSet), std::ref(matrix), width, height, colorDistanceAlgo, ditheringMethod, std::ref(progress));
+        threads[i] = std::thread(threadGenerateMapFunc, i, startZ, endZ, std::ref(result), std::ref(colorSet), std::ref(matrix), width, height, colorDistanceAlgo, ditheringMethod, std::ref(progress), std::ref(countParts[i]));
     }
 
     // Wait for the threads
     for (int i = 0; i < threadNum; i++)
     {
         threads[i].join();
+        for (int j = 0; j < MAX_COLOR_GROUPS; j++)
+        {
+            counts[j] += countParts[i][j];
+        }
     }
 
-    if (progress.isTerminated()) {
+    if (progress.isTerminated())
+    {
         throw -1;
     }
 

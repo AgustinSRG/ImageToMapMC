@@ -25,13 +25,13 @@
 #include "../resources/icon.xpm"
 #include "../tools/text_file.h"
 #include <wx/sizer.h>
-
-#define MAX_COLOR_GROUPS (64)
+#include <sstream>
 
 #define MIN_ID_CHECHBOX (10200)
 #define MIN_ID_PANEL (10300)
 #define MIN_ID_LABEL (10400)
 #define MIN_ID_COMBO (10500)
+#define MIN_ID_COUNT_LABEL (10600)
 
 using namespace std;
 using namespace colors;
@@ -62,7 +62,7 @@ MaterialsPanel::MaterialsPanel(MaterialsWindow *matWin) : wxScrolledWindow(matWi
 {
     materialsWindow = matWin;
 
-    wxFlexGridSizer *sizer = new wxFlexGridSizer(MAX_COLOR_GROUPS, 4, wxSize(5, 5));
+    wxFlexGridSizer *sizer = new wxFlexGridSizer(MAX_COLOR_GROUPS, 5, wxSize(5, 5));
 
     vector<Color> colors = minecraft::loadBaseColors(MC_LAST_VERSION);
     vector<string> colorNames = minecraft::loadBaseColorNames(colors);
@@ -106,6 +106,9 @@ MaterialsPanel::MaterialsPanel(MaterialsWindow *matWin) : wxScrolledWindow(matWi
         groups[i].combo = new wxComboBox(this, MIN_ID_COMBO + i, wxString("block_id"), wxPoint(5, 5), wxSize(160, 40), options);
         groups[i].combo->Bind(wxEVT_COMBOBOX, &MaterialsPanel::onComboBoxChanged, this);
         sizer->Add(groups[i].combo, wxSizerFlags(0).Border(wxALL, 10).Align(wxALIGN_CENTER_VERTICAL));
+
+        groups[i].countLabel = new wxStaticText(this, MIN_ID_COUNT_LABEL + i, wxString("0 Blocks"));
+        sizer->Add(groups[i].countLabel, wxSizerFlags(0).Border(wxALL, 10).Align(wxALIGN_CENTER_VERTICAL));
     }
 
     SetSizer(sizer);
@@ -229,6 +232,7 @@ void MaterialsPanel::setMaterialsConf(minecraft::McVersion version, std::string 
             groups[i].colorLabel->Show();
             groups[i].colorPanel->Show();
             groups[i].combo->Show();
+            groups[i].countLabel->Show();
 
             groups[i].checkBox->SetValue(enabledConf[i]);
 
@@ -278,6 +282,7 @@ void MaterialsPanel::setMaterialsConf(minecraft::McVersion version, std::string 
             groups[i].checkBox->Hide();
             groups[i].colorLabel->Hide();
             groups[i].colorPanel->Hide();
+            groups[i].countLabel->Hide();
             groups[i].combo->Hide();
         }
     }
@@ -324,4 +329,29 @@ void MaterialsWindow::SetWhiteList(wxCommandEvent &evt)
     panel->blacklist = false;
     panel->setBlacklistMode(false);
     panel->onConfigChanged();
+}
+
+void MaterialsWindow::displayCountMaterials(std::vector<size_t> &counts) {
+    panel->displayCountMaterials(counts);
+}
+
+void MaterialsPanel::displayCountMaterials(std::vector<size_t> &counts) {
+    for (int i = 1; i < counts.size() && i < MAX_COLOR_GROUPS; i++) {
+        size_t count = counts[i];
+        stringstream ss;
+
+        if (count >= SHULKER_BOX_AMOUNT) {
+            double shulkers = (double) count / SHULKER_BOX_AMOUNT;
+            shulkers = round(shulkers * 10) / 10;
+            ss << shulkers << " Shulkers";
+        } else if (count >= STACK_AMOUNT) {
+            double stacks = (double) count / STACK_AMOUNT;
+            stacks = round(stacks * 10) / 10;
+            ss << stacks << " Stacks";
+        } else {
+            ss << count << " Blocks";
+        }
+
+        groups[i].countLabel->SetLabel(ss.str());
+    }
 }

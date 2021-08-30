@@ -152,7 +152,6 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     wxMenu *menuMaterials = new wxMenu();
     menuMaterials->Append(ID_Blocks_Custom, "&Customize materials", "");
     menuMaterials->AppendSeparator();
-    menuMaterials->Append(ID_Materials_Show, "&Count required materials", "");
     menuMaterials->Append(ID_Materials_Save, "&Export materials list", "");
     menuBar->Append(menuMaterials, "&Materials");
 
@@ -407,6 +406,7 @@ void MainWindow::GeneratePreview()
             std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
             std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
             std::vector<bool> enabledConf(baseColors.size());
+            std::vector<size_t> countsMats(MAX_COLOR_GROUPS);
             bool blacklist = true;
 
             previewProgress.startTask("Loading custom configuration...", 0, 0);
@@ -415,10 +415,12 @@ void MainWindow::GeneratePreview()
             applyBuildRestrictions(colorSet, buildMethod);
 
             previewProgress.startTask("Generating preview...", originalImageHeight, threadNum);
-            std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, colorDistanceAlgorithm, ditheringMethod, threadNum, previewProgress);
+            std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, colorDistanceAlgorithm, ditheringMethod, threadNum, previewProgress, countsMats);
 
             previewPanel->setColors(mapArtColorMatrix, originalImageWidth, originalImageHeight);
             previewPanel->Refresh();
+
+            materialsWindow->displayCountMaterials(countsMats);
         }
         catch (int)
         {

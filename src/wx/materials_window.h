@@ -41,6 +41,7 @@ struct MaterialCustomGroup
     wxPanel *colorPanel;
     wxStaticText *colorLabel;
     wxComboBox *combo;
+    wxStaticText *countLabel;
 };
 
 class MaterialsWindow;
@@ -64,6 +65,7 @@ public:
     bool blacklist;
     minecraft::McVersion version;
 
+    void displayCountMaterials(std::vector<size_t> &counts);
 private:
     std::vector<MaterialCustomGroup> groups;
     MaterialsWindow *materialsWindow;
@@ -96,6 +98,8 @@ public:
     void SetWhiteList(wxCommandEvent &evt);
 
     void setMaterialsConf(minecraft::McVersion version, std::string conf);
+
+    void displayCountMaterials(std::vector<size_t> &counts);
 
 private:
     MaterialsPanel *panel;

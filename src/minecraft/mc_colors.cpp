@@ -165,7 +165,7 @@ std::vector<Color> minecraft::loadBaseColors(McVersion version)
 
 void FinalColor::setColor(std::vector<Color> &baseColors, size_t index, McColorType colorType)
 {
-    this->baseColorIndex = index;
+    this->baseColorIndex = static_cast<short>(index);
     this->colorType = colorType;
     this->enabled = true;
     this->color = getMinecraftColor(baseColors, index, colorType);

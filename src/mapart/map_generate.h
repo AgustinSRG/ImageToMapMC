@@ -38,5 +38,5 @@ namespace mapart {
      * @param  ditheringMethod: Dithering method
      * @retval Array of final colors
      */
-    std::vector<const minecraft::FinalColor *> generateMapArt(const std::vector<minecraft::FinalColor> &colorSet, const std::vector<colors::Color> &colorMatrix, size_t width, size_t height, colors::ColorDistanceAlgorithm colorDistanceAlgo, mapart::DitheringMethod ditheringMethod, size_t threadNum, threading::Progress &progress);
+    std::vector<const minecraft::FinalColor *> generateMapArt(const std::vector<minecraft::FinalColor> &colorSet, const std::vector<colors::Color> &colorMatrix, size_t width, size_t height, colors::ColorDistanceAlgorithm colorDistanceAlgo, mapart::DitheringMethod ditheringMethod, size_t threadNum, threading::Progress &progress, std::vector<size_t> &counts);
 }

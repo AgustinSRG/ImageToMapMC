@@ -136,7 +136,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     /* Initialize */
     for (size_t i = 0; i < size; i++)
     {
-        list[i].baseColorIndex = i;
+        list[i].baseColorIndex = static_cast<short>(i);
         list[i].useBlockIndex = 0;
     }
 

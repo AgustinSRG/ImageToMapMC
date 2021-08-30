@@ -702,7 +702,8 @@ int buildMap(int argc, char **argv)
 
     // Generate map art
     p.startTask("Adjusting image colors...", matrixH, threadNum);
-    std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, imageColorsMatrix, matrixW, matrixH, colorAlgo, ditheringMethod, threadNum, p);
+    std::vector<size_t> countsMats(MAX_COLOR_GROUPS);
+    std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, imageColorsMatrix, matrixW, matrixH, colorAlgo, ditheringMethod, threadNum, p, countsMats);
 
     // Compute total maps
     int mapsCountX = matrixW / MAP_WIDTH;

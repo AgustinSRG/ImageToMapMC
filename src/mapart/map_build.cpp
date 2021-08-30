@@ -66,7 +66,7 @@ std::vector<mapart::MapBuildingBlock> mapart::buildMap(minecraft::McVersion vers
     for (size_t x = 0; x < MAP_WIDTH; x++)
     {
         buildMapRow(version, blockSet, blocks, matrix, matrixW, matrixH, mapX, mapZ, x, smooth);
-        p.setProgress(0, x + 1);
+        p.setProgress(0, static_cast<unsigned int>(x + 1));
     }
 
     return blocks;
@@ -85,7 +85,7 @@ void mapart::buildMapRow(minecraft::McVersion version, const std::vector<minecra
     int lowestY = 0;
 
     blockMatrix[x].block_ptr = NULL;
-    blockMatrix[x].x = x;
+    blockMatrix[x].x = static_cast<int>(x);
     blockMatrix[x].z = 0;
     blockMatrix[x].y = 0;
 
@@ -98,8 +98,8 @@ void mapart::buildMapRow(minecraft::McVersion version, const std::vector<minecra
         size_t indexInMatrix = (z + offsetZ) * matrixW + (x + offsetX);
 
         // Position
-        blockMatrix[indexBlockMatrix].x = x;
-        blockMatrix[indexBlockMatrix].z = z + 1;
+        blockMatrix[indexBlockMatrix].x = static_cast<int>(x);
+        blockMatrix[indexBlockMatrix].z = static_cast<int>(z + 1);
 
         // Color
         const minecraft::FinalColor *color = matrix[indexInMatrix];
@@ -108,7 +108,7 @@ void mapart::buildMapRow(minecraft::McVersion version, const std::vector<minecra
         blockMatrix[indexBlockMatrix].block_ptr = blockSet[color->baseColorIndex].getBlockDescription(version);
 
         // Y level
-        int prevIndex = (z)*MAP_WIDTH + x;
+        int prevIndex = static_cast<int>((z)*MAP_WIDTH + x);
         int prevY = blockMatrix[prevIndex].y;
 
         switch (color->colorType)
