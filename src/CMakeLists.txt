@@ -46,6 +46,7 @@ SET(SOURCES_WX
     "wx/main_window.h" "wx/main_window.cpp"
     "wx/img_display_window.h" "wx/img_display_window.cpp"
     "wx/materials_window.h" "wx/materials_window.cpp"
+    "wx/map_export_dialog.h" "wx/map_export_dialog.cpp"
 )
 
 SET(SOURCES_RC 

@@ -25,6 +25,13 @@
 #include <wx/rawbmp.h>
 #include <sstream>
 #include "../resources/icon.xpm"
+#include "map_export_dialog.h"
+#include <filesystem>
+#include "../minecraft/structure.h"
+
+#if defined(_WIN32)
+#include <shellapi.h>
+#endif
 
 using namespace std;
 using namespace minecraft;
@@ -71,6 +78,7 @@ EVT_MENU(wxID_EXIT, MainWindow::onExit)
 EVT_MENU(ID_Blocks_Custom, MainWindow::onCustomBlocks)
 EVT_SIZE(MainWindow::OnSize)
 EVT_DROP_FILES(MainWindow::handleDropFile)
+EVT_MENU(ID_Export_Map, MainWindow::onExportToMaps)
 END_EVENT_TABLE()
 
 int getIdForVersionMenu(McVersion version)
@@ -126,9 +134,9 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     menuFile->AppendSeparator();
 
     wxMenu *exportMenu = new wxMenu();
-    exportMenu->Append(ID_Export_Map, "&Export as map files", "");
-    exportMenu->Append(ID_Export_Structure, "&Export as structures", "");
-    exportMenu->Append(ID_Export_World, "&Export as minecraft world", "");
+    exportMenu->Append(ID_Export_Map, "&Export as map files\tCtrl+E", "");
+    exportMenu->Append(ID_Export_Structure, "&Export as structures\tCtrl+T", "");
+    exportMenu->Append(ID_Export_World, "&Export as minecraft world\tCtrl+W", "");
     menuFile->AppendSubMenu(exportMenu, "&Export", "");
 
     menuFile->AppendSeparator();
@@ -141,15 +149,15 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     wxMenu *menuImage = new wxMenu();
     menuImage->Append(ID_Load_Image, "&Load Image\tCtrl+L", "");
     menuImage->AppendSeparator();
-    menuImage->Append(ID_Resize_Image, "&Resize Image", "");
-    menuImage->Append(ID_Edit_Image, "&Brightness, Saturation, Contrast", "");
+    menuImage->Append(ID_Resize_Image, "&Resize Image\tCtrl+Shift+R", "");
+    menuImage->Append(ID_Edit_Image, "&Brightness, Saturation, Contrast\tCtrl+Shift+B", "");
     menuBar->Append(menuImage, "&Image");
 
     // Materials
     wxMenu *menuMaterials = new wxMenu();
-    menuMaterials->Append(ID_Blocks_Custom, "&Customize materials", "");
+    menuMaterials->Append(ID_Blocks_Custom, "&Customize materials\tCtrl+M", "");
     menuMaterials->AppendSeparator();
-    menuMaterials->Append(ID_Materials_Save, "&Export materials list", "");
+    menuMaterials->Append(ID_Materials_Save, "&Export materials list\tCtrl+Shift+M", "");
     menuBar->Append(menuMaterials, "&Materials");
 
     // Color distance
@@ -528,6 +536,84 @@ void MainWindow::SaveMaterialsList()
     progressReportThread.join();
 }
 
+void MainWindow::ExportAsMapFiles(std::string path, int mapNumber)
+{
+    threading::Progress p;
+
+    thread progressReportThread(&MainWindow::ReportProgress, this, std::ref(p));
+
+    try
+    {
+        p.startTask("Loading minecraft colors...", 0, 0);
+        std::vector<colors::Color> baseColors = minecraft::loadBaseColors(version);
+        std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
+        std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
+        std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
+        std::vector<bool> enabledConf(baseColors.size());
+        std::vector<size_t> countsMats(MAX_COLOR_GROUPS);
+        bool blacklist = true;
+
+        p.startTask("Loading custom configuration...", 0, 0);
+        mapart::applyColorSet(colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
+        // Apply color restructions based on build method
+        applyBuildRestrictions(colorSet, buildMethod);
+
+        p.startTask("Adjusting colors...", originalImageHeight, threadNum);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, colorDistanceAlgorithm, ditheringMethod, threadNum, p, countsMats);
+
+        // Compute total maps
+        int mapsCountX = originalImageWidth / MAP_WIDTH;
+        int mapsCountZ = originalImageHeight / MAP_HEIGHT;
+
+        int total = 0;
+        int totalMapsCount = mapsCountX * mapsCountZ;
+
+        p.startTask("Saving to map files...", mapsCountZ * mapsCountX, 1);
+        for (int mapZ = 0; mapZ < mapsCountZ; mapZ++)
+        {
+            for (int mapX = 0; mapX < mapsCountX; mapX++)
+            {
+                // Get map data
+                std::vector<map_color_t> mapDataToSave = getMapDataFromColorMatrix(mapArtColorMatrix, originalImageWidth, originalImageHeight, mapX, mapZ);
+
+                // Save to file
+                stringstream ss;
+                ss << "map_" << (mapNumber++) << ".dat";
+                filesystem::path outFilePath(path);
+
+                outFilePath /= ss.str();
+
+                try
+                {
+                    writeMapNBTFile(outFilePath.string(), mapDataToSave, version);
+                }
+                catch (...)
+                {
+                    wxMessageBox(string("Cannot write file: ") + outFilePath.string(), wxT("Error"), wxICON_ERROR);
+                    throw -1;
+                }
+
+                total++;
+                p.setProgress(0, total);
+            }
+        }
+    }
+    catch (int)
+    {
+    }
+
+    p.setEnded();
+    progressReportThread.join();
+
+    wxMessageBox(string("Successfully saved map files. They are sorted from left to right, top to bottom."), wxT("Success!"), wxICON_INFORMATION);
+
+    #if defined(_WIN32)
+
+    ShellExecute(NULL, L"open", std::wstring(path.begin(), path.end()).c_str(), NULL, NULL, SW_SHOWDEFAULT);
+
+    #endif
+}
+
 void MainWindow::handleDropFile(wxDropFilesEvent &event)
 {
     if (event.GetNumberOfFiles() > 0)
@@ -547,4 +633,14 @@ void widgets::displayMainWindow(wxApp &app)
     wxInitAllImageHandlers();
     MainWindow *frame = new MainWindow();
     frame->Show(true);
+}
+
+void MainWindow::onExportToMaps(wxCommandEvent &evt)
+{
+    MapExportDialog dialog;
+    if (dialog.ShowModal() == wxID_CANCEL)
+    {
+        return; // the user changed idea...
+    }
+    std::thread *t = new std::thread(&MainWindow::ExportAsMapFiles, this, dialog.getPath(), dialog.getMapNumber());
 }

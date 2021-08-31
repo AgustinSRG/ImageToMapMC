@@ -53,6 +53,7 @@ public:
     void onChangeDithering(wxCommandEvent &evt);
     void onChangeBuildMethod(wxCommandEvent &evt);
     void onCustomBlocks(wxCommandEvent &evt);
+    void onExportToMaps(wxCommandEvent &evt);
 
     void onExit(wxCommandEvent &evt);
     void onLoadImage(wxCommandEvent &evt);
@@ -72,6 +73,8 @@ public:
     void handleDropFile(wxDropFilesEvent& event);
 
     void changeColorSetConf(std::string conf);
+
+    void ExportAsMapFiles(std::string path, int mapNumber);
 
 private:
     minecraft::McVersion version;
