@@ -23,56 +23,31 @@
 
 #pragma once
 
-#define MC_LAST_VERSION (minecraft::McVersion::MC_1_17)
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
 
 #include <string>
+#include "../minecraft/mc_common.h"
 
-namespace minecraft
+class StructureExportDialog : public wxDialog
 {
-    /**
-     * @brief  Minecraft versions
-     * @note   
-     * @retval None
-     */
-    enum class McVersion : short
-    {
-        UNKNOWN = 0,
-        MC_1_12 = 12,
-        MC_1_13 = 13,
-        MC_1_14 = 14,
-        MC_1_15 = 15,
-        MC_1_16 = 16,
-        MC_1_17 = 17
-    };
+public:
+    StructureExportDialog(minecraft::McVersion version);
 
-    /**
-     * @brief  Parses version from string
-     * @note   
-     * @param  versionStr: Version string
-     * @retval Version (enum). Returns UNKNOWN if version str is invalid
-     */
-    minecraft::McVersion getVersionFromText(std::string versionStr);
+    std::string getPath();
 
-    /**
-     * @brief  Gets version as string
-     * @note   
-     * @param  version: Version
-     * @retval Version as string
-     */
-    std::string versionToString(minecraft::McVersion version);
+    void OnOk(wxCommandEvent &event);
+    void OnCancel(wxCommandEvent &event);
 
-    /**
-     * @brief  Gets the data version for the version
-     * @note   
-     * @param  version: Version
-     * @retval 
-     */
-    int versionToDataVersion(minecraft::McVersion version);
+    void OnBrowse(wxCommandEvent &event);
 
-    /**
-     * @brief  Retrieves minecraft folder location
-     * @note   
-     * @retval Minecraft folder, depending on the OS
-     */
-    std::string getMinecraftFolderLocation();
-}
+private:
+    wxTextCtrl *textFolder;
+    wxTextCtrl *textNamespace;
+
+    minecraft::McVersion version;
+
+    DECLARE_EVENT_TABLE()
+};

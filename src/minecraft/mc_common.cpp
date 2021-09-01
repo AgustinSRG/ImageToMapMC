@@ -23,6 +23,12 @@
 
 #include "mc_common.h"
 
+#if defined(_WIN32)
+#include <shlobj.h>
+#include <combaseapi.h>
+#include <stringapiset.h>
+#endif
+
 minecraft::McVersion minecraft::getVersionFromText(std::string versionStr)
 {
     if (versionStr.compare("1.12") == 0)
@@ -84,7 +90,8 @@ std::string minecraft::versionToString(minecraft::McVersion version)
     }
 }
 
-int minecraft::versionToDataVersion(minecraft::McVersion version) {
+int minecraft::versionToDataVersion(minecraft::McVersion version)
+{
     switch (version)
     {
     case McVersion::MC_1_12:
@@ -102,4 +109,47 @@ int minecraft::versionToDataVersion(minecraft::McVersion version) {
     default:
         return 1343;
     }
+}
+
+std::string minecraft::getMinecraftFolderLocation()
+{
+#if defined(_WIN32)
+
+    PWSTR res;
+
+    SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &res);
+
+    if (res == NULL)
+    {
+        return std::string("");
+    }
+    else
+    {
+        std::wstring resultStr(res);
+        char * resStr = new char[resultStr.length() * 2 + 1];
+        int bytesW = WideCharToMultiByte(CP_UTF8, 0, res, resultStr.length(), resStr, resultStr.length() * 2 + 1, NULL, NULL);
+
+        resStr[bytesW] = '\0';
+
+        std::string resultPath(resStr);
+
+        CoTaskMemFree(res);
+        delete resStr;
+
+        return resultPath + std::string("\\.minecraft");
+    }
+
+#elif defined(__APPLE__)
+
+    return std::string("~/Library/Application Support/minecraft");
+
+#elif defined(__linux__)
+
+    return std::string("~/.minecraft");
+
+#else
+
+    return std::string("");
+
+#endif
 }

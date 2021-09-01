@@ -83,7 +83,8 @@
 			"xlocbuf": "cpp",
 			"xlocmes": "cpp",
 			"mutex": "cpp",
-			"thread": "cpp"
+			"thread": "cpp",
+			"codecvt": "cpp"
 		},
 	}
 }

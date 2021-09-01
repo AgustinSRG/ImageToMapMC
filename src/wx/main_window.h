@@ -54,6 +54,7 @@ public:
     void onChangeBuildMethod(wxCommandEvent &evt);
     void onCustomBlocks(wxCommandEvent &evt);
     void onExportToMaps(wxCommandEvent &evt);
+    void onExportToStructure(wxCommandEvent &evt);
 
     void onExit(wxCommandEvent &evt);
     void onLoadImage(wxCommandEvent &evt);
@@ -75,6 +76,7 @@ public:
     void changeColorSetConf(std::string conf);
 
     void ExportAsMapFiles(std::string path, int mapNumber);
+    void ExportAsStructure(std::string path);
 
 private:
     minecraft::McVersion version;
