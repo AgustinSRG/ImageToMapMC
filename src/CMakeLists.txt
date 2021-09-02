@@ -28,6 +28,11 @@ SET(SOURCES_COMMON
     "minecraft/mc_blocks.h" "minecraft/mc_blocks.cpp"
     "minecraft/structure.h" "minecraft/structure.cpp"
 
+    "minecraft/world/tools.h" "minecraft/world/tools.cpp"
+    "minecraft/world/chunk.h" "minecraft/world/chunk.cpp"
+    "minecraft/world/region.h" "minecraft/world/region.cpp"
+    "minecraft/world/world.h" "minecraft/world/world.cpp"
+
     "mapart/map_art.h" 
     "mapart/common.h" "mapart/common.cpp" 
     "mapart/map_image.h" "mapart/map_image.cpp" 
@@ -40,6 +45,7 @@ SET(SOURCES_COMMON
 
     "tools/basedir.h" "tools/basedir.cpp"
     "tools/text_file.h" "tools/text_file.cpp"
+    "tools/byte_stream.h" "tools/byte_stream.cpp"
 )
 
 SET(SOURCES_WX 
