@@ -25,3 +25,31 @@
 
 #include "region.h"
 
+#include "../../threads/progress.h"
+
+#define MAP_WORLD_FIRST_MAP_X (64)
+#define MAP_WORLD_FIRST_MAP_Z (63)
+
+#define MAP_WORLD_REGION_SEPARATOR_X (MAP_WIDTH * 2)
+#define MAP_WORLD_REGION_SEPARATOR_Z (MAP_HEIGHT * 2)
+
+namespace minecraft
+{
+
+    class MinecraftWorld
+    {
+    public:
+        MinecraftWorld(minecraft::McVersion version, std::string levelName, int offsetY, std::string path);
+
+        bool saveLevelFile();
+
+        bool saveMapAsRegionFile(std::vector<mapart::MapBuildingBlock> &buildData, int mapX, int mapZ, threading::Progress &p);
+
+    private:
+        minecraft::McVersion version;
+        std::string levelName;
+        std::string path;
+        std::string regionsPath;
+        int offsetY;
+    };
+}

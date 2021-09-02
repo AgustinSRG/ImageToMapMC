@@ -74,17 +74,17 @@ std::string minecraft::versionToString(minecraft::McVersion version)
     switch (version)
     {
     case McVersion::MC_1_12:
-        return std::string("1.12");
+        return std::string("1.12.2");
     case McVersion::MC_1_13:
-        return std::string("1.13");
+        return std::string("1.13.2");
     case McVersion::MC_1_14:
-        return std::string("1.14");
+        return std::string("1.14.4");
     case McVersion::MC_1_15:
-        return std::string("1.15");
+        return std::string("1.15.2");
     case McVersion::MC_1_16:
-        return std::string("1.16");
+        return std::string("1.16.5");
     case McVersion::MC_1_17:
-        return std::string("1.17");
+        return std::string("1.17.1");
     default:
         return std::string("???");
     }
