@@ -12,6 +12,7 @@
 			"**/Makefile": true,
 			"subprojects": true,
 			"build": true,
+			"debug": true,
 			"release": true
 		},
 		"files.associations": {

@@ -44,10 +44,7 @@ StructureExportDialog::StructureExportDialog(minecraft::McVersion version) : wxD
 
     this->version = version;
 
-    wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
     wxStaticText *label1 = new wxStaticText(this, wxID_ANY, wxString("Choose a minecraft world folder:"), wxPoint(15, 15), wxSize(200, 15));
-
-    wxBoxSizer *hboxFolderSelect = new wxBoxSizer(wxHORIZONTAL);
 
     filesystem::path savesPath(minecraft::getMinecraftFolderLocation());
     savesPath /= "saves";
@@ -110,7 +107,7 @@ void StructureExportDialog::OnBrowse(wxCommandEvent &event)
         return; // the user changed idea...
     }
 
-    textFolder->SetValue(dialog.GetPath());
+    textFolder->ChangeValue(dialog.GetPath());
 }
 
 std::string StructureExportDialog::getPath()

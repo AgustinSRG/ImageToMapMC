@@ -27,6 +27,7 @@
 #include "../resources/icon.xpm"
 #include "map_export_dialog.h"
 #include "structure_export_dialog.h"
+#include "image_resize_dialog.h"
 #include <filesystem>
 #include "../minecraft/structure.h"
 
@@ -79,6 +80,7 @@ EVT_SIZE(MainWindow::OnSize)
 EVT_DROP_FILES(MainWindow::handleDropFile)
 EVT_MENU(ID_Export_Map, MainWindow::onExportToMaps)
 EVT_MENU(ID_Export_Structure, MainWindow::onExportToStructure)
+EVT_MENU(ID_Resize_Image, MainWindow::onImageResize)
 END_EVENT_TABLE()
 
 int getIdForVersionMenu(McVersion version)
@@ -108,6 +110,9 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     previewPanel = NULL;
     requiresPreviewGneration = false;
     previewInProgress = false;
+
+    imageResizeWidth = 128;
+    imageResizeHeight = 128;
 
     threadNum = max((unsigned int)1, std::thread::hardware_concurrency());
 
@@ -224,6 +229,19 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
         originalImageColors[i].blue = 255;
     }
 
+    wxImage blankImage(MAP_WIDTH, MAP_HEIGHT);
+    unsigned char *rawData = blankImage.GetData();
+    size_t size = MAP_WIDTH * MAP_HEIGHT;
+
+    size_t j = 0;
+    for (size_t i = 0; i < size; i++)
+    {
+        rawData[j++] = 255;
+        rawData[j++] = 255;
+        rawData[j++] = 255;
+    }
+    originalImage = blankImage;
+
     originalImagePanel = new wxImagePanel(this);
     originalImagePanel->SetPosition(wxPoint(0, 0));
     originalImagePanel->SetSize(GetClientSize().GetWidth() / 2 - FRAME_PAD_PIXELS, GetClientSize().GetHeight());
@@ -267,9 +285,24 @@ void MainWindow::loadImage(std::string file)
         return;
     }
 
+    imageResizeWidth = originalImage.GetWidth();
+    imageResizeHeight = originalImage.GetHeight();
+
+    updateOriginalImage();
+}
+
+void MainWindow::updateOriginalImage()
+{
+    wxImage imageCopy(originalImage);
+
+    if (imageResizeWidth > 0 && imageResizeHeight > 0)
+    {
+        imageCopy.Rescale(imageResizeWidth, imageResizeHeight);
+    }
+
     int matrixW;
     int matrixH;
-    originalImageColors = loadColorMatrixFromImageAndPad(originalImage, &matrixW, &matrixH);
+    originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, &matrixW, &matrixH);
     originalImageWidth = matrixW;
     originalImageHeight = matrixH;
 
@@ -731,4 +764,19 @@ void MainWindow::onExportToStructure(wxCommandEvent &evt)
         return; // the user changed idea...
     }
     std::thread *t = new std::thread(&MainWindow::ExportAsStructure, this, dialog.getPath());
+}
+
+void MainWindow::onImageResize(wxCommandEvent &evt)
+{
+    ImageResizeDialog dialog(imageResizeWidth, imageResizeHeight);
+
+    if (dialog.ShowModal() == wxID_CANCEL)
+    {
+        return; // the user changed idea...
+    }
+
+    imageResizeWidth = dialog.getWidth();
+    imageResizeHeight = dialog.getHeight();
+
+    updateOriginalImage();
 }

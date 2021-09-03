@@ -55,10 +55,13 @@ public:
     void onCustomBlocks(wxCommandEvent &evt);
     void onExportToMaps(wxCommandEvent &evt);
     void onExportToStructure(wxCommandEvent &evt);
+    void onImageResize(wxCommandEvent &evt);
 
     void onExit(wxCommandEvent &evt);
     void onLoadImage(wxCommandEvent &evt);
     void loadImage(std::string file);
+
+    void updateOriginalImage();
 
     void OnSize( wxSizeEvent& event );
 
@@ -100,6 +103,9 @@ private:
     std::vector<colors::Color> originalImageColors;
 
     std::string colorSetConf;
+
+    size_t imageResizeWidth;
+    size_t imageResizeHeight;
 
     int threadNum;
 

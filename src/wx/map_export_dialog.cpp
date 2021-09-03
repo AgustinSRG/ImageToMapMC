@@ -41,11 +41,7 @@ END_EVENT_TABLE()
 
 MapExportDialog::MapExportDialog() : wxDialog(NULL, -1, wxString("Export to map files"), wxDefaultPosition, wxSize(350, 230))
 {
-
-    wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
     wxStaticText * label1 = new wxStaticText(this, wxID_ANY, wxString("Choose a folder:"), wxPoint(15, 15), wxSize(200, 15));
-
-    wxBoxSizer *hboxFolderSelect = new wxBoxSizer(wxHORIZONTAL);
 
     textFolder = new wxTextCtrl(this, wxID_ANY, wxString("mapart"), wxPoint(15, 35), wxSize(305, 20)); 
     wxButton * browseButton = new wxButton(this, ID_Browse, wxString("Browse..."), wxPoint(15, 60), wxSize(80, 30));
@@ -90,7 +86,7 @@ void MapExportDialog::OnBrowse(wxCommandEvent &event) {
         return; // the user changed idea...
     }
 
-    textFolder->SetValue(dialog.GetPath());
+    textFolder->ChangeValue(dialog.GetPath());
 }
 
 std::string MapExportDialog::getPath()

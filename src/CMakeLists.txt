@@ -49,6 +49,7 @@ SET(SOURCES_WX
     "wx/materials_window.h" "wx/materials_window.cpp"
     "wx/map_export_dialog.h" "wx/map_export_dialog.cpp"
     "wx/structure_export_dialog.h" "wx/structure_export_dialog.cpp"
+    "wx/image_resize_dialog.h" "wx/image_resize_dialog.cpp"
 )
 
 SET(SOURCES_RC 
