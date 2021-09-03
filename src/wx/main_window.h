@@ -35,10 +35,13 @@
 #include "../mapart/map_image.h"
 
 #include "../tools/text_file.h"
+#include "../tools/image_edit.h"
 
 #include "img_display_window.h"
 
 class MaterialsWindow;
+
+class ImageEditDialog;
 
 class MainWindow : public wxFrame
 {
@@ -56,6 +59,7 @@ public:
     void onExportToMaps(wxCommandEvent &evt);
     void onExportToStructure(wxCommandEvent &evt);
     void onImageResize(wxCommandEvent &evt);
+    void onImageEdit(wxCommandEvent &evt);
 
     void onExit(wxCommandEvent &evt);
     void onLoadImage(wxCommandEvent &evt);
@@ -80,6 +84,8 @@ public:
 
     void ExportAsMapFiles(std::string path, int mapNumber);
     void ExportAsStructure(std::string path);
+
+    void onImageEditParamsChanged(float saturation, float contrast, float brightness);
 
 private:
     minecraft::McVersion version;
@@ -107,11 +113,16 @@ private:
     size_t imageResizeWidth;
     size_t imageResizeHeight;
 
+    float saturation;
+    float contrast;
+    float brightness;
+
     int threadNum;
 
     wxMenuBar * menuBar;
 
     MaterialsWindow * materialsWindow;
+    ImageEditDialog * imageEditDialog;
 
     std::vector<size_t> countsMats;
 
@@ -126,3 +137,4 @@ namespace widgets {
 #define REPORT_THREAD_DELAY (33)
 
 #include "materials_window.h"
+#include "image_edit_dialog.h"

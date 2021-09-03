@@ -41,6 +41,7 @@ SET(SOURCES_COMMON
     "tools/basedir.h" "tools/basedir.cpp"
     "tools/text_file.h" "tools/text_file.cpp"
     "tools/byte_stream.h" "tools/byte_stream.cpp"
+    "tools/image_edit.h" "tools/image_edit.cpp"
 )
 
 SET(SOURCES_WX 
@@ -50,6 +51,7 @@ SET(SOURCES_WX
     "wx/map_export_dialog.h" "wx/map_export_dialog.cpp"
     "wx/structure_export_dialog.h" "wx/structure_export_dialog.cpp"
     "wx/image_resize_dialog.h" "wx/image_resize_dialog.cpp"
+    "wx/image_edit_dialog.h" "wx/image_edit_dialog.cpp"
 )
 
 SET(SOURCES_RC 

@@ -81,6 +81,7 @@ EVT_DROP_FILES(MainWindow::handleDropFile)
 EVT_MENU(ID_Export_Map, MainWindow::onExportToMaps)
 EVT_MENU(ID_Export_Structure, MainWindow::onExportToStructure)
 EVT_MENU(ID_Resize_Image, MainWindow::onImageResize)
+EVT_MENU(ID_Edit_Image, MainWindow::onImageEdit)
 END_EVENT_TABLE()
 
 int getIdForVersionMenu(McVersion version)
@@ -114,6 +115,12 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
 
     imageResizeWidth = 128;
     imageResizeHeight = 128;
+
+    saturation = 1;
+    contrast = 1;
+    brightness = 1;
+
+    imageEditDialog = NULL;
 
     std::vector<size_t> cmats(MAX_COLOR_GROUPS);
     for (int i = 0; i < MAX_COLOR_GROUPS; i++) {
@@ -291,6 +298,14 @@ void MainWindow::loadImage(std::string file)
     imageResizeWidth = originalImage.GetWidth();
     imageResizeHeight = originalImage.GetHeight();
 
+    saturation = 1;
+    contrast = 1;
+    brightness = 1;
+
+    if (imageEditDialog != NULL) {
+        imageEditDialog->SetParams(saturation, contrast, brightness);
+    }
+
     updateOriginalImage();
 }
 
@@ -308,6 +323,8 @@ void MainWindow::updateOriginalImage()
     originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, &matrixW, &matrixH);
     originalImageWidth = matrixW;
     originalImageHeight = matrixH;
+
+    tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, saturation, contrast, brightness);
 
     originalImagePanel->setColors(originalImageColors, originalImageWidth, originalImageHeight);
     originalImagePanel->Refresh();
@@ -793,5 +810,24 @@ void MainWindow::onImageResize(wxCommandEvent &evt)
     imageResizeWidth = dialog.getWidth();
     imageResizeHeight = dialog.getHeight();
 
+    updateOriginalImage();
+}
+
+void MainWindow::onImageEdit(wxCommandEvent &evt)
+{
+    if (imageEditDialog == NULL) {
+        imageEditDialog = new ImageEditDialog(this);
+        imageEditDialog->Show();
+        imageEditDialog->SetParams(saturation, contrast, brightness);
+    } else {
+        imageEditDialog->Show();
+        imageEditDialog->Raise();
+    }
+}
+
+void MainWindow::onImageEditParamsChanged(float saturation, float contrast, float brightness) {
+    this->saturation = saturation;
+    this->contrast = contrast;
+    this->brightness = brightness;
     updateOriginalImage();
 }
