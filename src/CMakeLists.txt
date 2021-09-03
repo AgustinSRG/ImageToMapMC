@@ -28,11 +28,6 @@ SET(SOURCES_COMMON
     "minecraft/mc_blocks.h" "minecraft/mc_blocks.cpp"
     "minecraft/structure.h" "minecraft/structure.cpp"
 
-    "minecraft/world/tools.h" "minecraft/world/tools.cpp"
-    "minecraft/world/chunk.h" "minecraft/world/chunk.cpp"
-    "minecraft/world/region.h" "minecraft/world/region.cpp"
-    "minecraft/world/world.h" "minecraft/world/world.cpp"
-
     "mapart/map_art.h" 
     "mapart/common.h" "mapart/common.cpp" 
     "mapart/map_image.h" "mapart/map_image.cpp" 

@@ -23,8 +23,6 @@
 
 #include "structure.h"
 
-#include "world/tools.h"
-
 #include <io/stream_writer.h>
 #include <io/ozlibstream.h>
 #include <nbt_tags.h>
@@ -33,6 +31,24 @@
 using namespace std;
 using namespace mapart;
 using namespace minecraft;
+
+nbt::tag_compound blockDescriptionToTag(const minecraft::BlockDescription *desc)
+{
+    nbt::tag_compound tag;
+
+    tag.insert("Name", desc->nbtName);
+    if (desc->nbtTags.size() > 0)
+    {
+        nbt::tag_compound props;
+        for (int i = 0; i < desc->nbtTags.size(); i++)
+        {
+            props.insert(desc->nbtTags[i].name, desc->nbtTags[i].value);
+        }
+        tag.insert("Properties", props.clone());
+    }
+
+    return tag;
+}
 
 nbt::tag_compound blockToTag(const mapart::MapBuildingBlock &block, vector<int> &palette, bool placeholder)
 {

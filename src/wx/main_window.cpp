@@ -50,9 +50,7 @@ enum Identifiers
 
     ID_Export_Map = 6,
     ID_Export_Structure = 7,
-    ID_Export_World = 8,
 
-    ID_Preferences = 15,
     ID_Export = 16,
     ID_Resize_Image = 17,
     ID_Edit_Image = 18,
@@ -138,7 +136,6 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     wxMenu *exportMenu = new wxMenu();
     exportMenu->Append(ID_Export_Map, "&Export as map files\tCtrl+E", "");
     exportMenu->Append(ID_Export_Structure, "&Export as structures\tCtrl+T", "");
-    exportMenu->Append(ID_Export_World, "&Export as minecraft world\tCtrl+W", "");
     menuFile->AppendSubMenu(exportMenu, "&Export", "");
 
     menuFile->AppendSeparator();

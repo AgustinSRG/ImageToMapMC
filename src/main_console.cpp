@@ -109,7 +109,6 @@ int printHelp()
     cout << "                                     By default the folder name is 'mapart'" << endl;
     cout << "    -f, --format [format]          Specifies the output format. By defaulty is 'map'" << endl;
     cout << "                                     'map' format creates '.dat' files for the maps" << endl;
-    cout << "                                     'world' format creates a minecraft world with the maps" << endl;
     cout << "                                     'structure' format creates nbt structure files" << endl;
     cout << "    -v, --version [version]        Specifies the minecraft version in A.B format (eg, 1.12)." << endl;
     cout << "                                     Set to 'last' to use the most recent minecraft version available" << endl;
@@ -131,18 +130,16 @@ int printHelp()
     cout << "    -mn, --map-number [num]        Sets the last map ID or total number of maps in your world." << endl;
     cout << "                                     This applies only when --format is set to 'map'" << endl;
     cout << "    -bm, --build-method [method]   Sets the build method. By default '3d'" << endl;
-    cout << "                                     This applies only when --format is set to 'world' or 'structure'" << endl;
+    cout << "                                     This applies only when --format is set to 'structure'" << endl;
     cout << "                                     -bm '3d' Build 3 dimensional map with arbitrary height jumps" << endl;
     cout << "                                     -bm '2d' Build 2 dimensional map at the same level" << endl;
     cout << "                                     -bm 'stair' Build 3 dimensional map with 1 block height jumps max" << endl;
-    cout << "    -ln, --level-name [name]       Sets the name for the minecraft world." << endl;
-    cout << "                                     This applies only when --format is set to 'world'" << endl;
     cout << "    -cs, --color-set [name/file]   Specifies the color set to use." << endl;
     cout << "                                     Color sets can enable or disable colors and" << endl;
     cout << "                                     set the blocks to build each color." << endl;
     cout << "                                     By default all available colors are used" << endl;
     cout << "    -m, --materials [file]         Specifies a file to print the list of required materials." << endl;
-    cout << "                                     This applies only when --format is set to 'world' or 'structure'" << endl;
+    cout << "                                     This applies only when --format is set to 'structure'" << endl;
     cout << "    -t, --threads [num]            Specifies the number of threads to use." << endl;
     cout << "                                     By default only a single thread will be used" << endl;
     cout << "    -y, --yes [num]                Prevents asking any user input." << endl;
@@ -304,7 +301,6 @@ int buildMap(int argc, char **argv)
     ColorDistanceAlgorithm colorAlgo = ColorDistanceAlgorithm::Euclidean;
     DitheringMethod ditheringMethod = DitheringMethod::None;
     MapBuildMethod buildMethod = MapBuildMethod::None;
-    string levelName = "Map Art World";
     int rsW = -1;
     int rsH = -1;
     bool yesForced = false;
@@ -340,14 +336,6 @@ int buildMap(int argc, char **argv)
                 {
                     outFormat = MapOutputFormat::Map;
                 }
-                else if (outputFormatStr.compare(string("world")) == 0)
-                {
-                    outFormat = MapOutputFormat::World;
-                    if (buildMethod == MapBuildMethod::None)
-                    {
-                        buildMethod = MapBuildMethod::Chaos;
-                    }
-                }
                 else if (outputFormatStr.compare(string("structure")) == 0)
                 {
                     outFormat = MapOutputFormat::Structure;
@@ -359,7 +347,7 @@ int buildMap(int argc, char **argv)
                 else
                 {
                     std::cerr << "Urecornized outout format: " << argv[i + 1] << endl;
-                    std::cerr << "Available formats: map, world, structure" << endl;
+                    std::cerr << "Available formats: map, structure" << endl;
                     return 1;
                 }
 
@@ -533,20 +521,6 @@ int buildMap(int argc, char **argv)
             }
 
             i++;
-        }
-        else if (arg.compare(string("-ln")) == 0 || arg.compare(string("--level-name")) == 0)
-        {
-            if ((i + 1) < argc)
-            {
-                levelName = argv[i + 1];
-                i++;
-            }
-            else
-            {
-                std::cerr << "Option " << arg << " requires a parameter." << endl;
-                std::cerr << "For help type: mcmap --help" << endl;
-                return 1;
-            }
         }
         else if (arg.compare(string("-cs")) == 0 || arg.compare(string("--color-set")) == 0)
         {
@@ -795,25 +769,6 @@ int buildMap(int argc, char **argv)
                         return 1;
                     }
                 }
-                else if (outFormat == MapOutputFormat::World)
-                {
-                    // Save as minecraft world
-                    p.startTask("Saving result...", 0, 0);
-                    wxImage imageSave(matrixW, matrixH);
-                    unsigned char *rawData = imageSave.GetData();
-                    size_t size = matrixW * matrixH;
-
-                    size_t j = 0;
-                    for (size_t i = 0; i < size; i++)
-                    {
-                        colors::Color color = mapArtColorMatrix[i]->color;
-
-                        rawData[j++] = color.red;
-                        rawData[j++] = color.green;
-                        rawData[j++] = color.blue;
-                    }
-                    imageSave.SaveFile("test_2.png", wxBITMAP_TYPE_PNG);
-                }
 
                 total++;
             }
@@ -825,9 +780,10 @@ int buildMap(int argc, char **argv)
         if (materialsOutFile.size() > 0)
         {
             // Save materials
-            if (!tools::writeTextFile(materialsOutFile, materials.toString())) {
+            if (!tools::writeTextFile(materialsOutFile, materials.toString()))
+            {
                 std::cerr << endl
-                                  << "Cannot write file: " << materialsOutFile << endl;
+                          << "Cannot write file: " << materialsOutFile << endl;
                 return 1;
             }
         }

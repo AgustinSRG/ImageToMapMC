@@ -51,7 +51,6 @@ void progressReporter(threading::Progress &progress);
 
 enum class MapOutputFormat {
     Map,
-    World,
     Structure
 };
 
