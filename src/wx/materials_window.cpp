@@ -121,6 +121,8 @@ MaterialsPanel::MaterialsPanel(MaterialsWindow *matWin) : wxScrolledWindow(matWi
 MaterialsWindow::MaterialsWindow(MainWindow *mainWindow) : wxFrame(mainWindow, wxID_ANY, string("Customize materials"), wxPoint(100, 100), wxSize(600, 600))
 {
     this->mainWindow = mainWindow;
+    panel = new MaterialsPanel(this);
+
     SetIcon(wxIcon(_ICON_ICO_XPM));
 
     /* Menu Bar */
@@ -144,8 +146,6 @@ MaterialsWindow::MaterialsWindow(MainWindow *mainWindow) : wxFrame(mainWindow, w
     menuBar->Append(menuMode, "&Mode");
 
     SetMenuBar(menuBar);
-
-    panel = new MaterialsPanel(this);
 }
 
 MaterialsWindow::~MaterialsWindow()

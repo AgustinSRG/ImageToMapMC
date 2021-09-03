@@ -113,6 +113,8 @@ private:
 
     MaterialsWindow * materialsWindow;
 
+    std::vector<size_t> countsMats;
+
     wxDECLARE_EVENT_TABLE();
 };
 

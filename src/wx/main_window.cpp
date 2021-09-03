@@ -106,6 +106,7 @@ int getIdForDitheringMenu(DitheringMethod a)
 MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Tool"), wxPoint(50, 50), wxSize(800, 600))
 {
     previewGenerationThread = NULL;
+    materialsWindow = NULL;
     originalImagePanel = NULL;
     previewPanel = NULL;
     requiresPreviewGneration = false;
@@ -114,10 +115,13 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     imageResizeWidth = 128;
     imageResizeHeight = 128;
 
-    threadNum = max((unsigned int)1, std::thread::hardware_concurrency());
+    std::vector<size_t> cmats(MAX_COLOR_GROUPS);
+    for (int i = 0; i < MAX_COLOR_GROUPS; i++) {
+        cmats[i] = 0;
+    }
+    countsMats = cmats;
 
-    // Materials window
-    materialsWindow = new MaterialsWindow(this);
+    threadNum = max((unsigned int)1, std::thread::hardware_concurrency());
 
     colorSetConf = "MODE(BLACKLIST)\n";
 
@@ -142,6 +146,7 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     exportMenu->Append(ID_Export_Map, "&Export as map files\tCtrl+E", "");
     exportMenu->Append(ID_Export_Structure, "&Export as structures\tCtrl+T", "");
     menuFile->AppendSubMenu(exportMenu, "&Export", "");
+
 
     menuFile->AppendSeparator();
 
@@ -255,8 +260,6 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     Maximize();
 
     DragAcceptFiles(true);
-
-    materialsWindow->setMaterialsConf(version, colorSetConf);
 }
 
 MainWindow::~MainWindow()
@@ -323,14 +326,25 @@ void MainWindow::onExit(wxCommandEvent &evt)
 
 void MainWindow::onCustomBlocks(wxCommandEvent &evt)
 {
-    materialsWindow->Show();
-    materialsWindow->Raise();
+    // Materials window
+    if (materialsWindow == NULL)
+    {
+        materialsWindow = new MaterialsWindow(this);
+        materialsWindow->Show();
+        materialsWindow->displayCountMaterials(countsMats);
+        materialsWindow->setMaterialsConf(version, colorSetConf);
+    } else {
+        materialsWindow->Show();
+        materialsWindow->Raise();
+    }
 }
 
 void MainWindow::onChangeVersion(wxCommandEvent &evt)
 {
     version = static_cast<McVersion>(evt.GetId() - VERSION_ID_PREFIX);
-    materialsWindow->setMaterialsConf(version, colorSetConf);
+    if (materialsWindow != NULL) {
+        materialsWindow->setMaterialsConf(version, colorSetConf);
+    }
     RequestPreviewGeneration();
 }
 
@@ -447,7 +461,6 @@ void MainWindow::GeneratePreview()
             std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
             std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
             std::vector<bool> enabledConf(baseColors.size());
-            std::vector<size_t> countsMats(MAX_COLOR_GROUPS);
             bool blacklist = true;
 
             previewProgress.startTask("Loading custom configuration...", 0, 0);
@@ -461,7 +474,9 @@ void MainWindow::GeneratePreview()
             previewPanel->setColors(mapArtColorMatrix, originalImageWidth, originalImageHeight);
             previewPanel->Refresh();
 
-            materialsWindow->displayCountMaterials(countsMats);
+            if (materialsWindow != NULL) {
+                materialsWindow->displayCountMaterials(countsMats);
+            }
         }
         catch (int)
         {
