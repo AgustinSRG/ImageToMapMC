@@ -31,32 +31,32 @@
 
 minecraft::McVersion minecraft::getVersionFromText(std::string versionStr)
 {
-    if (versionStr.compare("1.12") == 0)
+    if (versionStr.substr(0, 4).compare("1.12") == 0)
     {
         return McVersion::MC_1_12;
     }
 
-    if (versionStr.compare("1.13") == 0)
+    if (versionStr.substr(0, 4).compare("1.13") == 0)
     {
         return McVersion::MC_1_13;
     }
 
-    if (versionStr.compare("1.14") == 0)
+    if (versionStr.substr(0, 4).compare("1.14") == 0)
     {
         return McVersion::MC_1_14;
     }
 
-    if (versionStr.compare("1.15") == 0)
+    if (versionStr.substr(0, 4).compare("1.15") == 0)
     {
         return McVersion::MC_1_15;
     }
 
-    if (versionStr.compare("1.16") == 0)
+    if (versionStr.substr(0, 4).compare("1.16") == 0)
     {
         return McVersion::MC_1_16;
     }
 
-    if (versionStr.compare("1.17") == 0)
+    if (versionStr.substr(0, 4).compare("1.17") == 0)
     {
         return McVersion::MC_1_17;
     }

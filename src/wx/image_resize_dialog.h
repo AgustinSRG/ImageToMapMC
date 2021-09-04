@@ -31,19 +31,25 @@
 #include <string>
 #include "../minecraft/mc_common.h"
 
+/**
+ * @brief  Image resize dialog
+ * @note   
+ * @retval None
+ */
 class ImageResizeDialog : public wxDialog
 {
 public:
+    // Constructor
     ImageResizeDialog(int width, int height);
 
+    // Dialog params
     int getWidth();
     int getHeight();
 
+    // Events
     void OnOk(wxCommandEvent &event);
     void OnCancel(wxCommandEvent &event);
-
     void OnCheckboxChanged(wxCommandEvent &event);
-
     void OnTextUpdateW(wxCommandEvent &event);
     void OnTextUpdateH(wxCommandEvent &event);
 
@@ -51,7 +57,7 @@ private:
     wxTextCtrl *wText;
     wxTextCtrl *hText;
 
-    wxCheckBox * checkbox;
+    wxCheckBox *checkbox;
 
     int width;
     int height;

@@ -50,6 +50,9 @@ public:
     ~MainWindow();
 
     void openProject(wxCommandEvent &evt);
+    void newProject(wxCommandEvent &evt);
+    void saveProject(wxCommandEvent &evt);
+    void saveProjectAs(wxCommandEvent &evt);
 
     void onChangeVersion(wxCommandEvent &evt);
     void onChangeColorAlgo(wxCommandEvent &evt);
@@ -87,6 +90,13 @@ public:
 
     void onImageEditParamsChanged(float saturation, float contrast, float brightness);
 
+    void loadProject(std::string path);
+    void saveProject(std::string path);
+    void resetProject();
+
+    void updateMenuBarRadios();
+
+    void OnClose(wxCloseEvent &event);
 private:
     minecraft::McVersion version;
     colors::ColorDistanceAlgorithm colorDistanceAlgorithm;
@@ -125,6 +135,9 @@ private:
     ImageEditDialog * imageEditDialog;
 
     std::vector<size_t> countsMats;
+
+    std::string projectFile;
+    bool dirty;
 
     wxDECLARE_EVENT_TABLE();
 };

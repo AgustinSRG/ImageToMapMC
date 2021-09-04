@@ -40,7 +40,6 @@ SET(SOURCES_COMMON
 
     "tools/basedir.h" "tools/basedir.cpp"
     "tools/text_file.h" "tools/text_file.cpp"
-    "tools/byte_stream.h" "tools/byte_stream.cpp"
     "tools/image_edit.h" "tools/image_edit.cpp"
 )
 

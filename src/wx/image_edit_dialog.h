@@ -33,25 +33,35 @@
 
 class MainWindow;
 
+/**
+ * @brief  Image Edit dialog (brightness, saturation, contrast)
+ * @note   
+ * @retval None
+ */
 class ImageEditDialog : public wxDialog
 {
 public:
+    // Constructor
     ImageEditDialog(MainWindow *mainWindow);
 
+    // Events
     void OnOk(wxCommandEvent &event);
     void OnCancel(wxCommandEvent &event);
-
-    void OnClose(wxCloseEvent &event);
-
-    void SetParams(float saturation, float contrast, float brightness);
-
-    void UpdateControls();
-
-    void OnChangeParams();
-
     void OnChangeSaturation(wxScrollEvent &event);
     void OnChangeContrast(wxScrollEvent &event);
     void OnChangeBrightness(wxScrollEvent &event);
+    void OnClose(wxCloseEvent &event);
+
+    /**
+     * @brief  Set dialog params
+     * @note   
+     * @param  saturation: Value 0-2
+     * @param  contrast: Value 0-2
+     * @param  brightness: Value 0-2
+     * @retval None
+     */
+    void SetParams(float saturation, float contrast, float brightness);
+
 private:
     MainWindow *mainWindow;
 
@@ -61,13 +71,16 @@ private:
 
     int getSliderValue(float val);
 
-    wxStaticText * labelSaturation;
-    wxStaticText * labelContrast;
-    wxStaticText * labelBrightness;
+    wxStaticText *labelSaturation;
+    wxStaticText *labelContrast;
+    wxStaticText *labelBrightness;
 
-    wxSlider * sliderSaturation;
-    wxSlider * sliderContrast;
-    wxSlider * sliderBrightness;
+    wxSlider *sliderSaturation;
+    wxSlider *sliderContrast;
+    wxSlider *sliderBrightness;
+
+    void UpdateControls();
+    void OnChangeParams();
 
     DECLARE_EVENT_TABLE()
 };

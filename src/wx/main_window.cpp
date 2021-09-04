@@ -31,6 +31,15 @@
 #include <filesystem>
 #include "../minecraft/structure.h"
 
+#include <fstream>
+
+#include <io/stream_reader.h>
+#include <io/stream_writer.h>
+#include <io/izlibstream.h>
+#include <io/ozlibstream.h>
+
+#include <nbt_tags.h>
+
 #if defined(_WIN32)
 #include <shellapi.h>
 #endif
@@ -67,7 +76,10 @@ enum Identifiers
 #define DITHERING_ID_PREFIX (1800)
 
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
+EVT_MENU(ID_File_New, MainWindow::newProject)
 EVT_MENU(ID_File_Open, MainWindow::openProject)
+EVT_MENU(ID_File_Save, MainWindow::saveProject)
+EVT_MENU(ID_File_Save_As, MainWindow::saveProjectAs)
 EVT_MENU(ID_Load_Image, MainWindow::onLoadImage)
 EVT_MENU(ID_Materials_Save, MainWindow::OnSaveMaterialsList)
 EVT_MENU_RANGE(VERSION_ID_PREFIX, VERSION_ID_PREFIX + 99, MainWindow::onChangeVersion)
@@ -82,6 +94,7 @@ EVT_MENU(ID_Export_Map, MainWindow::onExportToMaps)
 EVT_MENU(ID_Export_Structure, MainWindow::onExportToStructure)
 EVT_MENU(ID_Resize_Image, MainWindow::onImageResize)
 EVT_MENU(ID_Edit_Image, MainWindow::onImageEdit)
+EVT_CLOSE(MainWindow::OnClose)
 END_EVENT_TABLE()
 
 int getIdForVersionMenu(McVersion version)
@@ -120,10 +133,14 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     contrast = 1;
     brightness = 1;
 
+    dirty = false;
+    projectFile = "";
+
     imageEditDialog = NULL;
 
     std::vector<size_t> cmats(MAX_COLOR_GROUPS);
-    for (int i = 0; i < MAX_COLOR_GROUPS; i++) {
+    for (int i = 0; i < MAX_COLOR_GROUPS; i++)
+    {
         cmats[i] = 0;
     }
     countsMats = cmats;
@@ -153,7 +170,6 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     exportMenu->Append(ID_Export_Map, "&Export as map files\tCtrl+E", "");
     exportMenu->Append(ID_Export_Structure, "&Export as structures\tCtrl+T", "");
     menuFile->AppendSubMenu(exportMenu, "&Export", "");
-
 
     menuFile->AppendSeparator();
 
@@ -273,10 +289,6 @@ MainWindow::~MainWindow()
 {
 }
 
-void MainWindow::openProject(wxCommandEvent &evt)
-{
-}
-
 void MainWindow::onLoadImage(wxCommandEvent &evt)
 {
     wxFileDialog
@@ -302,7 +314,8 @@ void MainWindow::loadImage(std::string file)
     contrast = 1;
     brightness = 1;
 
-    if (imageEditDialog != NULL) {
+    if (imageEditDialog != NULL)
+    {
         imageEditDialog->SetParams(saturation, contrast, brightness);
     }
 
@@ -350,7 +363,9 @@ void MainWindow::onCustomBlocks(wxCommandEvent &evt)
         materialsWindow->Show();
         materialsWindow->displayCountMaterials(countsMats);
         materialsWindow->setMaterialsConf(version, colorSetConf);
-    } else {
+    }
+    else
+    {
         materialsWindow->Show();
         materialsWindow->Raise();
     }
@@ -359,7 +374,8 @@ void MainWindow::onCustomBlocks(wxCommandEvent &evt)
 void MainWindow::onChangeVersion(wxCommandEvent &evt)
 {
     version = static_cast<McVersion>(evt.GetId() - VERSION_ID_PREFIX);
-    if (materialsWindow != NULL) {
+    if (materialsWindow != NULL)
+    {
         materialsWindow->setMaterialsConf(version, colorSetConf);
     }
     RequestPreviewGeneration();
@@ -491,7 +507,8 @@ void MainWindow::GeneratePreview()
             previewPanel->setColors(mapArtColorMatrix, originalImageWidth, originalImageHeight);
             previewPanel->Refresh();
 
-            if (materialsWindow != NULL) {
+            if (materialsWindow != NULL)
+            {
                 materialsWindow->displayCountMaterials(countsMats);
             }
         }
@@ -815,19 +832,583 @@ void MainWindow::onImageResize(wxCommandEvent &evt)
 
 void MainWindow::onImageEdit(wxCommandEvent &evt)
 {
-    if (imageEditDialog == NULL) {
+    if (imageEditDialog == NULL)
+    {
         imageEditDialog = new ImageEditDialog(this);
         imageEditDialog->Show();
         imageEditDialog->SetParams(saturation, contrast, brightness);
-    } else {
+    }
+    else
+    {
         imageEditDialog->Show();
         imageEditDialog->Raise();
     }
 }
 
-void MainWindow::onImageEditParamsChanged(float saturation, float contrast, float brightness) {
+void MainWindow::onImageEditParamsChanged(float saturation, float contrast, float brightness)
+{
     this->saturation = saturation;
     this->contrast = contrast;
     this->brightness = brightness;
     updateOriginalImage();
+}
+
+void MainWindow::resetProject()
+{
+    // Image resize
+    imageResizeWidth = 128;
+    imageResizeHeight = 128;
+
+    // Image edit params
+    saturation = 1;
+    contrast = 1;
+    brightness = 1;
+
+    if (imageEditDialog != NULL)
+    {
+        imageEditDialog->SetParams(saturation, contrast, brightness);
+    }
+
+    // Not dirty
+    dirty = false;
+
+    // Not saved yet
+    projectFile = "";
+
+    // Colors conf
+    colorSetConf = "MODE(BLACKLIST)\n";
+
+    // Version
+    version = MC_LAST_VERSION;
+
+    if (materialsWindow != NULL)
+    {
+        materialsWindow->setMaterialsConf(version, colorSetConf);
+    }
+
+    // Map params
+    colorDistanceAlgorithm = ColorDistanceAlgorithm::Euclidean;
+    ditheringMethod = DitheringMethod::None;
+    buildMethod = MapBuildMethod::Chaos;
+
+    // Initial image
+    originalImageColors = std::vector<colors::Color>(MAP_WIDTH * MAP_HEIGHT);
+    originalImageWidth = MAP_WIDTH;
+    originalImageHeight = MAP_HEIGHT;
+
+    for (int i = 0; i < originalImageColors.size(); i++)
+    {
+        originalImageColors[i].red = 255;
+        originalImageColors[i].green = 255;
+        originalImageColors[i].blue = 255;
+    }
+
+    wxImage blankImage(MAP_WIDTH, MAP_HEIGHT);
+    unsigned char *rawData = blankImage.GetData();
+    size_t size = MAP_WIDTH * MAP_HEIGHT;
+
+    size_t j = 0;
+    for (size_t i = 0; i < size; i++)
+    {
+        rawData[j++] = 255;
+        rawData[j++] = 255;
+        rawData[j++] = 255;
+    }
+    originalImage = blankImage;
+
+    GetStatusBar()->SetStatusText("Project: (not saved yet)", 2);
+
+    updateMenuBarRadios();
+
+    updateOriginalImage();
+}
+
+void MainWindow::loadProject(std::string path)
+{
+    try
+    {
+        std::ifstream file(path, std::ios::binary);
+
+        if (!file)
+        {
+            throw -1;
+        }
+
+        zlib::izlibstream igzs(file);
+
+        auto pair = nbt::io::read_compound(igzs);
+        nbt::tag_compound comp = *pair.second;
+
+        // Image resize
+        imageResizeWidth = comp.at("resize_width").as<nbt::tag_int>().get();
+        imageResizeHeight = comp.at("resize_height").as<nbt::tag_int>().get();
+
+        // Image edit params
+        saturation = comp.at("saturation").as<nbt::tag_float>().get();
+        contrast = comp.at("contrast").as<nbt::tag_float>().get();
+        brightness = comp.at("brightness").as<nbt::tag_float>().get();
+
+        if (imageEditDialog != NULL)
+        {
+            imageEditDialog->SetParams(saturation, contrast, brightness);
+        }
+
+        // Not dirty
+        dirty = false;
+
+        // Not saved yet
+        projectFile = path;
+
+        // Colors conf
+        colorSetConf = comp.at("colors_conf").as<nbt::tag_string>().get();
+
+        // Version
+        version = minecraft::getVersionFromText(comp.at("version").as<nbt::tag_string>().get());
+
+        if (version == McVersion::UNKNOWN)
+        {
+            version = MC_LAST_VERSION;
+        }
+
+        if (materialsWindow != NULL)
+        {
+            materialsWindow->setMaterialsConf(version, colorSetConf);
+        }
+
+        // Map params
+        string paramStr;
+
+        paramStr = comp.at("color_distance").as<nbt::tag_string>().get();
+        if (paramStr.compare("delta-e") == 0)
+        {
+            colorDistanceAlgorithm = ColorDistanceAlgorithm::DeltaE;
+        }
+        else if (paramStr.compare("euclidean") == 0)
+        {
+            colorDistanceAlgorithm = ColorDistanceAlgorithm::Euclidean;
+        }
+        else
+        {
+            colorDistanceAlgorithm = ColorDistanceAlgorithm::Euclidean;
+        }
+
+        ditheringMethod = mapart::parseDitheringMethodFromString(comp.at("dithering").as<nbt::tag_string>().get());
+
+        if (ditheringMethod == DitheringMethod::Unknown)
+        {
+            ditheringMethod = DitheringMethod::None;
+        }
+
+        paramStr = comp.at("build_method").as<nbt::tag_string>().get();
+        if (paramStr.compare("flat") == 0)
+        {
+            buildMethod = MapBuildMethod::Flat;
+        }
+        else if (paramStr.compare("stair") == 0)
+        {
+            buildMethod = MapBuildMethod::Staircased;
+        }
+        else if (paramStr.compare("chaos") == 0)
+        {
+            buildMethod = MapBuildMethod::Chaos;
+        }
+        else
+        {
+            buildMethod = MapBuildMethod::None;
+        }
+
+        size_t w = comp.at("width").as<nbt::tag_int>().get();
+        size_t h = comp.at("height").as<nbt::tag_int>().get();
+
+        nbt::tag_byte_array colorsByte = comp.at("image").as<nbt::tag_byte_array>();
+
+        wxImage blankImage(w, h);
+        unsigned char *rawData = blankImage.GetData();
+        size_t size = w * h * 3;
+
+        for (size_t i = 0; i < size; i++)
+        {
+            rawData[i] = colorsByte.at(i);
+        }
+        originalImage = blankImage;
+
+        GetStatusBar()->SetStatusText("Project: " + projectFile, 2);
+
+        updateMenuBarRadios();
+
+        updateOriginalImage();
+    }
+    catch (...)
+    {
+        wxMessageBox(string("Could not load project file: ") + path, wxT("Error"), wxICON_ERROR);
+        resetProject();
+        return;
+    }
+}
+
+void MainWindow::saveProject(std::string path)
+{
+    nbt::tag_compound root;
+
+    root.insert("resize_width", nbt::tag_int(static_cast<int>(imageResizeWidth)));
+    root.insert("resize_height", nbt::tag_int(static_cast<int>(imageResizeHeight)));
+
+    root.insert("saturation", nbt::tag_float(saturation));
+    root.insert("contrast", nbt::tag_float(contrast));
+    root.insert("brightness", nbt::tag_float(brightness));
+
+    root.insert("colors_conf", nbt::tag_string(colorSetConf));
+
+    root.insert("version", nbt::tag_string(versionToString(version)));
+
+    switch (colorDistanceAlgorithm)
+    {
+    case ColorDistanceAlgorithm::DeltaE:
+        root.insert("color_distance", nbt::tag_string("delta-e"));
+        break;
+    default:
+        root.insert("color_distance", nbt::tag_string("euclidean"));
+    }
+
+    root.insert("dithering", nbt::tag_string(ditheringMethodToString(ditheringMethod)));
+
+    switch (buildMethod)
+    {
+    case MapBuildMethod::Chaos:
+        root.insert("build_method", nbt::tag_string("chaos"));
+        break;
+    case MapBuildMethod::Flat:
+        root.insert("build_method", nbt::tag_string("flat"));
+        break;
+    case MapBuildMethod::Staircased:
+        root.insert("build_method", nbt::tag_string("stair"));
+        break;
+    default:
+        root.insert("build_method", nbt::tag_string("none"));
+    }
+
+    // Image data
+    root.insert("width", nbt::tag_int(static_cast<int>(originalImage.GetWidth())));
+    root.insert("height", nbt::tag_int(static_cast<int>(originalImage.GetHeight())));
+
+    nbt::tag_byte_array colorsByte;
+    
+    size_t size = originalImage.GetWidth() * originalImage.GetHeight() * 3;
+    unsigned char *rawData = originalImage.GetData();
+    for (size_t i = 0; i < size; i++) {
+        colorsByte.push_back(rawData[i]);
+    }
+
+    root.insert("image", colorsByte.clone());
+
+    // Save
+    std::ofstream file(path, std::ios::binary);
+
+    if (!file)
+    {
+        wxMessageBox(string("Could not save project file: ") + path, wxT("Error"), wxICON_ERROR);
+        return;
+    }
+
+    try
+    {
+        zlib::ozlibstream ogzs(file, -1, true);
+        nbt::io::write_tag("", root, ogzs);
+    }
+    catch (...)
+    {
+        wxMessageBox(string("Could not save project file: ") + path, wxT("Error"), wxICON_ERROR);
+        return;
+    }
+
+    projectFile = path;
+    GetStatusBar()->SetStatusText("Project: " + projectFile, 2);
+    dirty = false;
+}
+
+void MainWindow::OnClose(wxCloseEvent &event)
+{
+    if (event.CanVeto() && dirty)
+    {
+        int r = wxMessageBox("Do you want to save the changes before closing the project?", "Save changes?", wxICON_QUESTION | wxCANCEL | wxYES_NO);
+
+        if (r == wxCANCEL)
+        {
+            event.Veto();
+            return;
+        }
+        else if (r == wxYES)
+        {
+            wxCommandEvent evt;
+            if (projectFile.length() > 0)
+            {
+                saveProject(evt);
+            }
+            else
+            {
+                saveProjectAs(evt);
+                if (projectFile.length() == 0)
+                {
+                    event.Veto();
+                    return;
+                }
+            }
+        }
+    }
+
+    event.Skip();
+}
+
+void MainWindow::openProject(wxCommandEvent &evt)
+{
+    wxFileDialog
+        openFileDialog(this, _("Load project"), "", "",
+                       "Map art projects (*.mapart)|*.mapart|All files|*.*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+    if (openFileDialog.ShowModal() == wxID_CANCEL)
+        return; // the user changed idea...
+
+    loadProject(openFileDialog.GetPath());
+}
+
+void MainWindow::newProject(wxCommandEvent &evt)
+{
+    resetProject();
+}
+
+void MainWindow::saveProject(wxCommandEvent &evt)
+{
+    if (projectFile.length() == 0)
+    {
+        saveProjectAs(evt);
+        return;
+    }
+
+    saveProject(projectFile);
+}
+
+void MainWindow::saveProjectAs(wxCommandEvent &evt)
+{
+    wxFileDialog saveFileDialog(this, _("Save project"), "", "", "Map art projects (*.mapart)|*.mapart", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    if (saveFileDialog.ShowModal() == wxID_CANCEL)
+    {
+        return; // the user changed idea...
+    }
+
+    saveProject(saveFileDialog.GetPath());
+}
+
+void MainWindow::updateMenuBarRadios()
+{
+    switch (colorDistanceAlgorithm)
+    {
+    case ColorDistanceAlgorithm::DeltaE:
+        GetMenuBar()->GetMenu(3)->GetMenuItems()[0]->Check(false);
+        GetMenuBar()->GetMenu(3)->GetMenuItems()[1]->Check(true);
+        break;
+    default:
+        GetMenuBar()->GetMenu(3)->GetMenuItems()[0]->Check(true);
+        GetMenuBar()->GetMenu(3)->GetMenuItems()[1]->Check(false);
+    }
+
+    switch (ditheringMethod)
+    {
+    case DitheringMethod::FloydSteinberg:
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[1]->Check(true);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[2]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[3]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[4]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[5]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[6]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[7]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[8]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(false);
+        break;
+    case DitheringMethod::MinAvgErr:
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[1]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[2]->Check(true);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[3]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[4]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[5]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[6]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[7]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[8]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(false);
+        break;
+    case DitheringMethod::Atkinson:
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[1]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[2]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[3]->Check(true);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[4]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[5]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[6]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[7]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[8]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(false);
+        break;
+    case DitheringMethod::Stucki:
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[1]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[2]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[3]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[4]->Check(true);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[5]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[6]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[7]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[8]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(false);
+        break;
+    case DitheringMethod::SierraLite:
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[1]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[2]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[3]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[4]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[5]->Check(true);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[6]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[7]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[8]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(false);
+        break;
+    case DitheringMethod::Burkes:
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[1]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[2]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[3]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[4]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[5]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[6]->Check(true);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[7]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[8]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(false);
+        break;
+    case DitheringMethod::Bayer22:
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[1]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[2]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[3]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[4]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[5]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[6]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[7]->Check(true);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[8]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(false);
+        break;
+    case DitheringMethod::Bayer44:
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[1]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[2]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[3]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[4]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[5]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[6]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[7]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[8]->Check(true);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(false);
+        break;
+    case DitheringMethod::Ordered33:
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[1]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[2]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[3]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[4]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[5]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[6]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[7]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[8]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(true);
+        break;
+    default:
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(true);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[1]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[2]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[3]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[4]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[5]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[6]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[7]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[8]->Check(false);
+        GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(false);
+    }
+
+    switch (buildMethod)
+    {
+    case MapBuildMethod::Chaos:
+        GetMenuBar()->GetMenu(5)->GetMenuItems()[0]->Check(true);
+        GetMenuBar()->GetMenu(5)->GetMenuItems()[1]->Check(false);
+        GetMenuBar()->GetMenu(5)->GetMenuItems()[2]->Check(false);
+        GetMenuBar()->GetMenu(5)->GetMenuItems()[3]->Check(false);
+        break;
+    case MapBuildMethod::Staircased:
+        GetMenuBar()->GetMenu(5)->GetMenuItems()[0]->Check(false);
+        GetMenuBar()->GetMenu(5)->GetMenuItems()[1]->Check(true);
+        GetMenuBar()->GetMenu(5)->GetMenuItems()[2]->Check(false);
+        GetMenuBar()->GetMenu(5)->GetMenuItems()[3]->Check(false);
+        break;
+    case MapBuildMethod::Flat:
+        GetMenuBar()->GetMenu(5)->GetMenuItems()[0]->Check(false);
+        GetMenuBar()->GetMenu(5)->GetMenuItems()[1]->Check(false);
+        GetMenuBar()->GetMenu(5)->GetMenuItems()[2]->Check(true);
+        GetMenuBar()->GetMenu(5)->GetMenuItems()[3]->Check(false);
+        break;
+    default:
+        GetMenuBar()->GetMenu(5)->GetMenuItems()[0]->Check(false);
+        GetMenuBar()->GetMenu(5)->GetMenuItems()[1]->Check(false);
+        GetMenuBar()->GetMenu(5)->GetMenuItems()[2]->Check(false);
+        GetMenuBar()->GetMenu(5)->GetMenuItems()[3]->Check(true);
+    }
+
+    switch (version)
+    {
+    case McVersion::MC_1_17:
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[0]->Check(true);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[1]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[2]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[3]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[4]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[5]->Check(false);
+        break;
+    case McVersion::MC_1_16:
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[0]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[1]->Check(true);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[2]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[3]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[4]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[5]->Check(false);
+        break;
+    case McVersion::MC_1_15:
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[0]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[1]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[2]->Check(true);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[3]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[4]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[5]->Check(false);
+        break;
+    case McVersion::MC_1_14:
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[0]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[1]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[2]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[3]->Check(true);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[4]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[5]->Check(false);
+        break;
+    case McVersion::MC_1_13:
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[0]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[1]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[2]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[3]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[4]->Check(true);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[5]->Check(false);
+        break;
+    default:
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[0]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[1]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[2]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[3]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[4]->Check(false);
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[5]->Check(true);
+        break;
+    }
 }

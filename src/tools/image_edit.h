@@ -27,5 +27,17 @@
 #include "../colors/colors.h"
 
 namespace tools {
+
+    /**
+     * @brief  Edits image saturation, brightness and constrast
+     * @note   
+     * @param  &colors: Colors matrix
+     * @param  width: Width
+     * @param  height: Height
+     * @param  saturation: Value 0-2
+     * @param  contrast: Value 0-2
+     * @param  brightness: Value 0-2
+     * @retval None
+     */
     void editImage(std::vector<colors::Color> &colors, size_t width, size_t height, float saturation, float contrast, float brightness);
 }
