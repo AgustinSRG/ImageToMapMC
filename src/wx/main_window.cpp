@@ -297,6 +297,7 @@ void MainWindow::onLoadImage(wxCommandEvent &evt)
     if (openFileDialog.ShowModal() == wxID_CANCEL)
         return; // the user changed idea...
     loadImage(openFileDialog.GetPath());
+    dirty = true;
 }
 
 void MainWindow::loadImage(std::string file)
@@ -351,7 +352,7 @@ void MainWindow::updateOriginalImage()
 
 void MainWindow::onExit(wxCommandEvent &evt)
 {
-    Close(true);
+    Close();
 }
 
 void MainWindow::onCustomBlocks(wxCommandEvent &evt)
@@ -378,24 +379,28 @@ void MainWindow::onChangeVersion(wxCommandEvent &evt)
     {
         materialsWindow->setMaterialsConf(version, colorSetConf);
     }
+    dirty = true;
     RequestPreviewGeneration();
 }
 
 void MainWindow::onChangeBuildMethod(wxCommandEvent &evt)
 {
     buildMethod = static_cast<MapBuildMethod>(evt.GetId() - BUILD_METHOD_ID_PREFIX);
+    dirty = true;
     RequestPreviewGeneration();
 }
 
 void MainWindow::onChangeColorAlgo(wxCommandEvent &evt)
 {
     colorDistanceAlgorithm = static_cast<ColorDistanceAlgorithm>(evt.GetId() - COLOR_METHOD_ID_PREFIX);
+    dirty = true;
     RequestPreviewGeneration();
 }
 
 void MainWindow::onChangeDithering(wxCommandEvent &evt)
 {
     ditheringMethod = static_cast<DitheringMethod>(evt.GetId() - DITHERING_ID_PREFIX);
+    dirty = true;
     RequestPreviewGeneration();
 }
 
@@ -779,12 +784,14 @@ void MainWindow::handleDropFile(wxDropFilesEvent &event)
     if (event.GetNumberOfFiles() > 0)
     {
         loadImage(string(event.GetFiles()[0]));
+        dirty = true;
     }
 }
 
 void MainWindow::changeColorSetConf(std::string conf)
 {
     colorSetConf = conf;
+    dirty = true;
     RequestPreviewGeneration();
 }
 
@@ -827,6 +834,8 @@ void MainWindow::onImageResize(wxCommandEvent &evt)
     imageResizeWidth = dialog.getWidth();
     imageResizeHeight = dialog.getHeight();
 
+    dirty = true;
+
     updateOriginalImage();
 }
 
@@ -850,6 +859,7 @@ void MainWindow::onImageEditParamsChanged(float saturation, float contrast, floa
     this->saturation = saturation;
     this->contrast = contrast;
     this->brightness = brightness;
+    dirty = true;
     updateOriginalImage();
 }
 
