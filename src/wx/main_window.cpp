@@ -1102,10 +1102,11 @@ void MainWindow::saveProject(std::string path)
     root.insert("height", nbt::tag_int(static_cast<int>(originalImage.GetHeight())));
 
     nbt::tag_byte_array colorsByte;
-    
+
     size_t size = originalImage.GetWidth() * originalImage.GetHeight() * 3;
     unsigned char *rawData = originalImage.GetData();
-    for (size_t i = 0; i < size; i++) {
+    for (size_t i = 0; i < size; i++)
+    {
         colorsByte.push_back(rawData[i]);
     }
 
@@ -1182,6 +1183,32 @@ void MainWindow::openProject(wxCommandEvent &evt)
 
 void MainWindow::newProject(wxCommandEvent &evt)
 {
+    if (dirty)
+    {
+        int r = wxMessageBox("Do you want to save the changes before closing the project?", "Save changes?", wxICON_QUESTION | wxCANCEL | wxYES_NO);
+
+        if (r == wxCANCEL)
+        {
+            return;
+        }
+        else if (r == wxYES)
+        {
+            wxCommandEvent evt;
+            if (projectFile.length() > 0)
+            {
+                saveProject(evt);
+            }
+            else
+            {
+                saveProjectAs(evt);
+                if (projectFile.length() == 0)
+                {
+                    return;
+                }
+            }
+        }
+    }
+
     resetProject();
 }
 
