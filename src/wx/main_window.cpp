@@ -800,6 +800,10 @@ void widgets::displayMainWindow(wxApp &app)
     wxInitAllImageHandlers();
     MainWindow *frame = new MainWindow();
     frame->Show(true);
+
+    if (app.argc > 1) {
+        frame->loadProject(app.argv[1]);
+    }
 }
 
 void MainWindow::onExportToMaps(wxCommandEvent &evt)

@@ -69,17 +69,8 @@ int mainEntryPoint(App &app, int argc, char *argv[])
     }
     catch (int code)
     {
-        switch (code)
-        {
-        case -1:
-            displayError(string("Cannot open file: ") + string(argv[1]));
-            break;
-        case -2:
-            displayError(string("Invalid file: ") + string(argv[1]) + string(" is not a valid map NBT file."));
-            break;
-        }
-
-        return 1;
+        widgets::displayMainWindow(app);
+        return 0;
     }
     catch (const std::exception &ex)
     {
