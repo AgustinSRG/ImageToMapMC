@@ -13,7 +13,8 @@
 			"subprojects": true,
 			"build": true,
 			"debug": true,
-			"release": true
+			"release": true,
+			"release32": true
 		},
 		"files.associations": {
 			"string": "cpp",
