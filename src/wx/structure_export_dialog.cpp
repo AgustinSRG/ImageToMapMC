@@ -39,10 +39,11 @@ EVT_BUTTON(ID_Cancel, StructureExportDialog::OnCancel)
 EVT_BUTTON(ID_Browse, StructureExportDialog::OnBrowse)
 END_EVENT_TABLE()
 
-StructureExportDialog::StructureExportDialog(minecraft::McVersion version) : wxDialog(NULL, -1, wxString("Export to structures"), wxDefaultPosition, wxSize(350, 230))
+StructureExportDialog::StructureExportDialog(minecraft::McVersion version, ExportDialogMode mode) : wxDialog(NULL, -1, wxString("Export map art"), wxDefaultPosition, wxSize(350, 230))
 {
 
     this->version = version;
+    this->mode = mode;
 
     wxStaticText *label1 = new wxStaticText(this, wxID_ANY, wxString("Choose a minecraft world folder:"), wxPoint(15, 15), wxSize(200, 15));
 
@@ -51,7 +52,7 @@ StructureExportDialog::StructureExportDialog(minecraft::McVersion version) : wxD
     textFolder = new wxTextCtrl(this, wxID_ANY, wxString(savesPath.string()), wxPoint(15, 35), wxSize(305, 20));
     wxButton *browseButton = new wxButton(this, ID_Browse, wxString("Browse..."), wxPoint(15, 60), wxSize(80, 30));
 
-    wxStaticText *label2 = new wxStaticText(this, wxID_ANY, wxString("Namespace for the structures, or empty for 'minecraft':"), wxPoint(15, 100), wxSize(300, 15));
+    wxStaticText *label2 = new wxStaticText(this, wxID_ANY, wxString("Namespace, or empty for 'minecraft':"), wxPoint(15, 100), wxSize(300, 15));
     textNamespace = new wxTextCtrl(this, wxID_ANY, wxString(""), wxPoint(15, 120), wxSize(305, 20));
 
     wxButton *okButton = new wxButton(this, ID_OK, wxString("Export"), wxPoint(220, 150), wxSize(100, 30));
@@ -115,22 +116,44 @@ std::string StructureExportDialog::getPath()
     filesystem::path structuresPath(std::string(textFolder->GetValue()));
     std::string namespaceMC(textNamespace->GetValue());
 
-    if (version > minecraft::McVersion::MC_1_12)
+    if (mode == ExportDialogMode::Function)
     {
-        structuresPath /= "generated";
-        if (namespaceMC.length() > 0) {
+        structuresPath /= "data";
+
+        structuresPath /= "functions";
+
+        if (namespaceMC.length() > 0)
+        {
             structuresPath /= namespaceMC;
-        } else {
+        }
+        else
+        {
             structuresPath /= "minecraft";
         }
-        
-        structuresPath /= "structures";
     }
     else
     {
-        structuresPath /= "structures";
-        if (namespaceMC.length() > 0) {
-            structuresPath /= namespaceMC;
+        if (version > minecraft::McVersion::MC_1_12)
+        {
+            structuresPath /= "generated";
+            if (namespaceMC.length() > 0)
+            {
+                structuresPath /= namespaceMC;
+            }
+            else
+            {
+                structuresPath /= "minecraft";
+            }
+
+            structuresPath /= "structures";
+        }
+        else
+        {
+            structuresPath /= "structures";
+            if (namespaceMC.length() > 0)
+            {
+                structuresPath /= namespaceMC;
+            }
         }
     }
 

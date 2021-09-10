@@ -30,6 +30,7 @@
 #include "image_resize_dialog.h"
 #include <filesystem>
 #include "../minecraft/structure.h"
+#include "../minecraft/mcfunction.h"
 
 #include <fstream>
 
@@ -60,6 +61,7 @@ enum Identifiers
 
     ID_Export_Map = 6,
     ID_Export_Structure = 7,
+    ID_Export_Function = 8,
 
     ID_Export = 16,
     ID_Resize_Image = 17,
@@ -92,6 +94,7 @@ EVT_SIZE(MainWindow::OnSize)
 EVT_DROP_FILES(MainWindow::handleDropFile)
 EVT_MENU(ID_Export_Map, MainWindow::onExportToMaps)
 EVT_MENU(ID_Export_Structure, MainWindow::onExportToStructure)
+EVT_MENU(ID_Export_Function, MainWindow::onExportToFunctions)
 EVT_MENU(ID_Resize_Image, MainWindow::onImageResize)
 EVT_MENU(ID_Edit_Image, MainWindow::onImageEdit)
 EVT_CLOSE(MainWindow::OnClose)
@@ -169,6 +172,7 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     wxMenu *exportMenu = new wxMenu();
     exportMenu->Append(ID_Export_Map, "&Export as map files\tCtrl+E", "");
     exportMenu->Append(ID_Export_Structure, "&Export as structures\tCtrl+T", "");
+    exportMenu->Append(ID_Export_Function, "&Export as functions\tCtrl+F", "");
     menuFile->AppendSubMenu(exportMenu, "&Export", "");
 
     menuFile->AppendSeparator();
@@ -779,6 +783,85 @@ void MainWindow::ExportAsStructure(std::string path)
 #endif
 }
 
+void MainWindow::ExportAsFunctions(std::string path)
+{
+    threading::Progress p;
+
+    thread progressReportThread(&MainWindow::ReportProgress, this, std::ref(p));
+
+    try
+    {
+        p.startTask("Loading minecraft colors...", 0, 0);
+        std::vector<colors::Color> baseColors = minecraft::loadBaseColors(version);
+        std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
+        std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
+        std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
+        std::vector<bool> enabledConf(baseColors.size());
+        std::vector<size_t> countsMats(MAX_COLOR_GROUPS);
+        bool blacklist = true;
+
+        p.startTask("Loading custom configuration...", 0, 0);
+        mapart::applyColorSet(colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
+        // Apply color restructions based on build method
+        applyBuildRestrictions(colorSet, buildMethod);
+
+        p.startTask("Adjusting colors...", originalImageHeight, threadNum);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, colorDistanceAlgorithm, ditheringMethod, threadNum, p, countsMats);
+
+        // Compute total maps
+        int mapsCountX = originalImageWidth / MAP_WIDTH;
+        int mapsCountZ = originalImageHeight / MAP_HEIGHT;
+
+        p.startTask("Building maps...", 0, 0);
+        int total = 0;
+        int totalMapsCount = mapsCountX * mapsCountZ;
+        for (int mapZ = 0; mapZ < mapsCountZ; mapZ++)
+        {
+            for (int mapX = 0; mapX < mapsCountX; mapX++)
+            {
+                stringstream ss;
+                ss << "Building map (" << (total + 1) << "/" << totalMapsCount << ")...";
+                p.startTask(ss.str(), MAP_WIDTH, threadNum);
+
+                std::vector<mapart::MapBuildingBlock> buildingBlocks = mapart::buildMap(version, blockSet, mapArtColorMatrix, originalImageWidth, originalImageHeight, mapX, mapZ, buildMethod, threadNum, p);
+
+                // Save as structure file
+                stringstream ss2;
+                ss2 << "map_" << (total + 1) << ".mcfunction";
+                filesystem::path outFilePath(path);
+
+                outFilePath /= ss2.str();
+
+                try
+                {
+                    writeMcFunctionFile(outFilePath.string(), buildingBlocks, version);
+                }
+                catch (...)
+                {
+                    wxMessageBox(string("Cannot write file: ") + outFilePath.string(), wxT("Error"), wxICON_ERROR);
+                    throw -1;
+                }
+
+                total++;
+            }
+        }
+    }
+    catch (int)
+    {
+    }
+
+    p.setEnded();
+    progressReportThread.join();
+
+    wxMessageBox(string("Successfully saved function files. They are sorted from left to right, top to bottom."), wxT("Success!"), wxICON_INFORMATION);
+
+#if defined(_WIN32)
+
+    ShellExecute(NULL, L"open", std::wstring(path.begin(), path.end()).c_str(), NULL, NULL, SW_SHOWDEFAULT);
+
+#endif
+}
+
 void MainWindow::handleDropFile(wxDropFilesEvent &event)
 {
     if (event.GetNumberOfFiles() > 0)
@@ -818,12 +901,30 @@ void MainWindow::onExportToMaps(wxCommandEvent &evt)
 
 void MainWindow::onExportToStructure(wxCommandEvent &evt)
 {
-    StructureExportDialog dialog(version);
+    if (buildMethod == MapBuildMethod::None) {
+        wxMessageBox(wxString("You must choose a build method to be able to export to structures."), wxT("Cannot export"), wxICON_INFORMATION);
+        return;
+    }
+    StructureExportDialog dialog(version, ExportDialogMode::Structure);
     if (dialog.ShowModal() == wxID_CANCEL)
     {
         return; // the user changed idea...
     }
     std::thread *t = new std::thread(&MainWindow::ExportAsStructure, this, dialog.getPath());
+}
+
+void MainWindow::onExportToFunctions(wxCommandEvent &evt)
+{
+    if (buildMethod != MapBuildMethod::Flat) {
+        wxMessageBox(wxString("Only flat maps can be exported to minecraft functions."), wxT("Cannot export"), wxICON_INFORMATION);
+        return;
+    }
+    StructureExportDialog dialog(version, ExportDialogMode::Function);
+    if (dialog.ShowModal() == wxID_CANCEL)
+    {
+        return; // the user changed idea...
+    }
+    std::thread *t = new std::thread(&MainWindow::ExportAsFunctions, this, dialog.getPath());
 }
 
 void MainWindow::onImageResize(wxCommandEvent &evt)

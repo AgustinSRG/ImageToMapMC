@@ -27,6 +27,7 @@ SET(SOURCES_COMMON
     "minecraft/mc_colors.h" "minecraft/mc_colors.cpp" 
     "minecraft/mc_blocks.h" "minecraft/mc_blocks.cpp"
     "minecraft/structure.h" "minecraft/structure.cpp"
+    "minecraft/mcfunction.h" "minecraft/mcfunction.cpp"
 
     "mapart/map_art.h" 
     "mapart/common.h" "mapart/common.cpp" 

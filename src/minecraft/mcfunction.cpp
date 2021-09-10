@@ -21,41 +21,45 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#include "mcfunction.h"
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
-#include <iostream>
-#include <filesystem>
-#include <string>
-#include <chrono>
-#include <thread>
 #include <sstream>
-#include <cmath>
-#include "mapart/map_art.h"
-#include "mapart/map_image.h"
-#include "threads/progress.h"
-#include "minecraft/structure.h"
-#include "minecraft/mcfunction.h"
-#include "tools/basedir.h"
-#include "tools/text_file.h"
 
-int printHelp();
-int printVersion();
-int printBlocks(int argc, char **argv);
-int renderMap(int argc, char ** argv);
-int buildMap(int argc, char ** argv);
-void progressReporter(threading::Progress &progress);
+#include "../tools/text_file.h"
 
-enum class MapOutputFormat {
-    Map,
-    Structure,
-    Function
-};
+using namespace std;
+using namespace minecraft;
 
-#define REPORT_THREAD_DELAY (33)
+void minecraft::writeMcFunctionFile(std::string fileName, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version)
+{
+    stringstream fileSS;
+    for (int i = 0; i < buildData.size(); i++)
+    {
+        if (buildData[i].z > 0 && buildData[i].block_ptr != NULL)
+        { // Ignore first line
+            int x = buildData[i].x;
+            int z = buildData[i].z - 1;
 
-#define BLOCKS_PRINT_TEMPLATE ("| %-25s | %-7s | %s\n")
+            stringstream ss;
+
+            switch (version)
+            {
+            case McVersion::MC_1_12:
+                ss << "setblock "
+                   << "~" << x << " ~ ~" << z << " minecraft:" << buildData[i].block_ptr->nbtName << " " << buildData[i].block_ptr->dataValue;
+                break;
+            default:
+                // Afetr 1.12, they removed the data values
+                ss << "setblock "
+                   << "~" << x << " ~ ~" << z << " minecraft:" << buildData[i].block_ptr->nbtName;
+            }
+
+            fileSS << ss.str() << endl;
+        }
+    }
+
+    if (!tools::writeTextFile(fileName, fileSS.str()))
+    {
+        throw -1;
+    }
+}

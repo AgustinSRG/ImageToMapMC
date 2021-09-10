@@ -23,38 +23,17 @@
 
 #pragma once
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
+#include "../mapart/common.h"
 
-#include <string>
-#include "../minecraft/mc_common.h"
-
-enum class ExportDialogMode {
-    Structure,
-    Function
-};
-
-class StructureExportDialog : public wxDialog
-{
-public:
-    StructureExportDialog(minecraft::McVersion version, ExportDialogMode mode);
-
-    std::string getPath();
-
-    void OnOk(wxCommandEvent &event);
-    void OnCancel(wxCommandEvent &event);
-
-    void OnBrowse(wxCommandEvent &event);
-
-private:
-    wxTextCtrl *textFolder;
-    wxTextCtrl *textNamespace;
-
-    minecraft::McVersion version;
-
-    ExportDialogMode mode;
-
-    DECLARE_EVENT_TABLE()
-};
+namespace minecraft {
+    
+    /**
+     * @brief  Writes .mcfunction file to create flat map
+     * @note   
+     * @param  fileName: File
+     * @param  &buildData: Building blocks data
+     * @param  version: Minecraft version
+     * @retval None
+     */
+    void writeMcFunctionFile(std::string fileName, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version);
+}

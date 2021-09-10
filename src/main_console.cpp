@@ -110,6 +110,7 @@ int printHelp()
     cout << "    -f, --format [format]          Specifies the output format. By defaulty is 'map'" << endl;
     cout << "                                     'map' format creates '.dat' files for the maps" << endl;
     cout << "                                     'structure' format creates nbt structure files" << endl;
+    cout << "                                     'function' format creates .mcfunction files" << endl;
     cout << "    -v, --version [version]        Specifies the minecraft version in A.B format (eg, 1.12)." << endl;
     cout << "                                     Set to 'last' to use the most recent minecraft version available" << endl;
     cout << "    -rs, --resize [WxH]            Resizes the image before building the map" << endl;
@@ -139,7 +140,7 @@ int printHelp()
     cout << "                                     set the blocks to build each color." << endl;
     cout << "                                     By default all available colors are used" << endl;
     cout << "    -m, --materials [file]         Specifies a file to print the list of required materials." << endl;
-    cout << "                                     This applies only when --format is set to 'structure'" << endl;
+    cout << "                                     This applies only when --format is set to 'structure' or 'function'" << endl;
     cout << "    -t, --threads [num]            Specifies the number of threads to use." << endl;
     cout << "                                     By default only a single thread will be used" << endl;
     cout << "    -y, --yes [num]                Prevents asking any user input." << endl;
@@ -342,6 +343,14 @@ int buildMap(int argc, char **argv)
                     if (buildMethod == MapBuildMethod::None)
                     {
                         buildMethod = MapBuildMethod::Chaos;
+                    }
+                }
+                else if (outputFormatStr.compare(string("function")) == 0)
+                {
+                    outFormat = MapOutputFormat::Function;
+                    if (buildMethod == MapBuildMethod::None)
+                    {
+                        buildMethod = MapBuildMethod::Flat;
                     }
                 }
                 else
@@ -768,6 +777,26 @@ int buildMap(int argc, char **argv)
                                   << "Cannot write file: " << outFilePath.string() << endl;
                         return 1;
                     }
+                } else if (outFormat == MapOutputFormat::Function) {
+                    // Save as structure file
+                    stringstream ss2;
+                    ss2 << "map_" << (total + 1) << ".mcfunction";
+                    filesystem::path outFilePath(outputPath);
+
+                    outFilePath /= ss2.str();
+
+                    try
+                    {
+                        writeMcFunctionFile(outFilePath.string(), buildingBlocks, version);
+                    }
+                    catch (...)
+                    {
+                        p.setEnded();
+                        progressReportThread.join();
+                        std::cerr << endl
+                                  << "Cannot write file: " << outFilePath.string() << endl;
+                        return 1;
+                    }
                 }
 
                 total++;
@@ -792,6 +821,15 @@ int buildMap(int argc, char **argv)
         {
             std::cerr << endl
                       << "Successfully saved as structure files to: " << outputPath << endl;
+            if (materialsOutFile.size() > 0)
+            {
+                std::cerr << "Materials list saved to: " << materialsOutFile << endl;
+            }
+            std::cerr << "Note: The map numbers are sorted up to down, left to right" << endl;
+        } else if (outFormat == MapOutputFormat::Function)
+        {
+            std::cerr << endl
+                      << "Successfully saved as function files to: " << outputPath << endl;
             if (materialsOutFile.size() > 0)
             {
                 std::cerr << "Materials list saved to: " << materialsOutFile << endl;
