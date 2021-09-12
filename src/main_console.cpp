@@ -309,7 +309,7 @@ int buildMap(int argc, char **argv)
     string materialsOutFile = "";
 
     // Load arguments
-    for (size_t i = 3; i < argc; i++)
+    for (int i = 3; i < argc; i++)
     {
         string arg(argv[i]);
 

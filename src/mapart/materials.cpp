@@ -56,7 +56,7 @@ void MaterialsList::addBlocks(std::vector<mapart::MapBuildingBlock> &buildingBlo
         }
         else
         {
-            short blockIndex = blockPtr->baseColorIndex;
+            size_t blockIndex = blockPtr->baseColorIndex;
             if (blockIndex >= 0 && blockIndex < materials.size())
             {
                 if (materials[blockIndex].name.size() == 0)
