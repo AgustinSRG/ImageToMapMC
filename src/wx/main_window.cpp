@@ -158,22 +158,22 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     // File
     wxMenu *menuFile = new wxMenu();
 
-    menuFile->Append(ID_File_New, "&New Project\tCtrl+N", "");
+    menuFile->Append(ID_File_New, "&New Project\tCtrl+N", "Creates a new project");
 
     menuFile->AppendSeparator();
 
-    menuFile->Append(ID_File_Open, "&Open Project\tCtrl+O", "");
+    menuFile->Append(ID_File_Open, "&Open Project\tCtrl+O", "Opens an existing project");
 
     menuFile->AppendSeparator();
-    menuFile->Append(ID_File_Save, "&Save Project\tCtrl+S", "");
-    menuFile->Append(ID_File_Save_As, "&Save Project As...\tCtrl+Shift+S", "");
+    menuFile->Append(ID_File_Save, "&Save Project\tCtrl+S", "Saves the project");
+    menuFile->Append(ID_File_Save_As, "&Save Project As...\tCtrl+Shift+S", "Saves the project to another file (creates a copy)");
     menuFile->AppendSeparator();
 
     wxMenu *exportMenu = new wxMenu();
-    exportMenu->Append(ID_Export_Map, "&Export as map files\tCtrl+E", "");
-    exportMenu->Append(ID_Export_Structure, "&Export as structures\tCtrl+T", "");
-    exportMenu->Append(ID_Export_Function, "&Export as functions\tCtrl+F", "");
-    menuFile->AppendSubMenu(exportMenu, "&Export", "");
+    exportMenu->Append(ID_Export_Map, "&Export as map files\tCtrl+E", "Exports the map to Minecraft map files (for server admins)");
+    exportMenu->Append(ID_Export_Structure, "&Export as structures\tCtrl+T", "Exports the map to nbt structure files (for survival)");
+    exportMenu->Append(ID_Export_Function, "&Export as functions\tCtrl+F", "Exports the map to minecraft function file (for flat maps)");
+    menuFile->AppendSubMenu(exportMenu, "&Export", "Exports the map, so you can use it in Minecraft");
 
     menuFile->AppendSeparator();
 
@@ -183,59 +183,59 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
 
     // Image
     wxMenu *menuImage = new wxMenu();
-    menuImage->Append(ID_Load_Image, "&Load Image\tCtrl+L", "");
+    menuImage->Append(ID_Load_Image, "&Load Image\tCtrl+L", "Loads a new image");
     menuImage->AppendSeparator();
-    menuImage->Append(ID_Resize_Image, "&Resize Image\tCtrl+Shift+R", "");
-    menuImage->Append(ID_Edit_Image, "&Brightness, Saturation, Contrast\tCtrl+Shift+B", "");
+    menuImage->Append(ID_Resize_Image, "&Resize Image\tCtrl+Shift+R", "Resizes image");
+    menuImage->Append(ID_Edit_Image, "&Brightness, Saturation, Contrast\tCtrl+Shift+B", "Modifies image, using filters for brightness, saturation and constrast");
     menuBar->Append(menuImage, "&Image");
 
     // Materials
     wxMenu *menuMaterials = new wxMenu();
-    menuMaterials->Append(ID_Blocks_Custom, "&Customize materials\tCtrl+M", "");
+    menuMaterials->Append(ID_Blocks_Custom, "&Customize materials\tCtrl+M", "Customizes materials to use");
     menuMaterials->AppendSeparator();
-    menuMaterials->Append(ID_Materials_Save, "&Export materials list\tCtrl+Shift+M", "");
+    menuMaterials->Append(ID_Materials_Save, "&Export materials list\tCtrl+Shift+M", "Exports list of materials to a text file");
     menuBar->Append(menuMaterials, "&Materials");
 
     // Color distance
     colorDistanceAlgorithm = ColorDistanceAlgorithm::Euclidean;
     wxMenu *menuColorDistance = new wxMenu();
-    menuColorDistance->AppendRadioItem(getIdForColorAlgoMenu(ColorDistanceAlgorithm::Euclidean), "&Euclidean", "")->Check(true);
-    menuColorDistance->AppendRadioItem(getIdForColorAlgoMenu(ColorDistanceAlgorithm::DeltaE), "&Delta E", "");
+    menuColorDistance->AppendRadioItem(getIdForColorAlgoMenu(ColorDistanceAlgorithm::Euclidean), "&Euclidean", "Simple squared euclidean distance in the RGB color space")->Check(true);
+    menuColorDistance->AppendRadioItem(getIdForColorAlgoMenu(ColorDistanceAlgorithm::DeltaE), "&Delta E", "Distance in the Lab color space");
     menuBar->Append(menuColorDistance, "&Color aproximation");
 
     // Dithering
     ditheringMethod = DitheringMethod::None;
     wxMenu *menuDithering = new wxMenu();
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::None), "&None", "")->Check(true);
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::FloydSteinberg), "&Floyd Steinberg", "");
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::MinAvgErr), "&Min Average Error", "");
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Atkinson), "&Atkinson", "");
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Stucki), "&Stucki", "");
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::SierraLite), "&Sierra Lite", "");
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Burkes), "&Burkes", "");
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Bayer22), "&Bayer (2x2)", "");
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Bayer44), "&Bayer (4x4)", "");
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Ordered33), "&Ordered (3x3)", "");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::None), "&None", "No dithering")->Check(true);
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::FloydSteinberg), "&Floyd Steinberg", "Diffusses the error to create the illusion of more colors");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::MinAvgErr), "&Min Average Error", "Diffusses the error to create the illusion of more colors");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Atkinson), "&Atkinson", "Diffusses the error to create the illusion of more colors");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Stucki), "&Stucki", "Diffusses the error to create the illusion of more colors");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::SierraLite), "&Sierra Lite", "Diffusses the error to create the illusion of more colors");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Burkes), "&Burkes", "Diffusses the error to create the illusion of more colors");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Bayer22), "&Bayer (2x2)", "Applies filter to create the illusion of more colors");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Bayer44), "&Bayer (4x4)", "Applies filter to create the illusion of more colors");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Ordered33), "&Ordered (3x3)", "Applies filter to create the illusion of more colors");
     menuBar->Append(menuDithering, "&Dithering");
 
     // Build method
     buildMethod = MapBuildMethod::Chaos;
     wxMenu *menuBuildMethod = new wxMenu();
-    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Chaos), "&3D (Complex)", "")->Check(true);
-    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Staircased), "&Staircased", "");
-    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Flat), "&Flat", "");
-    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::None), "&None", "");
+    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Chaos), "&3D (Complex)", "Staircased map with jumps of arbitrary size")->Check(true);
+    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Staircased), "&Staircased", "Staircased map with jumps of only a single block");
+    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Flat), "&Flat", "Flat map (only 1/3 of the colors)");
+    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::None), "&None", "Use all the colors (even the unobtainable with blocks)");
     menuBar->Append(menuBuildMethod, "&Build Method");
 
     // Version
     version = MC_LAST_VERSION;
     wxMenu *menuVersion = new wxMenu();
-    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_17), "&1.17", "")->Check(true);
-    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_16), "&1.16", "");
-    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_15), "&1.15", "");
-    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_14), "&1.14", "");
-    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_13), "&1.13", "");
-    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_12), "&1.12", "");
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_17), "&1.17.1", "Version: 1.17.1")->Check(true);
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_16), "&1.16.5", "Version: 1.16.5");
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_15), "&1.15.2", "Version: 1.15.2");
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_14), "&1.14.4", "Version: 1.14.4");
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_13), "&1.13.2", "Version: 1.13.2");
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_12), "&1.12.2", "Version: 1.12.2");
     menuBar->Append(menuVersion, "&Version");
 
     SetIcon(wxIcon(_ICON_ICO_XPM));
