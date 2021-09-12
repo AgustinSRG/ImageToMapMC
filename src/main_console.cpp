@@ -142,7 +142,7 @@ int printHelp()
     cout << "    -m, --materials [file]         Specifies a file to print the list of required materials." << endl;
     cout << "                                     This applies only when --format is set to 'structure' or 'function'" << endl;
     cout << "    -t, --threads [num]            Specifies the number of threads to use." << endl;
-    cout << "                                     By default only a single thread will be used" << endl;
+    cout << "                                     By default all available cores will be used" << endl;
     cout << "    -y, --yes [num]                Prevents asking any user input." << endl;
 
     cout << endl;
