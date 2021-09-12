@@ -181,7 +181,7 @@ int printBlocks(int argc, char **argv)
     printf(BLOCKS_PRINT_TEMPLATE, "COLOR", "HEX", "BLOCKS");
     printf(BLOCKS_PRINT_TEMPLATE, "", "", "");
 
-    for (int i = 1; i < baseColors.size(); i++)
+    for (size_t i = 1; i < baseColors.size(); i++)
     {
         string name = baseColorNames[i];
         string hex = colors::colorToHex(baseColors[i]);
@@ -309,7 +309,7 @@ int buildMap(int argc, char **argv)
     string materialsOutFile = "";
 
     // Load arguments
-    for (int i = 3; i < argc; i++)
+    for (size_t i = 3; i < argc; i++)
     {
         string arg(argv[i]);
 
@@ -640,7 +640,7 @@ int buildMap(int argc, char **argv)
     std::vector<bool> enabledConf(baseColors.size());
     MaterialsList materials(baseColorNames);
 
-    for (int i = 0; i < enabledConf.size(); i++)
+    for (size_t i = 0; i < enabledConf.size(); i++)
     {
         enabledConf[i] = true;
     }
@@ -888,7 +888,7 @@ void progressReporter(threading::Progress &progress)
 
     // Erase line
     string eraser = "\r";
-    for (int i = 0; i < progressLine.length(); i++)
+    for (size_t i = 0; i < progressLine.length(); i++)
     {
         eraser.append(" ");
     }

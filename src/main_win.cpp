@@ -67,7 +67,7 @@ int mainEntryPoint(App &app, int argc, char *argv[])
 
         widgets::displayMapImage(colorMatrix, app);
     }
-    catch (int code)
+    catch (int)
     {
         widgets::displayMainWindow(app);
         return 0;

@@ -291,7 +291,7 @@ std::vector<const minecraft::FinalColor *> mapart::generateMapArt(const std::vec
     size_t amountPerThread = height / threadNum;
 
     // Create threads
-    for (int i = 0; i < threadNum; i++)
+    for (size_t i = 0; i < threadNum; i++)
     {
         countParts[i].resize(MAX_COLOR_GROUPS);
         for (int j = 0; j < MAX_COLOR_GROUPS; j++)
@@ -311,7 +311,7 @@ std::vector<const minecraft::FinalColor *> mapart::generateMapArt(const std::vec
     }
 
     // Wait for the threads
-    for (int i = 0; i < threadNum; i++)
+    for (size_t i = 0; i < threadNum; i++)
     {
         threads[i].join();
         for (int j = 0; j < MAX_COLOR_GROUPS; j++)

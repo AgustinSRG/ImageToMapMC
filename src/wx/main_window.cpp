@@ -142,7 +142,7 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     imageEditDialog = NULL;
 
     std::vector<size_t> cmats(MAX_COLOR_GROUPS);
-    for (int i = 0; i < MAX_COLOR_GROUPS; i++)
+    for (size_t i = 0; i < MAX_COLOR_GROUPS; i++)
     {
         cmats[i] = 0;
     }
@@ -254,7 +254,7 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     originalImageWidth = MAP_WIDTH;
     originalImageHeight = MAP_HEIGHT;
 
-    for (int i = 0; i < originalImageColors.size(); i++)
+    for (size_t i = 0; i < originalImageColors.size(); i++)
     {
         originalImageColors[i].red = 255;
         originalImageColors[i].green = 255;
@@ -1011,7 +1011,7 @@ void MainWindow::resetProject()
     originalImageWidth = MAP_WIDTH;
     originalImageHeight = MAP_HEIGHT;
 
-    for (int i = 0; i < originalImageColors.size(); i++)
+    for (size_t i = 0; i < originalImageColors.size(); i++)
     {
         originalImageColors[i].red = 255;
         originalImageColors[i].green = 255;

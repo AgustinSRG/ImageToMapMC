@@ -67,7 +67,7 @@ namespace tools
     {
         std::string executablePath = getExecutablePath();
         char *exePath = new char[executablePath.length()];
-        strcpy(exePath, executablePath.c_str());
+        strcpy_s(exePath, executablePath.length(), executablePath.c_str());
         PathRemoveFileSpecA(exePath);
         std::string directory = std::string(exePath);
         delete[] exePath;

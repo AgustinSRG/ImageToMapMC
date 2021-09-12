@@ -71,7 +71,7 @@ MaterialsPanel::MaterialsPanel(MaterialsWindow *matWin) : wxScrolledWindow(matWi
     enabledConf.resize(MAX_COLOR_GROUPS);
     blacklist = true;
 
-    for (int i = 1; i < MAX_COLOR_GROUPS; i++)
+    for (unsigned int i = 1; i < MAX_COLOR_GROUPS; i++)
     {
         groups[i].checkBox = new wxCheckBox(this, MIN_ID_CHECHBOX + i, wxString(""), wxPoint(5, 5), wxSize(24, 24));
         groups[i].checkBox->Bind(wxEVT_CHECKBOX, &MaterialsPanel::onCheckBoxChanged, this);
@@ -197,7 +197,7 @@ void MaterialsPanel::onConfigChanged() {
 }
 
 void MaterialsPanel::setBlacklistMode(bool blacklist) {
-    for (int i = 1; i < MAX_COLOR_GROUPS; i++) {
+    for (unsigned int i = 1; i < MAX_COLOR_GROUPS; i++) {
         enabledConf[i] = blacklist;
         groups[i].checkBox->SetValue(blacklist);
     }
@@ -223,7 +223,7 @@ void MaterialsPanel::setMaterialsConf(minecraft::McVersion version, std::string 
         materialsWindow->menuBar->GetMenu(1)->FindItemByPosition(1)->Check(true);
     }
 
-    for (int i = 1; i < MAX_COLOR_GROUPS; i++)
+    for (unsigned int i = 1; i < MAX_COLOR_GROUPS; i++)
     {
 
         if (i < baseColors.size())
@@ -336,7 +336,7 @@ void MaterialsWindow::displayCountMaterials(std::vector<size_t> &counts) {
 }
 
 void MaterialsPanel::displayCountMaterials(std::vector<size_t> &counts) {
-    for (int i = 1; i < counts.size() && i < MAX_COLOR_GROUPS; i++) {
+    for (unsigned int i = 1; i < counts.size() && i < MAX_COLOR_GROUPS; i++) {
         size_t count = counts[i];
         stringstream ss;
 

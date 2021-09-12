@@ -33,7 +33,7 @@ using namespace minecraft;
 void minecraft::writeMcFunctionFile(std::string fileName, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version)
 {
     stringstream fileSS;
-    for (int i = 0; i < buildData.size(); i++)
+    for (size_t i = 0; i < buildData.size(); i++)
     {
         if (buildData[i].z > 0 && buildData[i].block_ptr != NULL)
         { // Ignore first line

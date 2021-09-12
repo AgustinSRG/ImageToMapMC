@@ -118,10 +118,10 @@ colors::Color applySaturation(colors::Color c, double change)
 
 void tools::editImage(std::vector<colors::Color> &colors, size_t width, size_t height, float saturation, float contrast, float brightness)
 {
-    short brightFactor = ((float)128 * (brightness - 1));
+    short brightFactor = static_cast<short>(((float)128 * (brightness - 1)));
 
-    short contrastRatio = ((float)128 * (contrast - 1));
-    float contrastFactor = (259.0 * ((float)contrastRatio + 255.0)) / (255.0 * (259.0 - (float)contrastRatio));
+    short contrastRatio = static_cast<short>(((float)128 * (contrast - 1)));
+    float contrastFactor = static_cast<float>((259.0 * ((float)contrastRatio + 255.0)) / (255.0 * (259.0 - (float)contrastRatio)));
 
     for (size_t i = 0; i < colors.size(); i++)
     {

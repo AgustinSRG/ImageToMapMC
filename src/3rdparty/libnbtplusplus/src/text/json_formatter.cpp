@@ -81,7 +81,7 @@ namespace //anonymous
             {
                 os << "\n";
                 ++indent_lvl;
-                for(unsigned int i = 0; i < l.size(); ++i)
+                for(size_t i = 0; i < l.size(); ++i)
                 {
                     indent();
                     if(l[i])
@@ -97,7 +97,7 @@ namespace //anonymous
             }
             else
             {
-                for(unsigned int i = 0; i < l.size(); ++i)
+                for(size_t i = 0; i < l.size(); ++i)
                 {
                     if(l[i])
                         l[i].get().accept(*this);

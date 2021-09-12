@@ -68,7 +68,7 @@ void mapart::applyColorSetCommand(const std::string command, int line, bool * bl
 
     int status = 0;
 
-    for (int i = 0; i < command.size(); i++)
+    for (size_t i = 0; i < command.size(); i++)
     {
         char x = command.at(i);
 
@@ -122,7 +122,7 @@ void mapart::applyColorSetCommand(const std::string command, int line, bool * bl
         {
             *blacklist = true;
             initializeEnabledColors(finalColors, true);
-            for (int i = 0; i < enabledConf.size(); i++)
+            for (size_t i = 0; i < enabledConf.size(); i++)
             {
                 enabledConf[i] = true;
             }
@@ -131,7 +131,7 @@ void mapart::applyColorSetCommand(const std::string command, int line, bool * bl
         {
             *blacklist = false;
             initializeEnabledColors(finalColors, false);
-            for (int i = 0; i < enabledConf.size(); i++)
+            for (size_t i = 0; i < enabledConf.size(); i++)
             {
                 enabledConf[i] = false;
             }
@@ -216,7 +216,7 @@ std::string mapart::buildColorSetString(const std::vector<minecraft::BlockList> 
 
     ss << endl;
 
-    for (int i = 1; i < enabledConf.size(); i++)
+    for (size_t i = 1; i < enabledConf.size(); i++)
     {
         if (i >= blockSet.size())
         {

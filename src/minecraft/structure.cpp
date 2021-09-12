@@ -40,7 +40,7 @@ nbt::tag_compound blockDescriptionToTag(const minecraft::BlockDescription *desc)
     if (desc->nbtTags.size() > 0)
     {
         nbt::tag_compound props;
-        for (int i = 0; i < desc->nbtTags.size(); i++)
+        for (size_t i = 0; i < desc->nbtTags.size(); i++)
         {
             props.insert(desc->nbtTags[i].name, desc->nbtTags[i].value);
         }
@@ -87,7 +87,7 @@ void minecraft::writeStructureNBTFile(std::string fileName, std::vector<mapart::
     int nextPaletteItem = 1;
     int maxYlevel = 0;
 
-    for (int i = 0; i < palette.size(); i++) {
+    for (size_t i = 0; i < palette.size(); i++) {
         palette[i] = -1; // Initiallize
     }
 
@@ -103,7 +103,7 @@ void minecraft::writeStructureNBTFile(std::string fileName, std::vector<mapart::
 
     // Blocks parsing
     size_t size = buildData.size();
-    for (int i = 0; i < size; i++)
+    for (size_t i = 0; i < size; i++)
     {
         // Compute max y level for size
         int y = buildData[i].y + 1;

@@ -42,7 +42,7 @@ std::vector<colors::Color> mapart::loadColorMatrixFromImageAndPad(wxImage &image
     vector<Color> result(size);
 
     // Init colors to white
-    for (int i = 0; i < size; i++)
+    for (size_t i = 0; i < size; i++)
     {
         result[i].red = 255;
         result[i].green = 255;

@@ -33,9 +33,9 @@ using namespace mapart;
 MaterialsList::MaterialsList(const std::vector<std::string> baseColorNames)
 {
     materials.resize(baseColorNames.size());
-    for (int i = 0; i < materials.size(); i++)
+    for (size_t i = 0; i < materials.size(); i++)
     {
-        materials[i].id = i;
+        materials[i].id = static_cast<short>(i);
         materials[i].name = "";
         materials[i].count = 0;
     }
@@ -45,7 +45,7 @@ MaterialsList::MaterialsList(const std::vector<std::string> baseColorNames)
 
 void MaterialsList::addBlocks(std::vector<mapart::MapBuildingBlock> &buildingBlocks)
 {
-    for (int i = 0; i < buildingBlocks.size(); i++)
+    for (size_t i = 0; i < buildingBlocks.size(); i++)
     {
         const minecraft::BlockDescription *blockPtr = buildingBlocks[i].block_ptr;
 
@@ -123,7 +123,7 @@ std::string MaterialsList::toString() {
 
     ss << "List of materials:" << endl << endl;
     
-    for (int i = 0; i < materialsCopy.size(); i++) {
+    for (size_t i = 0; i < materialsCopy.size(); i++) {
         if (materialsCopy[i].count <= 0) {
             break;
         }
