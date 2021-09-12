@@ -1246,7 +1246,7 @@ void MainWindow::OnClose(wxCloseEvent &event)
 {
     if (event.CanVeto() && dirty)
     {
-        int r = wxMessageBox("Do you want to save the changes before closing the project?", "Save changes?", wxICON_QUESTION | wxCANCEL | wxYES_NO);
+        int r = wxMessageBox("Do you want to save the changes before closing the project?", "Save changes?", wxICON_QUESTION | wxCANCEL | wxYES_NO | wxICON_WARNING);
 
         if (r == wxCANCEL)
         {
@@ -1290,7 +1290,7 @@ void MainWindow::newProject(wxCommandEvent &evt)
 {
     if (dirty)
     {
-        int r = wxMessageBox("Do you want to save the changes before closing the project?", "Save changes?", wxICON_QUESTION | wxCANCEL | wxYES_NO);
+        int r = wxMessageBox("Do you want to save the changes before closing the project?", "Save changes?", wxICON_QUESTION | wxCANCEL | wxYES_NO | wxICON_WARNING);
 
         if (r == wxCANCEL)
         {
