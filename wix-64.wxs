@@ -84,7 +84,7 @@
 
 		<DirectoryRef Id="ApplicationProgramsFolder">
 			<Component Id="ApplicationShortcut" Guid="5a12b777-8156-45dc-b099-25d4510cc126">
-				<Shortcut Id="ApplicationStartMenuShortcut" Name="ImageToMapMC" Description="Map art tool for Minecraft" Target="[#mcmap_gui.exe]" WorkingDirectory="INSTALLFOLDER" Directory="ApplicationProgramsFolder" />
+				<Shortcut Id="ApplicationStartMenuShortcut" Name="ImageToMapMC (Map art tool for Minecraft)" Description="Map art tool for Minecraft" Target="[#mcmap_gui.exe]" WorkingDirectory="INSTALLFOLDER" Directory="ApplicationProgramsFolder" />
 				<RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
 				<RegistryValue Root="HKCU" Key="Software\Asanrom\ImageToMapMC" Name="installed" Type="integer" Value="1" KeyPath="yes" />
 			</Component>
