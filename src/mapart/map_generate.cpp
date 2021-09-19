@@ -24,6 +24,7 @@
 #include "map_generate.h"
 #include "dithering.h"
 #include <algorithm>
+#include <thread>
 
 using namespace std;
 using namespace colors;

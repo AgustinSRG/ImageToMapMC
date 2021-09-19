@@ -300,7 +300,7 @@ void MainWindow::onLoadImage(wxCommandEvent &evt)
                        "Image files (*.png, *.jpg)|*.png;*.jpg|All files|*.*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     if (openFileDialog.ShowModal() == wxID_CANCEL)
         return; // the user changed idea...
-    loadImage(openFileDialog.GetPath());
+    loadImage(openFileDialog.GetPath().ToStdString());
     dirty = true;
 }
 
@@ -612,7 +612,7 @@ void MainWindow::SaveMaterialsList()
         wxFileDialog saveFileDialog(this, _("Save materials list"), "", "", "Text file (*.txt)|*.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
         if (saveFileDialog.ShowModal() != wxID_CANCEL)
         {
-            if (!tools::writeTextFile(saveFileDialog.GetPath(), materials.toString()))
+            if (!tools::writeTextFile(saveFileDialog.GetPath().ToStdString(), materials.toString()))
             {
                 wxMessageBox(wxString("Could not save the materials due to a file system error."), wxT("Error"), wxICON_ERROR);
             }
@@ -885,7 +885,7 @@ void widgets::displayMainWindow(wxApp &app)
     frame->Show(true);
 
     if (app.argc > 1) {
-        frame->loadProject(app.argv[1]);
+        frame->loadProject(app.argv[1].ToStdString());
     }
 }
 
@@ -1283,7 +1283,7 @@ void MainWindow::openProject(wxCommandEvent &evt)
     if (openFileDialog.ShowModal() == wxID_CANCEL)
         return; // the user changed idea...
 
-    loadProject(openFileDialog.GetPath());
+    loadProject(openFileDialog.GetPath().ToStdString());
 }
 
 void MainWindow::newProject(wxCommandEvent &evt)
@@ -1336,7 +1336,7 @@ void MainWindow::saveProjectAs(wxCommandEvent &evt)
         return; // the user changed idea...
     }
 
-    saveProject(saveFileDialog.GetPath());
+    saveProject(saveFileDialog.GetPath().ToStdString());
 }
 
 void MainWindow::updateMenuBarRadios()

@@ -284,7 +284,7 @@ void DisplayImageFrame::OnSaveImage()
         return; // the user changed idea...
     }
 
-    bool ok = drawPane->bitmap->ConvertToImage().SaveFile(saveFileDialog.GetPath(), wxBITMAP_TYPE_PNG);
+    bool ok = drawPane->bitmap->ConvertToImage().SaveFile(saveFileDialog.GetPath().ToStdString(), wxBITMAP_TYPE_PNG);
 
     if (!ok) {
         wxMessageBox(wxString("Could not save the image due to a file system error."), wxT("Error"), wxICON_ERROR);

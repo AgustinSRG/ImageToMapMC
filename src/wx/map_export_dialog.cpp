@@ -91,7 +91,7 @@ void MapExportDialog::OnBrowse(wxCommandEvent &event) {
 
 std::string MapExportDialog::getPath()
 {
-    return textFolder->GetValue();
+    return textFolder->GetValue().ToStdString();
 }
 
 int MapExportDialog::getMapNumber()

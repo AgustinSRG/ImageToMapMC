@@ -23,6 +23,8 @@
 
 #include "basedir.h"
 
+#include <cstring>
+
 #if defined(_WIN32)
 #include <windows.h>
 #include <Shlwapi.h>
