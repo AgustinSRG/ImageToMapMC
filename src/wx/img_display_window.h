@@ -30,6 +30,8 @@
 
 #include "../mapart/map_art.h"
 
+#include <mutex>
+
 
 class wxImagePanel : public wxPanel
 {
@@ -38,6 +40,8 @@ public:
     wxBitmap * bitmap;
     size_t matrixWidth;
     size_t matrixHeight;
+
+    std::mutex colorsMutex;
 
     wxImagePanel(wxFrame *parent);
     ~wxImagePanel();

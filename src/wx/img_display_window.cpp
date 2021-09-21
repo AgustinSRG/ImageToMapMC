@@ -75,6 +75,8 @@ wxImagePanel::wxImagePanel(wxFrame *parent) : wxPanel(parent)
 
 void wxImagePanel::setColors(std::vector<const minecraft::FinalColor *> &colorsMatrix, size_t width, size_t height)
 {
+    colorsMutex.lock();
+
     if (bitmap != NULL)
     {
         delete bitmap;
@@ -100,11 +102,15 @@ void wxImagePanel::setColors(std::vector<const minecraft::FinalColor *> &colorsM
 
     bitmap = new wxBitmap(image);
 
+    colorsMutex.unlock();
+
     this->Refresh();
 }
 
 void wxImagePanel::setColors(std::vector<colors::Color> &colorsMatrix, size_t width, size_t height)
 {
+    colorsMutex.lock();
+
     if (bitmap != NULL)
     {
         delete bitmap;
@@ -129,6 +135,8 @@ void wxImagePanel::setColors(std::vector<colors::Color> &colorsMatrix, size_t wi
     }
 
     bitmap = new wxBitmap(image);
+
+    colorsMutex.unlock();
 
     this->Refresh();
 }
@@ -157,6 +165,8 @@ void wxImagePanel::paintNow()
 
 void wxImagePanel::render(wxDC &dc)
 {
+    colorsMutex.lock();
+
     if (bitmap != NULL && matrixWidth > 0 && matrixHeight > 0)
     {
         double scale = 1;
@@ -250,9 +260,11 @@ void wxImagePanel::render(wxDC &dc)
     {
         dc.Clear();
     }
+
+    colorsMutex.unlock();
 }
 
-DisplayImageFrame::DisplayImageFrame(wxWindow * parent, const wxString &title, const wxPoint &pos, const wxSize &size)
+DisplayImageFrame::DisplayImageFrame(wxWindow *parent, const wxString &title, const wxPoint &pos, const wxSize &size)
     : wxFrame(parent, wxID_ANY, title, pos, size)
 {
     defaultFile = "map.png";
@@ -286,7 +298,8 @@ void DisplayImageFrame::OnSaveImage()
 
     bool ok = drawPane->bitmap->ConvertToImage().SaveFile(saveFileDialog.GetPath().ToStdString(), wxBITMAP_TYPE_PNG);
 
-    if (!ok) {
+    if (!ok)
+    {
         wxMessageBox(wxString("Could not save the image due to a file system error."), wxT("Error"), wxICON_ERROR);
     }
 }

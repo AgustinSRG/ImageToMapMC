@@ -3,6 +3,9 @@ cmake_minimum_required (VERSION 3.8)
 
 project ("ImageToMapMC_core")
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # hack for buggy CMake's FindwxWidgets script
 if (DEFINED ENV_WX_CONFIG)
     set (ENV{WX_CONFIG} ${ENV_WX_CONFIG})

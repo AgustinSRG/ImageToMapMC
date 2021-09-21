@@ -108,7 +108,6 @@ private:
     std::mutex mutexProgress;
 
     std::mutex mutexPreviewGeneration;
-    std::thread * previewGenerationThread;
     bool requiresPreviewGneration;
     bool previewInProgress;
     threading::Progress previewProgress;

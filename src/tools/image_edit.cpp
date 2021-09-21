@@ -23,6 +23,7 @@
 
 #include "image_edit.h"
 #include <algorithm>
+#include <cmath>
 
 using namespace std;
 

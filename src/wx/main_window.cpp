@@ -122,7 +122,6 @@ int getIdForDitheringMenu(DitheringMethod a)
 
 MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Tool"), wxPoint(50, 50), wxSize(800, 600))
 {
-    previewGenerationThread = NULL;
     materialsWindow = NULL;
     originalImagePanel = NULL;
     previewPanel = NULL;
@@ -241,10 +240,11 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     SetIcon(wxIcon(_ICON_ICO_XPM));
 
     wxStatusBar *statusBar = CreateStatusBar();
-    statusBar->SetFieldsCount(3);
-    statusBar->SetStatusText("Status: Ready", 0);
-    statusBar->SetStatusText("Size: 1 x 1", 1);
-    statusBar->SetStatusText("Project: (not saved yet)", 2);
+    statusBar->SetFieldsCount(4);
+    statusBar->SetStatusText("Map art tool for minecraft", 0);
+    statusBar->SetStatusText("Status: Ready", 1);
+    statusBar->SetStatusText("Size: 1 x 1", 2);
+    statusBar->SetStatusText("Project: (not saved yet)", 3);
 
     SetMenuBar(menuBar);
 
@@ -349,7 +349,7 @@ void MainWindow::updateOriginalImage()
 
     stringstream ss;
     ss << "Size: " << (matrixW / MAP_WIDTH) << " x " << (matrixH / MAP_HEIGHT);
-    GetStatusBar()->SetStatusText(ss.str(), 1);
+    GetStatusBar()->SetStatusText(ss.str(), 2);
 
     RequestPreviewGeneration();
 }
@@ -427,7 +427,9 @@ void MainWindow::OnSize(wxSizeEvent &event)
 
 void MainWindow::RequestPreviewGeneration()
 {
+#if defined(_WIN32)
     mutexPreviewGeneration.lock();
+#endif
 
     if (previewInProgress)
     {
@@ -438,10 +440,16 @@ void MainWindow::RequestPreviewGeneration()
     {
         previewInProgress = true;
         requiresPreviewGneration = false;
-        previewGenerationThread = new std::thread(&MainWindow::GeneratePreview, this);
+#if defined(_WIN32)
+        std::thread(&MainWindow::GeneratePreview, this).detach();
+#else
+        std::thread(&MainWindow::GeneratePreview, this).join();
+#endif
     }
 
+#if defined(_WIN32)
     mutexPreviewGeneration.unlock();
+#endif
 }
 
 void MainWindow::ReportProgress(Progress &progress)
@@ -472,7 +480,7 @@ void MainWindow::ReportProgress(Progress &progress)
         }
 
         mutexProgress.lock();
-        GetStatusBar()->SetStatusText(progressLine, 0);
+        GetStatusBar()->SetStatusText(progressLine, 1);
         mutexProgress.unlock();
 
         // Check ended
@@ -481,7 +489,7 @@ void MainWindow::ReportProgress(Progress &progress)
 
     // Erase line
     mutexProgress.lock();
-    GetStatusBar()->SetStatusText("Ready", 0);
+    GetStatusBar()->SetStatusText("Ready", 1);
     mutexProgress.unlock();
 }
 
@@ -553,7 +561,11 @@ void MainWindow::OnSaveMaterialsList(wxCommandEvent &evt)
         return;
     }
 
-    std::thread *t = new std::thread(&MainWindow::SaveMaterialsList, this);
+#if defined(_WIN32)
+    std::thread(&MainWindow::SaveMaterialsList, this).detach();
+#else
+    std::thread(&MainWindow::SaveMaterialsList, this).join();
+#endif
 }
 
 void MainWindow::SaveMaterialsList()
@@ -884,7 +896,8 @@ void widgets::displayMainWindow(wxApp &app)
     MainWindow *frame = new MainWindow();
     frame->Show(true);
 
-    if (app.argc > 1) {
+    if (app.argc > 1)
+    {
         frame->loadProject(app.argv[1].ToStdString());
     }
 }
@@ -896,12 +909,17 @@ void MainWindow::onExportToMaps(wxCommandEvent &evt)
     {
         return; // the user changed idea...
     }
-    std::thread *t = new std::thread(&MainWindow::ExportAsMapFiles, this, dialog.getPath(), dialog.getMapNumber());
+#if defined(_WIN32)
+    std::thread(&MainWindow::ExportAsMapFiles, this, dialog.getPath(), dialog.getMapNumber()).detach();
+#else
+    std::thread(&MainWindow::ExportAsMapFiles, this, dialog.getPath(), dialog.getMapNumber()).join();
+#endif
 }
 
 void MainWindow::onExportToStructure(wxCommandEvent &evt)
 {
-    if (buildMethod == MapBuildMethod::None) {
+    if (buildMethod == MapBuildMethod::None)
+    {
         wxMessageBox(wxString("You must choose a build method to be able to export to structures."), wxT("Cannot export"), wxICON_INFORMATION);
         return;
     }
@@ -910,12 +928,18 @@ void MainWindow::onExportToStructure(wxCommandEvent &evt)
     {
         return; // the user changed idea...
     }
-    std::thread *t = new std::thread(&MainWindow::ExportAsStructure, this, dialog.getPath());
+
+#if defined(_WIN32)
+    std::thread(&MainWindow::ExportAsStructure, this, dialog.getPath()).detach();
+#else
+    std::thread(&MainWindow::ExportAsStructure, this, dialog.getPath()).join();
+#endif
 }
 
 void MainWindow::onExportToFunctions(wxCommandEvent &evt)
 {
-    if (buildMethod != MapBuildMethod::Flat) {
+    if (buildMethod != MapBuildMethod::Flat)
+    {
         wxMessageBox(wxString("Only flat maps can be exported to minecraft functions."), wxT("Cannot export"), wxICON_INFORMATION);
         return;
     }
@@ -924,7 +948,12 @@ void MainWindow::onExportToFunctions(wxCommandEvent &evt)
     {
         return; // the user changed idea...
     }
-    std::thread *t = new std::thread(&MainWindow::ExportAsFunctions, this, dialog.getPath());
+
+#if defined(_WIN32)
+    std::thread(&MainWindow::ExportAsFunctions, this, dialog.getPath()).detach();
+#else
+    std::thread(&MainWindow::ExportAsFunctions, this, dialog.getPath()).join();
+#endif
 }
 
 void MainWindow::onImageResize(wxCommandEvent &evt)
@@ -1031,7 +1060,7 @@ void MainWindow::resetProject()
     }
     originalImage = blankImage;
 
-    GetStatusBar()->SetStatusText("Project: (not saved yet)", 2);
+    GetStatusBar()->SetStatusText("Project: (not saved yet)", 3);
 
     updateMenuBarRadios();
 
@@ -1147,7 +1176,7 @@ void MainWindow::loadProject(std::string path)
         }
         originalImage = blankImage;
 
-        GetStatusBar()->SetStatusText("Project: " + projectFile, 2);
+        GetStatusBar()->SetStatusText("Project: " + projectFile, 3);
 
         updateMenuBarRadios();
 
@@ -1238,7 +1267,7 @@ void MainWindow::saveProject(std::string path)
     }
 
     projectFile = path;
-    GetStatusBar()->SetStatusText("Project: " + projectFile, 2);
+    GetStatusBar()->SetStatusText("Project: " + projectFile, 3);
     dirty = false;
 }
 
