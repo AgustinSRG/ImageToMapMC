@@ -43,7 +43,8 @@ enum Identifiers
     ID_File_Load = 1,
     ID_File_Save = 2,
     ID_BlackList_ON = 3,
-    ID_BlackList_OFF = 4
+    ID_BlackList_OFF = 4,
+    ID_Timer = 5,
 };
 
 BEGIN_EVENT_TABLE(MaterialsWindow, wxFrame)
@@ -56,6 +57,7 @@ EVT_MENU(ID_BlackList_OFF, MaterialsWindow::SetWhiteList)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(MaterialsPanel, wxScrolledWindow)
+EVT_TIMER(ID_Timer, MaterialsPanel::onCountRefreshTimer)
 END_EVENT_TABLE()
 
 MaterialsPanel::MaterialsPanel(MaterialsWindow *matWin) : wxScrolledWindow(matWin, wxID_ANY, wxPoint(0, 0), matWin->GetClientSize())
@@ -116,6 +118,45 @@ MaterialsPanel::MaterialsPanel(MaterialsWindow *matWin) : wxScrolledWindow(matWi
     // this part makes the scrollbars show up
     this->FitInside();
     this->SetScrollRate(5, 10);
+
+    requiresCountRefresh = false;
+
+    wxTimer *checkRefreshTimer = new wxTimer(this, ID_Timer);
+    checkRefreshTimer->Start(200);
+}
+
+void MaterialsPanel::onCountRefreshTimer(wxTimerEvent &event)
+{
+    countMutex.lock();
+    if (requiresCountRefresh)
+    {
+        requiresCountRefresh = false;
+        for (unsigned int i = 1; i < counts.size() && i < MAX_COLOR_GROUPS; i++)
+        {
+            size_t count = counts[i];
+            stringstream ss;
+
+            if (count >= SHULKER_BOX_AMOUNT)
+            {
+                double shulkers = (double)count / SHULKER_BOX_AMOUNT;
+                shulkers = round(shulkers * 10) / 10;
+                ss << shulkers << " Shulkers";
+            }
+            else if (count >= STACK_AMOUNT)
+            {
+                double stacks = (double)count / STACK_AMOUNT;
+                stacks = round(stacks * 10) / 10;
+                ss << stacks << " Stacks";
+            }
+            else
+            {
+                ss << count << " Blocks";
+            }
+
+            groups[i].countLabel->SetLabel(ss.str());
+        }
+    }
+    countMutex.unlock();
 }
 
 MaterialsWindow::MaterialsWindow(MainWindow *mainWindow) : wxFrame(mainWindow, wxID_ANY, string("Customize materials"), wxPoint(100, 100), wxSize(600, 600))
@@ -164,9 +205,10 @@ void MaterialsWindow::OnClose(wxCloseEvent &event)
 
 void MaterialsPanel::onCheckBoxChanged(wxCommandEvent &evt)
 {
-    int index  = evt.GetId() - MIN_ID_CHECHBOX;
+    int index = evt.GetId() - MIN_ID_CHECHBOX;
 
-    if (index >= 0 && index < enabledConf.size()) {
+    if (index >= 0 && index < enabledConf.size())
+    {
         enabledConf[index] = groups[index].checkBox->IsChecked();
     }
     onConfigChanged();
@@ -174,8 +216,9 @@ void MaterialsPanel::onCheckBoxChanged(wxCommandEvent &evt)
 
 void MaterialsPanel::onComboBoxChanged(wxCommandEvent &evt)
 {
-    int index  = evt.GetId() - MIN_ID_COMBO;
-    if (index >= 0 && index < blockSet.size()) {
+    int index = evt.GetId() - MIN_ID_COMBO;
+    if (index >= 0 && index < blockSet.size())
+    {
         blockSet[index].useBlockIndex = groups[index].combo->GetSelection();
     }
     onConfigChanged();
@@ -188,16 +231,20 @@ void MaterialsWindow::OnSize(wxSizeEvent &event)
     panel->SetSize(this->GetClientSize());
 }
 
-std::string MaterialsPanel::getMaterialsConf() {
+std::string MaterialsPanel::getMaterialsConf()
+{
     return buildColorSetString(blockSet, blacklist, enabledConf, baseColorNames, version);
 }
 
-void MaterialsPanel::onConfigChanged() {
+void MaterialsPanel::onConfigChanged()
+{
     this->materialsWindow->mainWindow->changeColorSetConf(getMaterialsConf());
 }
 
-void MaterialsPanel::setBlacklistMode(bool blacklist) {
-    for (unsigned int i = 1; i < MAX_COLOR_GROUPS; i++) {
+void MaterialsPanel::setBlacklistMode(bool blacklist)
+{
+    for (unsigned int i = 1; i < MAX_COLOR_GROUPS; i++)
+    {
         enabledConf[i] = blacklist;
         groups[i].checkBox->SetValue(blacklist);
     }
@@ -301,7 +348,7 @@ void MaterialsWindow::onLoadFile(wxCommandEvent &evt)
     if (openFileDialog.ShowModal() == wxID_CANCEL)
         return; // the user changed idea...
 
-    panel->setMaterialsConf( panel->version, tools::readTextFile(openFileDialog.GetPath().ToStdString()));
+    panel->setMaterialsConf(panel->version, tools::readTextFile(openFileDialog.GetPath().ToStdString()));
     mainWindow->changeColorSetConf(panel->getMaterialsConf());
 }
 
@@ -312,7 +359,8 @@ void MaterialsWindow::onSaveFile(wxCommandEvent &evt)
     {
         return; // the user changed idea...
     }
-    if (!tools::writeTextFile(saveFileDialog.GetPath().ToStdString(), panel->getMaterialsConf())) {
+    if (!tools::writeTextFile(saveFileDialog.GetPath().ToStdString(), panel->getMaterialsConf()))
+    {
         wxMessageBox(wxString("Could not save the configuration due to a file system error."), wxT("Error"), wxICON_ERROR);
     }
 }
@@ -331,27 +379,19 @@ void MaterialsWindow::SetWhiteList(wxCommandEvent &evt)
     panel->onConfigChanged();
 }
 
-void MaterialsWindow::displayCountMaterials(std::vector<size_t> &counts) {
+void MaterialsWindow::displayCountMaterials(std::vector<size_t> &counts)
+{
     panel->displayCountMaterials(counts);
 }
 
-void MaterialsPanel::displayCountMaterials(std::vector<size_t> &counts) {
-    for (unsigned int i = 1; i < counts.size() && i < MAX_COLOR_GROUPS; i++) {
-        size_t count = counts[i];
-        stringstream ss;
-
-        if (count >= SHULKER_BOX_AMOUNT) {
-            double shulkers = (double) count / SHULKER_BOX_AMOUNT;
-            shulkers = round(shulkers * 10) / 10;
-            ss << shulkers << " Shulkers";
-        } else if (count >= STACK_AMOUNT) {
-            double stacks = (double) count / STACK_AMOUNT;
-            stacks = round(stacks * 10) / 10;
-            ss << stacks << " Stacks";
-        } else {
-            ss << count << " Blocks";
-        }
-
-        groups[i].countLabel->SetLabel(ss.str());
+void MaterialsPanel::displayCountMaterials(std::vector<size_t> &counts)
+{
+    countMutex.lock();
+    this->counts.resize(counts.size());
+    for (size_t i = 0; i < counts.size(); i++)
+    {
+        this->counts[i] = counts[i];
     }
+    requiresCountRefresh = true;
+    countMutex.unlock();
 }

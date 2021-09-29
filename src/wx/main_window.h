@@ -33,6 +33,7 @@
 
 #include "../mapart/map_art.h"
 #include "../mapart/map_image.h"
+#include "../mapart/project.h"
 
 #include "../tools/text_file.h"
 #include "../tools/image_edit.h"
@@ -65,6 +66,8 @@ public:
     void onImageResize(wxCommandEvent &evt);
     void onImageEdit(wxCommandEvent &evt);
 
+    void OnProgressTimer(wxTimerEvent& event);
+
     void onExit(wxCommandEvent &evt);
     void onLoadImage(wxCommandEvent &evt);
     void loadImage(std::string file);
@@ -75,8 +78,8 @@ public:
 
     void RequestPreviewGeneration();
 
-    void GeneratePreview();
-    void SaveMaterialsList();
+    void GeneratePreview(mapart::MapArtProject copyProject);
+    void SaveMaterialsList(mapart::MapArtProject copyProject);
 
     void OnSaveMaterialsList(wxCommandEvent &evt);
 
@@ -86,9 +89,9 @@ public:
 
     void changeColorSetConf(std::string conf);
 
-    void ExportAsMapFiles(std::string path, int mapNumber);
-    void ExportAsStructure(std::string path);
-    void ExportAsFunctions(std::string path);
+    void ExportAsMapFiles(mapart::MapArtProject copyProject, std::string path, int mapNumber);
+    void ExportAsStructure(mapart::MapArtProject copyProject, std::string path);
+    void ExportAsFunctions(mapart::MapArtProject copyProject, std::string path);
 
     void onImageEditParamsChanged(float saturation, float contrast, float brightness);
 
@@ -100,33 +103,18 @@ public:
 
     void OnClose(wxCloseEvent &event);
 private:
-    minecraft::McVersion version;
-    colors::ColorDistanceAlgorithm colorDistanceAlgorithm;
-    mapart::DitheringMethod ditheringMethod;
-    mapart::MapBuildMethod buildMethod;
+    
 
     std::mutex mutexProgress;
+    std::string progressStatus;
 
     std::mutex mutexPreviewGeneration;
-    bool requiresPreviewGneration;
+    bool requiresPreviewGeneration;
     bool previewInProgress;
     threading::Progress previewProgress;
 
-    wxImage originalImage;
     wxImagePanel * originalImagePanel;
     wxImagePanel * previewPanel;
-    size_t originalImageWidth;
-    size_t originalImageHeight;
-    std::vector<colors::Color> originalImageColors;
-
-    std::string colorSetConf;
-
-    size_t imageResizeWidth;
-    size_t imageResizeHeight;
-
-    float saturation;
-    float contrast;
-    float brightness;
 
     int threadNum;
 
@@ -137,6 +125,7 @@ private:
 
     std::vector<size_t> countsMats;
 
+    mapart::MapArtProject project;
     std::string projectFile;
     bool dirty;
 

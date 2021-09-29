@@ -69,7 +69,9 @@ enum Identifiers
     ID_Blocks_Custom = 19,
 
     ID_Materials_Show = 21,
-    ID_Materials_Save = 22
+    ID_Materials_Save = 22,
+
+    ID_Timer = 50,
 };
 
 #define VERSION_ID_PREFIX (1500)
@@ -97,6 +99,7 @@ EVT_MENU(ID_Export_Structure, MainWindow::onExportToStructure)
 EVT_MENU(ID_Export_Function, MainWindow::onExportToFunctions)
 EVT_MENU(ID_Resize_Image, MainWindow::onImageResize)
 EVT_MENU(ID_Edit_Image, MainWindow::onImageEdit)
+EVT_TIMER(ID_Timer, MainWindow::OnProgressTimer)
 EVT_CLOSE(MainWindow::OnClose)
 END_EVENT_TABLE()
 
@@ -125,15 +128,10 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     materialsWindow = NULL;
     originalImagePanel = NULL;
     previewPanel = NULL;
-    requiresPreviewGneration = false;
+    requiresPreviewGeneration = false;
     previewInProgress = false;
 
-    imageResizeWidth = 128;
-    imageResizeHeight = 128;
-
-    saturation = 1;
-    contrast = 1;
-    brightness = 1;
+    project = MapArtProject();
 
     dirty = false;
     projectFile = "";
@@ -148,8 +146,6 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     countsMats = cmats;
 
     threadNum = max((unsigned int)1, std::thread::hardware_concurrency());
-
-    colorSetConf = "MODE(BLACKLIST)\n";
 
     /* Menu Bar */
     menuBar = new wxMenuBar();
@@ -196,14 +192,12 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     menuBar->Append(menuMaterials, "&Materials");
 
     // Color distance
-    colorDistanceAlgorithm = ColorDistanceAlgorithm::Euclidean;
     wxMenu *menuColorDistance = new wxMenu();
     menuColorDistance->AppendRadioItem(getIdForColorAlgoMenu(ColorDistanceAlgorithm::Euclidean), "&Euclidean", "Simple squared euclidean distance in the RGB color space")->Check(true);
     menuColorDistance->AppendRadioItem(getIdForColorAlgoMenu(ColorDistanceAlgorithm::DeltaE), "&Delta E", "Distance in the Lab color space");
     menuBar->Append(menuColorDistance, "&Color aproximation");
 
     // Dithering
-    ditheringMethod = DitheringMethod::None;
     wxMenu *menuDithering = new wxMenu();
     menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::None), "&None", "No dithering")->Check(true);
     menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::FloydSteinberg), "&Floyd Steinberg", "Diffusses the error to create the illusion of more colors");
@@ -218,7 +212,6 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     menuBar->Append(menuDithering, "&Dithering");
 
     // Build method
-    buildMethod = MapBuildMethod::Chaos;
     wxMenu *menuBuildMethod = new wxMenu();
     menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Chaos), "&3D (Complex)", "Staircased map with jumps of arbitrary size")->Check(true);
     menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Staircased), "&Staircased", "Staircased map with jumps of only a single block");
@@ -227,7 +220,6 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     menuBar->Append(menuBuildMethod, "&Build Method");
 
     // Version
-    version = MC_LAST_VERSION;
     wxMenu *menuVersion = new wxMenu();
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_17), "&1.17.1", "Version: 1.17.1")->Check(true);
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_16), "&1.16.5", "Version: 1.16.5");
@@ -246,43 +238,24 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     statusBar->SetStatusText("Size: 1 x 1", 2);
     statusBar->SetStatusText("Project: (not saved yet)", 3);
 
+    progressStatus = "Status: Ready";
+
+    wxTimer *progressTimer = new wxTimer(this, ID_Timer);
+    progressTimer->Start(200);
+
     SetMenuBar(menuBar);
 
     // Add sub windows
 
-    originalImageColors = std::vector<colors::Color>(MAP_WIDTH * MAP_HEIGHT);
-    originalImageWidth = MAP_WIDTH;
-    originalImageHeight = MAP_HEIGHT;
-
-    for (size_t i = 0; i < originalImageColors.size(); i++)
-    {
-        originalImageColors[i].red = 255;
-        originalImageColors[i].green = 255;
-        originalImageColors[i].blue = 255;
-    }
-
-    wxImage blankImage(MAP_WIDTH, MAP_HEIGHT);
-    unsigned char *rawData = blankImage.GetData();
-    size_t size = MAP_WIDTH * MAP_HEIGHT;
-
-    size_t j = 0;
-    for (size_t i = 0; i < size; i++)
-    {
-        rawData[j++] = 255;
-        rawData[j++] = 255;
-        rawData[j++] = 255;
-    }
-    originalImage = blankImage;
-
     originalImagePanel = new wxImagePanel(this);
     originalImagePanel->SetPosition(wxPoint(0, 0));
     originalImagePanel->SetSize(GetClientSize().GetWidth() / 2 - FRAME_PAD_PIXELS, GetClientSize().GetHeight());
-    originalImagePanel->setColors(originalImageColors, originalImageWidth, originalImageHeight);
+    originalImagePanel->setColors(project.getColors(), project.width, project.height);
 
     previewPanel = new wxImagePanel(this);
     previewPanel->SetPosition(wxPoint(GetClientSize().GetWidth() / 2 + FRAME_PAD_PIXELS, 0));
     previewPanel->SetSize(GetClientSize().GetWidth() / 2 - FRAME_PAD_PIXELS, GetClientSize().GetHeight());
-    previewPanel->setColors(originalImageColors, originalImageWidth, originalImageHeight);
+    previewPanel->setColors(project.getColors(), project.width, project.height);
 
     Maximize();
 
@@ -306,22 +279,22 @@ void MainWindow::onLoadImage(wxCommandEvent &evt)
 
 void MainWindow::loadImage(std::string file)
 {
-    if (!originalImage.LoadFile(file))
+    wxImage image;
+    if (!image.LoadFile(file))
     {
         wxMessageBox(string("Invalid image file: ") + file, wxT("Error"), wxICON_ERROR);
         return;
     }
 
-    imageResizeWidth = originalImage.GetWidth();
-    imageResizeHeight = originalImage.GetHeight();
+    project.loadImage(image);
 
-    saturation = 1;
-    contrast = 1;
-    brightness = 1;
+    project.saturation = 1;
+    project.contrast = 1;
+    project.brightness = 1;
 
     if (imageEditDialog != NULL)
     {
-        imageEditDialog->SetParams(saturation, contrast, brightness);
+        imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness);
     }
 
     updateOriginalImage();
@@ -329,22 +302,20 @@ void MainWindow::loadImage(std::string file)
 
 void MainWindow::updateOriginalImage()
 {
-    wxImage imageCopy(originalImage);
+    wxImage imageCopy = project.toImage();
 
-    if (imageResizeWidth > 0 && imageResizeHeight > 0)
+    if (project.resize_width > 0 && project.resize_height > 0)
     {
-        imageCopy.Rescale(imageResizeWidth, imageResizeHeight);
+        imageCopy.Rescale(project.resize_width, project.resize_height);
     }
 
     int matrixW;
     int matrixH;
-    originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, &matrixW, &matrixH);
-    originalImageWidth = matrixW;
-    originalImageHeight = matrixH;
+    vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, &matrixW, &matrixH);
 
-    tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, saturation, contrast, brightness);
+    tools::editImage(originalImageColors, matrixW, matrixH, project.saturation, project.contrast, project.brightness);
 
-    originalImagePanel->setColors(originalImageColors, originalImageWidth, originalImageHeight);
+    originalImagePanel->setColors(originalImageColors, matrixW, matrixH);
     originalImagePanel->Refresh();
 
     stringstream ss;
@@ -367,7 +338,7 @@ void MainWindow::onCustomBlocks(wxCommandEvent &evt)
         materialsWindow = new MaterialsWindow(this);
         materialsWindow->Show();
         materialsWindow->displayCountMaterials(countsMats);
-        materialsWindow->setMaterialsConf(version, colorSetConf);
+        materialsWindow->setMaterialsConf(project.version, project.colorSetConf);
     }
     else
     {
@@ -378,10 +349,10 @@ void MainWindow::onCustomBlocks(wxCommandEvent &evt)
 
 void MainWindow::onChangeVersion(wxCommandEvent &evt)
 {
-    version = static_cast<McVersion>(evt.GetId() - VERSION_ID_PREFIX);
+    project.version = static_cast<McVersion>(evt.GetId() - VERSION_ID_PREFIX);
     if (materialsWindow != NULL)
     {
-        materialsWindow->setMaterialsConf(version, colorSetConf);
+        materialsWindow->setMaterialsConf(project.version, project.colorSetConf);
     }
     dirty = true;
     RequestPreviewGeneration();
@@ -389,21 +360,21 @@ void MainWindow::onChangeVersion(wxCommandEvent &evt)
 
 void MainWindow::onChangeBuildMethod(wxCommandEvent &evt)
 {
-    buildMethod = static_cast<MapBuildMethod>(evt.GetId() - BUILD_METHOD_ID_PREFIX);
+    project.buildMethod = static_cast<MapBuildMethod>(evt.GetId() - BUILD_METHOD_ID_PREFIX);
     dirty = true;
     RequestPreviewGeneration();
 }
 
 void MainWindow::onChangeColorAlgo(wxCommandEvent &evt)
 {
-    colorDistanceAlgorithm = static_cast<ColorDistanceAlgorithm>(evt.GetId() - COLOR_METHOD_ID_PREFIX);
+    project.colorDistanceAlgorithm = static_cast<ColorDistanceAlgorithm>(evt.GetId() - COLOR_METHOD_ID_PREFIX);
     dirty = true;
     RequestPreviewGeneration();
 }
 
 void MainWindow::onChangeDithering(wxCommandEvent &evt)
 {
-    ditheringMethod = static_cast<DitheringMethod>(evt.GetId() - DITHERING_ID_PREFIX);
+    project.ditheringMethod = static_cast<DitheringMethod>(evt.GetId() - DITHERING_ID_PREFIX);
     dirty = true;
     RequestPreviewGeneration();
 }
@@ -427,29 +398,21 @@ void MainWindow::OnSize(wxSizeEvent &event)
 
 void MainWindow::RequestPreviewGeneration()
 {
-#if defined(_WIN32)
     mutexPreviewGeneration.lock();
-#endif
 
     if (previewInProgress)
     {
-        requiresPreviewGneration = true;
+        requiresPreviewGeneration = true;
         previewProgress.terminate();
     }
     else
     {
         previewInProgress = true;
-        requiresPreviewGneration = false;
-#if defined(_WIN32)
-        std::thread(&MainWindow::GeneratePreview, this).detach();
-#else
-        std::thread(&MainWindow::GeneratePreview, this).join();
-#endif
+        requiresPreviewGeneration = false;
+        std::thread(&MainWindow::GeneratePreview, this, project).detach();
     }
 
-#if defined(_WIN32)
     mutexPreviewGeneration.unlock();
-#endif
 }
 
 void MainWindow::ReportProgress(Progress &progress)
@@ -475,12 +438,12 @@ void MainWindow::ReportProgress(Progress &progress)
         else
         {
             stringstream ss;
-            ss << p.first << "(" << p.second << "%)";
+            ss << "Status: " << p.first << " (" << p.second << "%)";
             progressLine = ss.str();
         }
 
         mutexProgress.lock();
-        GetStatusBar()->SetStatusText(progressLine, 1);
+        progressStatus = progressLine;
         mutexProgress.unlock();
 
         // Check ended
@@ -489,11 +452,11 @@ void MainWindow::ReportProgress(Progress &progress)
 
     // Erase line
     mutexProgress.lock();
-    GetStatusBar()->SetStatusText("Ready", 1);
+    progressStatus = "Status: Ready";
     mutexProgress.unlock();
 }
 
-void MainWindow::GeneratePreview()
+void MainWindow::GeneratePreview(mapart::MapArtProject copyProject)
 {
     bool finished = false;
 
@@ -505,8 +468,22 @@ void MainWindow::GeneratePreview()
 
         try
         {
+            previewProgress.startTask("Preparing image...", 0, 0);
+            wxImage imageCopy = copyProject.toImage();
+
+            if (copyProject.resize_width > 0 && copyProject.resize_height > 0)
+            {
+                imageCopy.Rescale(copyProject.resize_width, copyProject.resize_height);
+            }
+
+            int originalImageWidth;
+            int originalImageHeight;
+            vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, &originalImageWidth, &originalImageHeight);
+
+            tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+
             previewProgress.startTask("Loading minecraft colors...", 0, 0);
-            std::vector<colors::Color> baseColors = minecraft::loadBaseColors(version);
+            std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
             std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
             std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
             std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
@@ -514,12 +491,12 @@ void MainWindow::GeneratePreview()
             bool blacklist = true;
 
             previewProgress.startTask("Loading custom configuration...", 0, 0);
-            mapart::applyColorSet(colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
+            mapart::applyColorSet(copyProject.colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
             // Apply color restructions based on build method
-            applyBuildRestrictions(colorSet, buildMethod);
+            applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
             previewProgress.startTask("Generating preview...", originalImageHeight, threadNum);
-            std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, colorDistanceAlgorithm, ditheringMethod, threadNum, previewProgress, countsMats);
+            std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, previewProgress, countsMats);
 
             previewPanel->setColors(mapArtColorMatrix, originalImageWidth, originalImageHeight);
             previewPanel->Refresh();
@@ -539,15 +516,8 @@ void MainWindow::GeneratePreview()
 
         mutexPreviewGeneration.lock();
 
-        if (requiresPreviewGneration)
-        {
-            requiresPreviewGneration = false;
-        }
-        else
-        {
-            previewInProgress = false;
-            finished = true;
-        }
+        previewInProgress = false;
+        finished = true;
 
         mutexPreviewGeneration.unlock();
     }
@@ -555,20 +525,16 @@ void MainWindow::GeneratePreview()
 
 void MainWindow::OnSaveMaterialsList(wxCommandEvent &evt)
 {
-    if (buildMethod == MapBuildMethod::None)
+    if (project.buildMethod == MapBuildMethod::None)
     {
         wxMessageBox(wxString("You must choose a build method to create the materials list"), wxT("Error"), wxICON_ERROR);
         return;
     }
 
-#if defined(_WIN32)
-    std::thread(&MainWindow::SaveMaterialsList, this).detach();
-#else
-    std::thread(&MainWindow::SaveMaterialsList, this).join();
-#endif
+    std::thread(&MainWindow::SaveMaterialsList, this, project).detach();
 }
 
-void MainWindow::SaveMaterialsList()
+void MainWindow::SaveMaterialsList(mapart::MapArtProject copyProject)
 {
     threading::Progress p;
 
@@ -576,8 +542,22 @@ void MainWindow::SaveMaterialsList()
 
     try
     {
+        p.startTask("Preparing image...", 0, 0);
+        wxImage imageCopy = copyProject.toImage();
+
+        if (copyProject.resize_width > 0 && copyProject.resize_height > 0)
+        {
+            imageCopy.Rescale(copyProject.resize_width, copyProject.resize_height);
+        }
+
+        int originalImageWidth;
+        int originalImageHeight;
+        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, &originalImageWidth, &originalImageHeight);
+
+        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+
         p.startTask("Loading minecraft colors...", 0, 0);
-        std::vector<colors::Color> baseColors = minecraft::loadBaseColors(version);
+        std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
         std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
         std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
         std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
@@ -586,12 +566,12 @@ void MainWindow::SaveMaterialsList()
         bool blacklist = true;
 
         p.startTask("Loading custom configuration...", 0, 0);
-        mapart::applyColorSet(colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
+        mapart::applyColorSet(copyProject.colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
         // Apply color restructions based on build method
-        applyBuildRestrictions(colorSet, buildMethod);
+        applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         p.startTask("Adjusting colors...", originalImageHeight, threadNum);
-        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, colorDistanceAlgorithm, ditheringMethod, threadNum, p, countsMats);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, p, countsMats);
 
         // Compute total maps
         int mapsCountX = originalImageWidth / MAP_WIDTH;
@@ -610,7 +590,7 @@ void MainWindow::SaveMaterialsList()
                 ss << "Building map (" << (total + 1) << "/" << totalMapsCount << ")...";
                 p.startTask(ss.str(), MAP_WIDTH, threadNum);
 
-                std::vector<mapart::MapBuildingBlock> buildingBlocks = mapart::buildMap(version, blockSet, mapArtColorMatrix, originalImageWidth, originalImageHeight, mapX, mapZ, buildMethod, threadNum, p);
+                std::vector<mapart::MapBuildingBlock> buildingBlocks = mapart::buildMap(copyProject.version, blockSet, mapArtColorMatrix, originalImageWidth, originalImageHeight, mapX, mapZ, copyProject.buildMethod, threadNum, p);
 
                 // Add to materials list
                 materials.addBlocks(buildingBlocks);
@@ -638,7 +618,7 @@ void MainWindow::SaveMaterialsList()
     progressReportThread.join();
 }
 
-void MainWindow::ExportAsMapFiles(std::string path, int mapNumber)
+void MainWindow::ExportAsMapFiles(mapart::MapArtProject copyProject, std::string path, int mapNumber)
 {
     threading::Progress p;
 
@@ -646,8 +626,22 @@ void MainWindow::ExportAsMapFiles(std::string path, int mapNumber)
 
     try
     {
+        p.startTask("Preparing image...", 0, 0);
+        wxImage imageCopy = copyProject.toImage();
+
+        if (copyProject.resize_width > 0 && copyProject.resize_height > 0)
+        {
+            imageCopy.Rescale(copyProject.resize_width, copyProject.resize_height);
+        }
+
+        int originalImageWidth;
+        int originalImageHeight;
+        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, &originalImageWidth, &originalImageHeight);
+
+        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+
         p.startTask("Loading minecraft colors...", 0, 0);
-        std::vector<colors::Color> baseColors = minecraft::loadBaseColors(version);
+        std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
         std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
         std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
         std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
@@ -656,12 +650,12 @@ void MainWindow::ExportAsMapFiles(std::string path, int mapNumber)
         bool blacklist = true;
 
         p.startTask("Loading custom configuration...", 0, 0);
-        mapart::applyColorSet(colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
+        mapart::applyColorSet(copyProject.colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
         // Apply color restructions based on build method
-        applyBuildRestrictions(colorSet, buildMethod);
+        applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         p.startTask("Adjusting colors...", originalImageHeight, threadNum);
-        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, colorDistanceAlgorithm, ditheringMethod, threadNum, p, countsMats);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, p, countsMats);
 
         // Compute total maps
         int mapsCountX = originalImageWidth / MAP_WIDTH;
@@ -687,7 +681,7 @@ void MainWindow::ExportAsMapFiles(std::string path, int mapNumber)
 
                 try
                 {
-                    writeMapNBTFile(outFilePath.string(), mapDataToSave, version);
+                    writeMapNBTFile(outFilePath.string(), mapDataToSave, copyProject.version);
                 }
                 catch (...)
                 {
@@ -716,7 +710,7 @@ void MainWindow::ExportAsMapFiles(std::string path, int mapNumber)
 #endif
 }
 
-void MainWindow::ExportAsStructure(std::string path)
+void MainWindow::ExportAsStructure(mapart::MapArtProject copyProject, std::string path)
 {
     threading::Progress p;
 
@@ -724,8 +718,22 @@ void MainWindow::ExportAsStructure(std::string path)
 
     try
     {
+        p.startTask("Preparing image...", 0, 0);
+        wxImage imageCopy = copyProject.toImage();
+
+        if (copyProject.resize_width > 0 && copyProject.resize_height > 0)
+        {
+            imageCopy.Rescale(copyProject.resize_width, copyProject.resize_height);
+        }
+
+        int originalImageWidth;
+        int originalImageHeight;
+        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, &originalImageWidth, &originalImageHeight);
+
+        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+
         p.startTask("Loading minecraft colors...", 0, 0);
-        std::vector<colors::Color> baseColors = minecraft::loadBaseColors(version);
+        std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
         std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
         std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
         std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
@@ -734,12 +742,12 @@ void MainWindow::ExportAsStructure(std::string path)
         bool blacklist = true;
 
         p.startTask("Loading custom configuration...", 0, 0);
-        mapart::applyColorSet(colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
+        mapart::applyColorSet(copyProject.colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
         // Apply color restructions based on build method
-        applyBuildRestrictions(colorSet, buildMethod);
+        applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         p.startTask("Adjusting colors...", originalImageHeight, threadNum);
-        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, colorDistanceAlgorithm, ditheringMethod, threadNum, p, countsMats);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, p, countsMats);
 
         // Compute total maps
         int mapsCountX = originalImageWidth / MAP_WIDTH;
@@ -756,7 +764,7 @@ void MainWindow::ExportAsStructure(std::string path)
                 ss << "Building map (" << (total + 1) << "/" << totalMapsCount << ")...";
                 p.startTask(ss.str(), MAP_WIDTH, threadNum);
 
-                std::vector<mapart::MapBuildingBlock> buildingBlocks = mapart::buildMap(version, blockSet, mapArtColorMatrix, originalImageWidth, originalImageHeight, mapX, mapZ, buildMethod, threadNum, p);
+                std::vector<mapart::MapBuildingBlock> buildingBlocks = mapart::buildMap(copyProject.version, blockSet, mapArtColorMatrix, originalImageWidth, originalImageHeight, mapX, mapZ, copyProject.buildMethod, threadNum, p);
 
                 // Save as structure file
                 stringstream ss2;
@@ -767,7 +775,7 @@ void MainWindow::ExportAsStructure(std::string path)
 
                 try
                 {
-                    writeStructureNBTFile(outFilePath.string(), buildingBlocks, version);
+                    writeStructureNBTFile(outFilePath.string(), buildingBlocks, copyProject.version);
                 }
                 catch (...)
                 {
@@ -795,7 +803,7 @@ void MainWindow::ExportAsStructure(std::string path)
 #endif
 }
 
-void MainWindow::ExportAsFunctions(std::string path)
+void MainWindow::ExportAsFunctions(mapart::MapArtProject copyProject, std::string path)
 {
     threading::Progress p;
 
@@ -803,8 +811,22 @@ void MainWindow::ExportAsFunctions(std::string path)
 
     try
     {
+        p.startTask("Preparing image...", 0, 0);
+        wxImage imageCopy = copyProject.toImage();
+
+        if (copyProject.resize_width > 0 && copyProject.resize_height > 0)
+        {
+            imageCopy.Rescale(copyProject.resize_width, copyProject.resize_height);
+        }
+
+        int originalImageWidth;
+        int originalImageHeight;
+        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, &originalImageWidth, &originalImageHeight);
+
+        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+
         p.startTask("Loading minecraft colors...", 0, 0);
-        std::vector<colors::Color> baseColors = minecraft::loadBaseColors(version);
+        std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
         std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
         std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
         std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
@@ -813,12 +835,12 @@ void MainWindow::ExportAsFunctions(std::string path)
         bool blacklist = true;
 
         p.startTask("Loading custom configuration...", 0, 0);
-        mapart::applyColorSet(colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
+        mapart::applyColorSet(copyProject.colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
         // Apply color restructions based on build method
-        applyBuildRestrictions(colorSet, buildMethod);
+        applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         p.startTask("Adjusting colors...", originalImageHeight, threadNum);
-        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, colorDistanceAlgorithm, ditheringMethod, threadNum, p, countsMats);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, p, countsMats);
 
         // Compute total maps
         int mapsCountX = originalImageWidth / MAP_WIDTH;
@@ -835,7 +857,7 @@ void MainWindow::ExportAsFunctions(std::string path)
                 ss << "Building map (" << (total + 1) << "/" << totalMapsCount << ")...";
                 p.startTask(ss.str(), MAP_WIDTH, threadNum);
 
-                std::vector<mapart::MapBuildingBlock> buildingBlocks = mapart::buildMap(version, blockSet, mapArtColorMatrix, originalImageWidth, originalImageHeight, mapX, mapZ, buildMethod, threadNum, p);
+                std::vector<mapart::MapBuildingBlock> buildingBlocks = mapart::buildMap(copyProject.version, blockSet, mapArtColorMatrix, originalImageWidth, originalImageHeight, mapX, mapZ, copyProject.buildMethod, threadNum, p);
 
                 // Save as structure file
                 stringstream ss2;
@@ -846,7 +868,7 @@ void MainWindow::ExportAsFunctions(std::string path)
 
                 try
                 {
-                    writeMcFunctionFile(outFilePath.string(), buildingBlocks, version);
+                    writeMcFunctionFile(outFilePath.string(), buildingBlocks, copyProject.version);
                 }
                 catch (...)
                 {
@@ -885,7 +907,7 @@ void MainWindow::handleDropFile(wxDropFilesEvent &event)
 
 void MainWindow::changeColorSetConf(std::string conf)
 {
-    colorSetConf = conf;
+    project.colorSetConf = conf;
     dirty = true;
     RequestPreviewGeneration();
 }
@@ -909,64 +931,53 @@ void MainWindow::onExportToMaps(wxCommandEvent &evt)
     {
         return; // the user changed idea...
     }
-#if defined(_WIN32)
-    std::thread(&MainWindow::ExportAsMapFiles, this, dialog.getPath(), dialog.getMapNumber()).detach();
-#else
-    std::thread(&MainWindow::ExportAsMapFiles, this, dialog.getPath(), dialog.getMapNumber()).join();
-#endif
+
+    std::thread(&MainWindow::ExportAsMapFiles, this, project, dialog.getPath(), dialog.getMapNumber()).detach();
 }
 
 void MainWindow::onExportToStructure(wxCommandEvent &evt)
 {
-    if (buildMethod == MapBuildMethod::None)
+    if (project.buildMethod == MapBuildMethod::None)
     {
         wxMessageBox(wxString("You must choose a build method to be able to export to structures."), wxT("Cannot export"), wxICON_INFORMATION);
         return;
     }
-    StructureExportDialog dialog(version, ExportDialogMode::Structure);
+    StructureExportDialog dialog(project.version, ExportDialogMode::Structure);
     if (dialog.ShowModal() == wxID_CANCEL)
     {
         return; // the user changed idea...
     }
 
-#if defined(_WIN32)
-    std::thread(&MainWindow::ExportAsStructure, this, dialog.getPath()).detach();
-#else
-    std::thread(&MainWindow::ExportAsStructure, this, dialog.getPath()).join();
-#endif
+    std::thread(&MainWindow::ExportAsStructure, this, project, dialog.getPath()).detach();
 }
 
 void MainWindow::onExportToFunctions(wxCommandEvent &evt)
 {
-    if (buildMethod != MapBuildMethod::Flat)
+    if (project.buildMethod != MapBuildMethod::Flat)
     {
         wxMessageBox(wxString("Only flat maps can be exported to minecraft functions."), wxT("Cannot export"), wxICON_INFORMATION);
         return;
     }
-    StructureExportDialog dialog(version, ExportDialogMode::Function);
+    StructureExportDialog dialog(project.version, ExportDialogMode::Function);
     if (dialog.ShowModal() == wxID_CANCEL)
     {
         return; // the user changed idea...
     }
 
-#if defined(_WIN32)
-    std::thread(&MainWindow::ExportAsFunctions, this, dialog.getPath()).detach();
-#else
-    std::thread(&MainWindow::ExportAsFunctions, this, dialog.getPath()).join();
-#endif
+    std::thread(&MainWindow::ExportAsFunctions, this, project, dialog.getPath()).detach();
 }
 
 void MainWindow::onImageResize(wxCommandEvent &evt)
 {
-    ImageResizeDialog dialog(imageResizeWidth, imageResizeHeight);
+    ImageResizeDialog dialog(project.resize_width, project.resize_height);
 
     if (dialog.ShowModal() == wxID_CANCEL)
     {
         return; // the user changed idea...
     }
 
-    imageResizeWidth = dialog.getWidth();
-    imageResizeHeight = dialog.getHeight();
+    project.resize_width = dialog.getWidth();
+    project.resize_height = dialog.getHeight();
 
     dirty = true;
 
@@ -979,7 +990,7 @@ void MainWindow::onImageEdit(wxCommandEvent &evt)
     {
         imageEditDialog = new ImageEditDialog(this);
         imageEditDialog->Show();
-        imageEditDialog->SetParams(saturation, contrast, brightness);
+        imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness);
     }
     else
     {
@@ -990,27 +1001,20 @@ void MainWindow::onImageEdit(wxCommandEvent &evt)
 
 void MainWindow::onImageEditParamsChanged(float saturation, float contrast, float brightness)
 {
-    this->saturation = saturation;
-    this->contrast = contrast;
-    this->brightness = brightness;
+    project.saturation = saturation;
+    project.contrast = contrast;
+    project.brightness = brightness;
     dirty = true;
     updateOriginalImage();
 }
 
 void MainWindow::resetProject()
 {
-    // Image resize
-    imageResizeWidth = 128;
-    imageResizeHeight = 128;
-
-    // Image edit params
-    saturation = 1;
-    contrast = 1;
-    brightness = 1;
+    project = MapArtProject();
 
     if (imageEditDialog != NULL)
     {
-        imageEditDialog->SetParams(saturation, contrast, brightness);
+        imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness);
     }
 
     // Not dirty
@@ -1019,46 +1023,12 @@ void MainWindow::resetProject()
     // Not saved yet
     projectFile = "";
 
-    // Colors conf
-    colorSetConf = "MODE(BLACKLIST)\n";
-
-    // Version
-    version = MC_LAST_VERSION;
-
     if (materialsWindow != NULL)
     {
-        materialsWindow->setMaterialsConf(version, colorSetConf);
+        materialsWindow->setMaterialsConf(project.version, project.colorSetConf);
     }
 
     // Map params
-    colorDistanceAlgorithm = ColorDistanceAlgorithm::Euclidean;
-    ditheringMethod = DitheringMethod::None;
-    buildMethod = MapBuildMethod::Chaos;
-
-    // Initial image
-    originalImageColors = std::vector<colors::Color>(MAP_WIDTH * MAP_HEIGHT);
-    originalImageWidth = MAP_WIDTH;
-    originalImageHeight = MAP_HEIGHT;
-
-    for (size_t i = 0; i < originalImageColors.size(); i++)
-    {
-        originalImageColors[i].red = 255;
-        originalImageColors[i].green = 255;
-        originalImageColors[i].blue = 255;
-    }
-
-    wxImage blankImage(MAP_WIDTH, MAP_HEIGHT);
-    unsigned char *rawData = blankImage.GetData();
-    size_t size = MAP_WIDTH * MAP_HEIGHT;
-
-    size_t j = 0;
-    for (size_t i = 0; i < size; i++)
-    {
-        rawData[j++] = 255;
-        rawData[j++] = 255;
-        rawData[j++] = 255;
-    }
-    originalImage = blankImage;
 
     GetStatusBar()->SetStatusText("Project: (not saved yet)", 3);
 
@@ -1069,32 +1039,17 @@ void MainWindow::resetProject()
 
 void MainWindow::loadProject(std::string path)
 {
-    try
+
+    if (project.loadFromFile(path))
     {
-        std::ifstream file(path, std::ios::binary);
-
-        if (!file)
-        {
-            throw -1;
-        }
-
-        zlib::izlibstream igzs(file);
-
-        auto pair = nbt::io::read_compound(igzs);
-        nbt::tag_compound comp = *pair.second;
-
-        // Image resize
-        imageResizeWidth = comp.at("resize_width").as<nbt::tag_int>().get();
-        imageResizeHeight = comp.at("resize_height").as<nbt::tag_int>().get();
-
-        // Image edit params
-        saturation = comp.at("saturation").as<nbt::tag_float>().get();
-        contrast = comp.at("contrast").as<nbt::tag_float>().get();
-        brightness = comp.at("brightness").as<nbt::tag_float>().get();
-
         if (imageEditDialog != NULL)
         {
-            imageEditDialog->SetParams(saturation, contrast, brightness);
+            imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness);
+        }
+
+        if (materialsWindow != NULL)
+        {
+            materialsWindow->setMaterialsConf(project.version, project.colorSetConf);
         }
 
         // Not dirty
@@ -1103,172 +1058,31 @@ void MainWindow::loadProject(std::string path)
         // Not saved yet
         projectFile = path;
 
-        // Colors conf
-        colorSetConf = comp.at("colors_conf").as<nbt::tag_string>().get();
-
-        // Version
-        version = minecraft::getVersionFromText(comp.at("version").as<nbt::tag_string>().get());
-
-        if (version == McVersion::UNKNOWN)
-        {
-            version = MC_LAST_VERSION;
-        }
-
-        if (materialsWindow != NULL)
-        {
-            materialsWindow->setMaterialsConf(version, colorSetConf);
-        }
-
-        // Map params
-        string paramStr;
-
-        paramStr = comp.at("color_distance").as<nbt::tag_string>().get();
-        if (paramStr.compare("delta-e") == 0)
-        {
-            colorDistanceAlgorithm = ColorDistanceAlgorithm::DeltaE;
-        }
-        else if (paramStr.compare("euclidean") == 0)
-        {
-            colorDistanceAlgorithm = ColorDistanceAlgorithm::Euclidean;
-        }
-        else
-        {
-            colorDistanceAlgorithm = ColorDistanceAlgorithm::Euclidean;
-        }
-
-        ditheringMethod = mapart::parseDitheringMethodFromString(comp.at("dithering").as<nbt::tag_string>().get());
-
-        if (ditheringMethod == DitheringMethod::Unknown)
-        {
-            ditheringMethod = DitheringMethod::None;
-        }
-
-        paramStr = comp.at("build_method").as<nbt::tag_string>().get();
-        if (paramStr.compare("flat") == 0)
-        {
-            buildMethod = MapBuildMethod::Flat;
-        }
-        else if (paramStr.compare("stair") == 0)
-        {
-            buildMethod = MapBuildMethod::Staircased;
-        }
-        else if (paramStr.compare("chaos") == 0)
-        {
-            buildMethod = MapBuildMethod::Chaos;
-        }
-        else
-        {
-            buildMethod = MapBuildMethod::None;
-        }
-
-        size_t w = comp.at("width").as<nbt::tag_int>().get();
-        size_t h = comp.at("height").as<nbt::tag_int>().get();
-
-        nbt::tag_byte_array colorsByte = comp.at("image").as<nbt::tag_byte_array>();
-
-        wxImage blankImage(w, h);
-        unsigned char *rawData = blankImage.GetData();
-        size_t size = w * h * 3;
-
-        for (size_t i = 0; i < size; i++)
-        {
-            rawData[i] = colorsByte.at(i);
-        }
-        originalImage = blankImage;
-
         GetStatusBar()->SetStatusText("Project: " + projectFile, 3);
 
         updateMenuBarRadios();
 
         updateOriginalImage();
     }
-    catch (...)
+    else
     {
         wxMessageBox(string("Could not load project file: ") + path, wxT("Error"), wxICON_ERROR);
         resetProject();
-        return;
     }
 }
 
 void MainWindow::saveProject(std::string path)
 {
-    nbt::tag_compound root;
-
-    root.insert("resize_width", nbt::tag_int(static_cast<int>(imageResizeWidth)));
-    root.insert("resize_height", nbt::tag_int(static_cast<int>(imageResizeHeight)));
-
-    root.insert("saturation", nbt::tag_float(saturation));
-    root.insert("contrast", nbt::tag_float(contrast));
-    root.insert("brightness", nbt::tag_float(brightness));
-
-    root.insert("colors_conf", nbt::tag_string(colorSetConf));
-
-    root.insert("version", nbt::tag_string(versionToString(version)));
-
-    switch (colorDistanceAlgorithm)
+    if (project.saveToFile(path))
     {
-    case ColorDistanceAlgorithm::DeltaE:
-        root.insert("color_distance", nbt::tag_string("delta-e"));
-        break;
-    default:
-        root.insert("color_distance", nbt::tag_string("euclidean"));
+        dirty = false;
+        projectFile = path;
+        GetStatusBar()->SetStatusText("Project: " + projectFile, 3);
     }
-
-    root.insert("dithering", nbt::tag_string(ditheringMethodToString(ditheringMethod)));
-
-    switch (buildMethod)
-    {
-    case MapBuildMethod::Chaos:
-        root.insert("build_method", nbt::tag_string("chaos"));
-        break;
-    case MapBuildMethod::Flat:
-        root.insert("build_method", nbt::tag_string("flat"));
-        break;
-    case MapBuildMethod::Staircased:
-        root.insert("build_method", nbt::tag_string("stair"));
-        break;
-    default:
-        root.insert("build_method", nbt::tag_string("none"));
-    }
-
-    // Image data
-    root.insert("width", nbt::tag_int(static_cast<int>(originalImage.GetWidth())));
-    root.insert("height", nbt::tag_int(static_cast<int>(originalImage.GetHeight())));
-
-    nbt::tag_byte_array colorsByte;
-
-    size_t size = originalImage.GetWidth() * originalImage.GetHeight() * 3;
-    unsigned char *rawData = originalImage.GetData();
-    for (size_t i = 0; i < size; i++)
-    {
-        colorsByte.push_back(rawData[i]);
-    }
-
-    root.insert("image", colorsByte.clone());
-
-    // Save
-    std::ofstream file(path, std::ios::binary);
-
-    if (!file)
+    else
     {
         wxMessageBox(string("Could not save project file: ") + path, wxT("Error"), wxICON_ERROR);
-        return;
     }
-
-    try
-    {
-        zlib::ozlibstream ogzs(file, -1, true);
-        nbt::io::write_tag("", root, ogzs);
-    }
-    catch (...)
-    {
-        wxMessageBox(string("Could not save project file: ") + path, wxT("Error"), wxICON_ERROR);
-        return;
-    }
-
-    projectFile = path;
-    GetStatusBar()->SetStatusText("Project: " + projectFile, 3);
-    dirty = false;
 }
 
 void MainWindow::OnClose(wxCloseEvent &event)
@@ -1370,7 +1184,7 @@ void MainWindow::saveProjectAs(wxCommandEvent &evt)
 
 void MainWindow::updateMenuBarRadios()
 {
-    switch (colorDistanceAlgorithm)
+    switch (project.colorDistanceAlgorithm)
     {
     case ColorDistanceAlgorithm::DeltaE:
         GetMenuBar()->GetMenu(3)->GetMenuItems()[0]->Check(false);
@@ -1381,7 +1195,7 @@ void MainWindow::updateMenuBarRadios()
         GetMenuBar()->GetMenu(3)->GetMenuItems()[1]->Check(false);
     }
 
-    switch (ditheringMethod)
+    switch (project.ditheringMethod)
     {
     case DitheringMethod::FloydSteinberg:
         GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(false);
@@ -1504,7 +1318,7 @@ void MainWindow::updateMenuBarRadios()
         GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(false);
     }
 
-    switch (buildMethod)
+    switch (project.buildMethod)
     {
     case MapBuildMethod::Chaos:
         GetMenuBar()->GetMenu(5)->GetMenuItems()[0]->Check(true);
@@ -1531,7 +1345,7 @@ void MainWindow::updateMenuBarRadios()
         GetMenuBar()->GetMenu(5)->GetMenuItems()[3]->Check(true);
     }
 
-    switch (version)
+    switch (project.version)
     {
     case McVersion::MC_1_17:
         GetMenuBar()->GetMenu(6)->GetMenuItems()[0]->Check(true);
@@ -1582,4 +1396,22 @@ void MainWindow::updateMenuBarRadios()
         GetMenuBar()->GetMenu(6)->GetMenuItems()[5]->Check(true);
         break;
     }
+}
+
+void MainWindow::OnProgressTimer(wxTimerEvent &event)
+{
+    mutexProgress.lock();
+    GetStatusBar()->SetStatusText(progressStatus, 1);
+    mutexProgress.unlock();
+
+    mutexPreviewGeneration.lock();
+
+    if (requiresPreviewGeneration && !previewInProgress)
+    {
+        previewInProgress = true;
+        requiresPreviewGeneration = false;
+        std::thread(&MainWindow::GeneratePreview, this, project).detach();
+    }
+
+    mutexPreviewGeneration.unlock();
 }

@@ -32,6 +32,7 @@
 #include <wx/panel.h>
 #include <wx/stattext.h>
 #include <wx/combobox.h>
+#include <mutex>
 
 #include "main_window.h"
 
@@ -53,6 +54,8 @@ public:
 
     void onCheckBoxChanged(wxCommandEvent &evt);
     void onComboBoxChanged(wxCommandEvent &evt);
+
+    void onCountRefreshTimer(wxTimerEvent& event);
 
     void setMaterialsConf(minecraft::McVersion version, std::string conf);
 
@@ -76,6 +79,10 @@ private:
     std::vector<std::string> baseColorNames;
     
     std::vector<bool> enabledConf;
+
+    std::mutex countMutex;
+    std::vector<size_t> counts;
+    bool requiresCountRefresh;
 
     wxDECLARE_EVENT_TABLE();
 };

@@ -55,6 +55,7 @@ SET(SOURCES_WX
     "wx/structure_export_dialog.h" "wx/structure_export_dialog.cpp"
     "wx/image_resize_dialog.h" "wx/image_resize_dialog.cpp"
     "wx/image_edit_dialog.h" "wx/image_edit_dialog.cpp"
+    "mapart/project.h" "mapart/project.cpp"
 )
 
 SET(SOURCES_RC 
