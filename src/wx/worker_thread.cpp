@@ -39,15 +39,13 @@ using namespace colors;
 using namespace minecraft;
 using namespace mapart;
 
-#define CHECK_DELAY 100
-
 DEFINE_EVENT_TYPE(wxEVT_WorkerThreadPreviewData, -1)
 DEFINE_EVENT_TYPE(wxEVT_WorkerThreadMaterials, -1)
 DEFINE_EVENT_TYPE(wxEVT_WorkerThreadError, -1)
 
 /* Constructor */
 
-WorkerThread::WorkerThread(wxEvtHandler *pParent, int threadNum) : wxThread(wxTHREAD_DETACHED), m_pParent(pParent)
+WorkerThread::WorkerThread(wxEvtHandler *pParent, int threadNum) : wxThread(wxTHREAD_DETACHED), m_pParent(pParent), sem(0, 1)
 {
     this->threadNum = threadNum;
     taskType = TaskType::None;
@@ -148,6 +146,8 @@ void WorkerThread::requestGeneratePreview(mapart::MapArtProject &project)
     this->project = project;
 
     stateMutex.Unlock();
+
+    sem.Post();
 }
 
 void WorkerThread::requestExportMaterials(mapart::MapArtProject &project, std::string outPath)
@@ -169,6 +169,8 @@ void WorkerThread::requestExportMaterials(mapart::MapArtProject &project, std::s
     this->outPath = outPath;
 
     stateMutex.Unlock();
+
+    sem.Post();
 }
 
 void WorkerThread::requestExportMaps(mapart::MapArtProject &project, std::string outPath, int mapNumber)
@@ -191,6 +193,8 @@ void WorkerThread::requestExportMaps(mapart::MapArtProject &project, std::string
     this->mapNumber = mapNumber;
 
     stateMutex.Unlock();
+
+    sem.Post();
 }
 
 void WorkerThread::requestExportStruct(mapart::MapArtProject &project, std::string outPath)
@@ -212,6 +216,8 @@ void WorkerThread::requestExportStruct(mapart::MapArtProject &project, std::stri
     this->outPath = outPath;
 
     stateMutex.Unlock();
+
+    sem.Post();
 }
 void WorkerThread::requestExportFunc(mapart::MapArtProject &project, std::string outPath)
 {
@@ -232,6 +238,8 @@ void WorkerThread::requestExportFunc(mapart::MapArtProject &project, std::string
     this->outPath = outPath;
 
     stateMutex.Unlock();
+
+    sem.Post();
 }
 
 /* Workers */
@@ -644,7 +652,7 @@ wxThread::ExitCode WorkerThread::Entry()
 
     while (!TestDestroy())
     {
-        wxMilliSleep(CHECK_DELAY);
+        sem.Wait();
 
         stateMutex.Lock();
         copyTaskType = taskType;

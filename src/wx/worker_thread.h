@@ -66,6 +66,8 @@ private:
     int threadNum;
     wxMutex stateMutex;
 
+    wxSemaphore sem;
+
     TaskType taskType;
     bool cancellable;
 
