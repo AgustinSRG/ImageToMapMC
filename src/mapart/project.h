@@ -65,4 +65,14 @@ namespace mapart {
 
             void loadImage(wxImage &image);
     };
+
+    class MapArtPreviewData {
+        public:
+            std::vector<colors::Color> colors;
+            int width;
+            int height;
+
+            MapArtPreviewData();
+            MapArtPreviewData(std::vector<const minecraft::FinalColor *> colors, int width, int height);
+    };
 }

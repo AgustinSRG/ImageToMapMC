@@ -39,6 +39,7 @@
 #include "../tools/image_edit.h"
 
 #include "img_display_window.h"
+#include "worker_thread.h"
 
 class MaterialsWindow;
 
@@ -68,6 +69,10 @@ public:
 
     void OnProgressTimer(wxTimerEvent& event);
 
+    void onWorkerError(wxCommandEvent& event);
+    void onWorkerPreviewDone(wxCommandEvent& event);
+    void onWorkerMaterialsGiven(wxCommandEvent& event);
+
     void onExit(wxCommandEvent &evt);
     void onLoadImage(wxCommandEvent &evt);
     void loadImage(std::string file);
@@ -78,20 +83,11 @@ public:
 
     void RequestPreviewGeneration();
 
-    void GeneratePreview(mapart::MapArtProject copyProject);
-    void SaveMaterialsList(mapart::MapArtProject copyProject);
-
     void OnSaveMaterialsList(wxCommandEvent &evt);
-
-    void ReportProgress(threading::Progress &progress);
 
     void handleDropFile(wxDropFilesEvent& event);
 
     void changeColorSetConf(std::string conf);
-
-    void ExportAsMapFiles(mapart::MapArtProject copyProject, std::string path, int mapNumber);
-    void ExportAsStructure(mapart::MapArtProject copyProject, std::string path);
-    void ExportAsFunctions(mapart::MapArtProject copyProject, std::string path);
 
     void onImageEditParamsChanged(float saturation, float contrast, float brightness);
 
@@ -103,18 +99,10 @@ public:
 
     void OnClose(wxCloseEvent &event);
 private:
-    
-
-    std::mutex mutexProgress;
-    std::string progressStatus;
-
-    std::mutex mutexPreviewGeneration;
-    bool requiresPreviewGeneration;
-    bool previewInProgress;
-    threading::Progress previewProgress;
-
     wxImagePanel * originalImagePanel;
     wxImagePanel * previewPanel;
+
+    WorkerThread * workerThread;
 
     int threadNum;
 

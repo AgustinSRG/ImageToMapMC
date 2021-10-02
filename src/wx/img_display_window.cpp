@@ -73,9 +73,9 @@ wxImagePanel::wxImagePanel(wxFrame *parent) : wxPanel(parent)
     bitmap = NULL;
 }
 
-void wxImagePanel::setColors(std::vector<const minecraft::FinalColor *> &colorsMatrix, size_t width, size_t height)
+void wxImagePanel::setColors(const std::vector<const minecraft::FinalColor *> &colorsMatrix, size_t width, size_t height)
 {
-    colorsMutex.lock();
+    colorsMutex.Lock();
 
     if (bitmap != NULL)
     {
@@ -102,14 +102,14 @@ void wxImagePanel::setColors(std::vector<const minecraft::FinalColor *> &colorsM
 
     bitmap = new wxBitmap(image);
 
-    colorsMutex.unlock();
+    colorsMutex.Unlock();
 
     this->Refresh();
 }
 
-void wxImagePanel::setColors(std::vector<colors::Color> &colorsMatrix, size_t width, size_t height)
+void wxImagePanel::setColors(const std::vector<colors::Color> &colorsMatrix, size_t width, size_t height)
 {
-    colorsMutex.lock();
+    colorsMutex.Lock();
 
     if (bitmap != NULL)
     {
@@ -136,7 +136,7 @@ void wxImagePanel::setColors(std::vector<colors::Color> &colorsMatrix, size_t wi
 
     bitmap = new wxBitmap(image);
 
-    colorsMutex.unlock();
+    colorsMutex.Unlock();
 
     this->Refresh();
 }
@@ -165,7 +165,7 @@ void wxImagePanel::paintNow()
 
 void wxImagePanel::render(wxDC &dc)
 {
-    colorsMutex.lock();
+    colorsMutex.Lock();
 
     if (bitmap != NULL && matrixWidth > 0 && matrixHeight > 0)
     {
@@ -261,7 +261,7 @@ void wxImagePanel::render(wxDC &dc)
         dc.Clear();
     }
 
-    colorsMutex.unlock();
+    colorsMutex.Unlock();
 }
 
 DisplayImageFrame::DisplayImageFrame(wxWindow *parent, const wxString &title, const wxPoint &pos, const wxSize &size)

@@ -41,7 +41,7 @@ public:
     size_t matrixWidth;
     size_t matrixHeight;
 
-    std::mutex colorsMutex;
+    wxMutex colorsMutex;
 
     wxImagePanel(wxFrame *parent);
     ~wxImagePanel();
@@ -51,8 +51,8 @@ public:
 
     void render(wxDC &dc);
 
-    void setColors(std::vector<const minecraft::FinalColor *> &colorsMatrix, size_t width, size_t height);
-    void setColors(std::vector<colors::Color> &colorsMatrix, size_t width, size_t height);
+    void setColors(const std::vector<const minecraft::FinalColor *> &colorsMatrix, size_t width, size_t height);
+    void setColors(const std::vector<colors::Color> &colorsMatrix, size_t width, size_t height);
 
     // some useful events
     /*

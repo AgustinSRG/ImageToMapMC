@@ -320,3 +320,21 @@ void MapArtProject::loadImage(wxImage &image)
         image_data[i] = rawData[i];
     }
 }
+
+MapArtPreviewData::MapArtPreviewData(std::vector<const minecraft::FinalColor *> colors, int width, int height) {
+    this->width = width;
+    this->height = height;
+
+    this->colors.resize(colors.size());
+
+    for (size_t i = 0; i < colors.size(); i++) {
+        this->colors[i] = colors[i]->color;
+    }
+}
+
+MapArtPreviewData::MapArtPreviewData() {
+    this->colors.resize(0);
+    this->width = 0;
+    this->height = 0;
+}
+

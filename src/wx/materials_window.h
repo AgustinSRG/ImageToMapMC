@@ -80,7 +80,7 @@ private:
     
     std::vector<bool> enabledConf;
 
-    std::mutex countMutex;
+    wxMutex countMutex;
     std::vector<size_t> counts;
     bool requiresCountRefresh;
 

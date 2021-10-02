@@ -86,7 +86,8 @@
 			"xlocmes": "cpp",
 			"mutex": "cpp",
 			"thread": "cpp",
-			"codecvt": "cpp"
+			"codecvt": "cpp",
+			"*.xpm": "cpp"
 		},
 	}
 }

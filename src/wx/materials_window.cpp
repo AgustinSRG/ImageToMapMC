@@ -127,7 +127,7 @@ MaterialsPanel::MaterialsPanel(MaterialsWindow *matWin) : wxScrolledWindow(matWi
 
 void MaterialsPanel::onCountRefreshTimer(wxTimerEvent &event)
 {
-    countMutex.lock();
+    countMutex.Lock();
     if (requiresCountRefresh)
     {
         requiresCountRefresh = false;
@@ -156,7 +156,7 @@ void MaterialsPanel::onCountRefreshTimer(wxTimerEvent &event)
             groups[i].countLabel->SetLabel(ss.str());
         }
     }
-    countMutex.unlock();
+    countMutex.Unlock();
 }
 
 MaterialsWindow::MaterialsWindow(MainWindow *mainWindow) : wxFrame(mainWindow, wxID_ANY, string("Customize materials"), wxPoint(100, 100), wxSize(600, 600))
@@ -386,12 +386,12 @@ void MaterialsWindow::displayCountMaterials(std::vector<size_t> &counts)
 
 void MaterialsPanel::displayCountMaterials(std::vector<size_t> &counts)
 {
-    countMutex.lock();
+    countMutex.Lock();
     this->counts.resize(counts.size());
     for (size_t i = 0; i < counts.size(); i++)
     {
         this->counts[i] = counts[i];
     }
     requiresCountRefresh = true;
-    countMutex.unlock();
+    countMutex.Unlock();
 }
