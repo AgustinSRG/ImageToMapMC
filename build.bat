@@ -1,7 +1,7 @@
 @echo on
 
-call cmake -DCMAKE_BUILD_TYPE=Release -A x64 -S. -Brelease
+call cmake -DCMAKE_BUILD_TYPE=Release -A x64 -Ssrc -Brelease
 
 call cmake --build release --config Release
 
-%SystemRoot%\explorer.exe "release\subprojects\Build\ImageToMapMC_core\Release"
+%SystemRoot%\explorer.exe "release\Release"
