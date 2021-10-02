@@ -243,7 +243,7 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     statusBar->SetStatusText("Project: (not saved yet)", 3);
 
     wxTimer *progressTimer = new wxTimer(this, ID_Timer);
-    progressTimer->Start(200);
+    progressTimer->Start(40); // 25 FPS
 
     SetMenuBar(menuBar);
 
