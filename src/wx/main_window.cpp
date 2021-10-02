@@ -411,6 +411,12 @@ void MainWindow::OnSaveMaterialsList(wxCommandEvent &evt)
         return;
     }
 
+    if (this->workerThread->isBusy())
+    {
+        wxMessageBox(wxString("There is already a task in progress. Wait for it to end to continue."), wxT("Error"), wxICON_ERROR);
+        return;
+    }
+
     wxFileDialog saveFileDialog(this, _("Save materials list"), "", "", "Text file (*.txt)|*.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     if (saveFileDialog.ShowModal() != wxID_CANCEL)
     {
@@ -448,6 +454,12 @@ void widgets::displayMainWindow(wxApp &app)
 
 void MainWindow::onExportToMaps(wxCommandEvent &evt)
 {
+    if (this->workerThread->isBusy())
+    {
+        wxMessageBox(wxString("There is already a task in progress. Wait for it to end to continue."), wxT("Error"), wxICON_ERROR);
+        return;
+    }
+
     MapExportDialog dialog;
     if (dialog.ShowModal() == wxID_CANCEL)
     {
@@ -464,6 +476,13 @@ void MainWindow::onExportToStructure(wxCommandEvent &evt)
         wxMessageBox(wxString("You must choose a build method to be able to export to structures."), wxT("Cannot export"), wxICON_INFORMATION);
         return;
     }
+
+    if (this->workerThread->isBusy())
+    {
+        wxMessageBox(wxString("There is already a task in progress. Wait for it to end to continue."), wxT("Error"), wxICON_ERROR);
+        return;
+    }
+
     StructureExportDialog dialog(project.version, ExportDialogMode::Structure);
     if (dialog.ShowModal() == wxID_CANCEL)
     {
@@ -480,6 +499,13 @@ void MainWindow::onExportToFunctions(wxCommandEvent &evt)
         wxMessageBox(wxString("Only flat maps can be exported to minecraft functions."), wxT("Cannot export"), wxICON_INFORMATION);
         return;
     }
+
+    if (this->workerThread->isBusy())
+    {
+        wxMessageBox(wxString("There is already a task in progress. Wait for it to end to continue."), wxT("Error"), wxICON_ERROR);
+        return;
+    }
+
     StructureExportDialog dialog(project.version, ExportDialogMode::Function);
     if (dialog.ShowModal() == wxID_CANCEL)
     {
@@ -609,6 +635,16 @@ void MainWindow::saveProject(std::string path)
 
 void MainWindow::OnClose(wxCloseEvent &event)
 {
+    if (event.CanVeto() && workerThread->isBusy()) {
+        int r = wxMessageBox("There is a task running. Do you want to terminate it?", "Terminate task", wxICON_QUESTION | wxYES_NO | wxICON_WARNING);
+
+        if (r != wxYES)
+        {
+            event.Veto();
+            return;
+        }
+    }
+
     if (event.CanVeto() && dirty)
     {
         int r = wxMessageBox("Do you want to save the changes before closing the project?", "Save changes?", wxICON_QUESTION | wxCANCEL | wxYES_NO | wxICON_WARNING);

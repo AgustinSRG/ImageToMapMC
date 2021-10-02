@@ -51,6 +51,7 @@ public:
     WorkerThread(wxEvtHandler *pParent, int threadNum);
 
     std::string GetStatus();
+    bool isBusy();
 
     mapart::MapArtPreviewData GetPreviewData();
     std::vector<size_t> GetMaterialsCount();

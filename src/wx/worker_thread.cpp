@@ -89,6 +89,16 @@ std::string WorkerThread::GetStatus()
     return progressLine;
 }
 
+bool WorkerThread::isBusy()
+{
+    bool result;
+    stateMutex.Lock();
+    result = !progress.hasEnded();
+    stateMutex.Unlock();
+
+    return result;
+}
+
 /* Get Data */
 
 mapart::MapArtPreviewData WorkerThread::GetPreviewData()
