@@ -307,6 +307,7 @@ int buildMap(int argc, char **argv)
     bool yesForced = false;
     unsigned int threadNum = max((unsigned int)1, std::thread::hardware_concurrency());
     string materialsOutFile = "";
+    Color background = {255, 255, 255};
 
     // Load arguments
     for (int i = 3; i < argc; i++)
@@ -381,6 +382,20 @@ int buildMap(int argc, char **argv)
                     std::cerr << "Available versions: last, 1.17, 1.16, 1.15, 1.14, 1.13, 1.12" << endl;
                     return 1;
                 }
+            }
+            else
+            {
+                std::cerr << "Option " << arg << " requires a parameter." << endl;
+                std::cerr << "For help type: mcmap --help" << endl;
+                return 1;
+            }
+        }
+        else if (arg.compare(string("-bg")) == 0 || arg.compare(string("--background")) == 0)
+        {
+            if ((i + 1) < argc)
+            {
+                background = colors::colorFromHex(string(argv[i + 1]));
+                i++;
             }
             else
             {
@@ -629,7 +644,7 @@ int buildMap(int argc, char **argv)
     p.startTask("Adjusting image size...", 0, 0);
     int matrixW;
     int matrixH;
-    vector<Color> imageColorsMatrix = loadColorMatrixFromImageAndPad(image, &matrixW, &matrixH);
+    vector<Color> imageColorsMatrix = loadColorMatrixFromImageAndPad(image, background, &matrixW, &matrixH);
 
     // Load colors
     p.startTask("Loading minecraft colors...", 0, 0);
@@ -777,7 +792,9 @@ int buildMap(int argc, char **argv)
                                   << "Cannot write file: " << outFilePath.string() << endl;
                         return 1;
                     }
-                } else if (outFormat == MapOutputFormat::Function) {
+                }
+                else if (outFormat == MapOutputFormat::Function)
+                {
                     // Save as structure file
                     stringstream ss2;
                     ss2 << "map_" << (total + 1) << ".mcfunction";
@@ -826,7 +843,8 @@ int buildMap(int argc, char **argv)
                 std::cerr << "Materials list saved to: " << materialsOutFile << endl;
             }
             std::cerr << "Note: The map numbers are sorted up to down, left to right" << endl;
-        } else if (outFormat == MapOutputFormat::Function)
+        }
+        else if (outFormat == MapOutputFormat::Function)
         {
             std::cerr << endl
                       << "Successfully saved as function files to: " << outputPath << endl;

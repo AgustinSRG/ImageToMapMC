@@ -127,4 +127,14 @@ namespace colors
      * @retval The distance
      */
     double colorDistance(const colors::Lab * colorA, const colors::Lab * colorB);
+
+    /**
+     * @brief  Bend RGBA color with background
+     * @note   
+     * @param  color: Color
+     * @param  alpha: Alpha value
+     * @param  background: Background color
+     * @retval Resulting color
+     */
+    colors::Color bendColor(colors::Color color, unsigned char alpha, colors::Color background);
 }

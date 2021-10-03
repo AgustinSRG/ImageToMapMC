@@ -185,7 +185,7 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     menuImage->Append(ID_Load_Image, "&Load Image\tCtrl+L", "Loads a new image");
     menuImage->AppendSeparator();
     menuImage->Append(ID_Resize_Image, "&Resize Image\tCtrl+Shift+R", "Resizes image");
-    menuImage->Append(ID_Edit_Image, "&Brightness, Saturation, Contrast\tCtrl+Shift+B", "Modifies image, using filters for brightness, saturation and constrast");
+    menuImage->Append(ID_Edit_Image, "&Image Settings\tCtrl+Shift+B", "Image settings: brightness, saturation, constrast and background color");
     menuBar->Append(menuImage, "&Image");
 
     // Materials
@@ -296,7 +296,7 @@ void MainWindow::loadImage(std::string file)
 
     if (imageEditDialog != NULL)
     {
-        imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness);
+        imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness, project.background);
     }
 
     updateOriginalImage();
@@ -313,7 +313,7 @@ void MainWindow::updateOriginalImage()
 
     int matrixW;
     int matrixH;
-    vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, &matrixW, &matrixH);
+    vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, project.background, &matrixW, &matrixH);
 
     tools::editImage(originalImageColors, matrixW, matrixH, project.saturation, project.contrast, project.brightness);
 
@@ -538,7 +538,7 @@ void MainWindow::onImageEdit(wxCommandEvent &evt)
     {
         imageEditDialog = new ImageEditDialog(this);
         imageEditDialog->Show();
-        imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness);
+        imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness, project.background);
     }
     else
     {
@@ -547,11 +547,12 @@ void MainWindow::onImageEdit(wxCommandEvent &evt)
     }
 }
 
-void MainWindow::onImageEditParamsChanged(float saturation, float contrast, float brightness)
+void MainWindow::onImageEditParamsChanged(float saturation, float contrast, float brightness, colors::Color background)
 {
     project.saturation = saturation;
     project.contrast = contrast;
     project.brightness = brightness;
+    project.background = background;
     dirty = true;
     updateOriginalImage();
 }
@@ -562,7 +563,7 @@ void MainWindow::resetProject()
 
     if (imageEditDialog != NULL)
     {
-        imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness);
+        imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness, project.background);
     }
 
     // Not dirty
@@ -592,7 +593,7 @@ void MainWindow::loadProject(std::string path)
     {
         if (imageEditDialog != NULL)
         {
-            imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness);
+            imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness, project.background);
         }
 
         if (materialsWindow != NULL)

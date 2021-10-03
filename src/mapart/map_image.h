@@ -39,9 +39,10 @@ namespace mapart {
      * @brief  Loads color matrix from image
      * @note   
      * @param  &image: Image
+     * @param  background: Background color
      * @param  padWidth: By reference, to store matrix width
      * @param  padHeight: By reference, to store matrix height
      * @retval 
      */
-    std::vector<colors::Color> loadColorMatrixFromImageAndPad(wxImage &image, int * padWidth, int * padHeight);
+    std::vector<colors::Color> loadColorMatrixFromImageAndPad(wxImage &image, colors::Color background, int * padWidth, int * padHeight);
 }

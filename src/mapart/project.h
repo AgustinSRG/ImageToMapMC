@@ -43,6 +43,8 @@ namespace mapart {
             float brightness;
             float contrast;
 
+            colors::Color background;
+
             mapart::MapBuildMethod buildMethod;
             colors::ColorDistanceAlgorithm colorDistanceAlgorithm;
             mapart::DitheringMethod ditheringMethod;
@@ -52,6 +54,7 @@ namespace mapart {
             std::string colorSetConf;
 
             std::vector<unsigned char> image_data;
+            std::vector<unsigned char> image_alpha;
 
             MapArtProject();
             MapArtProject(const MapArtProject &p1);

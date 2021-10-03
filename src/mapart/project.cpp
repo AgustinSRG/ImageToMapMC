@@ -45,6 +45,11 @@ MapArtProject::MapArtProject()
     contrast = 1;
     brightness = 1;
 
+    // Background
+    background.red = 255;
+    background.green = 255;
+    background.blue = 255;
+
     // Colors conf
     colorSetConf = "MODE(BLACKLIST)\n";
 
@@ -69,6 +74,13 @@ MapArtProject::MapArtProject()
     {
         image_data[i] = 255;
     }
+
+    image_alpha.resize(MAP_WIDTH * MAP_HEIGHT);
+
+    for (size_t i = 0; i < image_alpha.size(); i++)
+    {
+        image_alpha[i] = 255;
+    }
 }
 
 MapArtProject::MapArtProject(const MapArtProject &p1)
@@ -77,6 +89,9 @@ MapArtProject::MapArtProject(const MapArtProject &p1)
     saturation = p1.saturation;
     contrast = p1.contrast;
     brightness = p1.brightness;
+
+    // Background
+    background = p1.background;
 
     // Colors conf
     colorSetConf = p1.colorSetConf;
@@ -97,6 +112,7 @@ MapArtProject::MapArtProject(const MapArtProject &p1)
 
     // Image data
     image_data = p1.image_data;
+    image_alpha = p1.image_alpha;
 }
 
 bool MapArtProject::loadFromFile(std::string path)
@@ -123,6 +139,18 @@ bool MapArtProject::loadFromFile(std::string path)
         saturation = comp.at("saturation").as<nbt::tag_float>().get();
         contrast = comp.at("contrast").as<nbt::tag_float>().get();
         brightness = comp.at("brightness").as<nbt::tag_float>().get();
+
+        // Background
+        if (comp.has_key("background"))
+        {
+            background = colors::colorFromHex(comp.at("background").as<nbt::tag_string>().get());
+        }
+        else
+        {
+            background.red = 255;
+            background.green = 255;
+            background.blue = 255;
+        }
 
         // Colors conf
         colorSetConf = comp.at("colors_conf").as<nbt::tag_string>().get();
@@ -193,6 +221,27 @@ bool MapArtProject::loadFromFile(std::string path)
         {
             image_data[i] = colorsByte.at(i);
         }
+
+        if (comp.has_key("alpha"))
+        {
+            nbt::tag_byte_array alphacolorsByte = comp.at("alpha").as<nbt::tag_byte_array>();
+
+            image_alpha.resize(width * height);
+
+            for (size_t i = 0; i < image_alpha.size(); i++)
+            {
+                image_alpha[i] = alphacolorsByte.at(i);
+            }
+        }
+        else
+        {
+            image_alpha.resize(width * height);
+
+            for (size_t i = 0; i < image_alpha.size(); i++)
+            {
+                image_alpha[i] = 255;
+            }
+        }
     }
     catch (...)
     {
@@ -212,6 +261,8 @@ bool MapArtProject::saveToFile(std::string path)
     root.insert("saturation", nbt::tag_float(saturation));
     root.insert("contrast", nbt::tag_float(contrast));
     root.insert("brightness", nbt::tag_float(brightness));
+
+    root.insert("background", nbt::tag_string(colors::colorToHex(background)));
 
     root.insert("colors_conf", nbt::tag_string(colorSetConf));
 
@@ -256,6 +307,15 @@ bool MapArtProject::saveToFile(std::string path)
 
     root.insert("image", colorsByte.clone());
 
+    nbt::tag_byte_array alphaByte;
+
+    for (size_t i = 0; i < image_alpha.size(); i++)
+    {
+        alphaByte.push_back(image_alpha[i]);
+    }
+
+    root.insert("alpha", alphaByte.clone());
+
     // Save
     std::ofstream file(path, std::ios::binary);
 
@@ -295,10 +355,21 @@ std::vector<colors::Color> MapArtProject::getColors()
 wxImage MapArtProject::toImage()
 {
     wxImage image(width, height);
+
     unsigned char *rawData = image.GetData();
 
-    for (size_t i = 0; i < image_data.size(); i++) {
+    for (size_t i = 0; i < image_data.size(); i++)
+    {
         rawData[i] = image_data[i];
+    }
+
+    image.InitAlpha(); // Create alpha channel
+
+    unsigned char *alphaData = image.GetAlpha();
+
+    for (size_t i = 0; i < image_alpha.size(); i++)
+    {
+        alphaData[i] = image_alpha[i];
     }
 
     return image;
@@ -316,25 +387,46 @@ void MapArtProject::loadImage(wxImage &image)
 
     image_data.resize(width * height * 3);
 
-    for (size_t i = 0; i < image_data.size(); i++) {
+    for (size_t i = 0; i < image_data.size(); i++)
+    {
         image_data[i] = rawData[i];
+    }
+
+    unsigned char *alphaData = image.GetAlpha();
+    image_alpha.resize(width * height);
+
+    if (alphaData != NULL)
+    {
+        for (size_t i = 0; i < image_alpha.size(); i++)
+        {
+            image_alpha[i] = alphaData[i];
+        }
+    }
+    else
+    {
+        for (size_t i = 0; i < image_alpha.size(); i++)
+        {
+            image_alpha[i] = 255;
+        }
     }
 }
 
-MapArtPreviewData::MapArtPreviewData(std::vector<const minecraft::FinalColor *> colors, int width, int height) {
+MapArtPreviewData::MapArtPreviewData(std::vector<const minecraft::FinalColor *> colors, int width, int height)
+{
     this->width = width;
     this->height = height;
 
     this->colors.resize(colors.size());
 
-    for (size_t i = 0; i < colors.size(); i++) {
+    for (size_t i = 0; i < colors.size(); i++)
+    {
         this->colors[i] = colors[i]->color;
     }
 }
 
-MapArtPreviewData::MapArtPreviewData() {
+MapArtPreviewData::MapArtPreviewData()
+{
     this->colors.resize(0);
     this->width = 0;
     this->height = 0;
 }
-

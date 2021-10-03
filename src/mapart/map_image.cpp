@@ -27,7 +27,7 @@ using namespace std;
 using namespace colors;
 using namespace mapart;
 
-std::vector<colors::Color> mapart::loadColorMatrixFromImageAndPad(wxImage &image, int *padWidth, int *padHeight)
+std::vector<colors::Color> mapart::loadColorMatrixFromImageAndPad(wxImage &image, colors::Color background, int *padWidth, int *padHeight)
 {
     int width = image.GetSize().GetWidth();
     int height = image.GetSize().GetHeight();
@@ -44,13 +44,14 @@ std::vector<colors::Color> mapart::loadColorMatrixFromImageAndPad(wxImage &image
     // Init colors to white
     for (size_t i = 0; i < size; i++)
     {
-        result[i].red = 255;
-        result[i].green = 255;
-        result[i].blue = 255;
+        result[i].red = background.red;
+        result[i].green = background.green;
+        result[i].blue = background.blue;
     }
 
     // Iterate
     unsigned char *rawData = image.GetData();
+    unsigned char *alphaData = image.GetAlpha();
     for (int z = 0; z < height; z++)
     {
         for (int x = 0; x < width; x++)
@@ -61,6 +62,10 @@ std::vector<colors::Color> mapart::loadColorMatrixFromImageAndPad(wxImage &image
             result[indexFinal].red = rawData[indexImage];
             result[indexFinal].green = rawData[indexImage + 1];
             result[indexFinal].blue = rawData[indexImage + 2];
+
+            if (alphaData != NULL) {
+                result[indexFinal] = colors::bendColor(result[indexFinal], alphaData[z * width + x], background);
+            }
         }
     }
 

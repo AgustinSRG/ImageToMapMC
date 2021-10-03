@@ -101,21 +101,25 @@ string colors::colorToHex(colors::Color color)
 
 colors::Color colors::colorFromHex(string hexStr)
 {
-    if (hexStr.size() < 7 || hexStr[0] != '#')
-    {
-        throw -1;
-    }
-
     Color color;
 
-    // Red
-    color.red = (parseHexChar(hexStr[1]) << 4) + parseHexChar(hexStr[2]);
+    if (hexStr.size() < 7 || hexStr[0] != '#')
+    {
+        color.red = 255;
+        color.green = 225;
+        color.blue = 255;
+    }
+    else
+    {
+        // Red
+        color.red = (parseHexChar(hexStr[1]) << 4) + parseHexChar(hexStr[2]);
 
-    // Green
-    color.green = (parseHexChar(hexStr[3]) << 4) + parseHexChar(hexStr[4]);
+        // Green
+        color.green = (parseHexChar(hexStr[3]) << 4) + parseHexChar(hexStr[4]);
 
-    // Blue
-    color.blue = (parseHexChar(hexStr[5]) << 4) + parseHexChar(hexStr[6]);
+        // Blue
+        color.blue = (parseHexChar(hexStr[5]) << 4) + parseHexChar(hexStr[6]);
+    }
 
     return color;
 }
@@ -128,7 +132,17 @@ double colors::colorDistance(colors::Color colorA, colors::Color colorB)
     return (r * r) + (g * g) + (b * b);
 }
 
-double colors::colorDistance(const colors::Lab * colorA, const colors::Lab * colorB)
+double colors::colorDistance(const colors::Lab *colorA, const colors::Lab *colorB)
 {
     return cielab::deltaE(colorA, colorB);
+}
+
+colors::Color colors::bendColor(colors::Color color, unsigned char alpha, colors::Color background) {
+    Color result;
+    unsigned int a = alpha + 1;
+    unsigned int inv_a = 256 - alpha;
+    result.red = (unsigned char)((a * color.red + inv_a * background.red) >> 8);
+    result.green = (unsigned char)((a * color.green + inv_a * background.green) >> 8);
+    result.blue = (unsigned char)((a * color.blue + inv_a * background.blue) >> 8);
+    return result;
 }

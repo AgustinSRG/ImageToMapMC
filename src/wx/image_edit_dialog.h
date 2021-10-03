@@ -30,6 +30,7 @@
 
 #include <string>
 #include "../minecraft/mc_common.h"
+#include "../colors/colors.h"
 
 class MainWindow;
 
@@ -47,6 +48,7 @@ public:
     // Events
     void OnOk(wxCommandEvent &event);
     void OnCancel(wxCommandEvent &event);
+    void OnColorSelect(wxCommandEvent &event);
     void OnChangeSaturation(wxScrollEvent &event);
     void OnChangeContrast(wxScrollEvent &event);
     void OnChangeBrightness(wxScrollEvent &event);
@@ -58,9 +60,10 @@ public:
      * @param  saturation: Value 0-2
      * @param  contrast: Value 0-2
      * @param  brightness: Value 0-2
+     * @param background: Background color
      * @retval None
      */
-    void SetParams(float saturation, float contrast, float brightness);
+    void SetParams(float saturation, float contrast, float brightness, colors::Color background);
 
 private:
     MainWindow *mainWindow;
@@ -68,16 +71,20 @@ private:
     float saturation;
     float contrast;
     float brightness;
+    colors::Color background;
 
     int getSliderValue(float val);
 
     wxStaticText *labelSaturation;
     wxStaticText *labelContrast;
     wxStaticText *labelBrightness;
+    wxStaticText *labelBackground;
 
     wxSlider *sliderSaturation;
     wxSlider *sliderContrast;
     wxSlider *sliderBrightness;
+
+    wxPanel * panelColor;
 
     void UpdateControls();
     void OnChangeParams();

@@ -89,7 +89,7 @@ public:
 
     void changeColorSetConf(std::string conf);
 
-    void onImageEditParamsChanged(float saturation, float contrast, float brightness);
+    void onImageEditParamsChanged(float saturation, float contrast, float brightness, colors::Color background);
 
     void loadProject(std::string path);
     void saveProject(std::string path);
