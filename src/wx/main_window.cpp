@@ -282,6 +282,7 @@ void MainWindow::onLoadImage(wxCommandEvent &evt)
 void MainWindow::loadImage(std::string file)
 {
     wxImage image;
+    wxLogNull logNo;
     if (!image.LoadFile(file))
     {
         wxMessageBox(string("Invalid image file: ") + file, wxT("Error"), wxICON_ERROR);

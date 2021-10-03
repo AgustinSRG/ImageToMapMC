@@ -615,6 +615,7 @@ int buildMap(int argc, char **argv)
     // Load input image
     p.startTask("Loading image...", 0, 0);
     wxImage image;
+    wxLogNull logNo;
     if (!image.LoadFile(inputImageFile))
     {
         p.setEnded();
