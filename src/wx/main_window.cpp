@@ -428,8 +428,69 @@ void MainWindow::handleDropFile(wxDropFilesEvent &event)
 {
     if (event.GetNumberOfFiles() > 0)
     {
-        loadImage(string(event.GetFiles()[0]));
-        dirty = true;
+        string filename = string(event.GetFiles()[0]);
+
+        MapArtProject tryProject;
+
+        if (tryProject.loadFromFile(filename))
+        {
+            // The file is a project
+
+            if (dirty)
+            {
+                int r = wxMessageBox("Do you want to save the changes before closing the project?", "Save changes?", wxICON_QUESTION | wxCANCEL | wxYES_NO | wxICON_WARNING);
+
+                if (r == wxCANCEL)
+                {
+                    return;
+                }
+                else if (r == wxYES)
+                {
+                    wxCommandEvent evt;
+                    if (projectFile.length() > 0)
+                    {
+                        saveProject(evt);
+                    }
+                    else
+                    {
+                        saveProjectAs(evt);
+                        if (projectFile.length() == 0)
+                        {
+                            return;
+                        }
+                    }
+                }
+            }
+
+            project = tryProject;
+
+            if (imageEditDialog != NULL)
+            {
+                imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness, project.background);
+            }
+
+            if (materialsWindow != NULL)
+            {
+                materialsWindow->setMaterialsConf(project.version, project.colorSetConf);
+            }
+
+            // Not dirty
+            dirty = false;
+
+            // Not saved yet
+            projectFile = filename;
+
+            GetStatusBar()->SetStatusText("Project: " + projectFile, 3);
+
+            updateMenuBarRadios();
+
+            updateOriginalImage();
+        }
+        else
+        {
+            loadImage(filename);
+            dirty = true;
+        }
     }
 }
 
@@ -636,7 +697,8 @@ void MainWindow::saveProject(std::string path)
 
 void MainWindow::OnClose(wxCloseEvent &event)
 {
-    if (event.CanVeto() && workerThread->isBusy()) {
+    if (event.CanVeto() && workerThread->isBusy())
+    {
         int r = wxMessageBox("There is a task running. Do you want to terminate it?", "Terminate task", wxICON_QUESTION | wxYES_NO | wxICON_WARNING);
 
         if (r != wxYES)
@@ -684,6 +746,32 @@ void MainWindow::openProject(wxCommandEvent &evt)
                        "Map art projects (*.mapart)|*.mapart|All files|*.*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     if (openFileDialog.ShowModal() == wxID_CANCEL)
         return; // the user changed idea...
+
+    if (dirty)
+    {
+        int r = wxMessageBox("Do you want to save the changes before closing the project?", "Save changes?", wxICON_QUESTION | wxCANCEL | wxYES_NO | wxICON_WARNING);
+
+        if (r == wxCANCEL)
+        {
+            return;
+        }
+        else if (r == wxYES)
+        {
+            wxCommandEvent evt;
+            if (projectFile.length() > 0)
+            {
+                saveProject(evt);
+            }
+            else
+            {
+                saveProjectAs(evt);
+                if (projectFile.length() == 0)
+                {
+                    return;
+                }
+            }
+        }
+    }
 
     loadProject(openFileDialog.GetPath().ToStdString());
 }
