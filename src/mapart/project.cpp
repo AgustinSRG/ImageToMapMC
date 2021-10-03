@@ -117,7 +117,7 @@ bool MapArtProject::loadFromFile(std::string path)
 
         // Image resize
         resize_width = comp.at("resize_width").as<nbt::tag_int>().get();
-        resize_width = comp.at("resize_height").as<nbt::tag_int>().get();
+        resize_height = comp.at("resize_height").as<nbt::tag_int>().get();
 
         // Image edit params
         saturation = comp.at("saturation").as<nbt::tag_float>().get();
