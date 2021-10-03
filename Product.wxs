@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+    <!-- Use * to generate product ID on every build -->
+    <Product Id="a3cf4f9c-0c30-46da-ac54-b4c84977680a" Name="ImageToMapMC" Language="1033" Version="1.0.0.0" Manufacturer="software architects" UpgradeCode="1a73ad10-cffe-462a-ab4e-aefc9a2bd53b">
+
+        <Package Compressed="yes" InstallScope="perMachine" Manufacturer="AgustinSRG" Description="Converts images to Minecraft maps." Platform="x64" />
+
+        <MediaTemplate EmbedCab="yes" />
+
+        <!--Directory structure-->
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFiles64Folder">
+                <Directory Id="DIR_MyProgram" Name="ImageToMapMC" />
+                <Directory Id="ProgramMenuFolder">
+                    <Directory Id="DIR_Shortcuts" Name="ImageToMapMC" />
+                </Directory>
+            </Directory>
+        </Directory>
+
+        <!--Components-->
+        <DirectoryRef Id="DIR_MyProgram">
+            <Component Id="CMP_MCMAP_GUI" Guid="d97b3e97-0199-4158-9617-4a912ac30b70">
+                <File Id="FILE_mcmap_gui" Source="release\Release\mcmap-gui.exe" KeyPath="yes" />
+
+                <!-- Capabilities keys for Vista/7 "Set Program Access and Defaults" -->
+                <RegistryValue Root="HKLM" Key="SOFTWARE\ImageToMapMC\Capabilities" Name="ApplicationDescription" Value="Minecraft map art tool" Type="string" />
+                <RegistryValue Root="HKLM" Key="SOFTWARE\ImageToMapMC\Capabilities" Name="ApplicationIcon" Value="[DIR_MyProgram]mcmap-gui.exe,0" Type="string" />
+                <RegistryValue Root="HKLM" Key="SOFTWARE\ImageToMapMC\Capabilities" Name="ApplicationName" Value="ImageToMapMC" Type="string" />
+                <RegistryValue Root="HKLM" Key="SOFTWARE\ImageToMapMC\Capabilities\DefaultIcon" Value="[DIR_MyProgram]mcmap-gui.exe,0" Type="string" />
+                <RegistryValue Root="HKLM" Key="SOFTWARE\ImageToMapMC\Capabilities\FileAssociations" Name=".mapart" Value="ImageToMap.Project" Type="string" />
+                <RegistryValue Root="HKLM" Key="SOFTWARE\ImageToMapMC\Capabilities\MIMEAssociations" Name="application/mapart" Value="ImageToMap.Project" Type="string" />
+                <RegistryValue Root="HKLM" Key="SOFTWARE\ImageToMapMC\Capabilities\shell\Open\command" Value="&quot;[DIR_MyProgram]mcmap-gui.exe&quot; &quot;%1&quot;" Type="string" />
+                <RegistryValue Root="HKLM" Key="SOFTWARE\RegisteredApplications" Name="ImageToMapMC" Value="SOFTWARE\ImageToMapMC\Capabilities" Type="string" />
+
+                <!-- App Paths to support Start,Run -> "myapp" -->
+                <RegistryValue Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\ImageToMapMC" Value="[!FILE_mcmap_gui]" Type="string" />
+                <RegistryValue Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\ImageToMapMC" Name="Path" Value="[DIR_MyProgram]" Type="string" />
+
+                <!-- Extend to the "open with" list + Win7 jump menu pinning  -->
+                <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Applications\ImageToMapMC\SupportedTypes" Name=".mapart" Value="" Type="string" />
+                <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Applications\ImageToMapMC\shell\open" Name="FriendlyAppName" Value="ImageToMapMC" Type="string" />
+
+                <ProgId Id="ImageToMap.Project" Description="Minecraft Map art project">
+                    <Extension Id="mapart" ContentType="application/mapart">
+                        <Verb Id="open" Command="Open" TargetFile="FILE_mcmap_gui" Argument="&quot;%1&quot;" />
+                    </Extension>
+                </ProgId>
+            </Component>
+
+            <Component Id="CMP_MCMAP_CONSOLE" Guid="5616993f-bc82-42f4-bbcd-dd594ff10b38">
+                <File Id="FILE_mcmap_console" Source="release\Release\mcmap.exe" KeyPath="yes" />
+            </Component>
+
+            <Component Id="CMP_DLL_JPEG" Guid="8b9c3df5-88a6-47b4-bf0a-e5bc03814c89">
+                <File Id="FILE_DLL_JPEG" Source="release\Release\jpeg62.dll" KeyPath="yes" />
+            </Component>
+
+            <Component Id="CMP_DLL_PNG" Guid="6c02d5aa-d46b-49a1-99d0-cf6aa3f03ea4">
+                <File Id="FILE_DLL_PNG" Source="release\Release\libpng16.dll" KeyPath="yes" />
+            </Component>
+
+            <Component Id="CMP_DLL_TIFF" Guid="1a500ade-32c5-492c-82f6-4cfe5ca0ec36">
+                <File Id="FILE_DLL_TIFF" Source="release\Release\tiff.dll" KeyPath="yes" />
+            </Component>
+
+            <Component Id="CMP_DLL_ZLIB" Guid="3b91d7b7-9b93-41c6-bb89-4b309110d255">
+                <File Id="FILE_DLL_ZLIB" Source="release\Release\zlib1.dll" KeyPath="yes" />
+            </Component>
+
+            <Component Id="CMP_DLL_LZMA" Guid="8cc3142d-57af-458a-baa6-2b65f03d59e7">
+                <File Id="FILE_DLL_LZMA" Source="release\Release\lzma.dll" KeyPath="yes" />
+            </Component>
+
+            <Component Id="CMP_DLL_WX_CORE" Guid="942ac7aa-964c-4b47-9a03-b22f63af7387">
+                <File Id="FILE_DLL_WX_CORE" Source="release\Release\wxmsw315u_core_vc_custom.dll" KeyPath="yes" />
+            </Component>
+
+            <Component Id="CMP_DLL_WX_VC" Guid="8940f056-0b33-4306-9542-942232fbd335">
+                <File Id="FILE_DLL_WX_VC" Source="release\Release\wxbase315u_vc_custom.dll" KeyPath="yes" />
+            </Component>
+
+            <!-- Preview minecraft map (.dat) -->
+            <Component Id="CMP_KEY_REG" Guid="ea54c9d9-9d8e-46ac-bf88-848233062848">
+                <RegistryKey Root="HKCR" Key=".dat">
+                    <RegistryValue Type="string" Value=".dat_auto_file" KeyPath="yes" />
+                </RegistryKey>
+                <RegistryKey Root="HKLM" Key="SOFTWARE\Classes\.dat_auto_file\shell\Preview Minecraft Map">
+                    <RegistryValue Type="string" Name="Icon" Value="[DIR_MyProgram]mcmap-gui.exe" />
+                </RegistryKey>
+                <RegistryKey Root="HKLM" Key="SOFTWARE\Classes\.dat_auto_file\shell\Preview Minecraft Map\command">
+                    <RegistryValue Type="string" Value="&quot;[DIR_MyProgram]mcmap-gui.exe&quot; &quot;%1&quot;" />
+                </RegistryKey>
+            </Component>
+        </DirectoryRef>
+
+        <!--Start Menu Shortcuts-->
+        <DirectoryRef Id="DIR_Shortcuts">
+            <Component Id="CMP_MenuShortcut" Guid="70c0cad3-0a4f-4176-88d0-36b15561f6b4">
+
+                <Shortcut Id="ExeShortCut" Name="ImageToMapMC - Converts images to Minecraft maps" Description="Converts images to Minecraft maps" Target="[DIR_MyProgram]mcmap-gui.exe" />
+
+                <Shortcut Id="UninstallShortcut" Name="Uninstall ImageToMapMC" Description="Uninstalls ImageToMapMC" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]" />
+
+                <RemoveFolder Id="RemoveDIR_Shortcuts" On="uninstall" />
+
+                <RegistryValue Root="HKCU" Key="Software\AgustinSRG\ImageToMapMC" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+            </Component>
+        </DirectoryRef>
+
+        <!--Features-->
+        <Feature Id="FileToInstallFeature" Title="Install ImageToMapMC" Level="1">
+            <ComponentRef Id="CMP_MCMAP_GUI" />
+            <ComponentRef Id="CMP_MCMAP_CONSOLE" />
+
+            <ComponentRef Id="CMP_DLL_JPEG" />
+            <ComponentRef Id="CMP_DLL_PNG" />
+            <ComponentRef Id="CMP_DLL_TIFF" />
+
+            <ComponentRef Id="CMP_DLL_ZLIB" />
+
+            <ComponentRef Id="CMP_DLL_LZMA" />
+
+            <ComponentRef Id="CMP_DLL_WX_CORE" />
+            <ComponentRef Id="CMP_DLL_WX_VC" />
+
+            <ComponentRef Id="CMP_KEY_REG" />
+        </Feature>
+
+        <Feature Id="ShortcutsFeature" Title="Shortcuts" Level="1">
+            <ComponentRef Id="CMP_MenuShortcut" />
+        </Feature>
+
+        <WixVariable Id="WixUILicenseRtf" Value="LICENSE.rtf" />
+
+        <UI>
+            <UIRef Id="WixUI_FeatureTree" />
+            <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
+        </UI>
+
+        <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch ImageToMapMC" />
+        <Property Id="WixShellExecTarget" Value="[#FILE_mcmap_gui]" />
+        <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
+    </Product>
+</Wix>
