@@ -113,6 +113,8 @@ int printHelp()
     cout << "                                     'function' format creates .mcfunction files" << endl;
     cout << "    -v, --version [version]        Specifies the minecraft version in A.B format (eg, 1.12)." << endl;
     cout << "                                     Set to 'last' to use the most recent minecraft version available" << endl;
+    cout << "    -bg, --background [#FFFFFF]    Specifies the background color in hex format." << endl;
+    cout << "                                     By default, the background color is white." << endl;
     cout << "    -rs, --resize [WxH]            Resizes the image before building the map" << endl;
     cout << "    -cm, --color-method [method]   Specifies the method to aproximate the color. By default, 'euclidean'" << endl;
     cout << "                                     'euclidean' - Simple RGB 3D squared distance" << endl;
