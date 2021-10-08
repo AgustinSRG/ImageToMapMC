@@ -12,7 +12,7 @@ In order to install the tool, go to the [releases](https://github.com/AgustinSRG
 
  - [Basic Guide](./guides/basic_guide.md)
  - [Export as map files and import them into your world (Creative mode)](./guides/export_as_maps.md)
- - [Build the map inside a survival world or server](./guides/export_as_maps.md)
+ - [Build the map inside a survival world or server](./guides/export_as_structures.md)
 
 # Screenshots
 

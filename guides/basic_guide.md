@@ -78,7 +78,7 @@ You can export the result using the menu: **File > Export**
 There are two main options:
 
  - [Export as map files and import them into your world (Creative mode)](./export_as_maps.md)
- - [Build the map inside a survival world or server](./export_as_maps.md)
+ - [Build the map inside a survival world or server](./export_as_structures.md)
 
 There is also an extra option to export to minecraft functions. This is only for flat maps in order to place them next to each other. For 3D and staircased maps this won't work due to the height limit.
 
