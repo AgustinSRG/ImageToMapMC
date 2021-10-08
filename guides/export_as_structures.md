@@ -1,6 +1,6 @@
 ## Build the map inside a survival world or server
 
-In order to build the map inmside a survival world you have to create a new creative world and import the map as an structure. Once it is in your creative world, you can copy it to the survival world, wither manually or using a client mod, like Schematicas.
+In order to build the map inmside a survival world you have to create a new creative world and import the map as an structure. Once it is in your creative world, you can copy it to the survival world, either manually or using a client mod, like Schematicas.
 
 Follow these steps in order to get it done.
 
@@ -34,7 +34,7 @@ Type the following commands in the chat to make your world optimal for this purp
 /weather clear 1000000
 ```
 
-These commands disable many features that can cause your map to be acidentally griefed while you are copying it.
+These commands disable many features that can cause your map to be accidentally griefed while you are copying it.
 
 ### 3. Export the map
 
@@ -56,13 +56,13 @@ In game, give yourself an structure block:
 
 Also, grab a map from the creative inventory.
 
-Right click the empty map to fill it. Once is filled go to the top and left corner of the map and place one block one block north, just right outside the map limit. You can use F3 + G to see chunk border so it is easier.
+Right click the empty map to fill it. Once is filled go to the top and left corner of the map and place one block one block north, just right outside the map limit. You can use F3 + G to see chunk borders so it is easier.
 
 You should be looking north (check F3).
 
 ![Screenshot](../screenshots/structure_position_1.jpg "Streenshot")
 
-Go up as many blocks as you want, depending on how hight you want to build the map. Usually I prefer using oceans about y = 65
+Go up as many blocks as you want, depending on how hight you want to build the map. Usually I prefer using oceans, building it about y = 65
 
 ![Screenshot](../screenshots/structure_position_2.jpg "Streenshot")
 
@@ -77,7 +77,7 @@ Now place the structure block, and configure it:
 
 ### 5 Repeat with every part of the map
 
-Repeat the step 6 changing the structure name to increasing numbers until you do all the maps.
+Repeat the step 4, changing the structure name to increasing numbers until you do all the maps.
 
 The maps a sorted left to right, top to bottom.
 

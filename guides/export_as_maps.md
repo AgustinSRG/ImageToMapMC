@@ -12,7 +12,7 @@ A map can only store 128x128 pixels, so, for larger images, multiple maps will  
 
 Go to the menu **File > Export > Export as map files**
 
- - Choose the folder  you created to save the maps.
+ - Choose the folder you created to save the maps.
  - Input the starting number for your maps, in case you already have  more maps, to prevent them from overlapping. If you only have a map, leave it to 0.
  - Click Export
 

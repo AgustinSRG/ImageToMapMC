@@ -1,10 +1,10 @@
 # Basic Guide
 
-The app main interface consists on two panels:
- - At the **LEFT**, the orginal image is displayed.
+The app main interface consists of two panels:
+ - At the **LEFT**, the original image is displayed.
  - At the **RIGHT**, a preview of the map (how it will look in game) is displayed.
 
-All of the options are avilable in the application top menu.
+All of the options are available in the application top menu.
 
 ![Main view](../screenshots/main_display.jpg "Main view")
 
@@ -43,23 +43,23 @@ To change this option, use the menu: **Build Method**
 
 In the **Version** menu, choose the version you are building the map in. 
 
-This is important to change the avilable blocks. This also changes the format of the files you export, so it's really important you choose the right version.
+This is important to change the available blocks. This also changes the format of the files you export, so it's really important you choose the right version.
 
 ## Customize the materials
 
 In the menu **Materials > Customize Materials** you have a list of materials. 
 
-You can customize it by enabliong and disabling materails (this also disables or enables colors) and also you can change the materails you want to use for each color.
+You can customize it by enabling and disabling materials (this also disables or enables colors) and also you can change the materials you want to use for each color.
 
-The preview will change in real time, so you can tweek with it if you don't have many materials in game.
+The preview will change in real time, so you can play with it if you don't have many materials in game.
 
 If you want a list of materials in a text file, go to the menu: **Materials > Export Materials List**
 
 ## Apply dithering
 
-Sometimes, due to the low amount of colors avilable in minecraft maps, there will be a very noticeable difference between the original and the map. 
+Sometimes, due to the low amount of colors available in minecraft maps, there will be a very noticeable difference between the original and the map. 
 
-However, you can use a technique called [Dither](https://en.wikipedia.org/wiki/Dither) to introduce rando noise in the image and simulate more colors to the human brain.
+However, you can use a technique called [Dither](https://en.wikipedia.org/wiki/Dither) to introduce random noise in the image and simulate more colors to the human brain.
 
 To do that, use the menu: **Dithering**
 
@@ -81,5 +81,3 @@ There are two main options:
  - [Build the map inside a survival world or server](./export_as_structures.md)
 
 There is also an extra option to export to minecraft functions. This is only for flat maps in order to place them next to each other. For 3D and staircased maps this won't work due to the height limit.
-
-
