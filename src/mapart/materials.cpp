@@ -94,7 +94,7 @@ std::string compactAmount(size_t amount) {
 
     if (amount >= STACK_AMOUNT) {
         size_t stacks = amount / STACK_AMOUNT;
-        amount = amount / STACK_AMOUNT;
+        amount = amount % STACK_AMOUNT;
         if (requiresComma) {
             ss << ", ";
         } else {
