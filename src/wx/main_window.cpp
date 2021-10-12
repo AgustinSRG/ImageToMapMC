@@ -217,8 +217,8 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
 
     // Build method
     wxMenu *menuBuildMethod = new wxMenu();
-    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Chaos), "&3D (Complex)", "Staircased map with jumps of arbitrary size")->Check(true);
-    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Staircased), "&Staircased", "Staircased map with jumps of only a single block");
+    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Staircased), "&Staircased", "Staircased map with jumps of only a single block")->Check(true);
+    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Chaos), "&3D (Complex)", "Staircased map with jumps of arbitrary size");
     menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Flat), "&Flat", "Flat map (only 1/3 of the colors)");
     menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::None), "&None", "Use all the colors (even the unobtainable with blocks)");
     menuBar->Append(menuBuildMethod, "&Build Method");
@@ -969,14 +969,14 @@ void MainWindow::updateMenuBarRadios()
     switch (project.buildMethod)
     {
     case MapBuildMethod::Chaos:
-        GetMenuBar()->GetMenu(5)->GetMenuItems()[0]->Check(true);
-        GetMenuBar()->GetMenu(5)->GetMenuItems()[1]->Check(false);
+        GetMenuBar()->GetMenu(5)->GetMenuItems()[0]->Check(false);
+        GetMenuBar()->GetMenu(5)->GetMenuItems()[1]->Check(true);
         GetMenuBar()->GetMenu(5)->GetMenuItems()[2]->Check(false);
         GetMenuBar()->GetMenu(5)->GetMenuItems()[3]->Check(false);
         break;
     case MapBuildMethod::Staircased:
-        GetMenuBar()->GetMenu(5)->GetMenuItems()[0]->Check(false);
-        GetMenuBar()->GetMenu(5)->GetMenuItems()[1]->Check(true);
+        GetMenuBar()->GetMenu(5)->GetMenuItems()[0]->Check(true);
+        GetMenuBar()->GetMenu(5)->GetMenuItems()[1]->Check(false);
         GetMenuBar()->GetMenu(5)->GetMenuItems()[2]->Check(false);
         GetMenuBar()->GetMenu(5)->GetMenuItems()[3]->Check(false);
         break;

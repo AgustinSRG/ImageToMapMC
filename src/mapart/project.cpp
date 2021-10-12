@@ -59,7 +59,7 @@ MapArtProject::MapArtProject()
     // Map params
     colorDistanceAlgorithm = ColorDistanceAlgorithm::Euclidean;
     ditheringMethod = DitheringMethod::None;
-    buildMethod = MapBuildMethod::Chaos;
+    buildMethod = MapBuildMethod::Staircased;
 
     // Image size
     width = MAP_WIDTH;
