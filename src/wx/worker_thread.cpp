@@ -39,9 +39,9 @@ using namespace colors;
 using namespace minecraft;
 using namespace mapart;
 
-DEFINE_EVENT_TYPE(wxEVT_WorkerThreadPreviewData, -1)
-DEFINE_EVENT_TYPE(wxEVT_WorkerThreadMaterials, -1)
-DEFINE_EVENT_TYPE(wxEVT_WorkerThreadError, -1)
+DEFINE_EVENT_TYPE(wxEVT_WorkerThreadPreviewData)
+DEFINE_EVENT_TYPE(wxEVT_WorkerThreadMaterials)
+DEFINE_EVENT_TYPE(wxEVT_WorkerThreadError)
 
 /* Constructor */
 
