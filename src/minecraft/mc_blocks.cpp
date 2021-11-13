@@ -1124,7 +1124,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         35,     // Block ID
         8       // Data value
     );
-    desc->addTag(string("color"), string("light_gray"));
+    desc->addTag(string("color"), string("silver"));
 
     desc = block->addBlockDescription(
         "Light Gray Wool",
@@ -1142,7 +1142,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         171,      // Block ID
         8         // Data value
     );
-    desc->addTag(string("color"), string("light_gray"));
+    desc->addTag(string("color"), string("silver"));
 
     desc = block->addBlockDescription(
         "Light Gray Carpet",
@@ -1160,7 +1160,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         251,        // Block ID
         8           // Data value
     );
-    desc->addTag(string("color"), string("light_gray"));
+    desc->addTag(string("color"), string("silver"));
 
     desc = block->addBlockDescription(
         "Light Gray Concrete",
@@ -1992,7 +1992,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         159,                     // Block ID
         8                        // Data value
     );
-    desc->addTag(string("color"), string("light_gray"));
+    desc->addTag(string("color"), string("silver"));
 
     desc = block->addBlockDescription(
         "Light Gray Terracotta",
