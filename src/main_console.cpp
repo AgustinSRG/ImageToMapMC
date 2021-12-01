@@ -72,7 +72,7 @@ int main(int argc, char **argv)
 
 int printVersion()
 {
-    cout << "ImageToMapMC Version 1.0.0, by @asanrom" << endl;
+    cout << "ImageToMapMC Version 1.1.0, by @asanrom" << endl;
     cout << "Repository: https://github.com/AgustinSRG/ImageToMapMC" << endl;
     cout << "-------------------------------------------------------------" << endl;
     cout << "Use 'mcmap --help' for command usage" << endl;

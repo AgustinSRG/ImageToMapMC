@@ -61,6 +61,11 @@ minecraft::McVersion minecraft::getVersionFromText(std::string versionStr)
         return McVersion::MC_1_17;
     }
 
+    if (versionStr.substr(0, 4).compare("1.18") == 0)
+    {
+        return McVersion::MC_1_18;
+    }
+
     if (versionStr.compare("last") == 0)
     {
         return MC_LAST_VERSION;
@@ -85,6 +90,8 @@ std::string minecraft::versionToString(minecraft::McVersion version)
         return std::string("1.16.5");
     case McVersion::MC_1_17:
         return std::string("1.17.1");
+    case McVersion::MC_1_18:
+        return std::string("1.18.0");
     default:
         return std::string("???");
     }
@@ -106,6 +113,8 @@ int minecraft::versionToDataVersion(minecraft::McVersion version)
         return 2586;
     case McVersion::MC_1_17:
         return 2730;
+    case McVersion::MC_1_18:
+        return 2860;
     default:
         return 1343;
     }
