@@ -45,6 +45,15 @@ enum Identifiers
     ID_BlackList_ON = 3,
     ID_BlackList_OFF = 4,
     ID_Timer = 5,
+
+    ID_Preset_start = 800,
+    ID_Preset_everything = 801,
+    ID_Preset_bw = 802,
+    ID_Preset_gray = 803,
+    ID_Preset_wool = 804,
+    ID_Preset_concrete = 805,
+    ID_Preset_carpets = 806,
+    ID_Preset_no_minerals = 807,
 };
 
 BEGIN_EVENT_TABLE(MaterialsWindow, wxFrame)
@@ -54,6 +63,7 @@ EVT_MENU(ID_File_Load, MaterialsWindow::onLoadFile)
 EVT_MENU(ID_File_Save, MaterialsWindow::onSaveFile)
 EVT_MENU(ID_BlackList_ON, MaterialsWindow::SetBlackList)
 EVT_MENU(ID_BlackList_OFF, MaterialsWindow::SetWhiteList)
+EVT_MENU_RANGE(ID_Preset_start, ID_Preset_start + 99, MaterialsWindow::usePreset)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(MaterialsPanel, wxScrolledWindow)
@@ -185,6 +195,17 @@ MaterialsWindow::MaterialsWindow(MainWindow *mainWindow) : wxFrame(mainWindow, w
     menuMode->AppendRadioItem(ID_BlackList_ON, "&BlackList", "");
     menuMode->AppendRadioItem(ID_BlackList_OFF, "&Whitelist", "");
     menuBar->Append(menuMode, "&Mode");
+
+    // Presets
+    wxMenu *menuPresets = new wxMenu();
+    menuPresets->AppendRadioItem(ID_Preset_everything, "&Everything", "");
+    menuPresets->AppendRadioItem(ID_Preset_bw, "&Black and white", "");
+    menuPresets->AppendRadioItem(ID_Preset_gray, "&Gray scale", "");
+    menuPresets->AppendRadioItem(ID_Preset_carpets, "&Only carpets", "");
+    menuPresets->AppendRadioItem(ID_Preset_wool, "&Only wool", "");
+    menuPresets->AppendRadioItem(ID_Preset_concrete, "&Only concrete", "");
+    menuPresets->AppendRadioItem(ID_Preset_no_minerals, "&No mineral blocks", "");
+    menuBar->Append(menuPresets, "&Presets");
 
     SetMenuBar(menuBar);
 }
@@ -376,6 +397,35 @@ void MaterialsWindow::SetWhiteList(wxCommandEvent &evt)
 {
     panel->blacklist = false;
     panel->setBlacklistMode(false);
+    panel->onConfigChanged();
+}
+
+void MaterialsWindow::usePreset(wxCommandEvent &evt)
+{
+    switch (evt.GetId())
+    {
+    case ID_Preset_everything:
+        panel->setMaterialsConf(panel->version, "MODE(BLACKLIST)");
+        break;
+    case ID_Preset_bw:
+        panel->setMaterialsConf(panel->version, "MODE(WHITELIST)\nADD(SNOW,white_concrete)\nADD(COLOR_BLACK,black_concrete)");
+        break;
+    case ID_Preset_gray:
+        panel->setMaterialsConf(panel->version, "MODE(WHITELIST)\nADD(WOOL)\nADD(METAL)\nADD(SNOW)\nADD(STONE)\nADD(COLOR_GRAY)\nADD(COLOR_LIGHT_GRAY)\nADD(COLOR_BLACK)\nADD(DEEPSLATE)");
+        break;
+    case ID_Preset_carpets:
+        panel->setMaterialsConf(panel->version, "MODE(WHITELIST)\nADD(SNOW,white_carpet)\nADD(COLOR_MAGENTA,magenta_carpet)\nADD(COLOR_LIGHT_BLUE,light_blue_carpet)\nADD(COLOR_YELLOW,yellow_carpet)\nADD(COLOR_LIGHT_GREEN,lime_carpet)\nADD(COLOR_PINK,pink_carpet)\nADD(COLOR_GRAY,gray_carpet)\nADD(COLOR_LIGHT_GRAY,light_gray_carpet)\nADD(COLOR_CYAN,cyan_carpet)\nADD(COLOR_PURPLE,purple_carpet)\nADD(COLOR_BLUE,blue_carpet)\nADD(COLOR_BROWN,brown_carpet)\nADD(COLOR_GREEN,green_carpet)\nADD(COLOR_RED,red_carpet)\nADD(COLOR_BLACK,black_carpet)");
+        break;
+    case ID_Preset_concrete:
+        panel->setMaterialsConf(panel->version, "MODE(WHITELIST)\nADD(SNOW,white_concrete)\nADD(COLOR_MAGENTA,magenta_concrete)\nADD(COLOR_LIGHT_BLUE,light_blue_concrete)\nADD(COLOR_YELLOW,yellow_concrete)\nADD(COLOR_LIGHT_GREEN,lime_concrete)\nADD(COLOR_PINK,pink_concrete)\nADD(COLOR_GRAY,gray_concrete)\nADD(COLOR_LIGHT_GRAY,light_gray_concrete)\nADD(COLOR_CYAN,cyan_concrete)\nADD(COLOR_PURPLE,purple_concrete)\nADD(COLOR_BLUE,blue_concrete)\nADD(COLOR_BROWN,brown_concrete)\nADD(COLOR_GREEN,green_concrete)\nADD(COLOR_RED,red_concrete)\nADD(COLOR_BLACK,black_concrete)");
+        break;
+    case ID_Preset_wool:
+        panel->setMaterialsConf(panel->version, "MODE(WHITELIST)\nADD(SNOW,white_wool)\nADD(COLOR_MAGENTA)\nADD(COLOR_LIGHT_BLUE)\nADD(COLOR_YELLOW)\nADD(COLOR_LIGHT_GREEN)\nADD(COLOR_PINK)\nADD(COLOR_GRAY)\nADD(COLOR_LIGHT_GRAY)\nADD(COLOR_CYAN)\nADD(COLOR_PURPLE)\nADD(COLOR_BLUE)\nADD(COLOR_BROWN)\nADD(COLOR_GREEN)\nADD(COLOR_RED)\nADD(COLOR_BLACK)");
+        break;
+    case ID_Preset_no_minerals:
+        panel->setMaterialsConf(panel->version, "MODE(BLACKLIST)\nADD(FIRE,tnt)\nREMOVE(METAL)\nREMOVE(GOLD)\nREMOVE(LAPIS)\nREMOVE(EMERALD)\nREMOVE(RAW_IRON)");
+        break;
+    }
     panel->onConfigChanged();
 }
 

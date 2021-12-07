@@ -104,6 +104,8 @@ public:
     void SetBlackList(wxCommandEvent &evt);
     void SetWhiteList(wxCommandEvent &evt);
 
+    void usePreset(wxCommandEvent &evt);
+
     void setMaterialsConf(minecraft::McVersion version, std::string conf);
 
     void displayCountMaterials(std::vector<size_t> &counts);
