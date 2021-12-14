@@ -114,7 +114,7 @@ int minecraft::versionToDataVersion(minecraft::McVersion version)
     case McVersion::MC_1_17:
         return 2730;
     case McVersion::MC_1_18:
-        return 2860;
+        return 2865;
     default:
         return 1343;
     }
