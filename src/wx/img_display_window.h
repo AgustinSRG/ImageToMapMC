@@ -54,18 +54,6 @@ public:
     void setColors(const std::vector<const minecraft::FinalColor *> &colorsMatrix, size_t width, size_t height);
     void setColors(const std::vector<colors::Color> &colorsMatrix, size_t width, size_t height);
 
-    // some useful events
-    /*
-         void mouseMoved(wxMouseEvent& event);
-         void mouseDown(wxMouseEvent& event);
-         void mouseWheelMoved(wxMouseEvent& event);
-         void mouseReleased(wxMouseEvent& event);
-         void rightClick(wxMouseEvent& event);
-         void mouseLeftWindow(wxMouseEvent& event);
-         void keyPressed(wxKeyEvent& event);
-         void keyReleased(wxKeyEvent& event);
-         */
-
     DECLARE_EVENT_TABLE()
 };
 

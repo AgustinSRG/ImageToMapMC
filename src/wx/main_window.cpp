@@ -71,6 +71,9 @@ enum Identifiers
     ID_Materials_Show = 21,
     ID_Materials_Save = 22,
 
+    ID_Save_Image = 31,
+    ID_Save_Preview = 32,
+
     ID_Timer = 50,
 };
 
@@ -85,6 +88,8 @@ EVT_MENU(ID_File_Open, MainWindow::openProject)
 EVT_MENU(ID_File_Save, MainWindow::saveProject)
 EVT_MENU(ID_File_Save_As, MainWindow::saveProjectAs)
 EVT_MENU(ID_Load_Image, MainWindow::onLoadImage)
+EVT_MENU(ID_Save_Image, MainWindow::saveImageAs)
+EVT_MENU(ID_Save_Preview, MainWindow::savePreviewAs)
 EVT_MENU(ID_Materials_Save, MainWindow::OnSaveMaterialsList)
 EVT_MENU_RANGE(VERSION_ID_PREFIX, VERSION_ID_PREFIX + 99, MainWindow::onChangeVersion)
 EVT_MENU_RANGE(COLOR_METHOD_ID_PREFIX, COLOR_METHOD_ID_PREFIX + 99, MainWindow::onChangeColorAlgo)
@@ -186,6 +191,9 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     menuImage->AppendSeparator();
     menuImage->Append(ID_Resize_Image, "&Resize Image\tCtrl+Shift+R", "Resizes image");
     menuImage->Append(ID_Edit_Image, "&Image Settings\tCtrl+Shift+B", "Image settings: brightness, saturation, constrast and background color");
+    menuImage->AppendSeparator();
+    menuImage->Append(ID_Save_Image, "&Save Image As...", "Saves image to a file");
+    menuImage->Append(ID_Save_Preview, "&Save Preview As...", "Saves preview image to a file");
     menuBar->Append(menuImage, "&Image");
 
     // Materials
@@ -1051,4 +1059,26 @@ void MainWindow::onWorkerMaterialsGiven(wxCommandEvent &event)
     {
         materialsWindow->displayCountMaterials(countsMats);
     }
+}
+
+void MainWindow::saveImageAs(wxCommandEvent &evt)
+{
+    wxFileDialog saveFileDialog(this, _("Save image"), "", "", "PNG Image file (*.png)|*.png", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    if (saveFileDialog.ShowModal() == wxID_CANCEL)
+    {
+        return; // the user changed idea...
+    }
+
+    originalImagePanel->bitmap->ConvertToImage().SaveFile(saveFileDialog.GetPath());
+}
+
+void MainWindow::savePreviewAs(wxCommandEvent &evt)
+{
+    wxFileDialog saveFileDialog(this, _("Save preview"), "", "", "PNG Image file (*.png)|*.png", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    if (saveFileDialog.ShowModal() == wxID_CANCEL)
+    {
+        return; // the user changed idea...
+    }
+
+    previewPanel->bitmap->ConvertToImage().SaveFile(saveFileDialog.GetPath());
 }

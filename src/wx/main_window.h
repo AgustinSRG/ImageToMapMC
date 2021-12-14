@@ -56,6 +56,9 @@ public:
     void saveProject(wxCommandEvent &evt);
     void saveProjectAs(wxCommandEvent &evt);
 
+    void saveImageAs(wxCommandEvent &evt);
+    void savePreviewAs(wxCommandEvent &evt);
+
     void onChangeVersion(wxCommandEvent &evt);
     void onChangeColorAlgo(wxCommandEvent &evt);
     void onChangeDithering(wxCommandEvent &evt);
