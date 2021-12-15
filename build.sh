@@ -2,7 +2,7 @@
 
 # Build script for linux
 
-VERSION=`cat version`
+VERSION=1.2.0
 
 cmake -DCMAKE_BUILD_TYPE=Release -Ssrc -Brelease
 
