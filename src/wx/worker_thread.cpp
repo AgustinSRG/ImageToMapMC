@@ -412,6 +412,12 @@ void WorkerThread::ExportMaterials(mapart::MapArtProject &copyProject, std::stri
     }
 
     progress.setEnded();
+
+#if defined(_WIN32)
+
+    ShellExecute(NULL, L"open", std::wstring(copyOutPath.begin(), copyOutPath.end()).c_str(), NULL, NULL, SW_SHOWDEFAULT);
+
+#endif
 }
 
 void WorkerThread::ExportMaterialsSplit(mapart::MapArtProject &copyProject, std::string &copyOutPath)
@@ -500,6 +506,12 @@ void WorkerThread::ExportMaterialsSplit(mapart::MapArtProject &copyProject, std:
     }
 
     progress.setEnded();
+
+#if defined(_WIN32)
+
+    ShellExecute(NULL, L"open", std::wstring(copyOutPath.begin(), copyOutPath.end()).c_str(), NULL, NULL, SW_SHOWDEFAULT);
+
+#endif
 }
 
 void WorkerThread::ExportMaps(mapart::MapArtProject &copyProject, std::string &copyOutPath, int copyMapNumber)
