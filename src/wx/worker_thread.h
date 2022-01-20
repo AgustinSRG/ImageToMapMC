@@ -36,13 +36,20 @@
 #include "../tools/image_edit.h"
 
 BEGIN_DECLARE_EVENT_TYPES()
-    DECLARE_EVENT_TYPE(wxEVT_WorkerThreadPreviewData, -1)
-    DECLARE_EVENT_TYPE(wxEVT_WorkerThreadMaterials, -1)
-    DECLARE_EVENT_TYPE(wxEVT_WorkerThreadError, -1)
+DECLARE_EVENT_TYPE(wxEVT_WorkerThreadPreviewData, -1)
+DECLARE_EVENT_TYPE(wxEVT_WorkerThreadMaterials, -1)
+DECLARE_EVENT_TYPE(wxEVT_WorkerThreadError, -1)
 END_DECLARE_EVENT_TYPES()
 
-enum class TaskType {
-    None, Preview, Export_Maps, Export_Structure, Export_Func, Export_Materials
+enum class TaskType
+{
+    None,
+    Preview,
+    Export_Maps,
+    Export_Structure,
+    Export_Func,
+    Export_Materials,
+    Export_MaterialsSplit
 };
 
 class WorkerThread : public wxThread
@@ -59,10 +66,12 @@ public:
     void requestGeneratePreview(mapart::MapArtProject &project);
 
     void requestExportMaterials(mapart::MapArtProject &project, std::string outPath);
+    void requestExportMaterialsSplit(mapart::MapArtProject &project, std::string outPath);
 
     void requestExportMaps(mapart::MapArtProject &project, std::string outPath, int mapNumber);
     void requestExportStruct(mapart::MapArtProject &project, std::string outPath);
     void requestExportFunc(mapart::MapArtProject &project, std::string outPath);
+
 private:
     int threadNum;
     wxMutex stateMutex;
@@ -82,17 +91,18 @@ private:
     std::vector<size_t> countMaterials;
     mapart::MapArtPreviewData previewData;
 
-
     void OnError(std::string msg);
 
     // Tasks
     void GeneratePreview(mapart::MapArtProject &copyProject);
 
     void ExportMaterials(mapart::MapArtProject &copyProject, std::string &copyOutPath);
+    void ExportMaterialsSplit(mapart::MapArtProject &copyProject, std::string &copyOutPath);
 
     void ExportMaps(mapart::MapArtProject &copyProject, std::string &copyOutPath, int copyMapNumber);
     void ExportStruct(mapart::MapArtProject &copyProject, std::string &copyOutPath);
     void ExportFunc(mapart::MapArtProject &copyProject, std::string &copyOutPath);
+
 protected:
     virtual ExitCode Entry();
     wxEvtHandler *m_pParent;

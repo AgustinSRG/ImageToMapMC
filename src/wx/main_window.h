@@ -87,6 +87,7 @@ public:
     void RequestPreviewGeneration();
 
     void OnSaveMaterialsList(wxCommandEvent &evt);
+    void OnSaveMaterialsListSplit(wxCommandEvent &evt);
 
     void handleDropFile(wxDropFilesEvent& event);
 

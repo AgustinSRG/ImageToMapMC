@@ -43,6 +43,18 @@ MaterialsList::MaterialsList(const std::vector<std::string> baseColorNames)
     placeholder = 0;
 }
 
+void MaterialsList::clear()
+{
+    for (size_t i = 0; i < materials.size(); i++)
+    {
+        materials[i].id = static_cast<short>(i);
+        materials[i].name = "";
+        materials[i].count = 0;
+    }
+    total = 0;
+    placeholder = 0;
+}
+
 void MaterialsList::addBlocks(std::vector<mapart::MapBuildingBlock> &buildingBlocks)
 {
     for (size_t i = 0; i < buildingBlocks.size(); i++)
@@ -71,40 +83,54 @@ void MaterialsList::addBlocks(std::vector<mapart::MapBuildingBlock> &buildingBlo
     }
 }
 
-bool compareMaterials(MaterialListItem a, MaterialListItem b) {
-    if (a.count > b.count) {
+bool compareMaterials(MaterialListItem a, MaterialListItem b)
+{
+    if (a.count > b.count)
+    {
         return true;
-    } else if (a.count < b.count) {
+    }
+    else if (a.count < b.count)
+    {
         return false;
-    } else {
+    }
+    else
+    {
         return a.id < b.id;
     }
 }
 
-std::string compactAmount(size_t amount) {
+std::string compactAmount(size_t amount)
+{
     stringstream ss;
     bool requiresComma = false;
 
-    if (amount >= SHULKER_BOX_AMOUNT) {
+    if (amount >= SHULKER_BOX_AMOUNT)
+    {
         size_t shulkers = amount / SHULKER_BOX_AMOUNT;
         amount = amount % SHULKER_BOX_AMOUNT;
         ss << shulkers << " Shulkers";
         requiresComma = true;
     }
 
-    if (amount >= STACK_AMOUNT) {
+    if (amount >= STACK_AMOUNT)
+    {
         size_t stacks = amount / STACK_AMOUNT;
         amount = amount % STACK_AMOUNT;
-        if (requiresComma) {
+        if (requiresComma)
+        {
             ss << ", ";
-        } else {
+        }
+        else
+        {
             requiresComma = true;
         }
         ss << stacks << " Stacks";
     }
 
-    if (amount > 0) {
-        if (requiresComma) {
+    if (amount > 0)
+    {
+        if (requiresComma)
+        {
             ss << ", ";
         }
         ss << amount << " Blocks";
@@ -113,18 +139,22 @@ std::string compactAmount(size_t amount) {
     return ss.str();
 }
 
-std::string MaterialsList::toString() {
+std::string MaterialsList::toString()
+{
     std::vector<MaterialListItem> materialsCopy(materials);
 
     // Sort list
-    std::sort (materialsCopy.begin(), materialsCopy.end(), compareMaterials);
+    std::sort(materialsCopy.begin(), materialsCopy.end(), compareMaterials);
 
     stringstream ss;
 
-    ss << "List of materials:" << endl << endl;
-    
-    for (size_t i = 0; i < materialsCopy.size(); i++) {
-        if (materialsCopy[i].count <= 0) {
+    ss << "List of materials:" << endl
+       << endl;
+
+    for (size_t i = 0; i < materialsCopy.size(); i++)
+    {
+        if (materialsCopy[i].count <= 0)
+        {
             break;
         }
         size_t count = materialsCopy[i].count;

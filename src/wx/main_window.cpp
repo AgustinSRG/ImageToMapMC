@@ -70,6 +70,7 @@ enum Identifiers
 
     ID_Materials_Show = 21,
     ID_Materials_Save = 22,
+    ID_Materials_Save_Split = 23,
 
     ID_Save_Image = 31,
     ID_Save_Preview = 32,
@@ -91,6 +92,7 @@ EVT_MENU(ID_Load_Image, MainWindow::onLoadImage)
 EVT_MENU(ID_Save_Image, MainWindow::saveImageAs)
 EVT_MENU(ID_Save_Preview, MainWindow::savePreviewAs)
 EVT_MENU(ID_Materials_Save, MainWindow::OnSaveMaterialsList)
+EVT_MENU(ID_Materials_Save_Split, MainWindow::OnSaveMaterialsListSplit)
 EVT_MENU_RANGE(VERSION_ID_PREFIX, VERSION_ID_PREFIX + 99, MainWindow::onChangeVersion)
 EVT_MENU_RANGE(COLOR_METHOD_ID_PREFIX, COLOR_METHOD_ID_PREFIX + 99, MainWindow::onChangeColorAlgo)
 EVT_MENU_RANGE(BUILD_METHOD_ID_PREFIX, BUILD_METHOD_ID_PREFIX + 99, MainWindow::onChangeBuildMethod)
@@ -201,6 +203,7 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     menuMaterials->Append(ID_Blocks_Custom, "&Customize materials\tCtrl+M", "Customizes materials to use");
     menuMaterials->AppendSeparator();
     menuMaterials->Append(ID_Materials_Save, "&Export materials list\tCtrl+Shift+M", "Exports list of materials to a text file");
+    menuMaterials->Append(ID_Materials_Save_Split, "&Export materials list (128x128 sections)", "Exports list of materials to a text file. The materials are split in 128x128 blocks sections.");
     menuBar->Append(menuMaterials, "&Materials");
 
     // Color distance
@@ -431,6 +434,27 @@ void MainWindow::OnSaveMaterialsList(wxCommandEvent &evt)
     if (saveFileDialog.ShowModal() != wxID_CANCEL)
     {
         this->workerThread->requestExportMaterials(project, saveFileDialog.GetPath().ToStdString());
+    }
+}
+
+void MainWindow::OnSaveMaterialsListSplit(wxCommandEvent &evt)
+{
+    if (project.buildMethod == MapBuildMethod::None)
+    {
+        wxMessageBox(wxString("You must choose a build method to create the materials list"), wxT("Error"), wxICON_ERROR);
+        return;
+    }
+
+    if (this->workerThread->isBusy())
+    {
+        wxMessageBox(wxString("There is already a task in progress. Wait for it to end to continue."), wxT("Error"), wxICON_ERROR);
+        return;
+    }
+
+    wxFileDialog saveFileDialog(this, _("Save materials list"), "", "", "Text file (*.txt)|*.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    if (saveFileDialog.ShowModal() != wxID_CANCEL)
+    {
+        this->workerThread->requestExportMaterialsSplit(project, saveFileDialog.GetPath().ToStdString());
     }
 }
 

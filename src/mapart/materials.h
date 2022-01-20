@@ -53,6 +53,8 @@ namespace mapart
 
         MaterialsList(const std::vector<std::string> baseColorNames);
 
+        void clear();
+
         void addBlocks(std::vector<mapart::MapBuildingBlock> &buildingBlocks);
 
         std::string toString();

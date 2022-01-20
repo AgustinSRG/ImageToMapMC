@@ -183,6 +183,29 @@ void WorkerThread::requestExportMaterials(mapart::MapArtProject &project, std::s
     sem.Post();
 }
 
+void WorkerThread::requestExportMaterialsSplit(mapart::MapArtProject &project, std::string outPath)
+{
+    stateMutex.Lock();
+
+    // Cancel prev task
+    if (cancellable)
+    {
+        progress.terminate();
+    }
+
+    // Set new task
+    taskType = TaskType::Export_MaterialsSplit;
+    cancellable = false;
+
+    // Copy params
+    this->project = project;
+    this->outPath = outPath;
+
+    stateMutex.Unlock();
+
+    sem.Post();
+}
+
 void WorkerThread::requestExportMaps(mapart::MapArtProject &project, std::string outPath, int mapNumber)
 {
     stateMutex.Lock();
@@ -379,6 +402,94 @@ void WorkerThread::ExportMaterials(mapart::MapArtProject &copyProject, std::stri
         progress.startTask("Saving...", 0, 0);
 
         if (!tools::writeTextFile(copyOutPath, materials.toString()))
+        {
+            OnError(string("Could not save the materials due to a file system error."));
+        }
+    }
+    catch (int)
+    {
+        progress.reset();
+    }
+
+    progress.setEnded();
+}
+
+void WorkerThread::ExportMaterialsSplit(mapart::MapArtProject &copyProject, std::string &copyOutPath)
+{
+    try
+    {
+        progress.startTask("Preparing image...", 0, 0);
+        wxImage imageCopy = copyProject.toImage();
+
+        if (copyProject.resize_width > 0 && copyProject.resize_height > 0)
+        {
+            imageCopy.Rescale(copyProject.resize_width, copyProject.resize_height);
+        }
+
+        int originalImageWidth;
+        int originalImageHeight;
+        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+
+        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+
+        progress.startTask("Loading minecraft colors...", 0, 0);
+        std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
+        std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
+        std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
+        std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
+        std::vector<bool> enabledConf(baseColors.size());
+        std::vector<size_t> countsMats(MAX_COLOR_GROUPS);
+        bool blacklist = true;
+
+        progress.startTask("Loading custom configuration...", 0, 0);
+        mapart::applyColorSet(copyProject.colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
+        // Apply color restructions based on build method
+        applyBuildRestrictions(colorSet, copyProject.buildMethod);
+
+        progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
+
+        // Compute total maps
+        int mapsCountX = originalImageWidth / MAP_WIDTH;
+        int mapsCountZ = originalImageHeight / MAP_HEIGHT;
+
+        int total = 0;
+        int totalMapsCount = mapsCountX * mapsCountZ;
+
+        MaterialsList materials(baseColorNames);
+        stringstream resultStream;
+
+        for (int mapZ = 0; mapZ < mapsCountZ; mapZ++)
+        {
+            for (int mapX = 0; mapX < mapsCountX; mapX++)
+            {
+                stringstream ss;
+                ss << "Building map (" << (total + 1) << "/" << totalMapsCount << ")...";
+                progress.startTask(ss.str(), MAP_WIDTH, threadNum);
+
+                std::vector<mapart::MapBuildingBlock> buildingBlocks = mapart::buildMap(copyProject.version, blockSet, mapArtColorMatrix, originalImageWidth, originalImageHeight, mapX, mapZ, copyProject.buildMethod, threadNum, progress);
+
+                // Add to materials list
+                materials.addBlocks(buildingBlocks);
+
+                total++;
+
+                // Print materials
+                resultStream << "Map #" << total << " (X: " << (mapX + 1) << ", Z: " << (mapZ + 1) << ")" << endl
+                             << endl;
+                resultStream << materials.toString();
+                resultStream << endl
+                             << "-------------------------------------------------------" << endl
+                             << endl;
+
+                // Clear
+                materials.clear();
+            }
+        }
+
+        progress.startTask("Saving...", 0, 0);
+
+        if (!tools::writeTextFile(copyOutPath, resultStream.str()))
         {
             OnError(string("Could not save the materials due to a file system error."));
         }
@@ -690,6 +801,9 @@ wxThread::ExitCode WorkerThread::Entry()
             break;
         case TaskType::Export_Materials:
             ExportMaterials(copyProject, copyOutPath);
+            break;
+        case TaskType::Export_MaterialsSplit:
+            ExportMaterialsSplit(copyProject, copyOutPath);
             break;
         case TaskType::Export_Maps:
             ExportMaps(copyProject, copyOutPath, copyMapNumber);
