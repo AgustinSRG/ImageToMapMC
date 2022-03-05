@@ -91,7 +91,7 @@ std::string minecraft::versionToString(minecraft::McVersion version)
     case McVersion::MC_1_17:
         return std::string("1.17.1");
     case McVersion::MC_1_18:
-        return std::string("1.18.0");
+        return std::string("1.18.2");
     default:
         return std::string("???");
     }
@@ -114,7 +114,7 @@ int minecraft::versionToDataVersion(minecraft::McVersion version)
     case McVersion::MC_1_17:
         return 2730;
     case McVersion::MC_1_18:
-        return 2865;
+        return 2975;
     default:
         return 1343;
     }
