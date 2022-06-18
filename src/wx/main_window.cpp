@@ -236,7 +236,8 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
 
     // Version
     wxMenu *menuVersion = new wxMenu();
-    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_18), "&1.18.2", "Version: 1.18.2")->Check(true);
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_19), "&1.19", "Version: 1.19")->Check(true);
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_18), "&1.18.2", "Version: 1.18.2");
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_17), "&1.17.1", "Version: 1.17.1");
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_16), "&1.16.5", "Version: 1.16.5");
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_15), "&1.15.2", "Version: 1.15.2");
@@ -1033,29 +1034,33 @@ void MainWindow::updateMenuBarRadios()
     GetMenuBar()->GetMenu(6)->GetMenuItems()[4]->Check(false);
     GetMenuBar()->GetMenu(6)->GetMenuItems()[5]->Check(false);
     GetMenuBar()->GetMenu(6)->GetMenuItems()[6]->Check(false);
+    GetMenuBar()->GetMenu(6)->GetMenuItems()[7]->Check(false);
 
     switch (project.version)
     {
-    case McVersion::MC_1_18:
+    case McVersion::MC_1_19:
         GetMenuBar()->GetMenu(6)->GetMenuItems()[0]->Check(true);
         break;
-    case McVersion::MC_1_17:
+    case McVersion::MC_1_18:
         GetMenuBar()->GetMenu(6)->GetMenuItems()[1]->Check(true);
         break;
-    case McVersion::MC_1_16:
+    case McVersion::MC_1_17:
         GetMenuBar()->GetMenu(6)->GetMenuItems()[2]->Check(true);
         break;
-    case McVersion::MC_1_15:
+    case McVersion::MC_1_16:
         GetMenuBar()->GetMenu(6)->GetMenuItems()[3]->Check(true);
         break;
-    case McVersion::MC_1_14:
+    case McVersion::MC_1_15:
         GetMenuBar()->GetMenu(6)->GetMenuItems()[4]->Check(true);
         break;
-    case McVersion::MC_1_13:
+    case McVersion::MC_1_14:
         GetMenuBar()->GetMenu(6)->GetMenuItems()[5]->Check(true);
         break;
-    default:
+    case McVersion::MC_1_13:
         GetMenuBar()->GetMenu(6)->GetMenuItems()[6]->Check(true);
+        break;
+    default:
+        GetMenuBar()->GetMenu(6)->GetMenuItems()[7]->Check(true);
         break;
     }
 }
