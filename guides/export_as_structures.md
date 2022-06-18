@@ -1,6 +1,6 @@
 ## Build the map inside a survival world or server
 
-In order to build the map inmside a survival world you have to create a new creative world and import the map as an structure. Once it is in your creative world, you can copy it to the survival world, either manually or using a client mod, like Schematicas.
+In order to build the map inside a survival world you have to create a new creative world and import the map as an structure. Once it is in your creative world, you can copy it to the survival world, either manually or using a client mod, like Schematicas.
 
 Follow these steps in order to get it done.
 

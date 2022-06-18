@@ -6,7 +6,7 @@ In order to export files to `.dat` map files, follow these steps.
 
 Create folder in your computer to store the files you are creating.
 
-A map can only store 128x128 pixels, so, for larger images, multiple maps will  be created.
+A map can only store 128x128 pixels, so, for larger images, multiple maps will be created.
 
 ### 2. Export
 
@@ -20,7 +20,7 @@ Go to the menu **File > Export > Export as map files**
 
 You can add the map files into your world by copying them into the `data` folder.
 
-If you are using normal maps you may also want to change the map count number. In order to do that, you have to modify the `idcounts.dat` file with an NBT Editor of your choice.
+You may also want to change the map count number. In order to do that, you have to modify the `idcounts.dat` file with an NBT Editor of your choice.
 
 ### 4. Give yourself the map items in game
 
