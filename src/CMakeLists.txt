@@ -58,6 +58,7 @@ SET(SOURCES_WX
     "wx/image_edit_dialog.h" "wx/image_edit_dialog.cpp"
     "wx/worker_thread.h" "wx/worker_thread.cpp"
     "mapart/project.h" "mapart/project.cpp"
+    "tools/open_desktop.h" "tools/open_desktop.cpp"
 )
 
 SET(SOURCES_RC 

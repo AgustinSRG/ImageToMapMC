@@ -27,14 +27,12 @@
 #include <sstream>
 #include <filesystem>
 
-#if defined(_WIN32)
-#include <shellapi.h>
-#endif
-
 #include <zip.h>
 
 #include "../minecraft/structure.h"
 #include "../minecraft/mcfunction.h"
+
+#include "../tools/open_desktop.h"
 
 using namespace std;
 using namespace colors;
@@ -463,11 +461,7 @@ void WorkerThread::ExportMaterials(mapart::MapArtProject &copyProject, std::stri
 
     progress.setEnded();
 
-#if defined(_WIN32)
-
-    ShellExecute(NULL, L"open", std::wstring(copyOutPath.begin(), copyOutPath.end()).c_str(), NULL, NULL, SW_SHOWDEFAULT);
-
-#endif
+    tools::openForDesktop(copyOutPath);
 }
 
 void WorkerThread::ExportMaterialsSplit(mapart::MapArtProject &copyProject, std::string &copyOutPath)
@@ -557,11 +551,7 @@ void WorkerThread::ExportMaterialsSplit(mapart::MapArtProject &copyProject, std:
 
     progress.setEnded();
 
-#if defined(_WIN32)
-
-    ShellExecute(NULL, L"open", std::wstring(copyOutPath.begin(), copyOutPath.end()).c_str(), NULL, NULL, SW_SHOWDEFAULT);
-
-#endif
+    tools::openForDesktop(copyOutPath);
 }
 
 void WorkerThread::ExportMaps(mapart::MapArtProject &copyProject, std::string &copyOutPath, int copyMapNumber)
@@ -643,11 +633,7 @@ void WorkerThread::ExportMaps(mapart::MapArtProject &copyProject, std::string &c
 
     progress.setEnded();
 
-#if defined(_WIN32)
-
-    ShellExecute(NULL, L"open", std::wstring(copyOutPath.begin(), copyOutPath.end()).c_str(), NULL, NULL, SW_SHOWDEFAULT);
-
-#endif
+    tools::openForDesktop(copyOutPath);
 }
 
 void WorkerThread::ExportMapsZip(mapart::MapArtProject &copyProject, std::string &outFilePath)
@@ -745,11 +731,7 @@ void WorkerThread::ExportMapsZip(mapart::MapArtProject &copyProject, std::string
 
     progress.setEnded();
 
-#if defined(_WIN32)
-
-    ShellExecute(NULL, L"open", std::wstring(outFilePath.begin(), outFilePath.end()).c_str(), NULL, NULL, SW_SHOWDEFAULT);
-
-#endif
+    tools::openForDesktop(outFilePath);
 }
 
 void WorkerThread::ExportStruct(mapart::MapArtProject &copyProject, std::string &copyOutPath)
@@ -832,11 +814,7 @@ void WorkerThread::ExportStruct(mapart::MapArtProject &copyProject, std::string 
 
     progress.setEnded();
 
-#if defined(_WIN32)
-
-    ShellExecute(NULL, L"open", std::wstring(copyOutPath.begin(), copyOutPath.end()).c_str(), NULL, NULL, SW_SHOWDEFAULT);
-
-#endif
+    tools::openForDesktop(copyOutPath);
 }
 
 void WorkerThread::ExportStructZip(mapart::MapArtProject &copyProject, std::string &outFilePath)
@@ -934,11 +912,7 @@ void WorkerThread::ExportStructZip(mapart::MapArtProject &copyProject, std::stri
 
     progress.setEnded();
 
-#if defined(_WIN32)
-
-    ShellExecute(NULL, L"open", std::wstring(outFilePath.begin(), outFilePath.end()).c_str(), NULL, NULL, SW_SHOWDEFAULT);
-
-#endif
+    tools::openForDesktop(outFilePath);
 }
 
 void WorkerThread::ExportFunc(mapart::MapArtProject &copyProject, std::string &copyOutPath)
@@ -1021,11 +995,7 @@ void WorkerThread::ExportFunc(mapart::MapArtProject &copyProject, std::string &c
 
     progress.setEnded();
 
-#if defined(_WIN32)
-
-    ShellExecute(NULL, L"open", std::wstring(copyOutPath.begin(), copyOutPath.end()).c_str(), NULL, NULL, SW_SHOWDEFAULT);
-
-#endif
+    tools::openForDesktop(copyOutPath);
 }
 
 /* Main Entry */
