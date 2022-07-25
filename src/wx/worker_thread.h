@@ -1,16 +1,16 @@
 
 /*
  * This file is part of ImageToMapMC project
- * 
+ *
  * Copyright (c) 2021 Agustin San Roman
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
 
@@ -46,7 +46,9 @@ enum class TaskType
     None,
     Preview,
     Export_Maps,
+    Export_Maps_Zip,
     Export_Structure,
+    Export_Structure_Zip,
     Export_Func,
     Export_Materials,
     Export_MaterialsSplit
@@ -69,7 +71,11 @@ public:
     void requestExportMaterialsSplit(mapart::MapArtProject &project, std::string outPath);
 
     void requestExportMaps(mapart::MapArtProject &project, std::string outPath, int mapNumber);
+    void requestExportMapsZip(mapart::MapArtProject &project, std::string outPath);
+
     void requestExportStruct(mapart::MapArtProject &project, std::string outPath);
+    void requestExportStructZip(mapart::MapArtProject &project, std::string outPath);
+
     void requestExportFunc(mapart::MapArtProject &project, std::string outPath);
 
 private:
@@ -100,7 +106,11 @@ private:
     void ExportMaterialsSplit(mapart::MapArtProject &copyProject, std::string &copyOutPath);
 
     void ExportMaps(mapart::MapArtProject &copyProject, std::string &copyOutPath, int copyMapNumber);
+    void ExportMapsZip(mapart::MapArtProject &copyProject, std::string &outFilePath);
+
     void ExportStruct(mapart::MapArtProject &copyProject, std::string &copyOutPath);
+    void ExportStructZip(mapart::MapArtProject &copyProject, std::string &copyOutPath);
+
     void ExportFunc(mapart::MapArtProject &copyProject, std::string &copyOutPath);
 
 protected:

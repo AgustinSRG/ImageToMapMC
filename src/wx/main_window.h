@@ -65,7 +65,9 @@ public:
     void onChangeBuildMethod(wxCommandEvent &evt);
     void onCustomBlocks(wxCommandEvent &evt);
     void onExportToMaps(wxCommandEvent &evt);
+    void onExportToMapsZip(wxCommandEvent &evt);
     void onExportToStructure(wxCommandEvent &evt);
+    void onExportToStructureZip(wxCommandEvent &evt);
     void onExportToFunctions(wxCommandEvent &evt);
     void onImageResize(wxCommandEvent &evt);
     void onImageEdit(wxCommandEvent &evt);

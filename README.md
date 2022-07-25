@@ -30,6 +30,7 @@ In order to compile the project, you'll need the following:
  - [CMAKE](https://cmake.org/install/) installed.
  - [ZLIB](https://zlib.net/) installed and available for your C++ compiler.
  - [wxWidgets](https://www.wxwidgets.org/) installed and available for your C++ compiler.
+ - [libzip](https://libzip.org/) installed and available for your C++ compiler.
 
 In order to build the release version with CMAKE use:
 

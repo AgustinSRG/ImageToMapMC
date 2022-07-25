@@ -32,6 +32,8 @@
 
 #include <nbt_tags.h>
 
+#include <sstream>
+
 using namespace std;
 using namespace nbt;
 using namespace colors;
@@ -124,6 +126,71 @@ void mapart::writeMapNBTFile(std::string fileName, const std::vector<map_color_t
     {
         zlib::ozlibstream ogzs(file, -1, true);
         nbt::io::write_tag("", root, ogzs);
+    }
+    catch (...)
+    {
+        throw -2;
+    }
+}
+
+void mapart::writeMapNBTFileZip(std::string fileName, zip_t *zipper, const std::vector<map_color_t> &mapColors, minecraft::McVersion version)
+{
+    nbt::tag_compound root;
+    nbt::tag_compound data;
+
+    // Set meta data
+    data.insert("width", nbt::tag_int(MAP_WIDTH));
+    data.insert("height", nbt::tag_int(MAP_HEIGHT));
+    data.insert("dimension", nbt::tag_int(0));
+    data.insert("scale", nbt::tag_int(0));
+    data.insert("trackingPosition:", nbt::tag_int(0));
+    data.insert("unlimitedTracking", nbt::tag_int(0));
+
+    if (version >= McVersion::MC_1_14)
+    {
+        // If we can, prevent the map from being modified
+        data.insert("locked", nbt::tag_int(1));
+    }
+
+    // Set the center far away to prevent issues (20M)
+    data.insert("xCenter", nbt::tag_int(20000000));
+    data.insert("zCenter", nbt::tag_int(20000000));
+
+    // Set colors array
+    nbt::tag_byte_array byteArray;
+    size_t size = MAP_WIDTH * MAP_HEIGHT;
+    for (size_t i = 0; i < size; i++)
+    {
+        short val = mapColors[i];
+        int8_t ip = static_cast<int8_t>((val > 127) ? (val - 256) : val);
+        byteArray.push_back(ip);
+    }
+    data.insert("colors", byteArray.clone());
+
+    // Insert tags to root
+    root.insert("data", data.clone());
+    root.insert("DataVersion", minecraft::versionToDataVersion(version));
+
+    ostringstream ss;
+
+    try
+    {
+        zlib::ozlibstream ogzs(ss, -1, true);
+        nbt::io::write_tag("", root, ogzs);
+
+        ogzs.close();
+
+        std::string data = ss.str();
+
+        int len = data.size();
+
+        char * buffer = new char[len];
+
+        memcpy(buffer, data.c_str(), len);
+
+        zip_source_t * bsource = zip_source_buffer(zipper, buffer, len, 1);
+
+        zip_file_add(zipper, fileName.c_str(), bsource, ZIP_FL_ENC_UTF_8 | ZIP_FL_OVERWRITE);
     }
     catch (...)
     {

@@ -1,16 +1,16 @@
 
 /*
  * This file is part of ImageToMapMC project
- * 
+ *
  * Copyright (c) 2021 Agustin San Roman
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
 
@@ -30,6 +30,8 @@
 #if defined(_WIN32)
 #include <shellapi.h>
 #endif
+
+#include <zip.h>
 
 #include "../minecraft/structure.h"
 #include "../minecraft/mcfunction.h"
@@ -230,6 +232,30 @@ void WorkerThread::requestExportMaps(mapart::MapArtProject &project, std::string
     sem.Post();
 }
 
+void WorkerThread::requestExportMapsZip(mapart::MapArtProject &project, std::string outPath)
+{
+    stateMutex.Lock();
+
+    // Cancel prev task
+    if (cancellable)
+    {
+        progress.terminate();
+    }
+
+    // Set new task
+    taskType = TaskType::Export_Maps_Zip;
+    cancellable = false;
+
+    // Copy params
+    this->project = project;
+    this->outPath = outPath;
+    this->mapNumber = 0;
+
+    stateMutex.Unlock();
+
+    sem.Post();
+}
+
 void WorkerThread::requestExportStruct(mapart::MapArtProject &project, std::string outPath)
 {
     stateMutex.Lock();
@@ -252,6 +278,30 @@ void WorkerThread::requestExportStruct(mapart::MapArtProject &project, std::stri
 
     sem.Post();
 }
+
+void WorkerThread::requestExportStructZip(mapart::MapArtProject &project, std::string outPath)
+{
+    stateMutex.Lock();
+
+    // Cancel prev task
+    if (cancellable)
+    {
+        progress.terminate();
+    }
+
+    // Set new task
+    taskType = TaskType::Export_Structure_Zip;
+    cancellable = false;
+
+    // Copy params
+    this->project = project;
+    this->outPath = outPath;
+
+    stateMutex.Unlock();
+
+    sem.Post();
+}
+
 void WorkerThread::requestExportFunc(mapart::MapArtProject &project, std::string outPath)
 {
     stateMutex.Lock();
@@ -600,6 +650,108 @@ void WorkerThread::ExportMaps(mapart::MapArtProject &copyProject, std::string &c
 #endif
 }
 
+void WorkerThread::ExportMapsZip(mapart::MapArtProject &copyProject, std::string &outFilePath)
+{
+    zip_t *zipper = nullptr;
+    try
+    {
+        progress.startTask("Preparing image...", 0, 0);
+        wxImage imageCopy = copyProject.toImage();
+
+        if (copyProject.resize_width > 0 && copyProject.resize_height > 0)
+        {
+            imageCopy.Rescale(copyProject.resize_width, copyProject.resize_height);
+        }
+
+        int originalImageWidth;
+        int originalImageHeight;
+        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+
+        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+
+        progress.startTask("Loading minecraft colors...", 0, 0);
+        std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
+        std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
+        std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
+        std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
+        std::vector<bool> enabledConf(baseColors.size());
+        std::vector<size_t> countsMats(MAX_COLOR_GROUPS);
+        bool blacklist = true;
+
+        progress.startTask("Loading custom configuration...", 0, 0);
+        mapart::applyColorSet(copyProject.colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
+        // Apply color restructions based on build method
+        applyBuildRestrictions(colorSet, copyProject.buildMethod);
+
+        progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
+
+        // Create zip container for the files
+        int errorp;
+        zipper = zip_open(outFilePath.c_str(), ZIP_CREATE | ZIP_EXCL, &errorp);
+
+        if (zipper == nullptr)
+        {
+            OnError(string("Cannot write file: ") + outFilePath);
+            throw -1;
+        }
+
+        // Compute total maps
+        int mapsCountX = originalImageWidth / MAP_WIDTH;
+        int mapsCountZ = originalImageHeight / MAP_HEIGHT;
+
+        int total = 0;
+        int totalMapsCount = mapsCountX * mapsCountZ;
+
+        progress.startTask("Saving to map files...", mapsCountZ * mapsCountX, 1);
+        for (int mapZ = 0; mapZ < mapsCountZ; mapZ++)
+        {
+            for (int mapX = 0; mapX < mapsCountX; mapX++)
+            {
+                // Get map data
+                std::vector<map_color_t> mapDataToSave = getMapDataFromColorMatrix(mapArtColorMatrix, originalImageWidth, originalImageHeight, mapX, mapZ);
+
+                // Save to file
+                stringstream ss;
+                ss << "map_" << (mapNumber++) << ".dat";
+
+                std::string fPath = ss.str();
+
+                try
+                {
+                    writeMapNBTFileZip(fPath, zipper, mapDataToSave, copyProject.version);
+                }
+                catch (...)
+                {
+                    OnError(string("Cannot store map file into zip: ") + fPath);
+                    throw -1;
+                }
+
+                total++;
+                progress.setProgress(0, total);
+            }
+        }
+
+        zip_close(zipper); // Close zipper
+    }
+    catch (int)
+    {
+        if (zipper != nullptr)
+        {
+            zip_close(zipper); // Close zipper
+        }
+        progress.reset();
+    }
+
+    progress.setEnded();
+
+#if defined(_WIN32)
+
+    ShellExecute(NULL, L"open", std::wstring(outFilePath.begin(), outFilePath.end()).c_str(), NULL, NULL, SW_SHOWDEFAULT);
+
+#endif
+}
+
 void WorkerThread::ExportStruct(mapart::MapArtProject &copyProject, std::string &copyOutPath)
 {
     try
@@ -683,6 +835,108 @@ void WorkerThread::ExportStruct(mapart::MapArtProject &copyProject, std::string 
 #if defined(_WIN32)
 
     ShellExecute(NULL, L"open", std::wstring(copyOutPath.begin(), copyOutPath.end()).c_str(), NULL, NULL, SW_SHOWDEFAULT);
+
+#endif
+}
+
+void WorkerThread::ExportStructZip(mapart::MapArtProject &copyProject, std::string &outFilePath)
+{
+    zip_t *zipper = nullptr;
+    try
+    {
+        progress.startTask("Preparing image...", 0, 0);
+        wxImage imageCopy = copyProject.toImage();
+
+        if (copyProject.resize_width > 0 && copyProject.resize_height > 0)
+        {
+            imageCopy.Rescale(copyProject.resize_width, copyProject.resize_height);
+        }
+
+        int originalImageWidth;
+        int originalImageHeight;
+        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+
+        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+
+        progress.startTask("Loading minecraft colors...", 0, 0);
+        std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
+        std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
+        std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
+        std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
+        std::vector<bool> enabledConf(baseColors.size());
+        std::vector<size_t> countsMats(MAX_COLOR_GROUPS);
+        bool blacklist = true;
+
+        progress.startTask("Loading custom configuration...", 0, 0);
+        mapart::applyColorSet(copyProject.colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
+        // Apply color restructions based on build method
+        applyBuildRestrictions(colorSet, copyProject.buildMethod);
+
+        progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
+
+        // Create zip container for the files
+        int errorp;
+        zipper = zip_open(outFilePath.c_str(), ZIP_CREATE | ZIP_EXCL, &errorp);
+
+        if (zipper == nullptr)
+        {
+            OnError(string("Cannot write file: ") + outFilePath);
+            throw -1;
+        }
+
+        // Compute total maps
+        int mapsCountX = originalImageWidth / MAP_WIDTH;
+        int mapsCountZ = originalImageHeight / MAP_HEIGHT;
+
+        progress.startTask("Building maps...", 0, 0);
+        int total = 0;
+        int totalMapsCount = mapsCountX * mapsCountZ;
+        for (int mapZ = 0; mapZ < mapsCountZ; mapZ++)
+        {
+            for (int mapX = 0; mapX < mapsCountX; mapX++)
+            {
+                stringstream ss;
+                ss << "Building map (" << (total + 1) << "/" << totalMapsCount << ")...";
+                progress.startTask(ss.str(), MAP_WIDTH, threadNum);
+
+                std::vector<mapart::MapBuildingBlock> buildingBlocks = mapart::buildMap(copyProject.version, blockSet, mapArtColorMatrix, originalImageWidth, originalImageHeight, mapX, mapZ, copyProject.buildMethod, threadNum, progress);
+
+                // Save as structure file
+                stringstream ss2;
+                ss2 << "map_" << (total + 1) << ".nbt";
+
+                std::string fPath = ss2.str();
+
+                try
+                {
+                    writeStructureNBTFileZip(fPath, zipper, buildingBlocks, copyProject.version);
+                }
+                catch (...)
+                {
+                    OnError(string("Cannot add file to zip: ") + fPath);
+                    throw -1;
+                }
+
+                total++;
+            }
+        }
+        zip_close(zipper); // Close zipper
+    }
+    catch (int)
+    {
+        if (zipper != nullptr)
+        {
+            zip_close(zipper); // Close zipper
+        }
+        progress.reset();
+    }
+
+    progress.setEnded();
+
+#if defined(_WIN32)
+
+    ShellExecute(NULL, L"open", std::wstring(outFilePath.begin(), outFilePath.end()).c_str(), NULL, NULL, SW_SHOWDEFAULT);
 
 #endif
 }
@@ -820,8 +1074,14 @@ wxThread::ExitCode WorkerThread::Entry()
         case TaskType::Export_Maps:
             ExportMaps(copyProject, copyOutPath, copyMapNumber);
             break;
+        case TaskType::Export_Maps_Zip:
+            ExportMapsZip(copyProject, copyOutPath);
+            break;
         case TaskType::Export_Structure:
             ExportStruct(copyProject, copyOutPath);
+            break;
+        case TaskType::Export_Structure_Zip:
+            ExportStructZip(copyProject, copyOutPath);
             break;
         case TaskType::Export_Func:
             ExportFunc(copyProject, copyOutPath);

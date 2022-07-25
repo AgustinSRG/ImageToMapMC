@@ -28,6 +28,7 @@
 #include <nbt_tags.h>
 #include <fstream>
 
+
 using namespace std;
 using namespace mapart;
 using namespace minecraft;
@@ -167,6 +168,111 @@ void minecraft::writeStructureNBTFile(std::string fileName, std::vector<mapart::
     {
         zlib::ozlibstream ogzs(file, -1, true);
         nbt::io::write_tag("", root, ogzs);
+    }
+    catch (...)
+    {
+        throw -2;
+    }
+}
+
+void minecraft::writeStructureNBTFileZip(std::string fileName, zip_t *zipper, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version)
+{
+    nbt::tag_compound root;
+    nbt::tag_list blocksTag;
+    nbt::tag_list paletteTag;
+    vector<int> palette(64);
+    int nextPaletteItem = 1;
+    int maxYlevel = 0;
+
+    for (size_t i = 0; i < palette.size(); i++) {
+        palette[i] = -1; // Initiallize
+    }
+
+    // Add placeholder blocks to palette
+    minecraft::BlockDescription placeholderBlockDesc;
+    placeholderBlockDesc.name = "Placeholder";
+    placeholderBlockDesc.minVersion = McVersion::MC_1_12;
+    placeholderBlockDesc.maxVersion = MC_LAST_VERSION;
+    placeholderBlockDesc.nbtName = "stone";
+    palette[0] = 0;
+
+    paletteTag.push_back(blockDescriptionToTag(&placeholderBlockDesc));
+
+    // Blocks parsing
+    size_t size = buildData.size();
+    for (size_t i = 0; i < size; i++)
+    {
+        // Compute max y level for size
+        int y = buildData[i].y + 1;
+        if (y > maxYlevel) {
+            maxYlevel = y;
+        }
+
+        // Add the blocks
+        const minecraft::BlockDescription *blockPtr = buildData[i].block_ptr;
+        
+        if (blockPtr == NULL)
+        {
+            // First line, no placeholder
+            blocksTag.push_back(blockToTag(buildData[i], palette, false));
+        } else {
+            short blockIndex = blockPtr->baseColorIndex;
+            if (palette[blockIndex] < 0) {
+                // Add to palette
+                palette[blockIndex] = nextPaletteItem++;
+                paletteTag.push_back(blockDescriptionToTag(blockPtr));
+            }
+
+            // Placeholder block
+            blocksTag.push_back(blockToTag(buildData[i], palette, true));
+
+            // Real block
+            blocksTag.push_back(blockToTag(buildData[i], palette, false));
+        }
+    }
+
+    // Data version and author tags
+    root.insert("DataVersion", minecraft::versionToDataVersion(version));
+    root.insert("author", "mcmap");
+
+    // Insert blocks
+    root.insert("blocks", blocksTag.clone());
+
+    // Empty entitities
+    nbt::tag_list entitiesTag;
+    root.insert("entities", entitiesTag.clone());
+
+    // Insert palette
+    root.insert("palette", paletteTag.clone());
+
+    // Insert size tag
+    nbt::tag_list sizeTag;
+    sizeTag.push_back(nbt::tag_int(MAP_WIDTH));
+    sizeTag.push_back(nbt::tag_int(maxYlevel + 1));
+    sizeTag.push_back(nbt::tag_int(MAP_HEIGHT + 1));
+    root.insert("size", sizeTag.clone());
+
+    // Save
+    ostringstream ss;
+
+    try
+    {
+        zlib::ozlibstream ogzs(ss, -1, true);
+        nbt::io::write_tag("", root, ogzs);
+
+        ogzs.close();
+
+        std::string data = ss.str();
+
+        int len = data.size();
+
+        char * buffer = new char[len];
+
+        memcpy(buffer, data.c_str(), len);
+
+        zip_source_t * bsource = zip_source_buffer(zipper, buffer, len, 1);
+
+        zip_file_add(zipper, fileName.c_str(), bsource, ZIP_FL_ENC_UTF_8 | ZIP_FL_OVERWRITE);
     }
     catch (...)
     {

@@ -24,6 +24,7 @@
 #pragma once
 
 #include "common.h"
+#include <zip.h>
 
 namespace mapart {
     /**
@@ -43,4 +44,15 @@ namespace mapart {
      * @retval None
      */
     void writeMapNBTFile(std::string fileName, const std::vector<map_color_t> &mapColors, minecraft::McVersion version);
+
+    /**
+     * @brief  Stores map data into zip file
+     * @note   
+     * @param  fileName: File name
+     * @param  zipper: Zip file descriptor
+     * @param  &mapColors: Map data
+     * @param version: Minecraft version
+     * @retval None
+     */
+    void writeMapNBTFileZip(std::string fileName, zip_t *zipper, const std::vector<map_color_t> &mapColors, minecraft::McVersion version);
 }

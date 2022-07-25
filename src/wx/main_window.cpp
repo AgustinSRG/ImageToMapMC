@@ -1,15 +1,15 @@
 /*
  * This file is part of ImageToMapMC project
- * 
+ *
  * Copyright (c) 2021 Agustin San Roman
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
 
@@ -63,6 +63,9 @@ enum Identifiers
     ID_Export_Structure = 7,
     ID_Export_Function = 8,
 
+    ID_Export_Map_Zip = 9,
+    ID_Export_Structure_Zip = 10,
+
     ID_Export = 16,
     ID_Resize_Image = 17,
     ID_Edit_Image = 18,
@@ -102,7 +105,9 @@ EVT_MENU(ID_Blocks_Custom, MainWindow::onCustomBlocks)
 EVT_SIZE(MainWindow::OnSize)
 EVT_DROP_FILES(MainWindow::handleDropFile)
 EVT_MENU(ID_Export_Map, MainWindow::onExportToMaps)
+EVT_MENU(ID_Export_Map_Zip, MainWindow::onExportToMapsZip)
 EVT_MENU(ID_Export_Structure, MainWindow::onExportToStructure)
+EVT_MENU(ID_Export_Structure_Zip, MainWindow::onExportToStructureZip)
 EVT_MENU(ID_Export_Function, MainWindow::onExportToFunctions)
 EVT_MENU(ID_Resize_Image, MainWindow::onImageResize)
 EVT_MENU(ID_Edit_Image, MainWindow::onImageEdit)
@@ -177,7 +182,9 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
 
     wxMenu *exportMenu = new wxMenu();
     exportMenu->Append(ID_Export_Map, "&Export as map files\tCtrl+E", "Exports the map to Minecraft map files (for server admins)");
+    exportMenu->Append(ID_Export_Map_Zip, "&Export as map files (Zip file)\tCtrl+Shift+E", "Exports the map to Minecraft map files inside a zip file (for server admins)");
     exportMenu->Append(ID_Export_Structure, "&Export as structures\tCtrl+T", "Exports the map to nbt structure files (for survival)");
+    exportMenu->Append(ID_Export_Structure_Zip, "&Export as structures (Zip file)\tCtrl+Shift+T", "Exports the map to nbt structure files inside a zip file (for survival)");
     exportMenu->Append(ID_Export_Function, "&Export as functions\tCtrl+F", "Exports the map to minecraft function file (for flat maps)");
     menuFile->AppendSubMenu(exportMenu, "&Export", "Exports the map, so you can use it in Minecraft");
 
@@ -550,6 +557,7 @@ void widgets::displayMainWindow(wxApp &app)
 
 void MainWindow::onExportToMaps(wxCommandEvent &evt)
 {
+
     if (this->workerThread->isBusy())
     {
         wxMessageBox(wxString("There is already a task in progress. Wait for it to end to continue."), wxT("Error"), wxICON_ERROR);
@@ -563,6 +571,42 @@ void MainWindow::onExportToMaps(wxCommandEvent &evt)
     }
 
     this->workerThread->requestExportMaps(project, dialog.getPath(), dialog.getMapNumber());
+}
+
+void MainWindow::onExportToMapsZip(wxCommandEvent &evt)
+{
+    if (this->workerThread->isBusy())
+    {
+        wxMessageBox(wxString("There is already a task in progress. Wait for it to end to continue."), wxT("Error"), wxICON_ERROR);
+        return;
+    }
+
+    wxFileDialog saveFileDialog(this, _("Export as map files"), "", "", "Compressed zip files (*.zip)|*.zip", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    if (saveFileDialog.ShowModal() != wxID_CANCEL)
+    {
+        this->workerThread->requestExportMapsZip(project, saveFileDialog.GetPath().ToStdString());
+    }
+}
+
+void MainWindow::onExportToStructureZip(wxCommandEvent &evt)
+{
+    if (project.buildMethod == MapBuildMethod::None)
+    {
+        wxMessageBox(wxString("You must choose a build method to be able to export to structures."), wxT("Cannot export"), wxICON_INFORMATION);
+        return;
+    }
+
+    if (this->workerThread->isBusy())
+    {
+        wxMessageBox(wxString("There is already a task in progress. Wait for it to end to continue."), wxT("Error"), wxICON_ERROR);
+        return;
+    }
+
+    wxFileDialog saveFileDialog(this, _("Export as structure files"), "", "", "Compressed zip files (*.zip)|*.zip", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    if (saveFileDialog.ShowModal() != wxID_CANCEL)
+    {
+        this->workerThread->requestExportStructZip(project, saveFileDialog.GetPath().ToStdString());
+    }
 }
 
 void MainWindow::onExportToStructure(wxCommandEvent &evt)

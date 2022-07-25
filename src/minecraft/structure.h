@@ -24,6 +24,7 @@
 #pragma once
 
 #include "../mapart/common.h"
+#include <zip.h>
 
 namespace minecraft {
     /**
@@ -35,4 +36,15 @@ namespace minecraft {
      * @retval None
      */
     void writeStructureNBTFile(std::string fileName, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version);
+
+    /**
+     * @brief  Writes structure to file
+     * @note   
+     * @param  fileName: File name
+     * @param  zipper: Zip file descriptor
+     * @param  &buildData: Building data
+     * @param  version: Minecraft version
+     * @retval None
+     */
+    void writeStructureNBTFileZip(std::string fileName, zip_t *zipper, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version);
 }

@@ -16,6 +16,7 @@ SET(wxWidgets_USE_LIBS)
 
 find_package(wxWidgets REQUIRED)
 include(${wxWidgets_USE_FILE})
+find_package(libzip REQUIRED)
 
 include_directories(3rdparty/libnbtplusplus/include)
 add_subdirectory(3rdparty/libnbtplusplus)
@@ -72,6 +73,7 @@ add_executable (mcmap-gui WIN32
 )
 
 target_link_libraries(mcmap-gui ${wxWidgets_LIBRARIES})
+target_link_libraries(mcmap-gui libzip::zip)
 target_link_libraries(mcmap-gui nbt++)
 
 # Console app
@@ -81,4 +83,5 @@ add_executable (mcmap
 )
 
 target_link_libraries(mcmap ${wxWidgets_LIBRARIES})
+target_link_libraries(mcmap libzip::zip)
 target_link_libraries(mcmap nbt++)
