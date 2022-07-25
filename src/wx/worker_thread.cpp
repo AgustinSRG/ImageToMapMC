@@ -674,7 +674,7 @@ void WorkerThread::ExportMapsZip(mapart::MapArtProject &copyProject, std::string
 
         // Create zip container for the files
         int errorp;
-        zipper = zip_open(outFilePath.c_str(), ZIP_CREATE | ZIP_EXCL, &errorp);
+        zipper = zip_open(outFilePath.c_str(), ZIP_CREATE | ZIP_TRUNCATE, &errorp);
 
         if (zipper == nullptr)
         {
@@ -855,7 +855,7 @@ void WorkerThread::ExportStructZip(mapart::MapArtProject &copyProject, std::stri
 
         // Create zip container for the files
         int errorp;
-        zipper = zip_open(outFilePath.c_str(), ZIP_CREATE | ZIP_EXCL, &errorp);
+        zipper = zip_open(outFilePath.c_str(), ZIP_CREATE | ZIP_TRUNCATE, &errorp);
 
         if (zipper == nullptr)
         {
