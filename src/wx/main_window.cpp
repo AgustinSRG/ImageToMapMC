@@ -31,6 +31,7 @@
 #include <filesystem>
 #include "../minecraft/structure.h"
 #include "../minecraft/mcfunction.h"
+#include "../tools/open_desktop.h"
 
 #include <fstream>
 
@@ -78,6 +79,10 @@ enum Identifiers
     ID_Save_Image = 31,
     ID_Save_Preview = 32,
 
+    ID_Help_Guide_1 = 41,
+    ID_Help_Guide_2 = 42,
+    ID_Help_Guide_3 = 43,
+
     ID_Timer = 50,
 };
 
@@ -96,6 +101,9 @@ EVT_MENU(ID_Save_Image, MainWindow::saveImageAs)
 EVT_MENU(ID_Save_Preview, MainWindow::savePreviewAs)
 EVT_MENU(ID_Materials_Save, MainWindow::OnSaveMaterialsList)
 EVT_MENU(ID_Materials_Save_Split, MainWindow::OnSaveMaterialsListSplit)
+EVT_MENU(ID_Help_Guide_1, MainWindow::onHelp)
+EVT_MENU(ID_Help_Guide_2, MainWindow::onHelp)
+EVT_MENU(ID_Help_Guide_3, MainWindow::onHelp)
 EVT_MENU_RANGE(VERSION_ID_PREFIX, VERSION_ID_PREFIX + 99, MainWindow::onChangeVersion)
 EVT_MENU_RANGE(COLOR_METHOD_ID_PREFIX, COLOR_METHOD_ID_PREFIX + 99, MainWindow::onChangeColorAlgo)
 EVT_MENU_RANGE(BUILD_METHOD_ID_PREFIX, BUILD_METHOD_ID_PREFIX + 99, MainWindow::onChangeBuildMethod)
@@ -252,6 +260,13 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_13), "&1.13.2", "Version: 1.13.2");
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_12), "&1.12.2", "Version: 1.12.2");
     menuBar->Append(menuVersion, "&Version");
+
+    // Help
+    wxMenu *menuHelp = new wxMenu();
+    menuHelp->Append(ID_Help_Guide_1, "&Basic Guide\tF1", "Guide on how to use the program.");
+    menuHelp->Append(ID_Help_Guide_2, "&How to export to map files", "Guide on how to export the map so you can include it in a world or server with commands.");
+    menuHelp->Append(ID_Help_Guide_3, "&How to build the map in survival", "Guide on how to export the map so you can build it in survival mode.");
+    menuBar->Append(menuHelp, "&Help");
 
     SetIcon(wxIcon(_ICON_ICO_XPM));
 
@@ -906,6 +921,22 @@ void MainWindow::saveProjectAs(wxCommandEvent &evt)
     }
 
     saveProject(saveFileDialog.GetPath().ToStdString());
+}
+
+void MainWindow::onHelp(wxCommandEvent &evt)
+{
+    switch (evt.GetId())
+    {
+    case ID_Help_Guide_1:
+        tools::openForDesktop("https://github.com/AgustinSRG/ImageToMapMC/blob/master/guides/basic_guide.md");
+        break;
+    case ID_Help_Guide_2:
+        tools::openForDesktop("https://github.com/AgustinSRG/ImageToMapMC/blob/master/guides/export_as_maps.md");
+        break;
+    case ID_Help_Guide_3:
+        tools::openForDesktop("https://github.com/AgustinSRG/ImageToMapMC/blob/master/guides/export_as_structures.md");
+        break;
+    }
 }
 
 void MainWindow::updateMenuBarRadios()

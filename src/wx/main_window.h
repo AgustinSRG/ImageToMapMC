@@ -72,6 +72,8 @@ public:
     void onImageResize(wxCommandEvent &evt);
     void onImageEdit(wxCommandEvent &evt);
 
+    void onHelp(wxCommandEvent &evt);
+
     void OnProgressTimer(wxTimerEvent& event);
 
     void onWorkerError(wxCommandEvent& event);
