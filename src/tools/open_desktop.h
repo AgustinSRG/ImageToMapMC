@@ -33,5 +33,5 @@ namespace tools
      * @note   
      * @retval 
      */
-    std::string openForDesktop(std::string path);
+    void openForDesktop(std::string path);
 }

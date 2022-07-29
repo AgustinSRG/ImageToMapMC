@@ -33,20 +33,22 @@
 namespace tools
 {
 
-    std::string openForDesktop(std::string path)
-    {
+        void openForDesktop(std::string path)
+        {
+                try
+                {
 #if defined(_WIN32)
 
-        ShellExecute(NULL, L"open", std::wstring(path.begin(), path.end()).c_str(), NULL, NULL, SW_SHOWDEFAULT);
+                        std::wstring pw(path.begin(), path.end());
+                        ShellExecute(NULL, L"open", pw.c_str(), NULL, NULL, SW_SHOWDEFAULT);
 
 #elif __linux__
 
-        system(("xdg-open " + path).c_str());
-
-#else
-
-        system(("open " + path).c_str());
-
+                        system(("xdg-open " + path + " &").c_str());
 #endif
-    }
+                }
+                catch (...)
+                {
+                }
+        }
 }
