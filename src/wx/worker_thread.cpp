@@ -452,7 +452,10 @@ void WorkerThread::ExportMaterials(mapart::MapArtProject &copyProject, std::stri
         if (!tools::writeTextFile(copyOutPath, materials.toString()))
         {
             OnError(string("Could not save the materials due to a file system error."));
+            throw -1;
         }
+
+        tools::openForDesktop(copyOutPath);
     }
     catch (int)
     {
@@ -460,8 +463,6 @@ void WorkerThread::ExportMaterials(mapart::MapArtProject &copyProject, std::stri
     }
 
     progress.setEnded();
-
-    tools::openForDesktop(copyOutPath);
 }
 
 void WorkerThread::ExportMaterialsSplit(mapart::MapArtProject &copyProject, std::string &copyOutPath)
@@ -542,7 +543,10 @@ void WorkerThread::ExportMaterialsSplit(mapart::MapArtProject &copyProject, std:
         if (!tools::writeTextFile(copyOutPath, resultStream.str()))
         {
             OnError(string("Could not save the materials due to a file system error."));
+            throw -1;
         }
+
+        tools::openForDesktop(copyOutPath);
     }
     catch (int)
     {
@@ -550,8 +554,6 @@ void WorkerThread::ExportMaterialsSplit(mapart::MapArtProject &copyProject, std:
     }
 
     progress.setEnded();
-
-    tools::openForDesktop(copyOutPath);
 }
 
 void WorkerThread::ExportMaps(mapart::MapArtProject &copyProject, std::string &copyOutPath, int copyMapNumber)
@@ -625,6 +627,8 @@ void WorkerThread::ExportMaps(mapart::MapArtProject &copyProject, std::string &c
                 progress.setProgress(0, total);
             }
         }
+
+        tools::openForDesktop(copyOutPath);
     }
     catch (int)
     {
@@ -632,8 +636,6 @@ void WorkerThread::ExportMaps(mapart::MapArtProject &copyProject, std::string &c
     }
 
     progress.setEnded();
-
-    tools::openForDesktop(copyOutPath);
 }
 
 void WorkerThread::ExportMapsZip(mapart::MapArtProject &copyProject, std::string &outFilePath)
@@ -719,6 +721,8 @@ void WorkerThread::ExportMapsZip(mapart::MapArtProject &copyProject, std::string
         }
 
         zip_close(zipper); // Close zipper
+
+        tools::openForDesktop(outFilePath);
     }
     catch (int)
     {
@@ -730,8 +734,6 @@ void WorkerThread::ExportMapsZip(mapart::MapArtProject &copyProject, std::string
     }
 
     progress.setEnded();
-
-    tools::openForDesktop(outFilePath);
 }
 
 void WorkerThread::ExportStruct(mapart::MapArtProject &copyProject, std::string &copyOutPath)
@@ -806,6 +808,8 @@ void WorkerThread::ExportStruct(mapart::MapArtProject &copyProject, std::string 
                 total++;
             }
         }
+
+        tools::openForDesktop(copyOutPath);
     }
     catch (int)
     {
@@ -813,8 +817,6 @@ void WorkerThread::ExportStruct(mapart::MapArtProject &copyProject, std::string 
     }
 
     progress.setEnded();
-
-    tools::openForDesktop(copyOutPath);
 }
 
 void WorkerThread::ExportStructZip(mapart::MapArtProject &copyProject, std::string &outFilePath)
@@ -900,6 +902,8 @@ void WorkerThread::ExportStructZip(mapart::MapArtProject &copyProject, std::stri
             }
         }
         zip_close(zipper); // Close zipper
+
+        tools::openForDesktop(outFilePath);
     }
     catch (int)
     {
@@ -911,8 +915,6 @@ void WorkerThread::ExportStructZip(mapart::MapArtProject &copyProject, std::stri
     }
 
     progress.setEnded();
-
-    tools::openForDesktop(outFilePath);
 }
 
 void WorkerThread::ExportFunc(mapart::MapArtProject &copyProject, std::string &copyOutPath)
@@ -987,6 +989,8 @@ void WorkerThread::ExportFunc(mapart::MapArtProject &copyProject, std::string &c
                 total++;
             }
         }
+
+        tools::openForDesktop(copyOutPath);
     }
     catch (int)
     {
@@ -994,8 +998,6 @@ void WorkerThread::ExportFunc(mapart::MapArtProject &copyProject, std::string &c
     }
 
     progress.setEnded();
-
-    tools::openForDesktop(copyOutPath);
 }
 
 /* Main Entry */

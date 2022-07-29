@@ -77,7 +77,6 @@ public:
     void requestExportStructZip(mapart::MapArtProject &project, std::string outPath);
 
     void requestExportFunc(mapart::MapArtProject &project, std::string outPath);
-
 private:
     int threadNum;
     wxMutex stateMutex;
@@ -112,7 +111,6 @@ private:
     void ExportStructZip(mapart::MapArtProject &copyProject, std::string &copyOutPath);
 
     void ExportFunc(mapart::MapArtProject &copyProject, std::string &copyOutPath);
-
 protected:
     virtual ExitCode Entry();
     wxEvtHandler *m_pParent;
