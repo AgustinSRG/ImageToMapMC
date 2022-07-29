@@ -71,6 +71,14 @@ After you made your map look as you want, you may want to save that configuratio
 
 You can open it later with **File >  Open Project** or dragging the project file to the application main window.
 
+## Manually modifying the image
+
+If you are not satisfied with the result the tool gives, you can do the following:
+
+ - Click the option **Image > Save Preview as**. This will allow you to save the preview image of the result map.
+ - Edit the preview image with some image editor. [Gimp](https://www.gimp.org) is a really good one. If you are on Windows, [Visual Studio](https://visualstudio.microsoft.com/) also has a really good editor for pixel art images.
+ - After making changes to the image and saving it, use **Image > Load** to load the modified image and create the map from it instead of the original one.
+
 ## Export the result
 
 You can export the result using the menu: **File > Export**
