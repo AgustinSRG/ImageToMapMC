@@ -491,24 +491,6 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     // ---------------
     blockList = &(list[(size_t)McColors::DIRT]);
 
-    // Jungle planks
-    block = blockList->addBlock(string("jungle_planks"));
-
-    desc = block->addBlockDescription(
-        "Jungle Planks",
-        McVersion::MC_1_12, McVersion::MC_1_12,
-        "planks", // NBT name
-        5,        // Block ID
-        3         // Data value
-    );
-    desc->addTag(string("variant"), string("jungle"));
-
-    desc = block->addBlockDescription(
-        "Jungle Planks",
-        McVersion::MC_1_13, MC_LAST_VERSION,
-        "jungle_planks" // NBT name
-    );
-
     // Granite
     block = blockList->addBlock(string("granite"));
 
@@ -525,6 +507,24 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Granite",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "granite" // NBT name
+    );
+
+    // Jungle planks
+    block = blockList->addBlock(string("jungle_planks"));
+
+    desc = block->addBlockDescription(
+        "Jungle Planks",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "planks", // NBT name
+        5,        // Block ID
+        3         // Data value
+    );
+    desc->addTag(string("variant"), string("jungle"));
+
+    desc = block->addBlockDescription(
+        "Jungle Planks",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "jungle_planks" // NBT name
     );
 
     // Jungle log
