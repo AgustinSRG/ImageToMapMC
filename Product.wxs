@@ -8,6 +8,9 @@
 
         <MediaTemplate EmbedCab="yes" />
 
+        <Icon Id="icon.ico" SourceFile="src\resources\icon.ico" />
+        <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+
         <!--Directory structure-->
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFiles64Folder">
