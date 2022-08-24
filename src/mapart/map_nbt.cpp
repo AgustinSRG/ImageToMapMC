@@ -34,6 +34,8 @@
 
 #include <sstream>
 
+#include <cstring>
+
 using namespace std;
 using namespace nbt;
 using namespace colors;

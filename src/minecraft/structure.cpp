@@ -28,6 +28,7 @@
 #include <nbt_tags.h>
 #include <fstream>
 
+#include <cstring>
 
 using namespace std;
 using namespace mapart;
