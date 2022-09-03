@@ -8,6 +8,9 @@
 
         <MediaTemplate EmbedCab="yes" />
 
+        <Icon Id="icon.ico" SourceFile="src\resources\icon.ico" />
+        <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+
         <!--Directory structure-->
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFiles64Folder">
@@ -68,6 +71,14 @@
                 <File Id="FILE_DLL_ZLIB" Source="release\Release\zlib1.dll" KeyPath="yes" />
             </Component>
 
+            <Component Id="CMP_DLL_ZIP" Guid="447d2157-6897-4f2b-beed-2b84e65bd24e">
+                <File Id="FILE_DLL_ZIP" Source="release\Release\zip.dll" KeyPath="yes" />
+            </Component>
+
+            <Component Id="CMP_DLL_BZ" Guid="bbf86dc4-7655-4a04-86e0-c943c07778d4">
+                <File Id="FILE_DLL_BZ" Source="release\Release\bz2.dll" KeyPath="yes" />
+            </Component>
+
             <Component Id="CMP_DLL_LZMA" Guid="8cc3142d-57af-458a-baa6-2b65f03d59e7">
                 <File Id="FILE_DLL_LZMA" Source="release\Release\lzma.dll" KeyPath="yes" />
             </Component>
@@ -120,6 +131,9 @@
             <ComponentRef Id="CMP_DLL_ZLIB" />
 
             <ComponentRef Id="CMP_DLL_LZMA" />
+
+            <ComponentRef Id="CMP_DLL_ZIP" />
+            <ComponentRef Id="CMP_DLL_BZ" />
 
             <ComponentRef Id="CMP_DLL_WX_CORE" />
             <ComponentRef Id="CMP_DLL_WX_VC" />
