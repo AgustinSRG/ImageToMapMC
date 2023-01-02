@@ -33,9 +33,10 @@ namespace minecraft {
      * @param  fileName: File name
      * @param  &buildData: Building data
      * @param  version: Minecraft version
+     * @param  isBase: Set to true to only save the base blocks (stone) 
      * @retval None
      */
-    void writeStructureNBTFile(std::string fileName, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version);
+    void writeStructureNBTFile(std::string fileName, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version, bool isBase);
 
     /**
      * @brief  Writes structure to file
@@ -44,7 +45,8 @@ namespace minecraft {
      * @param  zipper: Zip file descriptor
      * @param  &buildData: Building data
      * @param  version: Minecraft version
+     * @param  isBase: Set to true to only save the base blocks (stone) 
      * @retval None
      */
-    void writeStructureNBTFileZip(std::string fileName, zip_t *zipper, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version);
+    void writeStructureNBTFileZip(std::string fileName, zip_t *zipper, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version, bool isBase);
 }

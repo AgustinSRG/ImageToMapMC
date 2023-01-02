@@ -795,9 +795,16 @@ void WorkerThread::ExportStruct(mapart::MapArtProject &copyProject, std::string 
 
                 outFilePath /= ss2.str();
 
+                stringstream ss3;
+                ss3 << "map_" << (total + 1) << "_base.nbt";
+                filesystem::path outBaseFilePath(copyOutPath);
+
+                outBaseFilePath /= ss3.str();
+
                 try
                 {
-                    writeStructureNBTFile(outFilePath.string(), buildingBlocks, copyProject.version);
+                    writeStructureNBTFile(outFilePath.string(), buildingBlocks, copyProject.version, false);
+                    writeStructureNBTFile(outBaseFilePath.string(), buildingBlocks, copyProject.version, true);
                 }
                 catch (...)
                 {
@@ -888,9 +895,15 @@ void WorkerThread::ExportStructZip(mapart::MapArtProject &copyProject, std::stri
 
                 std::string fPath = ss2.str();
 
+                stringstream ss3;
+                ss3 << "map_" << (total + 1) << "_base.nbt";
+
+                std::string fPathBase = ss3.str();
+
                 try
                 {
-                    writeStructureNBTFileZip(fPath, zipper, buildingBlocks, copyProject.version);
+                    writeStructureNBTFileZip(fPath, zipper, buildingBlocks, copyProject.version, false);
+                    writeStructureNBTFileZip(fPathBase, zipper, buildingBlocks, copyProject.version, true);
                 }
                 catch (...)
                 {

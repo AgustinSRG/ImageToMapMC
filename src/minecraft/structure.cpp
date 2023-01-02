@@ -80,7 +80,7 @@ nbt::tag_compound blockToTag(const mapart::MapBuildingBlock &block, vector<int> 
     return tag;
 }
 
-void minecraft::writeStructureNBTFile(std::string fileName, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version)
+void minecraft::writeStructureNBTFile(std::string fileName, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version, bool isBase)
 {
     nbt::tag_compound root;
     nbt::tag_list blocksTag;
@@ -132,7 +132,9 @@ void minecraft::writeStructureNBTFile(std::string fileName, std::vector<mapart::
             blocksTag.push_back(blockToTag(buildData[i], palette, true));
 
             // Real block
-            blocksTag.push_back(blockToTag(buildData[i], palette, false));
+            if (!isBase) {
+                blocksTag.push_back(blockToTag(buildData[i], palette, false));
+            }
         }
     }
 
@@ -176,7 +178,7 @@ void minecraft::writeStructureNBTFile(std::string fileName, std::vector<mapart::
     }
 }
 
-void minecraft::writeStructureNBTFileZip(std::string fileName, zip_t *zipper, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version)
+void minecraft::writeStructureNBTFileZip(std::string fileName, zip_t *zipper, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version, bool isBase)
 {
     nbt::tag_compound root;
     nbt::tag_list blocksTag;
@@ -228,7 +230,9 @@ void minecraft::writeStructureNBTFileZip(std::string fileName, zip_t *zipper, st
             blocksTag.push_back(blockToTag(buildData[i], palette, true));
 
             // Real block
-            blocksTag.push_back(blockToTag(buildData[i], palette, false));
+            if (!isBase) {
+                blocksTag.push_back(blockToTag(buildData[i], palette, false));
+            }
         }
     }
 

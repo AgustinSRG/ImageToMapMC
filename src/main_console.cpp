@@ -785,7 +785,7 @@ int buildMap(int argc, char **argv)
 
                     try
                     {
-                        writeStructureNBTFile(outFilePath.string(), buildingBlocks, version);
+                        writeStructureNBTFile(outFilePath.string(), buildingBlocks, version, false);
                     }
                     catch (...)
                     {
