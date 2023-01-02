@@ -52,19 +52,19 @@ nbt::tag_compound blockDescriptionToTag(const minecraft::BlockDescription *desc)
     return tag;
 }
 
-nbt::tag_compound blockToTag(const mapart::MapBuildingBlock &block, vector<int> &palette, bool placeholder)
+nbt::tag_compound blockToTag(const mapart::MapBuildingBlock &block, vector<int> &palette, bool base)
 {
     nbt::tag_compound tag;
 
     // Position
     nbt::tag_list posTag;
     posTag.push_back(nbt::tag_int(block.x));
-    posTag.push_back(nbt::tag_int(placeholder ? (block.y) : (block.y + 1)));
+    posTag.push_back(nbt::tag_int(base ? (block.y) : (block.y + 1)));
     posTag.push_back(nbt::tag_int(block.z));
     tag.insert("pos", posTag.clone());
 
     // State
-    if (placeholder)
+    if (base)
     {
         tag.insert("state", nbt::tag_int(0));
     }
@@ -93,15 +93,15 @@ void minecraft::writeStructureNBTFile(std::string fileName, std::vector<mapart::
         palette[i] = -1; // Initiallize
     }
 
-    // Add placeholder blocks to palette
-    minecraft::BlockDescription placeholderBlockDesc;
-    placeholderBlockDesc.name = "Placeholder";
-    placeholderBlockDesc.minVersion = McVersion::MC_1_12;
-    placeholderBlockDesc.maxVersion = MC_LAST_VERSION;
-    placeholderBlockDesc.nbtName = "stone";
+    // Add base blocks to palette
+    minecraft::BlockDescription baseBlockDesc;
+    baseBlockDesc.name = "Base Block";
+    baseBlockDesc.minVersion = McVersion::MC_1_12;
+    baseBlockDesc.maxVersion = MC_LAST_VERSION;
+    baseBlockDesc.nbtName = "stone";
     palette[0] = 0;
 
-    paletteTag.push_back(blockDescriptionToTag(&placeholderBlockDesc));
+    paletteTag.push_back(blockDescriptionToTag(&baseBlockDesc));
 
     // Blocks parsing
     size_t size = buildData.size();
@@ -118,7 +118,7 @@ void minecraft::writeStructureNBTFile(std::string fileName, std::vector<mapart::
         
         if (blockPtr == NULL)
         {
-            // First line, no placeholder
+            // First line, no base blocks
             blocksTag.push_back(blockToTag(buildData[i], palette, false));
         } else {
             short blockIndex = blockPtr->baseColorIndex;
@@ -128,7 +128,7 @@ void minecraft::writeStructureNBTFile(std::string fileName, std::vector<mapart::
                 paletteTag.push_back(blockDescriptionToTag(blockPtr));
             }
 
-            // Placeholder block
+            // Base block
             blocksTag.push_back(blockToTag(buildData[i], palette, true));
 
             // Real block
@@ -191,15 +191,15 @@ void minecraft::writeStructureNBTFileZip(std::string fileName, zip_t *zipper, st
         palette[i] = -1; // Initiallize
     }
 
-    // Add placeholder blocks to palette
-    minecraft::BlockDescription placeholderBlockDesc;
-    placeholderBlockDesc.name = "Placeholder";
-    placeholderBlockDesc.minVersion = McVersion::MC_1_12;
-    placeholderBlockDesc.maxVersion = MC_LAST_VERSION;
-    placeholderBlockDesc.nbtName = "stone";
+    // Add Base blocks to palette
+    minecraft::BlockDescription baseBlockDesc;
+    baseBlockDesc.name = "Base Block";
+    baseBlockDesc.minVersion = McVersion::MC_1_12;
+    baseBlockDesc.maxVersion = MC_LAST_VERSION;
+    baseBlockDesc.nbtName = "stone";
     palette[0] = 0;
 
-    paletteTag.push_back(blockDescriptionToTag(&placeholderBlockDesc));
+    paletteTag.push_back(blockDescriptionToTag(&baseBlockDesc));
 
     // Blocks parsing
     size_t size = buildData.size();
@@ -216,7 +216,7 @@ void minecraft::writeStructureNBTFileZip(std::string fileName, zip_t *zipper, st
         
         if (blockPtr == NULL)
         {
-            // First line, no placeholder
+            // First line, no base blocks
             blocksTag.push_back(blockToTag(buildData[i], palette, false));
         } else {
             short blockIndex = blockPtr->baseColorIndex;
@@ -226,7 +226,7 @@ void minecraft::writeStructureNBTFileZip(std::string fileName, zip_t *zipper, st
                 paletteTag.push_back(blockDescriptionToTag(blockPtr));
             }
 
-            // Placeholder block
+            // Base block
             blocksTag.push_back(blockToTag(buildData[i], palette, true));
 
             // Real block

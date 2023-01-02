@@ -177,7 +177,7 @@ void mapart::buildMapRow(minecraft::McVersion version, const std::vector<minecra
     }
     else
     {
-        // Set down to 1, so 0 is the min for placeholder blocks
+        // Set down to 1, so 0 is the min for base blocks
         for (size_t z = 0; z < (MAP_HEIGHT + 1); z++)
         {
             size_t indexBlockMatrix = (z)*MAP_WIDTH + x;

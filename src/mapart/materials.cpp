@@ -40,7 +40,7 @@ MaterialsList::MaterialsList(const std::vector<std::string> baseColorNames)
         materials[i].count = 0;
     }
     total = 0;
-    placeholder = 0;
+    base = 0;
 }
 
 void MaterialsList::clear()
@@ -52,7 +52,7 @@ void MaterialsList::clear()
         materials[i].count = 0;
     }
     total = 0;
-    placeholder = 0;
+    base = 0;
 }
 
 void MaterialsList::addBlocks(std::vector<mapart::MapBuildingBlock> &buildingBlocks)
@@ -63,8 +63,8 @@ void MaterialsList::addBlocks(std::vector<mapart::MapBuildingBlock> &buildingBlo
 
         if (blockPtr == NULL)
         {
-            // Placeholder block
-            placeholder++;
+            // base block
+            base++;
         }
         else
         {
@@ -77,7 +77,7 @@ void MaterialsList::addBlocks(std::vector<mapart::MapBuildingBlock> &buildingBlo
                 }
                 materials[blockIndex].count++;
                 total++;
-                placeholder++;
+                base++;
             }
         }
     }
@@ -168,7 +168,7 @@ std::string MaterialsList::toString()
 
     ss << endl;
 
-    ss << "Placeholder blocks: " << placeholder << " ( " << compactAmount(placeholder) << " )" << endl;
+    ss << "Base blocks: " << base << " ( " << compactAmount(base) << " )" << endl;
 
     return ss.str();
 }

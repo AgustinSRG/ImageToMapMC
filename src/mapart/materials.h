@@ -49,7 +49,7 @@ namespace mapart
     public:
         std::vector<MaterialListItem> materials;
         size_t total;
-        size_t placeholder;
+        size_t base;
 
         MaterialsList(const std::vector<std::string> baseColorNames);
 
