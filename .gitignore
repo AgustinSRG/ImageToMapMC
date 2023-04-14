@@ -9,3 +9,10 @@ subprojects
 CMakeFiles
 **/CMakeFiles
 **/Makefile
+
+# Wix
+
+wix/HeatFile.wxs
+wix/ImageToMapMC
+*.wixobj
+*.msi

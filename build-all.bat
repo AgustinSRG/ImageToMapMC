@@ -1,5 +1,8 @@
-@echo on
+@echo off
 
 call build.bat
 call build32.bat
-call make-wix-installer.bat
+
+cd wix
+call "make-wix-installer.bat"
+cd ..

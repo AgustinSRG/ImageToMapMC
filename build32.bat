@@ -1,4 +1,4 @@
-@echo on
+@echo off
 
 call cmake -DCMAKE_BUILD_TYPE=Release -A Win32 -Ssrc -Brelease32
 

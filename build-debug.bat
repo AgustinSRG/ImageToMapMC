@@ -1,4 +1,4 @@
-@echo on
+@echo off
 
 call cmake -DCMAKE_BUILD_TYPE=Debug -A x64 -Ssrc -Bbuild
 
