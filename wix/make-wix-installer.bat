@@ -8,4 +8,4 @@ call candle -ext WixUIExtension -ext WixUtilExtension -arch x64 "HeatFile.wxs" -
 
 call candle -ext WixUIExtension -ext WixUtilExtension -arch x64 "Product.wxs" -o "Product.wixobj"
 
-call light "Product.wixobj" -spdb "HeatFile.wixobj" -b ImageToMapMC -o "ImageToMapMC-1.3.1-x64.msi" -ext WixUIExtension -ext WixUtilExtension
+call light "Product.wixobj" -spdb "HeatFile.wixobj" -b ImageToMapMC -o "ImageToMapMC-1.3.2-x64.msi" -ext WixUIExtension -ext WixUtilExtension
