@@ -251,7 +251,8 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
 
     // Version
     wxMenu *menuVersion = new wxMenu();
-    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_19), "&1.19.4", "Version: 1.19.4")->Check(true);
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_20), "&1.20.1", "Version: 1.20.1")->Check(true);
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_19), "&1.19.4", "Version: 1.19.4");
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_18), "&1.18.2", "Version: 1.18.2");
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_17), "&1.17.1", "Version: 1.17.1");
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_16), "&1.16.5", "Version: 1.16.5");

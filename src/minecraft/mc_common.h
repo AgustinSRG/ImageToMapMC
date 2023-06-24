@@ -23,7 +23,7 @@
 
 #pragma once
 
-#define MC_LAST_VERSION (minecraft::McVersion::MC_1_19)
+#define MC_LAST_VERSION (minecraft::McVersion::MC_1_20)
 
 #include <string>
 
@@ -45,6 +45,7 @@ namespace minecraft
         MC_1_17 = 17,
         MC_1_18 = 18,
         MC_1_19 = 19,
+        MC_1_20 = 20,
     };
 
     /**
