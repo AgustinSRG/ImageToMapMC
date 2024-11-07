@@ -1,15 +1,15 @@
 /*
  * This file is part of ImageToMapMC project
- * 
+ *
  * Copyright (c) 2021 Agustin San Roman
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
 
@@ -22,6 +22,7 @@
  */
 
 #include "structure_export_dialog.h"
+#include "../tools/text_file.h"
 #include <filesystem>
 
 using namespace std;
@@ -85,6 +86,7 @@ void StructureExportDialog::OnOk(wxCommandEvent &event)
 
     // Create structures folder
     filesystem::create_directories(getPath());
+    createDataPackMetadata();
 
     EndModal(wxID_OK);
 }
@@ -111,6 +113,21 @@ void StructureExportDialog::OnBrowse(wxCommandEvent &event)
     textFolder->ChangeValue(dialog.GetPath());
 }
 
+void StructureExportDialog::createDataPackMetadata()
+{
+    filesystem::path dataPackPath(std::string(textFolder->GetValue()));
+
+    if (mode == ExportDialogMode::Function && version > minecraft::McVersion::MC_1_12)
+    {
+        dataPackPath /= "datapacks";
+
+        dataPackPath /= "mcmap";
+        dataPackPath /= "pack.mcmeta";
+
+        tools::writeTextFile(dataPackPath.string(), std::string("{\"pack\":{\"pack_format\":9,\"description\":\"ImageToMapMC DataPack\"}}"));
+    }
+}
+
 std::string StructureExportDialog::getPath()
 {
     filesystem::path structuresPath(std::string(textFolder->GetValue()));
@@ -118,17 +135,58 @@ std::string StructureExportDialog::getPath()
 
     if (mode == ExportDialogMode::Function)
     {
-        structuresPath /= "data";
-
-        structuresPath /= "functions";
-
-        if (namespaceMC.length() > 0)
+        if (version > minecraft::McVersion::MC_1_20)
         {
-            structuresPath /= namespaceMC;
+            structuresPath /= "datapacks";
+
+            structuresPath /= "mcmap";
+
+            structuresPath /= "data";
+
+            if (namespaceMC.length() > 0)
+            {
+                structuresPath /= namespaceMC;
+            }
+            else
+            {
+                structuresPath /= "minecraft";
+            }
+
+            structuresPath /= "function";
+        }
+        else if (version > minecraft::McVersion::MC_1_12)
+        {
+            structuresPath /= "datapacks";
+
+            structuresPath /= "mcmap";
+
+            structuresPath /= "data";
+
+            if (namespaceMC.length() > 0)
+            {
+                structuresPath /= namespaceMC;
+            }
+            else
+            {
+                structuresPath /= "minecraft";
+            }
+
+            structuresPath /= "functions";
         }
         else
         {
-            structuresPath /= "minecraft";
+            structuresPath /= "data";
+
+            structuresPath /= "functions";
+
+            if (namespaceMC.length() > 0)
+            {
+                structuresPath /= namespaceMC;
+            }
+            else
+            {
+                structuresPath /= "minecraft";
+            }
         }
     }
     else

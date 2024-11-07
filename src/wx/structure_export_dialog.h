@@ -42,6 +42,7 @@ public:
     StructureExportDialog(minecraft::McVersion version, ExportDialogMode mode);
 
     std::string getPath();
+    void createDataPackMetadata();
 
     void OnOk(wxCommandEvent &event);
     void OnCancel(wxCommandEvent &event);
