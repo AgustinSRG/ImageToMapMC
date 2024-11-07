@@ -2304,6 +2304,12 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
             block = blockList->addBlock(string("glow_lichen"));
 
             desc = block->addBlockDescription(
+                "Verdant Froglight",
+                McVersion::MC_1_19, MC_LAST_VERSION,
+                "verdant_froglight" // NBT name
+            );
+
+            desc = block->addBlockDescription(
                 "Glow Lichen",
                 McVersion::MC_1_17, MC_LAST_VERSION,
                 "glow_lichen" // NBT name
