@@ -29,7 +29,7 @@ To give yourself the map items you have to use commands.
 For the version 1.13 and later, you can use the following command in chat:
 
 ```
-/give @p minecraft:filled_map{map: 0}
+/give @p minecraft:filled_map[minecraft:map_id=0]
 ```
 
 You have to use it as many times as maps files you created, depending on the size of the image, increasing the `map` attribute in the command.
