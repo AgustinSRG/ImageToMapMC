@@ -71,12 +71,12 @@ namespace minecraft
         short dataValue;
 
         /**
-             * @brief  Adds NBT tag
-             * @note   
-             * @param  name: Tag name
-             * @param  value: Tag value
-             * @retval None
-             */
+         * @brief  Adds NBT tag
+         * @note   
+         * @param  name: Tag name
+         * @param  value: Tag value
+         * @retval None
+         */
         void addTag(std::string name, std::string value);
     };
 
