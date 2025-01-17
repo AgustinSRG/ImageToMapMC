@@ -76,6 +76,30 @@ Color minecraft::getMinecraftColor(std::vector<Color> &baseColors, size_t index,
     return color;
 }
 
+Color minecraft::getMinecraftColorFromBase(colors::Color baseColor, McColorType colorType)
+{
+    Color color = baseColor;
+    switch (colorType)
+    {
+    case McColorType::NORMAL:
+        color.red = applyColorDarkness(color.red, COLOR_DARKESS_NORMAL);
+        color.green = applyColorDarkness(color.green, COLOR_DARKESS_NORMAL);
+        color.blue = applyColorDarkness(color.blue, COLOR_DARKESS_NORMAL);
+        break;
+    case McColorType::DARK:
+        color.red = applyColorDarkness(color.red, COLOR_DARKESS_DARK);
+        color.green = applyColorDarkness(color.green, COLOR_DARKESS_DARK);
+        color.blue = applyColorDarkness(color.blue, COLOR_DARKESS_DARK);
+        break;
+    case McColorType::DARKER:
+        color.red = applyColorDarkness(color.red, COLOR_DARKESS_DARKER);
+        color.green = applyColorDarkness(color.green, COLOR_DARKESS_DARKER);
+        color.blue = applyColorDarkness(color.blue, COLOR_DARKESS_DARKER);
+        break;
+    }
+    return color;
+}
+
 std::vector<Color> minecraft::loadBaseColors(McVersion version)
 {
     std::vector<Color> baseColors(52);

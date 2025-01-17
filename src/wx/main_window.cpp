@@ -378,7 +378,7 @@ void MainWindow::onCustomBlocks(wxCommandEvent &evt)
         materialsWindow = new MaterialsWindow(this);
         materialsWindow->Show();
         materialsWindow->displayCountMaterials(countsMats);
-        materialsWindow->setMaterialsConf(project.version, project.colorSetConf);
+        materialsWindow->setMaterialsConf(project.version, project.buildMethod, project.colorSetConf);
     }
     else
     {
@@ -392,7 +392,7 @@ void MainWindow::onChangeVersion(wxCommandEvent &evt)
     project.version = static_cast<McVersion>(evt.GetId() - VERSION_ID_PREFIX);
     if (materialsWindow != NULL)
     {
-        materialsWindow->setMaterialsConf(project.version, project.colorSetConf);
+        materialsWindow->setMaterialsConf(project.version, project.buildMethod, project.colorSetConf);
     }
     dirty = true;
     RequestPreviewGeneration();
@@ -401,6 +401,10 @@ void MainWindow::onChangeVersion(wxCommandEvent &evt)
 void MainWindow::onChangeBuildMethod(wxCommandEvent &evt)
 {
     project.buildMethod = static_cast<MapBuildMethod>(evt.GetId() - BUILD_METHOD_ID_PREFIX);
+    if (materialsWindow != NULL)
+    {
+        materialsWindow->setMaterialsConf(project.version, project.buildMethod, project.colorSetConf);
+    }
     dirty = true;
     RequestPreviewGeneration();
 }
@@ -530,7 +534,7 @@ void MainWindow::handleDropFile(wxDropFilesEvent &event)
 
             if (materialsWindow != NULL)
             {
-                materialsWindow->setMaterialsConf(project.version, project.colorSetConf);
+                materialsWindow->setMaterialsConf(project.version, project.buildMethod, project.colorSetConf);
             }
 
             // Not dirty
@@ -731,7 +735,7 @@ void MainWindow::resetProject()
 
     if (materialsWindow != NULL)
     {
-        materialsWindow->setMaterialsConf(project.version, project.colorSetConf);
+        materialsWindow->setMaterialsConf(project.version, project.buildMethod, project.colorSetConf);
     }
 
     // Map params
@@ -755,7 +759,7 @@ void MainWindow::loadProject(std::string path)
 
         if (materialsWindow != NULL)
         {
-            materialsWindow->setMaterialsConf(project.version, project.colorSetConf);
+            materialsWindow->setMaterialsConf(project.version, project.buildMethod, project.colorSetConf);
         }
 
         // Not dirty

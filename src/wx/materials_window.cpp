@@ -1,15 +1,15 @@
 /*
  * This file is part of ImageToMapMC project
- * 
+ *
  * Copyright (c) 2021 Agustin San Roman
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
 
@@ -70,6 +70,85 @@ BEGIN_EVENT_TABLE(MaterialsPanel, wxScrolledWindow)
 EVT_TIMER(ID_Timer, MaterialsPanel::onCountRefreshTimer)
 END_EVENT_TABLE()
 
+BEGIN_EVENT_TABLE(ColorDisplayPanel, wxPanel)
+EVT_PAINT(ColorDisplayPanel::paintEvent)
+END_EVENT_TABLE()
+
+ColorDisplayPanel::ColorDisplayPanel(wxWindow *parent, unsigned int index, colors::Color baseColor, mapart::MapBuildMethod buildMethod) : wxPanel(parent, MIN_ID_PANEL + index, wxPoint(5, 5), wxSize(48, 48))
+{
+    this->buildMethod = buildMethod;
+    this->colorLight = minecraft::getMinecraftColorFromBase(baseColor, McColorType::LIGHT);
+    this->colorNormal = minecraft::getMinecraftColorFromBase(baseColor, McColorType::NORMAL);
+    this->colorDark = minecraft::getMinecraftColorFromBase(baseColor, McColorType::DARK);
+    this->colorDarker = minecraft::getMinecraftColorFromBase(baseColor, McColorType::DARKER);
+}
+
+ColorDisplayPanel::~ColorDisplayPanel()
+{
+}
+
+void ColorDisplayPanel::setBuildMethod(mapart::MapBuildMethod buildMethod)
+{
+    this->mu.Lock();
+    this->buildMethod = buildMethod;
+    this->mu.Unlock();
+
+    this->Refresh();
+}
+
+void ColorDisplayPanel::paintEvent(wxPaintEvent &evt)
+{
+    // depending on your system you may need to look at double-buffered dcs
+    wxPaintDC dc(this);
+    render(dc);
+}
+
+void ColorDisplayPanel::paintNow()
+{
+    // depending on your system you may need to look at double-buffered dcs
+    wxClientDC dc(this);
+    render(dc);
+}
+
+void ColorDisplayPanel::render(wxDC &dc)
+{
+    this->mu.Lock();
+
+    dc.Clear();
+
+    switch (this->buildMethod)
+    {
+    case MapBuildMethod::Chaos:
+    case MapBuildMethod::Staircased:
+        dc.SetBrush(wxBrush(wxColour(this->colorLight.red, this->colorLight.green, this->colorLight.blue)));
+        dc.DrawRectangle(wxPoint(0, 0), wxSize(48, 16));
+        dc.SetBrush(wxBrush(wxColour(this->colorNormal.red, this->colorNormal.green, this->colorNormal.blue)));
+        dc.DrawRectangle(wxPoint(0, 16), wxSize(48, 16));
+        dc.SetBrush(wxBrush(wxColour(this->colorDark.red, this->colorDark.green, this->colorDark.blue)));
+        dc.DrawRectangle(wxPoint(0, 32), wxSize(48, 16));
+        break;
+    case MapBuildMethod::None:
+        dc.SetBrush(wxBrush(wxColour(this->colorLight.red, this->colorLight.green, this->colorLight.blue)));
+        dc.DrawRectangle(wxPoint(0, 0), wxSize(48, 12));
+        dc.SetBrush(wxBrush(wxColour(this->colorNormal.red, this->colorNormal.green, this->colorNormal.blue)));
+        dc.DrawRectangle(wxPoint(0, 12), wxSize(48, 12));
+        dc.SetBrush(wxBrush(wxColour(this->colorDark.red, this->colorDark.green, this->colorDark.blue)));
+        dc.DrawRectangle(wxPoint(0, 24), wxSize(48, 12));
+        dc.SetBrush(wxBrush(wxColour(this->colorDarker.red, this->colorDarker.green, this->colorDarker.blue)));
+        dc.DrawRectangle(wxPoint(0, 36), wxSize(48, 12));
+        break;
+    case MapBuildMethod::Flat:
+        dc.SetBrush(wxBrush(wxColour(this->colorNormal.red, this->colorNormal.green, this->colorNormal.blue)));
+        dc.DrawRectangle(wxPoint(0, 0), wxSize(48, 48));
+        break;
+    default:
+        dc.SetBrush(wxBrush(wxColour(this->colorLight.red, this->colorLight.green, this->colorLight.blue)));
+        dc.DrawRectangle(wxPoint(0, 0), wxSize(48, 48));
+    }
+
+    this->mu.Unlock();
+}
+
 MaterialsPanel::MaterialsPanel(MaterialsWindow *matWin) : wxScrolledWindow(matWin, wxID_ANY, wxPoint(0, 0), matWin->GetClientSize())
 {
     materialsWindow = matWin;
@@ -89,14 +168,13 @@ MaterialsPanel::MaterialsPanel(MaterialsWindow *matWin) : wxScrolledWindow(matWi
         groups[i].checkBox->Bind(wxEVT_CHECKBOX, &MaterialsPanel::onCheckBoxChanged, this);
         sizer->Add(groups[i].checkBox, wxSizerFlags(0).Border(wxALL, 10).Align(wxALIGN_CENTER_VERTICAL));
 
-        groups[i].colorPanel = new wxPanel(this, MIN_ID_PANEL + i, wxPoint(5, 5), wxSize(48, 48));
         if (i < colors.size())
         {
-            groups[i].colorPanel->SetBackgroundColour(wxColour(colors[i].red, colors[i].green, colors[i].blue));
+            groups[i].colorPanel = new ColorDisplayPanel(this, i, colors[i], this->buildMethod);
         }
         else
         {
-            groups[i].colorPanel->SetBackgroundColour(wxColour(0, 0, 0));
+            groups[i].colorPanel = new ColorDisplayPanel(this, i, colors::Color{0, 0, 0}, this->buildMethod);
         }
 
         sizer->Add(groups[i].colorPanel, wxSizerFlags(0).Border(wxALL, 10).Align(wxALIGN_CENTER_VERTICAL));
@@ -271,9 +349,10 @@ void MaterialsPanel::setBlacklistMode(bool blacklist)
     }
 }
 
-void MaterialsPanel::setMaterialsConf(minecraft::McVersion version, std::string conf)
+void MaterialsPanel::setMaterialsConf(minecraft::McVersion version, mapart::MapBuildMethod buildMethod, std::string conf)
 {
     this->version = version;
+    this->buildMethod = buildMethod;
     baseColors = minecraft::loadBaseColors(version);
     colorSet = minecraft::loadFinalColors(baseColors);
     blockSet = loadBlocks(baseColors);
@@ -298,6 +377,7 @@ void MaterialsPanel::setMaterialsConf(minecraft::McVersion version, std::string 
         {
             groups[i].checkBox->Show();
             groups[i].colorLabel->Show();
+            groups[i].colorPanel->setBuildMethod(this->buildMethod);
             groups[i].colorPanel->Show();
             groups[i].combo->Show();
             groups[i].countLabel->Show();
@@ -356,9 +436,9 @@ void MaterialsPanel::setMaterialsConf(minecraft::McVersion version, std::string 
     }
 }
 
-void MaterialsWindow::setMaterialsConf(minecraft::McVersion version, std::string conf)
+void MaterialsWindow::setMaterialsConf(minecraft::McVersion version, mapart::MapBuildMethod buildMethod, std::string conf)
 {
-    panel->setMaterialsConf(version, conf);
+    panel->setMaterialsConf(version, buildMethod, conf);
 }
 
 void MaterialsWindow::onLoadFile(wxCommandEvent &evt)
@@ -369,7 +449,7 @@ void MaterialsWindow::onLoadFile(wxCommandEvent &evt)
     if (openFileDialog.ShowModal() == wxID_CANCEL)
         return; // the user changed idea...
 
-    panel->setMaterialsConf(panel->version, tools::readTextFile(openFileDialog.GetPath().ToStdString()));
+    panel->setMaterialsConf(panel->version, panel->buildMethod, tools::readTextFile(openFileDialog.GetPath().ToStdString()));
     mainWindow->changeColorSetConf(panel->getMaterialsConf());
 }
 
@@ -405,25 +485,25 @@ void MaterialsWindow::usePreset(wxCommandEvent &evt)
     switch (evt.GetId())
     {
     case ID_Preset_everything:
-        panel->setMaterialsConf(panel->version, "MODE(BLACKLIST)");
+        panel->setMaterialsConf(panel->version, panel->buildMethod, "MODE(BLACKLIST)");
         break;
     case ID_Preset_bw:
-        panel->setMaterialsConf(panel->version, "MODE(WHITELIST)\nADD(SNOW,white_concrete)\nADD(COLOR_BLACK,black_concrete)");
+        panel->setMaterialsConf(panel->version, panel->buildMethod, "MODE(WHITELIST)\nADD(SNOW,white_concrete)\nADD(COLOR_BLACK,black_concrete)");
         break;
     case ID_Preset_gray:
-        panel->setMaterialsConf(panel->version, "MODE(WHITELIST)\nADD(WOOL)\nADD(METAL)\nADD(SNOW)\nADD(STONE)\nADD(COLOR_GRAY)\nADD(COLOR_LIGHT_GRAY)\nADD(COLOR_BLACK)\nADD(DEEPSLATE)");
+        panel->setMaterialsConf(panel->version, panel->buildMethod, "MODE(WHITELIST)\nADD(WOOL)\nADD(METAL)\nADD(SNOW)\nADD(STONE)\nADD(COLOR_GRAY)\nADD(COLOR_LIGHT_GRAY)\nADD(COLOR_BLACK)\nADD(DEEPSLATE)");
         break;
     case ID_Preset_carpets:
-        panel->setMaterialsConf(panel->version, "MODE(WHITELIST)\nADD(SNOW,white_carpet)\nADD(COLOR_MAGENTA,magenta_carpet)\nADD(COLOR_LIGHT_BLUE,light_blue_carpet)\nADD(COLOR_YELLOW,yellow_carpet)\nADD(COLOR_LIGHT_GREEN,lime_carpet)\nADD(COLOR_PINK,pink_carpet)\nADD(COLOR_GRAY,gray_carpet)\nADD(COLOR_LIGHT_GRAY,light_gray_carpet)\nADD(COLOR_CYAN,cyan_carpet)\nADD(COLOR_PURPLE,purple_carpet)\nADD(COLOR_BLUE,blue_carpet)\nADD(COLOR_BROWN,brown_carpet)\nADD(COLOR_GREEN,green_carpet)\nADD(COLOR_RED,red_carpet)\nADD(COLOR_BLACK,black_carpet)");
+        panel->setMaterialsConf(panel->version, panel->buildMethod, "MODE(WHITELIST)\nADD(SNOW,white_carpet)\nADD(COLOR_MAGENTA,magenta_carpet)\nADD(COLOR_LIGHT_BLUE,light_blue_carpet)\nADD(COLOR_YELLOW,yellow_carpet)\nADD(COLOR_LIGHT_GREEN,lime_carpet)\nADD(COLOR_PINK,pink_carpet)\nADD(COLOR_GRAY,gray_carpet)\nADD(COLOR_LIGHT_GRAY,light_gray_carpet)\nADD(COLOR_CYAN,cyan_carpet)\nADD(COLOR_PURPLE,purple_carpet)\nADD(COLOR_BLUE,blue_carpet)\nADD(COLOR_BROWN,brown_carpet)\nADD(COLOR_GREEN,green_carpet)\nADD(COLOR_RED,red_carpet)\nADD(COLOR_BLACK,black_carpet)");
         break;
     case ID_Preset_concrete:
-        panel->setMaterialsConf(panel->version, "MODE(WHITELIST)\nADD(SNOW,white_concrete)\nADD(COLOR_MAGENTA,magenta_concrete)\nADD(COLOR_LIGHT_BLUE,light_blue_concrete)\nADD(COLOR_YELLOW,yellow_concrete)\nADD(COLOR_LIGHT_GREEN,lime_concrete)\nADD(COLOR_PINK,pink_concrete)\nADD(COLOR_GRAY,gray_concrete)\nADD(COLOR_LIGHT_GRAY,light_gray_concrete)\nADD(COLOR_CYAN,cyan_concrete)\nADD(COLOR_PURPLE,purple_concrete)\nADD(COLOR_BLUE,blue_concrete)\nADD(COLOR_BROWN,brown_concrete)\nADD(COLOR_GREEN,green_concrete)\nADD(COLOR_RED,red_concrete)\nADD(COLOR_BLACK,black_concrete)");
+        panel->setMaterialsConf(panel->version, panel->buildMethod, "MODE(WHITELIST)\nADD(SNOW,white_concrete)\nADD(COLOR_MAGENTA,magenta_concrete)\nADD(COLOR_LIGHT_BLUE,light_blue_concrete)\nADD(COLOR_YELLOW,yellow_concrete)\nADD(COLOR_LIGHT_GREEN,lime_concrete)\nADD(COLOR_PINK,pink_concrete)\nADD(COLOR_GRAY,gray_concrete)\nADD(COLOR_LIGHT_GRAY,light_gray_concrete)\nADD(COLOR_CYAN,cyan_concrete)\nADD(COLOR_PURPLE,purple_concrete)\nADD(COLOR_BLUE,blue_concrete)\nADD(COLOR_BROWN,brown_concrete)\nADD(COLOR_GREEN,green_concrete)\nADD(COLOR_RED,red_concrete)\nADD(COLOR_BLACK,black_concrete)");
         break;
     case ID_Preset_wool:
-        panel->setMaterialsConf(panel->version, "MODE(WHITELIST)\nADD(SNOW,white_wool)\nADD(COLOR_MAGENTA)\nADD(COLOR_LIGHT_BLUE)\nADD(COLOR_YELLOW)\nADD(COLOR_LIGHT_GREEN)\nADD(COLOR_PINK)\nADD(COLOR_GRAY)\nADD(COLOR_LIGHT_GRAY)\nADD(COLOR_CYAN)\nADD(COLOR_PURPLE)\nADD(COLOR_BLUE)\nADD(COLOR_BROWN)\nADD(COLOR_GREEN)\nADD(COLOR_RED)\nADD(COLOR_BLACK)");
+        panel->setMaterialsConf(panel->version, panel->buildMethod, "MODE(WHITELIST)\nADD(SNOW,white_wool)\nADD(COLOR_MAGENTA)\nADD(COLOR_LIGHT_BLUE)\nADD(COLOR_YELLOW)\nADD(COLOR_LIGHT_GREEN)\nADD(COLOR_PINK)\nADD(COLOR_GRAY)\nADD(COLOR_LIGHT_GRAY)\nADD(COLOR_CYAN)\nADD(COLOR_PURPLE)\nADD(COLOR_BLUE)\nADD(COLOR_BROWN)\nADD(COLOR_GREEN)\nADD(COLOR_RED)\nADD(COLOR_BLACK)");
         break;
     case ID_Preset_no_minerals:
-        panel->setMaterialsConf(panel->version, "MODE(BLACKLIST)\nADD(FIRE,tnt)\nREMOVE(METAL)\nREMOVE(GOLD)\nREMOVE(LAPIS)\nREMOVE(EMERALD)\nREMOVE(RAW_IRON)");
+        panel->setMaterialsConf(panel->version, panel->buildMethod, "MODE(BLACKLIST)\nADD(FIRE,tnt)\nREMOVE(METAL)\nREMOVE(GOLD)\nREMOVE(LAPIS)\nREMOVE(EMERALD)\nREMOVE(RAW_IRON)");
         break;
     }
     panel->onConfigChanged();

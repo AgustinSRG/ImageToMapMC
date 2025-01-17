@@ -59,6 +59,15 @@ namespace minecraft
     colors::Color getMinecraftColor(std::vector<colors::Color> &baseColors, size_t index, McColorType colorType);
 
     /**
+     * @brief  Get a minecraft final color from a base color
+     * @note   
+     * @param  baseColor: The base color
+     * @param  colorType: Colort type
+     * @retval The final color
+     */
+    colors::Color getMinecraftColorFromBase(colors::Color baseColor, McColorType colorType);
+
+    /**
      * @brief  Base colors
      * @note   
      * @retval None

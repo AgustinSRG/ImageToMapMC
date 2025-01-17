@@ -36,10 +36,34 @@
 
 #include "main_window.h"
 
+class ColorDisplayPanel : public wxPanel
+{
+public:
+    ColorDisplayPanel(wxWindow *parent, unsigned int index, colors::Color baseColor, mapart::MapBuildMethod buildMethod);
+    ~ColorDisplayPanel();
+
+    void setBuildMethod(mapart::MapBuildMethod buildMethod);
+
+    void paintEvent(wxPaintEvent &evt);
+    void paintNow();
+
+    void render(wxDC &dc);
+
+    DECLARE_EVENT_TABLE()
+private:
+    wxMutex mu;
+    mapart::MapBuildMethod buildMethod;
+
+    colors::Color colorNormal;
+    colors::Color colorLight;
+    colors::Color colorDark;
+    colors::Color colorDarker;
+};
+
 struct MaterialCustomGroup
 {
     wxCheckBox *checkBox;
-    wxPanel *colorPanel;
+    ColorDisplayPanel *colorPanel;
     wxStaticText *colorLabel;
     wxComboBox *combo;
     wxStaticText *countLabel;
@@ -57,7 +81,7 @@ public:
 
     void onCountRefreshTimer(wxTimerEvent& event);
 
-    void setMaterialsConf(minecraft::McVersion version, std::string conf);
+    void setMaterialsConf(minecraft::McVersion version, mapart::MapBuildMethod buildMethod, std::string conf);
 
     std::string getMaterialsConf();
 
@@ -67,6 +91,7 @@ public:
 
     bool blacklist;
     minecraft::McVersion version;
+    mapart::MapBuildMethod buildMethod;
 
     void displayCountMaterials(std::vector<size_t> &counts);
 private:
@@ -106,7 +131,7 @@ public:
 
     void usePreset(wxCommandEvent &evt);
 
-    void setMaterialsConf(minecraft::McVersion version, std::string conf);
+    void setMaterialsConf(minecraft::McVersion version, mapart::MapBuildMethod buildMethod, std::string conf);
 
     void displayCountMaterials(std::vector<size_t> &counts);
 
