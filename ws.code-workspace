@@ -17,6 +17,7 @@
 			"release32": true
 		},
 		"files.associations": {
+			"*.ejs": "html",
 			"string": "cpp",
 			"cctype": "cpp",
 			"cmath": "cpp",
@@ -87,7 +88,15 @@
 			"mutex": "cpp",
 			"thread": "cpp",
 			"codecvt": "cpp",
-			"*.xpm": "cpp"
+			"*.xpm": "cpp",
+			"bit": "cpp",
+			"charconv": "cpp",
+			"clocale": "cpp",
+			"compare": "cpp",
+			"format": "cpp",
+			"forward_list": "cpp",
+			"optional": "cpp",
+			"stop_token": "cpp"
 		},
 	}
 }
