@@ -8,6 +8,8 @@ Written in C++ as a desktop application for Windows and Linux.
 
 In order to install the tool, go to the [releases](https://github.com/AgustinSRG/ImageToMapMC/releases) section in this repository and download the binaries for your system.
 
+**IMPORTANT FOR WINDOWS:** You may need to install the [Microsoft Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#latest-microsoft-visual-c-redistributable-version) libraries in order for the program to work. Install it if you are getting missing DLL errors.
+
 If there are no binaries available for your system, you can always compile them from the source code.
 
 ## Guides
