@@ -277,6 +277,29 @@ void WorkerThread::requestExportStruct(mapart::MapArtProject &project, std::stri
     sem.Post();
 }
 
+void WorkerThread::requestExportStructSingleFile(mapart::MapArtProject &project, std::string outPath)
+{
+    stateMutex.Lock();
+
+    // Cancel prev task
+    if (cancellable)
+    {
+        progress.terminate();
+    }
+
+    // Set new task
+    taskType = TaskType::Export_Structure_Single;
+    cancellable = false;
+
+    // Copy params
+    this->project = project;
+    this->outPath = outPath;
+
+    stateMutex.Unlock();
+
+    sem.Post();
+}
+
 void WorkerThread::requestExportStructZip(mapart::MapArtProject &project, std::string outPath)
 {
     stateMutex.Lock();
@@ -353,7 +376,7 @@ void WorkerThread::GeneratePreview(mapart::MapArtProject &copyProject)
 
         progress.startTask("Loading custom configuration...", 0, 0);
         mapart::applyColorSet(copyProject.colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
-        // Apply color restructions based on build method
+        // Apply color restrictions based on build method
         applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         progress.startTask("Generating preview...", originalImageHeight, threadNum);
@@ -415,7 +438,7 @@ void WorkerThread::ExportMaterials(mapart::MapArtProject &copyProject, std::stri
 
         progress.startTask("Loading custom configuration...", 0, 0);
         mapart::applyColorSet(copyProject.colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
-        // Apply color restructions based on build method
+        // Apply color restrictions based on build method
         applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
@@ -494,7 +517,7 @@ void WorkerThread::ExportMaterialsSplit(mapart::MapArtProject &copyProject, std:
 
         progress.startTask("Loading custom configuration...", 0, 0);
         mapart::applyColorSet(copyProject.colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
-        // Apply color restructions based on build method
+        // Apply color restrictions based on build method
         applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
@@ -585,7 +608,7 @@ void WorkerThread::ExportMaps(mapart::MapArtProject &copyProject, std::string &c
 
         progress.startTask("Loading custom configuration...", 0, 0);
         mapart::applyColorSet(copyProject.colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
-        // Apply color restructions based on build method
+        // Apply color restrictions based on build method
         applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
@@ -668,7 +691,7 @@ void WorkerThread::ExportMapsZip(mapart::MapArtProject &copyProject, std::string
 
         progress.startTask("Loading custom configuration...", 0, 0);
         mapart::applyColorSet(copyProject.colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
-        // Apply color restructions based on build method
+        // Apply color restrictions based on build method
         applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
@@ -765,7 +788,7 @@ void WorkerThread::ExportStruct(mapart::MapArtProject &copyProject, std::string 
 
         progress.startTask("Loading custom configuration...", 0, 0);
         mapart::applyColorSet(copyProject.colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
-        // Apply color restructions based on build method
+        // Apply color restrictions based on build method
         applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
@@ -826,6 +849,94 @@ void WorkerThread::ExportStruct(mapart::MapArtProject &copyProject, std::string 
     progress.setEnded();
 }
 
+void WorkerThread::ExportStructSingleFile(mapart::MapArtProject &copyProject, std::string &outFilePath)
+{
+    try
+    {
+        progress.startTask("Preparing image...", 0, 0);
+        wxImage imageCopy = copyProject.toImage();
+
+        if (copyProject.resize_width > 0 && copyProject.resize_height > 0)
+        {
+            imageCopy.Rescale(copyProject.resize_width, copyProject.resize_height);
+        }
+
+        int originalImageWidth;
+        int originalImageHeight;
+        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+
+        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+
+        progress.startTask("Loading minecraft colors...", 0, 0);
+        std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
+        std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
+        std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
+        std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
+        std::vector<bool> enabledConf(baseColors.size());
+        std::vector<size_t> countsMats(MAX_COLOR_GROUPS);
+        bool blacklist = true;
+
+        progress.startTask("Loading custom configuration...", 0, 0);
+        mapart::applyColorSet(copyProject.colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
+        // Apply color restrictions based on build method
+        applyBuildRestrictions(colorSet, copyProject.buildMethod);
+
+        progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
+
+        // Compute total maps
+        int mapsCountX = originalImageWidth / MAP_WIDTH;
+        int mapsCountZ = originalImageHeight / MAP_HEIGHT;
+
+        progress.startTask("Building maps...", 0, 0);
+        int total = 0;
+        int totalMapsCount = mapsCountX * mapsCountZ;
+
+        std::vector<std::vector<mapart::MapBuildingBlock>> chunks;
+
+        for (int mapZ = 0; mapZ < mapsCountZ; mapZ++)
+        {
+            for (int mapX = 0; mapX < mapsCountX; mapX++)
+            {
+                stringstream ss;
+                ss << "Building map (" << (total + 1) << "/" << totalMapsCount << ")...";
+                progress.startTask(ss.str(), MAP_WIDTH, threadNum);
+
+                std::vector<mapart::MapBuildingBlock> buildingBlocks = mapart::buildMap(copyProject.version, blockSet, mapArtColorMatrix, originalImageWidth, originalImageHeight, mapX, mapZ, copyProject.buildMethod, threadNum, progress);
+
+                chunks.push_back(buildingBlocks);
+
+                total++;
+            }
+        }
+
+        progress.startTask("Generating structure file...", static_cast<unsigned int>(totalMapsCount), 1);
+
+        try
+        {
+            if (copyProject.buildMethod == MapBuildMethod::Flat)
+            {
+                writeStructureNBTFileCompactFlat(outFilePath, chunks, mapsCountX, copyProject.version, progress);
+            }
+            else
+            {
+                writeStructureNBTFileCompact(outFilePath, chunks, copyProject.version, progress);
+            }
+        }
+        catch (...)
+        {
+            OnError(string("Cannot write file: ") + outFilePath);
+            throw -1;
+        }
+    }
+    catch (int)
+    {
+        progress.reset();
+    }
+
+    progress.setEnded();
+}
+
 void WorkerThread::ExportStructZip(mapart::MapArtProject &copyProject, std::string &outFilePath)
 {
     zip_t *zipper = nullptr;
@@ -856,7 +967,7 @@ void WorkerThread::ExportStructZip(mapart::MapArtProject &copyProject, std::stri
 
         progress.startTask("Loading custom configuration...", 0, 0);
         mapart::applyColorSet(copyProject.colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
-        // Apply color restructions based on build method
+        // Apply color restrictions based on build method
         applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
@@ -959,7 +1070,7 @@ void WorkerThread::ExportFunc(mapart::MapArtProject &copyProject, std::string &c
 
         progress.startTask("Loading custom configuration...", 0, 0);
         mapart::applyColorSet(copyProject.colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
-        // Apply color restructions based on build method
+        // Apply color restrictions based on build method
         applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
@@ -1064,6 +1175,9 @@ wxThread::ExitCode WorkerThread::Entry()
             break;
         case TaskType::Export_Structure:
             ExportStruct(copyProject, copyOutPath);
+            break;
+        case TaskType::Export_Structure_Single:
+            ExportStructSingleFile(copyProject, copyOutPath);
             break;
         case TaskType::Export_Structure_Zip:
             ExportStructZip(copyProject, copyOutPath);

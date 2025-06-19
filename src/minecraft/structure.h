@@ -24,6 +24,7 @@
 #pragma once
 
 #include "../mapart/common.h"
+#include "../threads/progress.h"
 #include <zip.h>
 
 namespace minecraft {
@@ -37,6 +38,29 @@ namespace minecraft {
      * @retval None
      */
     void writeStructureNBTFile(std::string fileName, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version, bool isBase);
+
+    /**
+     * @brief  Writes structure to file (compact, single file)
+     * @note   
+     * @param  fileName: File name
+     * @param  &chunks: Building chunks
+     * @param  version: Minecraft version
+     * @param  &progress: progress reporter
+     * @retval None
+     */
+    void writeStructureNBTFileCompact(std::string fileName, std::vector<std::vector<mapart::MapBuildingBlock>> &chunks, minecraft::McVersion version, threading::Progress &progress);
+
+     /**
+     * @brief  Writes structure to file (compact, single file) (for flat maps only)
+     * @note   
+     * @param  fileName: File name
+     * @param  &chunks: Building chunks
+     * @param  width: Matrix width
+     * @param  version: Minecraft version
+     * @param  &progress: progress reporter
+     * @retval None
+     */
+    void writeStructureNBTFileCompactFlat(std::string fileName, std::vector<std::vector<mapart::MapBuildingBlock>> &chunks, size_t width, minecraft::McVersion version, threading::Progress &progress);
 
     /**
      * @brief  Writes structure to file

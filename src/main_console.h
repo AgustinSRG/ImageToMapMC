@@ -53,6 +53,7 @@ void progressReporter(threading::Progress &progress);
 enum class MapOutputFormat {
     Map,
     Structure,
+    StructureSingle,
     Function
 };
 

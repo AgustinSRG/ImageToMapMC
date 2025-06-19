@@ -1,15 +1,15 @@
 /*
  * This file is part of ImageToMapMC project
- * 
+ *
  * Copyright (c) 2021 Agustin San Roman
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
 
@@ -31,10 +31,10 @@ using namespace tools;
 
 /**
  * @brief  Main (Console)
- * @note   
- * @param  argc: 
- * @param  argv: 
- * @retval 
+ * @note
+ * @param  argc:
+ * @param  argv:
+ * @retval
  */
 int main(int argc, char **argv)
 {
@@ -82,8 +82,8 @@ int printVersion()
 
 /**
  * @brief  Prints help to console
- * @note   
- * @retval 
+ * @note
+ * @retval
  */
 int printHelp()
 {
@@ -105,11 +105,12 @@ int printHelp()
     cout << "Note: You have to manually resize the image first if it's too large" << endl;
     cout << "This tool will assume a 1:1 scale unless you use the --resize option" << endl;
     cout << "Available options:" << endl;
-    cout << "    -o, --output [path]            Specifies the output folder." << endl;
+    cout << "    -o, --output [path]            Specifies the output folder or file." << endl;
     cout << "                                     By default the folder name is 'mapart'" << endl;
     cout << "    -f, --format [format]          Specifies the output format. By defaulty is 'map'" << endl;
     cout << "                                     'map' format creates '.dat' files for the maps" << endl;
     cout << "                                     'structure' format creates nbt structure files" << endl;
+    cout << "                                     'structure-single' format creates a single nbt structure file" << endl;
     cout << "                                     'function' format creates .mcfunction files" << endl;
     cout << "    -v, --version [version]        Specifies the minecraft version in A.B format (eg, 1.12)." << endl;
     cout << "                                     Set to 'last' to use the most recent minecraft version available" << endl;
@@ -297,6 +298,7 @@ int buildMap(int argc, char **argv)
 
     string inputImageFile(argv[2]);
     string outputPath = "mapart";
+    bool outputPathSet = false;
     string colorSetFilename = "";
     MapOutputFormat outFormat = MapOutputFormat::Map;
     McVersion version = MC_LAST_VERSION;
@@ -321,6 +323,7 @@ int buildMap(int argc, char **argv)
             if ((i + 1) < argc)
             {
                 outputPath = argv[i + 1];
+                outputPathSet = true;
                 i++;
             }
             else
@@ -348,6 +351,19 @@ int buildMap(int argc, char **argv)
                         buildMethod = MapBuildMethod::Chaos;
                     }
                 }
+                else if (outputFormatStr.compare(string("structure-single")) == 0)
+                {
+                    outFormat = MapOutputFormat::StructureSingle;
+                    if (buildMethod == MapBuildMethod::None)
+                    {
+                        buildMethod = MapBuildMethod::Chaos;
+                    }
+
+                    if (!outputPathSet)
+                    {
+                        outputPath = "mapart.nbt";
+                    }
+                }
                 else if (outputFormatStr.compare(string("function")) == 0)
                 {
                     outFormat = MapOutputFormat::Function;
@@ -359,7 +375,7 @@ int buildMap(int argc, char **argv)
                 else
                 {
                     std::cerr << "Urecornized outout format: " << argv[i + 1] << endl;
-                    std::cerr << "Available formats: map, structure" << endl;
+                    std::cerr << "Available formats: map, structure, structure-single, function" << endl;
                     return 1;
                 }
 
@@ -601,7 +617,7 @@ int buildMap(int argc, char **argv)
         }
     }
 
-    if (!filesystem::exists(filesystem::path(outputPath)))
+    if (outFormat != MapOutputFormat::StructureSingle && !filesystem::exists(filesystem::path(outputPath)))
     {
         // Create dir if not found
         filesystem::create_directory(filesystem::path(outputPath));
@@ -698,7 +714,7 @@ int buildMap(int argc, char **argv)
         }
     }
 
-    // Apply color restructions based on build method
+    // Apply color restrictions based on build method
     applyBuildRestrictions(colorSet, buildMethod);
 
     // Generate map art
@@ -754,6 +770,66 @@ int buildMap(int argc, char **argv)
         std::cerr << endl
                   << "Successfully saved as map files to: " << outputPath << endl;
         std::cerr << "Note: The map numbers are sorted up to down, left to right" << endl;
+    }
+    else if (outFormat == MapOutputFormat::StructureSingle)
+    {
+        std::vector<std::vector<mapart::MapBuildingBlock>> chunks;
+
+        p.startTask("Building maps...", 0, 0);
+        int total = 0;
+        int totalMapsCount = mapsCountX * mapsCountZ;
+        for (int mapZ = 0; mapZ < mapsCountZ; mapZ++)
+        {
+            for (int mapX = 0; mapX < mapsCountX; mapX++)
+            {
+                stringstream ss;
+                ss << "Building map (" << (total + 1) << "/" << totalMapsCount << ")...";
+                p.startTask(ss.str(), MAP_WIDTH, threadNum);
+
+                std::vector<mapart::MapBuildingBlock> buildingBlocks = mapart::buildMap(version, blockSet, mapArtColorMatrix, matrixW, matrixH, mapX, mapZ, buildMethod, threadNum, p);
+
+                // Add to materials list
+                materials.addBlocks(buildingBlocks);
+
+                // Add chunk
+                chunks.push_back(buildingBlocks);
+
+                total++;
+            }
+        }
+
+        p.startTask("Building maps...", static_cast<unsigned int>(totalMapsCount), 1);
+
+        try
+        {
+            if (buildMethod == MapBuildMethod::Flat)
+            {
+                writeStructureNBTFileCompactFlat(outputPath, chunks, mapsCountX, version, p);
+            }
+            else
+            {
+                writeStructureNBTFileCompact(outputPath, chunks, version, p);
+            }
+        }
+        catch (...)
+        {
+            std::cerr << endl
+                      << "Cannot write file: " << outputPath << endl;
+            return 1;
+        }
+
+        p.setEnded();
+        progressReportThread.join();
+
+        if (materialsOutFile.size() > 0)
+        {
+            // Save materials
+            if (!tools::writeTextFile(materialsOutFile, materials.toString()))
+            {
+                std::cerr << "Cannot write file: " << materialsOutFile << endl;
+                return 1;
+            }
+        }
     }
     else
     {
