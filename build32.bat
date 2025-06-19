@@ -1,6 +1,6 @@
 @echo off
 
-call cmake -DCMAKE_BUILD_TYPE=Release -A Win32 -Ssrc -Brelease32
+call cmake -DCMAKE_BUILD_TYPE=Release -DWIN_RELEASE_BUILD=1 -A Win32 -Ssrc -Brelease32
 
 call cmake --build release32 --config Release
 

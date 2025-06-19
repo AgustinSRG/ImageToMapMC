@@ -6,6 +6,8 @@ project ("ImageToMapMC")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include(InstallRequiredSystemLibraries)
+
 # hack for buggy CMake's FindwxWidgets script
 if (DEFINED ENV_WX_CONFIG)
     set (ENV{WX_CONFIG} ${ENV_WX_CONFIG})
@@ -76,6 +78,13 @@ add_executable (mcmap-gui WIN32
 target_link_libraries(mcmap-gui ${wxWidgets_LIBRARIES})
 target_link_libraries(mcmap-gui libzip::zip)
 target_link_libraries(mcmap-gui nbt++)
+
+if (WIN_RELEASE_BUILD)
+  add_custom_command(
+    TARGET mcmap-gui POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} ${CMAKE_BINARY_DIR}/Release
+  )
+endif ()
 
 # Console app
 add_executable (mcmap 
