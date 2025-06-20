@@ -47,3 +47,34 @@ cmake --build release --config Release
 ```
 
 After it is successfully built, your binaries will be available in the `release` folder.
+
+### Specific library installation instructions for Windows
+
+Make sure [Visual Studio](https://visualstudio.microsoft.com/) is installed. Preferably the latest version. Ensure the build tools for C++ are also installed.
+
+Once installed, set the `MSVC_CRT_DLL_PATH` environment variable to the path where the dll files for the Visual Studio C++ runtime are located. Example value: `C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Redist\MSVC\14.44.35112\x64\Microsoft.VC143.CRT`.
+
+For external dependencies, use [VCPKG](https://github.com/microsoft/vcpkg). Make sure to install it and configure it for CMAKE, which also needs to be installed.
+
+Install the required libraries:
+
+```sh
+vcpkg install wxwidgets zlib libzip --triplet=x64-windows
+```
+
+### Specific library installation instructions for Linux
+
+Install zlib and libzip via apt:
+
+```sh
+sudo apt install zlib1g-dev libzip-dev
+```
+
+For wxWidgets, install from the source code:
+
+```sh
+git clone --recurse-submodules https://github.com/wxWidgets/wxWidgets.git
+cd wxWidgets
+./configure
+sudo make install
+```

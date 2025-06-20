@@ -22,6 +22,7 @@
  */
 
 #include "main_console.h"
+#include "version.h"
 
 using namespace std;
 using namespace colors;
@@ -58,6 +59,10 @@ int main(int argc, char **argv)
     {
         return printHelp();
     }
+    else if (firstArg.compare(string("-v")) == 0 || firstArg.compare(string("--version")) == 0)
+    {
+        return printVersion();
+    }
     else if (firstArg.compare(string("--print-blocks")) == 0)
     {
         return printBlocks(argc, argv);
@@ -73,6 +78,7 @@ int main(int argc, char **argv)
 int printVersion()
 {
     cout << "ImageToMapMC console utility, by @asanrom" << endl;
+    cout << "Version: " << (APP_VERSION) << endl;
     cout << "Repository: https://github.com/AgustinSRG/ImageToMapMC" << endl;
     cout << "-------------------------------------------------------------" << endl;
     cout << "Use 'mcmap --help' for command usage" << endl;
@@ -95,6 +101,7 @@ int printHelp()
 
     cout << "Available options:" << endl;
     cout << "    -h, --help              Displays help" << endl;
+    cout << "    -v, --version           Displays version" << endl;
     cout << "    --print-blocks [ver]    Prints all available base colors with its associated blocks" << endl;
     cout << "    -b, --build             Builds a map from input image" << endl;
     cout << "    -r, --render            Renders image from input map file in '.dat' format" << endl;
@@ -112,7 +119,7 @@ int printHelp()
     cout << "                                     'structure' format creates nbt structure files" << endl;
     cout << "                                     'structure-single' format creates a single nbt structure file" << endl;
     cout << "                                     'function' format creates .mcfunction files" << endl;
-    cout << "    -v, --version [version]        Specifies the minecraft version in A.B format (eg, 1.12)." << endl;
+    cout << "    -mv, --mc-version [version]    Specifies the minecraft version in A.B format (eg, 1.12)." << endl;
     cout << "                                     Set to 'last' to use the most recent minecraft version available" << endl;
     cout << "    -bg, --background [#FFFFFF]    Specifies the background color in hex format." << endl;
     cout << "                                     By default, the background color is white." << endl;
@@ -388,7 +395,7 @@ int buildMap(int argc, char **argv)
                 return 1;
             }
         }
-        else if (arg.compare(string("-v")) == 0 || arg.compare(string("--version")) == 0)
+        else if (arg.compare(string("-mv")) == 0 || arg.compare(string("--mc-version")) == 0)
         {
             if ((i + 1) < argc)
             {

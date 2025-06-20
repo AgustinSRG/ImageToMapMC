@@ -22,6 +22,7 @@
  */
 
 #include "main_window.h"
+#include "../version.h"
 #include <wx/rawbmp.h>
 #include <sstream>
 #include "../resources/icon.xpm"
@@ -148,7 +149,7 @@ int getIdForDitheringMenu(DitheringMethod a)
     return DITHERING_ID_PREFIX + (short)a;
 }
 
-MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Tool"), wxPoint(50, 50), wxSize(800, 600))
+MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Tool - v" APP_VERSION), wxPoint(50, 50), wxSize(800, 600))
 {
     materialsWindow = NULL;
     originalImagePanel = NULL;
@@ -277,7 +278,7 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
 
     wxStatusBar *statusBar = CreateStatusBar();
     statusBar->SetFieldsCount(4);
-    statusBar->SetStatusText("Map art tool for minecraft", 0);
+    statusBar->SetStatusText("Map art tool for Minecraft - v" APP_VERSION, 0);
     statusBar->SetStatusText("Status: Ready", 1);
     statusBar->SetStatusText("Size: 1 x 1", 2);
     statusBar->SetStatusText("Project: (not saved yet)", 3);

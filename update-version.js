@@ -47,11 +47,6 @@ function main() {
             .replace(/ImageToMapMC\-[0-9]+\.[0-9]+\.[0-9]+\-Windows\-x64\.zip/g, `ImageToMapMC-${VERSION}-Windows-x64.zip`);
     });
 
-    updateFile(Path.resolve(__dirname, "build32.bat"), contents => {
-        return contents
-            .replace(/ImageToMapMC\-[0-9]+\.[0-9]+\.[0-9]+\-Windows\-Win32\.zip/g, `ImageToMapMC-${VERSION}-Windows-Win32.zip`);
-    });
-
     updateFile(Path.resolve(__dirname, "build.sh"), contents => {
         return contents
             .replace(/ImageToMapMC\-[0-9]+\.[0-9]+\.[0-9]+\-linux\-x64\.tar\.gz/g, `ImageToMapMC-${VERSION}-linux-x64.tar.gz`);
@@ -65,6 +60,11 @@ function main() {
     updateFile(Path.resolve(__dirname, "wix", "Product.wxs"), contents => {
         return contents
             .replace(/Name=\"ImageToMapMC\" Version=\"[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+\"/, `Name="ImageToMapMC" Version="${VERSION}.0"`);
+    });
+
+    updateFile(Path.resolve(__dirname, "src", "version.h"), contents => {
+        return contents
+            .replace(/APP_VERSION\s\"[0-9]+\.[0-9]+\.[0-9]+\"/, `APP_VERSION "${VERSION}"`);
     });
 
     console.log("DONE!");

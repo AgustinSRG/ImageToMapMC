@@ -46,6 +46,8 @@ SET(SOURCES_COMMON
     "tools/basedir.h" "tools/basedir.cpp"
     "tools/text_file.h" "tools/text_file.cpp"
     "tools/image_edit.h" "tools/image_edit.cpp"
+
+    "version.h"
 )
 
 SET(SOURCES_WX 
@@ -76,6 +78,11 @@ add_executable (mcmap-gui WIN32
 target_link_libraries(mcmap-gui ${wxWidgets_LIBRARIES})
 target_link_libraries(mcmap-gui libzip::zip)
 target_link_libraries(mcmap-gui nbt++)
+
+if (WIN_RELEASE)
+    file(GLOB MSVC_DLL_LIST $ENV{MSVC_CRT_DLL_PATH}/*.dll)
+    file(COPY ${MSVC_DLL_LIST} DESTINATION Release)
+endif()
 
 # Console app
 add_executable (mcmap 

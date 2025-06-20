@@ -16,3 +16,4 @@ wix/HeatFile.wxs
 wix/ImageToMapMC
 *.wixobj
 *.msi
+*.exe
