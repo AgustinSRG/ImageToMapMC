@@ -30,6 +30,7 @@ SET(SOURCES_COMMON
     "minecraft/mc_common.h" "minecraft/mc_common.cpp"
     "minecraft/mc_colors.h" "minecraft/mc_colors.cpp" 
     "minecraft/mc_blocks.h" "minecraft/mc_blocks.cpp"
+    "minecraft/schematic.h" "minecraft/schematic.cpp"
     "minecraft/structure.h" "minecraft/structure.cpp"
     "minecraft/mcfunction.h" "minecraft/mcfunction.cpp"
 
