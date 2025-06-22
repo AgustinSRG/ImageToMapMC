@@ -39,6 +39,7 @@
 #include "mapart/map_image.h"
 #include "threads/progress.h"
 #include "minecraft/structure.h"
+#include "minecraft/schematic.h"
 #include "minecraft/mcfunction.h"
 #include "tools/basedir.h"
 #include "tools/text_file.h"
@@ -54,6 +55,8 @@ enum class MapOutputFormat {
     Map,
     Structure,
     StructureSingle,
+    Schematic,
+    SchematicSingle,
     Function
 };
 

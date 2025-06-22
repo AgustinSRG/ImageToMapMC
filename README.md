@@ -21,6 +21,7 @@ If there are no binaries available for your system, you can always compile them 
 ## Reference documentation
 
  - [Map item format - Minecraft Wiki](https://minecraft.wiki/w/Map_item_format)
+ - [Sponge Schematic Specification](https://github.com/SpongePowered/Schematic-Specification/blob/master/versions/schematic-3.md)
 
 ## Screenshots
 

@@ -50,6 +50,8 @@ enum class TaskType
     Export_Structure,
     Export_Structure_Single,
     Export_Structure_Zip,
+    Export_Schematic_Single,
+    Export_Schematic_Zip,
     Export_Func,
     Export_Materials,
     Export_MaterialsSplit
@@ -77,6 +79,9 @@ public:
     void requestExportStruct(mapart::MapArtProject &project, std::string outPath);
     void requestExportStructSingleFile(mapart::MapArtProject &project, std::string outPath);
     void requestExportStructZip(mapart::MapArtProject &project, std::string outPath);
+
+    void requestExportSchematicSingleFile(mapart::MapArtProject &project, std::string outPath);
+    void requestExportSchematicZip(mapart::MapArtProject &project, std::string outPath);
 
     void requestExportFunc(mapart::MapArtProject &project, std::string outPath);
 private:
@@ -112,6 +117,9 @@ private:
     void ExportStruct(mapart::MapArtProject &copyProject, std::string &copyOutPath);
     void ExportStructSingleFile(mapart::MapArtProject &copyProject, std::string &copyOutPath);
     void ExportStructZip(mapart::MapArtProject &copyProject, std::string &copyOutPath);
+
+    void ExportSchematicSingleFile(mapart::MapArtProject &copyProject, std::string &copyOutPath);
+    void ExportSchematicZip(mapart::MapArtProject &copyProject, std::string &copyOutPath);
 
     void ExportFunc(mapart::MapArtProject &copyProject, std::string &copyOutPath);
 protected:

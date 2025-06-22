@@ -98,5 +98,9 @@
 			"optional": "cpp",
 			"stop_token": "cpp"
 		},
+		"cSpell.words": [
+			"mapart",
+			"minecraft"
+		],
 	}
 }
