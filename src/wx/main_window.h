@@ -69,6 +69,8 @@ public:
     void onExportToStructure(wxCommandEvent &evt);
     void onExportToStructureSingleFile(wxCommandEvent &evt);
     void onExportToStructureZip(wxCommandEvent &evt);
+    void onExportToSchematicSingleFile(wxCommandEvent &evt);
+    void onExportToSchematicZip(wxCommandEvent &evt);
     void onExportToFunctions(wxCommandEvent &evt);
     void onImageResize(wxCommandEvent &evt);
     void onImageEdit(wxCommandEvent &evt);

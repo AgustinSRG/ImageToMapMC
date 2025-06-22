@@ -30,6 +30,7 @@
 #include <zip.h>
 
 #include "../minecraft/structure.h"
+#include "../minecraft/schematic.h"
 #include "../minecraft/mcfunction.h"
 
 #include "../tools/open_desktop.h"
@@ -312,6 +313,52 @@ void WorkerThread::requestExportStructZip(mapart::MapArtProject &project, std::s
 
     // Set new task
     taskType = TaskType::Export_Structure_Zip;
+    cancellable = false;
+
+    // Copy params
+    this->project = project;
+    this->outPath = outPath;
+
+    stateMutex.Unlock();
+
+    sem.Post();
+}
+
+void WorkerThread::requestExportSchematicSingleFile(mapart::MapArtProject &project, std::string outPath)
+{
+    stateMutex.Lock();
+
+    // Cancel prev task
+    if (cancellable)
+    {
+        progress.terminate();
+    }
+
+    // Set new task
+    taskType = TaskType::Export_Schematic_Single;
+    cancellable = false;
+
+    // Copy params
+    this->project = project;
+    this->outPath = outPath;
+
+    stateMutex.Unlock();
+
+    sem.Post();
+}
+
+void WorkerThread::requestExportSchematicZip(mapart::MapArtProject &project, std::string outPath)
+{
+    stateMutex.Lock();
+
+    // Cancel prev task
+    if (cancellable)
+    {
+        progress.terminate();
+    }
+
+    // Set new task
+    taskType = TaskType::Export_Schematic_Zip;
     cancellable = false;
 
     // Copy params
@@ -1041,6 +1088,198 @@ void WorkerThread::ExportStructZip(mapart::MapArtProject &copyProject, std::stri
     progress.setEnded();
 }
 
+void WorkerThread::ExportSchematicSingleFile(mapart::MapArtProject &copyProject, std::string &outFilePath)
+{
+    try
+    {
+        progress.startTask("Preparing image...", 0, 0);
+        wxImage imageCopy = copyProject.toImage();
+
+        if (copyProject.resize_width > 0 && copyProject.resize_height > 0)
+        {
+            imageCopy.Rescale(copyProject.resize_width, copyProject.resize_height);
+        }
+
+        int originalImageWidth;
+        int originalImageHeight;
+        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+
+        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+
+        progress.startTask("Loading minecraft colors...", 0, 0);
+        std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
+        std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
+        std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
+        std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
+        std::vector<bool> enabledConf(baseColors.size());
+        std::vector<size_t> countsMats(MAX_COLOR_GROUPS);
+        bool blacklist = true;
+
+        progress.startTask("Loading custom configuration...", 0, 0);
+        mapart::applyColorSet(copyProject.colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
+        // Apply color restrictions based on build method
+        applyBuildRestrictions(colorSet, copyProject.buildMethod);
+
+        progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
+
+        // Compute total maps
+        int mapsCountX = originalImageWidth / MAP_WIDTH;
+        int mapsCountZ = originalImageHeight / MAP_HEIGHT;
+
+        progress.startTask("Building maps...", 0, 0);
+        int total = 0;
+        int totalMapsCount = mapsCountX * mapsCountZ;
+
+        std::vector<std::vector<mapart::MapBuildingBlock>> chunks;
+
+        for (int mapZ = 0; mapZ < mapsCountZ; mapZ++)
+        {
+            for (int mapX = 0; mapX < mapsCountX; mapX++)
+            {
+                stringstream ss;
+                ss << "Building map (" << (total + 1) << "/" << totalMapsCount << ")...";
+                progress.startTask(ss.str(), MAP_WIDTH, threadNum);
+
+                std::vector<mapart::MapBuildingBlock> buildingBlocks = mapart::buildMap(copyProject.version, blockSet, mapArtColorMatrix, originalImageWidth, originalImageHeight, mapX, mapZ, copyProject.buildMethod, threadNum, progress);
+
+                chunks.push_back(buildingBlocks);
+
+                total++;
+            }
+        }
+
+        progress.startTask("Generating schematic file...", static_cast<unsigned int>(totalMapsCount), 1);
+
+        try
+        {
+            if (copyProject.buildMethod == MapBuildMethod::Flat)
+            {
+                writeSchematicNBTFileCompactFlat(outFilePath, chunks, mapsCountX, copyProject.version, progress);
+            }
+            else
+            {
+                writeSchematicNBTFileCompact(outFilePath, chunks, copyProject.version, progress);
+            }
+        }
+        catch (...)
+        {
+            OnError(string("Cannot write file: ") + outFilePath);
+            throw -1;
+        }
+    }
+    catch (int)
+    {
+        progress.reset();
+    }
+
+    progress.setEnded();
+}
+
+void WorkerThread::ExportSchematicZip(mapart::MapArtProject &copyProject, std::string &outFilePath)
+{
+    zip_t *zipper = nullptr;
+    try
+    {
+        progress.startTask("Preparing image...", 0, 0);
+        wxImage imageCopy = copyProject.toImage();
+
+        if (copyProject.resize_width > 0 && copyProject.resize_height > 0)
+        {
+            imageCopy.Rescale(copyProject.resize_width, copyProject.resize_height);
+        }
+
+        int originalImageWidth;
+        int originalImageHeight;
+        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+
+        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+
+        progress.startTask("Loading minecraft colors...", 0, 0);
+        std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
+        std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
+        std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
+        std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
+        std::vector<bool> enabledConf(baseColors.size());
+        std::vector<size_t> countsMats(MAX_COLOR_GROUPS);
+        bool blacklist = true;
+
+        progress.startTask("Loading custom configuration...", 0, 0);
+        mapart::applyColorSet(copyProject.colorSetConf, &blacklist, enabledConf, colorSet, blockSet, baseColorNames);
+        // Apply color restrictions based on build method
+        applyBuildRestrictions(colorSet, copyProject.buildMethod);
+
+        progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
+
+        // Create zip container for the files
+        int errorp;
+        zipper = zip_open(outFilePath.c_str(), ZIP_CREATE | ZIP_TRUNCATE, &errorp);
+
+        if (zipper == nullptr)
+        {
+            OnError(string("Cannot write file: ") + outFilePath);
+            throw -1;
+        }
+
+        // Compute total maps
+        int mapsCountX = originalImageWidth / MAP_WIDTH;
+        int mapsCountZ = originalImageHeight / MAP_HEIGHT;
+
+        progress.startTask("Building maps...", 0, 0);
+        int total = 0;
+        int totalMapsCount = mapsCountX * mapsCountZ;
+        for (int mapZ = 0; mapZ < mapsCountZ; mapZ++)
+        {
+            for (int mapX = 0; mapX < mapsCountX; mapX++)
+            {
+                stringstream ss;
+                ss << "Building map (" << (total + 1) << "/" << totalMapsCount << ")...";
+                progress.startTask(ss.str(), MAP_WIDTH, threadNum);
+
+                std::vector<mapart::MapBuildingBlock> buildingBlocks = mapart::buildMap(copyProject.version, blockSet, mapArtColorMatrix, originalImageWidth, originalImageHeight, mapX, mapZ, copyProject.buildMethod, threadNum, progress);
+
+                // Save as structure file
+                stringstream ss2;
+                ss2 << "map_" << (total + 1) << ".schem";
+
+                std::string fPath = ss2.str();
+
+                stringstream ss3;
+                ss3 << "map_" << (total + 1) << "_base.schem";
+
+                std::string fPathBase = ss3.str();
+
+                try
+                {
+                    writeSchematicNBTFileZip(fPath, zipper, buildingBlocks, copyProject.version, false);
+                    writeSchematicNBTFileZip(fPathBase, zipper, buildingBlocks, copyProject.version, true);
+                }
+                catch (...)
+                {
+                    OnError(string("Cannot add file to zip: ") + fPath);
+                    throw -1;
+                }
+
+                total++;
+            }
+        }
+        zip_close(zipper); // Close zipper
+
+        tools::openForDesktop(outFilePath);
+    }
+    catch (int)
+    {
+        if (zipper != nullptr)
+        {
+            zip_close(zipper); // Close zipper
+        }
+        progress.reset();
+    }
+
+    progress.setEnded();
+}
+
 void WorkerThread::ExportFunc(mapart::MapArtProject &copyProject, std::string &copyOutPath)
 {
     try
@@ -1181,6 +1420,12 @@ wxThread::ExitCode WorkerThread::Entry()
             break;
         case TaskType::Export_Structure_Zip:
             ExportStructZip(copyProject, copyOutPath);
+            break;
+        case TaskType::Export_Schematic_Single:
+            ExportSchematicSingleFile(copyProject, copyOutPath);
+            break;
+        case TaskType::Export_Schematic_Zip:
+            ExportSchematicZip(copyProject, copyOutPath);
             break;
         case TaskType::Export_Func:
             ExportFunc(copyProject, copyOutPath);

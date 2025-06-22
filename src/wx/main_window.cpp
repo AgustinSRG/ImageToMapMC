@@ -69,6 +69,9 @@ enum Identifiers
     ID_Export_Structure_Zip = 10,
     ID_Export_Structure_Single = 11,
 
+    ID_Export_Schematic_Zip = 12,
+    ID_Export_Schematic_Single = 13,
+
     ID_Export = 16,
     ID_Resize_Image = 17,
     ID_Edit_Image = 18,
@@ -119,6 +122,8 @@ EVT_MENU(ID_Export_Map_Zip, MainWindow::onExportToMapsZip)
 EVT_MENU(ID_Export_Structure, MainWindow::onExportToStructure)
 EVT_MENU(ID_Export_Structure_Zip, MainWindow::onExportToStructureZip)
 EVT_MENU(ID_Export_Structure_Single, MainWindow::onExportToStructureSingleFile)
+EVT_MENU(ID_Export_Schematic_Zip, MainWindow::onExportToSchematicZip)
+EVT_MENU(ID_Export_Schematic_Single, MainWindow::onExportToSchematicSingleFile)
 EVT_MENU(ID_Export_Function, MainWindow::onExportToFunctions)
 EVT_MENU(ID_Resize_Image, MainWindow::onImageResize)
 EVT_MENU(ID_Edit_Image, MainWindow::onImageEdit)
@@ -197,6 +202,8 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     exportMenu->Append(ID_Export_Structure, "&Export as structures\tCtrl+T", "Exports the map to NBT structure files (for survival)");
     exportMenu->Append(ID_Export_Structure_Zip, "&Export as structures (Zip file)\tCtrl+Shift+T", "Exports the map to NBT structure files inside a zip file (for survival)");
     exportMenu->Append(ID_Export_Structure_Single, "&Export as a single structure file \tCtrl+K", "Exports the map as a single NBT structure file (for survival)");
+    exportMenu->Append(ID_Export_Schematic_Zip, "&Export as schematics (Zip file)\tCtrl+Shift+H", "Exports the map to schematic files inside a zip file (for survival)");
+    exportMenu->Append(ID_Export_Schematic_Single, "&Export as a single schematic file \tCtrl+H", "Exports the map as a single schematic file (for survival)");
     exportMenu->Append(ID_Export_Function, "&Export as functions\tCtrl+F", "Exports the map to Minecraft function file (for flat maps)");
     menuFile->AppendSubMenu(exportMenu, "&Export", "Exports the map, so you can use it in Minecraft");
 
@@ -613,6 +620,29 @@ void MainWindow::onExportToMapsZip(wxCommandEvent &evt)
     }
 }
 
+void MainWindow::onExportToStructure(wxCommandEvent &evt)
+{
+    if (project.buildMethod == MapBuildMethod::None)
+    {
+        wxMessageBox(wxString("You must choose a build method to be able to export to structures."), wxT("Cannot export"), wxICON_INFORMATION);
+        return;
+    }
+
+    if (this->workerThread->isBusy())
+    {
+        wxMessageBox(wxString("There is already a task in progress. Wait for it to end to continue."), wxT("Error"), wxICON_ERROR);
+        return;
+    }
+
+    StructureExportDialog dialog(project.version, ExportDialogMode::Structure);
+    if (dialog.ShowModal() == wxID_CANCEL)
+    {
+        return; // the user changed idea...
+    }
+
+    this->workerThread->requestExportStruct(project, dialog.getPath());
+}
+
 void MainWindow::onExportToStructureZip(wxCommandEvent &evt)
 {
     if (project.buildMethod == MapBuildMethod::None)
@@ -655,11 +685,11 @@ void MainWindow::onExportToStructureSingleFile(wxCommandEvent &evt)
     }
 }
 
-void MainWindow::onExportToStructure(wxCommandEvent &evt)
+void MainWindow::onExportToSchematicZip(wxCommandEvent &evt)
 {
     if (project.buildMethod == MapBuildMethod::None)
     {
-        wxMessageBox(wxString("You must choose a build method to be able to export to structures."), wxT("Cannot export"), wxICON_INFORMATION);
+        wxMessageBox(wxString("You must choose a build method to be able to export to schematics."), wxT("Cannot export"), wxICON_INFORMATION);
         return;
     }
 
@@ -669,13 +699,32 @@ void MainWindow::onExportToStructure(wxCommandEvent &evt)
         return;
     }
 
-    StructureExportDialog dialog(project.version, ExportDialogMode::Structure);
-    if (dialog.ShowModal() == wxID_CANCEL)
+    wxFileDialog saveFileDialog(this, _("Export as schematic files"), "", "", "Compressed zip files (*.zip)|*.zip", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    if (saveFileDialog.ShowModal() != wxID_CANCEL)
     {
-        return; // the user changed idea...
+        this->workerThread->requestExportSchematicZip(project, saveFileDialog.GetPath().ToStdString());
+    }
+}
+
+void MainWindow::onExportToSchematicSingleFile(wxCommandEvent &evt)
+{
+    if (project.buildMethod == MapBuildMethod::None)
+    {
+        wxMessageBox(wxString("You must choose a build method to be able to export to schematics."), wxT("Cannot export"), wxICON_INFORMATION);
+        return;
     }
 
-    this->workerThread->requestExportStruct(project, dialog.getPath());
+    if (this->workerThread->isBusy())
+    {
+        wxMessageBox(wxString("There is already a task in progress. Wait for it to end to continue."), wxT("Error"), wxICON_ERROR);
+        return;
+    }
+
+    wxFileDialog saveFileDialog(this, _("Export as a single schematic file"), "", "", "Schematic files (*.schem)|*.schem", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    if (saveFileDialog.ShowModal() != wxID_CANCEL)
+    {
+        this->workerThread->requestExportSchematicSingleFile(project, saveFileDialog.GetPath().ToStdString());
+    }
 }
 
 void MainWindow::onExportToFunctions(wxCommandEvent &evt)

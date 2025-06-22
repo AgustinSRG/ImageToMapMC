@@ -69,6 +69,7 @@ std::string blockDescriptionToTagName(const minecraft::BlockDescription *desc)
 void minecraft::writeSchematicNBTFile(std::string fileName, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version, bool isBase)
 {
     nbt::tag_compound root;
+    nbt::tag_compound schematic;
 
     nbt::tag_compound paletteTag;
 
@@ -112,9 +113,8 @@ void minecraft::writeSchematicNBTFile(std::string fileName, std::vector<mapart::
 
     size_t total_height = maxYlevel + 1;
 
-    vector<int32_t> &&blocks = vector<int32_t>(total_width * total_length * total_height, 0);
+    vector<int8_t> &&blocks = vector<int8_t>(total_width * total_length * total_height, 0);
 
-    size_t size = buildData.size();
     for (size_t i = 0; i < size; i++)
     {
         size_t x = buildData[i].x;
@@ -148,29 +148,31 @@ void minecraft::writeSchematicNBTFile(std::string fileName, std::vector<mapart::
             // Real block
             if (!isBase)
             {
-                blocks[block_index_base] = palette[blockIndex];
+                blocks[block_index] = palette[blockIndex];
             }
         }
     }
 
     // Data version and author tags
-    root.insert("Version", 3);
-    root.insert("DataVersion", minecraft::versionToDataVersion(version));
+    schematic.insert("Version", 3);
+    schematic.insert("DataVersion", minecraft::versionToDataVersion(version));
 
     // Insert blocks
     nbt::tag_compound blocksTag;
 
-    nbt::tag_int_array &&blocksData(std::move(blocks));
+    nbt::tag_byte_array &&blocksData(std::move(blocks));
 
     blocksTag.insert("Data", std::move(blocksData));
     blocksTag.insert("Palette", paletteTag.clone());
 
-    root.insert("Blocks", blocksTag.clone());
+    schematic.insert("Blocks", blocksTag.clone());
 
     // Insert size tags
-    root.insert("Width", static_cast<int32_t>(total_width));
-    root.insert("Height", static_cast<int32_t>(total_height));
-    root.insert("Length", static_cast<int32_t>(total_length));
+    schematic.insert("Width", static_cast<int16_t>(total_width));
+    schematic.insert("Height", static_cast<int16_t>(total_height));
+    schematic.insert("Length", static_cast<int16_t>(total_length));
+
+    root.insert("Schematic", schematic.clone());
 
     // Save
     std::ofstream file(fileName, std::ios::binary);
@@ -194,6 +196,7 @@ void minecraft::writeSchematicNBTFile(std::string fileName, std::vector<mapart::
 void minecraft::writeSchematicNBTFileCompact(std::string fileName, std::vector<std::vector<mapart::MapBuildingBlock>> &chunks, minecraft::McVersion version, threading::Progress &progress)
 {
     nbt::tag_compound root;
+    nbt::tag_compound schematic;
 
     nbt::tag_compound paletteTag;
 
@@ -245,7 +248,7 @@ void minecraft::writeSchematicNBTFileCompact(std::string fileName, std::vector<s
 
     size_t total_height = maxYlevel + 1;
 
-    vector<int32_t> &&blocks = vector<int32_t>(total_width * total_length * total_height, 0);
+    vector<int8_t> &&blocks = vector<int8_t>(total_width * total_length * total_height, 0);
 
     for (size_t chunk_i = 0; chunk_i < chunk_count; chunk_i++)
     {
@@ -285,7 +288,7 @@ void minecraft::writeSchematicNBTFileCompact(std::string fileName, std::vector<s
                 blocks[block_index_base] = 1;
 
                 // Real block
-                blocks[block_index_base] = palette[blockIndex];
+                blocks[block_index] = palette[blockIndex];
             }
         }
 
@@ -300,23 +303,25 @@ void minecraft::writeSchematicNBTFileCompact(std::string fileName, std::vector<s
     }
 
     // Data version and author tags
-    root.insert("Version", 3);
-    root.insert("DataVersion", minecraft::versionToDataVersion(version));
+    schematic.insert("Version", 3);
+    schematic.insert("DataVersion", minecraft::versionToDataVersion(version));
 
     // Insert blocks
     nbt::tag_compound blocksTag;
 
-    nbt::tag_int_array &&blocksData(std::move(blocks));
+    nbt::tag_byte_array &&blocksData(std::move(blocks));
 
     blocksTag.insert("Data", std::move(blocksData));
     blocksTag.insert("Palette", paletteTag.clone());
 
-    root.insert("Blocks", blocksTag.clone());
+    schematic.insert("Blocks", blocksTag.clone());
 
     // Insert size tags
-    root.insert("Width", static_cast<int32_t>(total_width));
-    root.insert("Height", static_cast<int32_t>(total_height));
-    root.insert("Length", static_cast<int32_t>(total_length));
+    schematic.insert("Width", static_cast<int16_t>(total_width));
+    schematic.insert("Height", static_cast<int16_t>(total_height));
+    schematic.insert("Length", static_cast<int16_t>(total_length));
+
+    root.insert("Schematic", schematic.clone());
 
     // Save
     std::ofstream file(fileName, std::ios::binary);
@@ -340,6 +345,7 @@ void minecraft::writeSchematicNBTFileCompact(std::string fileName, std::vector<s
 void minecraft::writeSchematicNBTFileCompactFlat(std::string fileName, std::vector<std::vector<mapart::MapBuildingBlock>> &chunks, size_t width, minecraft::McVersion version, threading::Progress &progress)
 {
     nbt::tag_compound root;
+    nbt::tag_compound schematic;
 
     nbt::tag_compound paletteTag;
 
@@ -392,7 +398,7 @@ void minecraft::writeSchematicNBTFileCompactFlat(std::string fileName, std::vect
 
     size_t total_height = maxYlevel + 1;
 
-    vector<int32_t> &&blocks = vector<int32_t>(total_width * total_length * total_height, 0);
+    vector<int8_t> &&blocks = vector<int8_t>(total_width * total_length * total_height, 0);
 
     for (size_t chunk_i = 0; chunk_i < chunk_count; chunk_i++)
     {
@@ -439,7 +445,7 @@ void minecraft::writeSchematicNBTFileCompactFlat(std::string fileName, std::vect
                 blocks[block_index_base] = 1;
 
                 // Real block
-                blocks[block_index_base] = palette[blockIndex];
+                blocks[block_index] = palette[blockIndex];
             }
         }
 
@@ -454,23 +460,25 @@ void minecraft::writeSchematicNBTFileCompactFlat(std::string fileName, std::vect
     }
 
     // Data version and author tags
-    root.insert("Version", 3);
-    root.insert("DataVersion", minecraft::versionToDataVersion(version));
+    schematic.insert("Version", 3);
+    schematic.insert("DataVersion", minecraft::versionToDataVersion(version));
 
     // Insert blocks
     nbt::tag_compound blocksTag;
 
-    nbt::tag_int_array &&blocksData(std::move(blocks));
+    nbt::tag_byte_array &&blocksData(std::move(blocks));
 
     blocksTag.insert("Data", std::move(blocksData));
     blocksTag.insert("Palette", paletteTag.clone());
 
-    root.insert("Blocks", blocksTag.clone());
+    schematic.insert("Blocks", blocksTag.clone());
 
     // Insert size tags
-    root.insert("Width", static_cast<int32_t>(total_width));
-    root.insert("Height", static_cast<int32_t>(total_height));
-    root.insert("Length", static_cast<int32_t>(total_length));
+    schematic.insert("Width", static_cast<int16_t>(total_width));
+    schematic.insert("Height", static_cast<int16_t>(total_height));
+    schematic.insert("Length", static_cast<int16_t>(total_length));
+
+    root.insert("Schematic", schematic.clone());
 
     // Save
     std::ofstream file(fileName, std::ios::binary);
@@ -494,6 +502,7 @@ void minecraft::writeSchematicNBTFileCompactFlat(std::string fileName, std::vect
 void minecraft::writeSchematicNBTFileZip(std::string fileName, zip_t *zipper, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version, bool isBase)
 {
     nbt::tag_compound root;
+    nbt::tag_compound schematic;
 
     nbt::tag_compound paletteTag;
 
@@ -537,9 +546,8 @@ void minecraft::writeSchematicNBTFileZip(std::string fileName, zip_t *zipper, st
 
     size_t total_height = maxYlevel + 1;
 
-    vector<int32_t> &&blocks = vector<int32_t>(total_width * total_length * total_height, 0);
+    vector<int8_t> &&blocks = vector<int8_t>(total_width * total_length * total_height, 0);
 
-    size_t size = buildData.size();
     for (size_t i = 0; i < size; i++)
     {
         size_t x = buildData[i].x;
@@ -573,29 +581,31 @@ void minecraft::writeSchematicNBTFileZip(std::string fileName, zip_t *zipper, st
             // Real block
             if (!isBase)
             {
-                blocks[block_index_base] = palette[blockIndex];
+                blocks[block_index] = palette[blockIndex];
             }
         }
     }
 
     // Data version and author tags
-    root.insert("Version", 3);
-    root.insert("DataVersion", minecraft::versionToDataVersion(version));
+    schematic.insert("Version", 3);
+    schematic.insert("DataVersion", minecraft::versionToDataVersion(version));
 
     // Insert blocks
     nbt::tag_compound blocksTag;
 
-    nbt::tag_int_array &&blocksData(std::move(blocks));
+    nbt::tag_byte_array &&blocksData(std::move(blocks));
 
     blocksTag.insert("Data", std::move(blocksData));
     blocksTag.insert("Palette", paletteTag.clone());
 
-    root.insert("Blocks", blocksTag.clone());
+    schematic.insert("Blocks", blocksTag.clone());
 
     // Insert size tags
-    root.insert("Width", static_cast<int32_t>(total_width));
-    root.insert("Height", static_cast<int32_t>(total_height));
-    root.insert("Length", static_cast<int32_t>(total_length));
+    schematic.insert("Width", static_cast<int16_t>(total_width));
+    schematic.insert("Height", static_cast<int16_t>(total_height));
+    schematic.insert("Length", static_cast<int16_t>(total_length));
+
+    root.insert("Schematic", schematic.clone());
 
     // Save
     ostringstream ss;
