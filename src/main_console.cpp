@@ -118,6 +118,8 @@ int printHelp()
     cout << "                                     'map' format creates '.dat' files for the maps" << endl;
     cout << "                                     'structure' format creates nbt structure files" << endl;
     cout << "                                     'structure-single' format creates a single nbt structure file" << endl;
+    cout << "                                     'schematic' format creates schematic files" << endl;
+    cout << "                                     'schematic-single' format creates a single schematic file" << endl;
     cout << "                                     'function' format creates .mcfunction files" << endl;
     cout << "    -mv, --mc-version [version]    Specifies the minecraft version in A.B format (eg, 1.12)." << endl;
     cout << "                                     Set to 'last' to use the most recent minecraft version available" << endl;
@@ -371,6 +373,27 @@ int buildMap(int argc, char **argv)
                         outputPath = "mapart.nbt";
                     }
                 }
+                else if (outputFormatStr.compare(string("schematic")) == 0)
+                {
+                    outFormat = MapOutputFormat::Schematic;
+                    if (buildMethod == MapBuildMethod::None)
+                    {
+                        buildMethod = MapBuildMethod::Chaos;
+                    }
+                }
+                else if (outputFormatStr.compare(string("schematic-single")) == 0)
+                {
+                    outFormat = MapOutputFormat::SchematicSingle;
+                    if (buildMethod == MapBuildMethod::None)
+                    {
+                        buildMethod = MapBuildMethod::Chaos;
+                    }
+
+                    if (!outputPathSet)
+                    {
+                        outputPath = "mapart.schem";
+                    }
+                }
                 else if (outputFormatStr.compare(string("function")) == 0)
                 {
                     outFormat = MapOutputFormat::Function;
@@ -381,8 +404,8 @@ int buildMap(int argc, char **argv)
                 }
                 else
                 {
-                    std::cerr << "Urecornized outout format: " << argv[i + 1] << endl;
-                    std::cerr << "Available formats: map, structure, structure-single, function" << endl;
+                    std::cerr << "Unrecognized outout format: " << argv[i + 1] << endl;
+                    std::cerr << "Available formats: map, structure, structure-single, schematic, schematic-single, function" << endl;
                     return 1;
                 }
 
@@ -403,7 +426,7 @@ int buildMap(int argc, char **argv)
                 i++;
                 if (version == McVersion::UNKNOWN)
                 {
-                    std::cerr << "Urecornized version: " << argv[i + 1] << endl;
+                    std::cerr << "Unrecognized version: " << argv[i + 1] << endl;
                     std::cerr << "Available versions: last, 1.17, 1.16, 1.15, 1.14, 1.13, 1.12" << endl;
                     return 1;
                 }
@@ -480,7 +503,7 @@ int buildMap(int argc, char **argv)
                 }
                 else
                 {
-                    std::cerr << "Urecornized color medthod: " << argv[i + 1] << endl;
+                    std::cerr << "Unrecognized color method: " << argv[i + 1] << endl;
                     std::cerr << "Available methods: euclidean, delta-e" << endl;
                     return 1;
                 }
@@ -501,7 +524,7 @@ int buildMap(int argc, char **argv)
                 ditheringMethod = parseDitheringMethodFromString(string(argv[i + 1]));
                 if (ditheringMethod == DitheringMethod::Unknown)
                 {
-                    std::cerr << "Urecornized dithering: " << argv[i + 1] << endl;
+                    std::cerr << "Unrecognized dithering: " << argv[i + 1] << endl;
                     std::cerr << "Available dithering methods: none, floyd-steinberg, min-average-error, burkes, sierra-lite, stucki, atkinson, bayer-44, bayer-22, ordered-33" << endl;
                     return 1;
                 }
@@ -564,7 +587,7 @@ int buildMap(int argc, char **argv)
             }
             else
             {
-                std::cerr << "Urecornized building medthod: " << argv[i + 1] << endl;
+                std::cerr << "Unrecognized building method: " << argv[i + 1] << endl;
                 std::cerr << "Available methods: 3d, 2d, stair" << endl;
                 return 1;
             }
@@ -733,7 +756,7 @@ int buildMap(int argc, char **argv)
     int mapsCountX = matrixW / MAP_WIDTH;
     int mapsCountZ = matrixH / MAP_HEIGHT;
 
-    // Do somethiong different depending on the outout format
+    // Do something different depending on the outout format
     if (outFormat == MapOutputFormat::Map)
     {
         // No need to build, just export to nbt map files
@@ -838,6 +861,66 @@ int buildMap(int argc, char **argv)
             }
         }
     }
+    else if (outFormat == MapOutputFormat::SchematicSingle)
+    {
+        std::vector<std::vector<mapart::MapBuildingBlock>> chunks;
+
+        p.startTask("Building maps...", 0, 0);
+        int total = 0;
+        int totalMapsCount = mapsCountX * mapsCountZ;
+        for (int mapZ = 0; mapZ < mapsCountZ; mapZ++)
+        {
+            for (int mapX = 0; mapX < mapsCountX; mapX++)
+            {
+                stringstream ss;
+                ss << "Building map (" << (total + 1) << "/" << totalMapsCount << ")...";
+                p.startTask(ss.str(), MAP_WIDTH, threadNum);
+
+                std::vector<mapart::MapBuildingBlock> buildingBlocks = mapart::buildMap(version, blockSet, mapArtColorMatrix, matrixW, matrixH, mapX, mapZ, buildMethod, threadNum, p);
+
+                // Add to materials list
+                materials.addBlocks(buildingBlocks);
+
+                // Add chunk
+                chunks.push_back(buildingBlocks);
+
+                total++;
+            }
+        }
+
+        p.startTask("Building maps...", static_cast<unsigned int>(totalMapsCount), 1);
+
+        try
+        {
+            if (buildMethod == MapBuildMethod::Flat)
+            {
+                writeSchematicNBTFileCompactFlat(outputPath, chunks, mapsCountX, version, p);
+            }
+            else
+            {
+                writeSchematicNBTFileCompact(outputPath, chunks, version, p);
+            }
+        }
+        catch (...)
+        {
+            std::cerr << endl
+                      << "Cannot write file: " << outputPath << endl;
+            return 1;
+        }
+
+        p.setEnded();
+        progressReportThread.join();
+
+        if (materialsOutFile.size() > 0)
+        {
+            // Save materials
+            if (!tools::writeTextFile(materialsOutFile, materials.toString()))
+            {
+                std::cerr << "Cannot write file: " << materialsOutFile << endl;
+                return 1;
+            }
+        }
+    }
     else
     {
         p.startTask("Building maps...", 0, 0);
@@ -869,6 +952,28 @@ int buildMap(int argc, char **argv)
                     try
                     {
                         writeStructureNBTFile(outFilePath.string(), buildingBlocks, version, false);
+                    }
+                    catch (...)
+                    {
+                        p.setEnded();
+                        progressReportThread.join();
+                        std::cerr << endl
+                                  << "Cannot write file: " << outFilePath.string() << endl;
+                        return 1;
+                    }
+                }
+                else if (outFormat == MapOutputFormat::Schematic)
+                {
+                    // Save as schematic file
+                    stringstream ss2;
+                    ss2 << "map_" << (total + 1) << ".schem";
+                    filesystem::path outFilePath(outputPath);
+
+                    outFilePath /= ss2.str();
+
+                    try
+                    {
+                        writeSchematicNBTFile(outFilePath.string(), buildingBlocks, version, false);
                     }
                     catch (...)
                     {
