@@ -153,24 +153,33 @@ void minecraft::writeSchematicNBTFile(std::string fileName, std::vector<mapart::
         }
     }
 
-    // Data version and author tags
+    // Data version tags
     schematic.insert("Version", 3);
     schematic.insert("DataVersion", minecraft::versionToDataVersion(version));
+
+    // Insert size tags
+    schematic.insert("Width", static_cast<int16_t>(total_width));
+    schematic.insert("Height", static_cast<int16_t>(total_height));
+    schematic.insert("Length", static_cast<int16_t>(total_length));
+
+    // Offset
+    nbt::tag_int_array tag_offset;
+    tag_offset.push_back(0);
+    tag_offset.push_back(0);
+    tag_offset.push_back(0);
+    schematic.insert("Offset", tag_offset.clone());
 
     // Insert blocks
     nbt::tag_compound blocksTag;
 
     nbt::tag_byte_array &&blocksData(std::move(blocks));
 
-    blocksTag.insert("Data", std::move(blocksData));
     blocksTag.insert("Palette", paletteTag.clone());
+    blocksTag.insert("Data", std::move(blocksData));
+    nbt::tag_list blockEntitiesTag;
+    blocksTag.insert("BlockEntities", blockEntitiesTag.clone());
 
     schematic.insert("Blocks", blocksTag.clone());
-
-    // Insert size tags
-    schematic.insert("Width", static_cast<int16_t>(total_width));
-    schematic.insert("Height", static_cast<int16_t>(total_height));
-    schematic.insert("Length", static_cast<int16_t>(total_length));
 
     root.insert("Schematic", schematic.clone());
 
@@ -302,24 +311,32 @@ void minecraft::writeSchematicNBTFileCompact(std::string fileName, std::vector<s
         }
     }
 
-    // Data version and author tags
+    // Data version tags
     schematic.insert("Version", 3);
     schematic.insert("DataVersion", minecraft::versionToDataVersion(version));
+
+    // Insert size tags
+    schematic.insert("Width", static_cast<int16_t>(total_width));
+    schematic.insert("Height", static_cast<int16_t>(total_height));
+    schematic.insert("Length", static_cast<int16_t>(total_length));
+
+    // Offset
+    nbt::tag_int_array tag_offset;
+    tag_offset.push_back(0);
+    tag_offset.push_back(0);
+    tag_offset.push_back(0);
+    schematic.insert("Offset", tag_offset.clone());
 
     // Insert blocks
     nbt::tag_compound blocksTag;
 
     nbt::tag_byte_array &&blocksData(std::move(blocks));
 
-    blocksTag.insert("Data", std::move(blocksData));
     blocksTag.insert("Palette", paletteTag.clone());
-
+    blocksTag.insert("Data", std::move(blocksData));
+    nbt::tag_list blockEntitiesTag;
+    blocksTag.insert("BlockEntities", blockEntitiesTag.clone());
     schematic.insert("Blocks", blocksTag.clone());
-
-    // Insert size tags
-    schematic.insert("Width", static_cast<int16_t>(total_width));
-    schematic.insert("Height", static_cast<int16_t>(total_height));
-    schematic.insert("Length", static_cast<int16_t>(total_length));
 
     root.insert("Schematic", schematic.clone());
 
@@ -459,24 +476,32 @@ void minecraft::writeSchematicNBTFileCompactFlat(std::string fileName, std::vect
         }
     }
 
-    // Data version and author tags
+    // Data version tags
     schematic.insert("Version", 3);
     schematic.insert("DataVersion", minecraft::versionToDataVersion(version));
+
+    // Insert size tags
+    schematic.insert("Width", static_cast<int16_t>(total_width));
+    schematic.insert("Height", static_cast<int16_t>(total_height));
+    schematic.insert("Length", static_cast<int16_t>(total_length));
+
+    // Offset
+    nbt::tag_int_array tag_offset;
+    tag_offset.push_back(0);
+    tag_offset.push_back(0);
+    tag_offset.push_back(0);
+    schematic.insert("Offset", tag_offset.clone());
 
     // Insert blocks
     nbt::tag_compound blocksTag;
 
     nbt::tag_byte_array &&blocksData(std::move(blocks));
 
-    blocksTag.insert("Data", std::move(blocksData));
     blocksTag.insert("Palette", paletteTag.clone());
-
+    blocksTag.insert("Data", std::move(blocksData));
+    nbt::tag_list blockEntitiesTag;
+    blocksTag.insert("BlockEntities", blockEntitiesTag.clone());
     schematic.insert("Blocks", blocksTag.clone());
-
-    // Insert size tags
-    schematic.insert("Width", static_cast<int16_t>(total_width));
-    schematic.insert("Height", static_cast<int16_t>(total_height));
-    schematic.insert("Length", static_cast<int16_t>(total_length));
 
     root.insert("Schematic", schematic.clone());
 
@@ -590,20 +615,28 @@ void minecraft::writeSchematicNBTFileZip(std::string fileName, zip_t *zipper, st
     schematic.insert("Version", 3);
     schematic.insert("DataVersion", minecraft::versionToDataVersion(version));
 
+    // Insert size tags
+    schematic.insert("Width", static_cast<int16_t>(total_width));
+    schematic.insert("Height", static_cast<int16_t>(total_height));
+    schematic.insert("Length", static_cast<int16_t>(total_length));
+
+    // Offset
+    nbt::tag_int_array tag_offset;
+    tag_offset.push_back(0);
+    tag_offset.push_back(0);
+    tag_offset.push_back(0);
+    schematic.insert("Offset", tag_offset.clone());
+
     // Insert blocks
     nbt::tag_compound blocksTag;
 
     nbt::tag_byte_array &&blocksData(std::move(blocks));
 
-    blocksTag.insert("Data", std::move(blocksData));
     blocksTag.insert("Palette", paletteTag.clone());
-
+    blocksTag.insert("Data", std::move(blocksData));
+    nbt::tag_list blockEntitiesTag;
+    blocksTag.insert("BlockEntities", blockEntitiesTag.clone());
     schematic.insert("Blocks", blocksTag.clone());
-
-    // Insert size tags
-    schematic.insert("Width", static_cast<int16_t>(total_width));
-    schematic.insert("Height", static_cast<int16_t>(total_height));
-    schematic.insert("Length", static_cast<int16_t>(total_length));
 
     root.insert("Schematic", schematic.clone());
 
