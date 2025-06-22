@@ -1054,7 +1054,7 @@ void WorkerThread::ExportStructZip(mapart::MapArtProject &copyProject, std::stri
                 std::string fPath = ss2.str();
 
                 stringstream ss3;
-                ss3 << "map_" << (total + 1) << "_base.nbt";
+                ss3 << "bases/map_" << (total + 1) << "_base.nbt";
 
                 std::string fPathBase = ss3.str();
 
@@ -1246,7 +1246,7 @@ void WorkerThread::ExportSchematicZip(mapart::MapArtProject &copyProject, std::s
                 std::string fPath = ss2.str();
 
                 stringstream ss3;
-                ss3 << "map_" << (total + 1) << "_base.schem";
+                ss3 << "bases/map_" << (total + 1) << "_base.schem";
 
                 std::string fPathBase = ss3.str();
 
