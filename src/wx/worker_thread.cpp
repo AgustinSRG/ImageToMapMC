@@ -409,9 +409,9 @@ void WorkerThread::GeneratePreview(mapart::MapArtProject &copyProject)
 
         int originalImageWidth;
         int originalImageHeight;
-        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
 
-        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+        tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
         progress.startTask("Loading minecraft colors...", 0, 0);
         std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
@@ -435,10 +435,10 @@ void WorkerThread::GeneratePreview(mapart::MapArtProject &copyProject)
             countsMats[i] = 0;
         }
 
-        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColorMatrix.colors, originalImageColorMatrix.transparency, originalImageWidth, originalImageHeight, copyProject.preserveTransparency, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
 
         returnDataMutex.Lock();
-        previewData = MapArtPreviewData(mapArtColorMatrix, originalImageWidth, originalImageHeight);
+        previewData = MapArtPreviewData(mapArtColorMatrix, originalImageColorMatrix.transparency, originalImageWidth, originalImageHeight, copyProject.preserveTransparency);
         countMaterials = countsMats;
         returnDataMutex.Unlock();
 
@@ -470,9 +470,9 @@ void WorkerThread::ExportMaterials(mapart::MapArtProject &copyProject, std::stri
 
         int originalImageWidth;
         int originalImageHeight;
-        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
 
-        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+        tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
         progress.startTask("Loading minecraft colors...", 0, 0);
         std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
@@ -489,7 +489,7 @@ void WorkerThread::ExportMaterials(mapart::MapArtProject &copyProject, std::stri
         applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
-        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColorMatrix.colors, originalImageColorMatrix.transparency, originalImageWidth, originalImageHeight, copyProject.preserveTransparency, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
 
         // Compute total maps
         int mapsCountX = originalImageWidth / MAP_WIDTH;
@@ -549,9 +549,9 @@ void WorkerThread::ExportMaterialsSplit(mapart::MapArtProject &copyProject, std:
 
         int originalImageWidth;
         int originalImageHeight;
-        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
 
-        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+        tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
         progress.startTask("Loading minecraft colors...", 0, 0);
         std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
@@ -568,7 +568,7 @@ void WorkerThread::ExportMaterialsSplit(mapart::MapArtProject &copyProject, std:
         applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
-        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColorMatrix.colors, originalImageColorMatrix.transparency, originalImageWidth, originalImageHeight, copyProject.preserveTransparency, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
 
         // Compute total maps
         int mapsCountX = originalImageWidth / MAP_WIDTH;
@@ -640,9 +640,9 @@ void WorkerThread::ExportMaps(mapart::MapArtProject &copyProject, std::string &c
 
         int originalImageWidth;
         int originalImageHeight;
-        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
 
-        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+        tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
         progress.startTask("Loading minecraft colors...", 0, 0);
         std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
@@ -659,7 +659,7 @@ void WorkerThread::ExportMaps(mapart::MapArtProject &copyProject, std::string &c
         applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
-        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColorMatrix.colors, originalImageColorMatrix.transparency, originalImageWidth, originalImageHeight, copyProject.preserveTransparency, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
 
         // Compute total maps
         int mapsCountX = originalImageWidth / MAP_WIDTH;
@@ -723,9 +723,9 @@ void WorkerThread::ExportMapsZip(mapart::MapArtProject &copyProject, std::string
 
         int originalImageWidth;
         int originalImageHeight;
-        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
 
-        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+        tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
         progress.startTask("Loading minecraft colors...", 0, 0);
         std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
@@ -742,7 +742,7 @@ void WorkerThread::ExportMapsZip(mapart::MapArtProject &copyProject, std::string
         applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
-        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColorMatrix.colors, originalImageColorMatrix.transparency, originalImageWidth, originalImageHeight, copyProject.preserveTransparency, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
 
         // Create zip container for the files
         int errorp;
@@ -820,9 +820,9 @@ void WorkerThread::ExportStruct(mapart::MapArtProject &copyProject, std::string 
 
         int originalImageWidth;
         int originalImageHeight;
-        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
 
-        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+        tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
         progress.startTask("Loading minecraft colors...", 0, 0);
         std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
@@ -839,7 +839,7 @@ void WorkerThread::ExportStruct(mapart::MapArtProject &copyProject, std::string 
         applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
-        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColorMatrix.colors, originalImageColorMatrix.transparency, originalImageWidth, originalImageHeight, copyProject.preserveTransparency, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
 
         // Compute total maps
         int mapsCountX = originalImageWidth / MAP_WIDTH;
@@ -910,9 +910,9 @@ void WorkerThread::ExportStructSingleFile(mapart::MapArtProject &copyProject, st
 
         int originalImageWidth;
         int originalImageHeight;
-        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix= loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
 
-        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+        tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
         progress.startTask("Loading minecraft colors...", 0, 0);
         std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
@@ -929,7 +929,7 @@ void WorkerThread::ExportStructSingleFile(mapart::MapArtProject &copyProject, st
         applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
-        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColorMatrix.colors, originalImageColorMatrix.transparency, originalImageWidth, originalImageHeight, copyProject.preserveTransparency, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
 
         // Compute total maps
         int mapsCountX = originalImageWidth / MAP_WIDTH;
@@ -999,9 +999,9 @@ void WorkerThread::ExportStructZip(mapart::MapArtProject &copyProject, std::stri
 
         int originalImageWidth;
         int originalImageHeight;
-        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
 
-        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+        tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
         progress.startTask("Loading minecraft colors...", 0, 0);
         std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
@@ -1018,7 +1018,7 @@ void WorkerThread::ExportStructZip(mapart::MapArtProject &copyProject, std::stri
         applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
-        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColorMatrix.colors, originalImageColorMatrix.transparency, originalImageWidth, originalImageHeight, copyProject.preserveTransparency, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
 
         // Create zip container for the files
         int errorp;
@@ -1102,9 +1102,9 @@ void WorkerThread::ExportSchematicSingleFile(mapart::MapArtProject &copyProject,
 
         int originalImageWidth;
         int originalImageHeight;
-        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
 
-        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+        tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
         progress.startTask("Loading minecraft colors...", 0, 0);
         std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
@@ -1121,7 +1121,7 @@ void WorkerThread::ExportSchematicSingleFile(mapart::MapArtProject &copyProject,
         applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
-        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColorMatrix.colors, originalImageColorMatrix.transparency, originalImageWidth, originalImageHeight, copyProject.preserveTransparency, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
 
         // Compute total maps
         int mapsCountX = originalImageWidth / MAP_WIDTH;
@@ -1191,9 +1191,9 @@ void WorkerThread::ExportSchematicZip(mapart::MapArtProject &copyProject, std::s
 
         int originalImageWidth;
         int originalImageHeight;
-        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
 
-        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+        tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
         progress.startTask("Loading minecraft colors...", 0, 0);
         std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
@@ -1210,7 +1210,7 @@ void WorkerThread::ExportSchematicZip(mapart::MapArtProject &copyProject, std::s
         applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
-        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColorMatrix.colors, originalImageColorMatrix.transparency, originalImageWidth, originalImageHeight, copyProject.preserveTransparency, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
 
         // Create zip container for the files
         int errorp;
@@ -1294,9 +1294,9 @@ void WorkerThread::ExportFunc(mapart::MapArtProject &copyProject, std::string &c
 
         int originalImageWidth;
         int originalImageHeight;
-        vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
 
-        tools::editImage(originalImageColors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
+        tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
         progress.startTask("Loading minecraft colors...", 0, 0);
         std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
@@ -1313,7 +1313,7 @@ void WorkerThread::ExportFunc(mapart::MapArtProject &copyProject, std::string &c
         applyBuildRestrictions(colorSet, copyProject.buildMethod);
 
         progress.startTask("Adjusting colors...", originalImageHeight, threadNum);
-        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColors, originalImageWidth, originalImageHeight, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
+        std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColorMatrix.colors, originalImageColorMatrix.transparency, originalImageWidth, originalImageHeight, copyProject.preserveTransparency, copyProject.colorDistanceAlgorithm, copyProject.ditheringMethod, threadNum, progress, countsMats);
 
         // Compute total maps
         int mapsCountX = originalImageWidth / MAP_WIDTH;

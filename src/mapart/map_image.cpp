@@ -27,7 +27,7 @@ using namespace std;
 using namespace colors;
 using namespace mapart;
 
-std::vector<colors::Color> mapart::loadColorMatrixFromImageAndPad(wxImage &image, colors::Color background, int *padWidth, int *padHeight)
+ImageColorMatrix mapart::loadColorMatrixFromImageAndPad(wxImage &image, colors::Color background, int *padWidth, int *padHeight)
 {
     int width = image.GetSize().GetWidth();
     int height = image.GetSize().GetHeight();
@@ -39,14 +39,17 @@ std::vector<colors::Color> mapart::loadColorMatrixFromImageAndPad(wxImage &image
     int imagePosX = (finalWidth - width) / 2;
     int imagePosZ = (finalHeight - height) / 2;
 
-    vector<Color> result(size);
+    vector<Color> resultColors(size);
+    vector<bool> resultTransparency(size);
 
     // Init colors to white
     for (size_t i = 0; i < size; i++)
     {
-        result[i].red = background.red;
-        result[i].green = background.green;
-        result[i].blue = background.blue;
+        resultColors[i].red = background.red;
+        resultColors[i].green = background.green;
+        resultColors[i].blue = background.blue;
+
+        resultTransparency[i] = true;
     }
 
     // Iterate
@@ -59,12 +62,15 @@ std::vector<colors::Color> mapart::loadColorMatrixFromImageAndPad(wxImage &image
             int indexImage = (z * width + x) * 3;
             int indexFinal = (imagePosZ + z) * finalWidth + (imagePosX + x);
 
-            result[indexFinal].red = rawData[indexImage];
-            result[indexFinal].green = rawData[indexImage + 1];
-            result[indexFinal].blue = rawData[indexImage + 2];
+            resultColors[indexFinal].red = rawData[indexImage];
+            resultColors[indexFinal].green = rawData[indexImage + 1];
+            resultColors[indexFinal].blue = rawData[indexImage + 2];
 
             if (alphaData != NULL) {
-                result[indexFinal] = colors::bendColor(result[indexFinal], alphaData[z * width + x], background);
+                resultColors[indexFinal] = colors::bendColor(resultColors[indexFinal], alphaData[z * width + x], background);
+                resultTransparency[indexFinal] = alphaData[z * width + x] == 0;
+            } else {
+                resultTransparency[indexFinal] = false;
             }
         }
     }
@@ -72,5 +78,8 @@ std::vector<colors::Color> mapart::loadColorMatrixFromImageAndPad(wxImage &image
     *padWidth = finalWidth;
     *padHeight = finalHeight;
 
-    return result;
+    return ImageColorMatrix{
+        resultColors,
+        resultTransparency,
+    };
 }

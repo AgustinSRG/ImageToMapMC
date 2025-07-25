@@ -147,6 +147,7 @@ int printHelp()
     cout << "                                     -bm '3d' Build 3 dimensional map with arbitrary height jumps" << endl;
     cout << "                                     -bm '2d' Build 2 dimensional map at the same level" << endl;
     cout << "                                     -bm 'stair' Build 3 dimensional map with 1 block height jumps max" << endl;
+    cout << "    --transparency                 Set this flag to preserve transparency from original image" << endl;
     cout << "    -cs, --color-set [name/file]   Specifies the color set to use." << endl;
     cout << "                                     Color sets can enable or disable colors and" << endl;
     cout << "                                     set the blocks to build each color." << endl;
@@ -271,13 +272,24 @@ int renderMap(int argc, char **argv)
 
     // Convert colors to image
     wxImage image(MAP_WIDTH, MAP_HEIGHT);
+    image.InitAlpha();
     unsigned char *rawData = image.GetData();
+    unsigned char *alphaData = image.GetAlpha();
     size_t size = colorsMatrix.size();
 
     size_t j = 0;
     for (size_t i = 0; i < size; i++)
     {
         colors::Color color = colorsMatrix[i]->color;
+
+        if (colorsMatrix[i]->baseColorIndex == (short)minecraft::McColors::NONE)
+        {
+            alphaData[i] = 0;
+        }
+        else
+        {
+            alphaData[i] = 255;
+        }
 
         rawData[j++] = color.red;
         rawData[j++] = color.green;
@@ -315,6 +327,7 @@ int buildMap(int argc, char **argv)
     ColorDistanceAlgorithm colorAlgo = ColorDistanceAlgorithm::Euclidean;
     DitheringMethod ditheringMethod = DitheringMethod::None;
     MapBuildMethod buildMethod = MapBuildMethod::None;
+    bool preserveTransparency = false;
     int rsW = -1;
     int rsH = -1;
     bool yesForced = false;
@@ -612,6 +625,10 @@ int buildMap(int argc, char **argv)
         {
             yesForced = true;
         }
+        else if (arg.compare(string("--transparency")) == 0)
+        {
+            preserveTransparency = true;
+        }
         else if (arg.compare(string("-m")) == 0 || arg.compare(string("--materials")) == 0)
         {
             if ((i + 1) < argc)
@@ -632,6 +649,13 @@ int buildMap(int argc, char **argv)
             std::cerr << "For help type: mcmap --help" << endl;
             return 1;
         }
+    }
+
+    if (outFormat != MapOutputFormat::Map && preserveTransparency)
+    {
+        std::cerr << "Error: Transparency cannot be preserved when building the map." << endl;
+        std::cerr << "Please choose the option to export to map files when using transparency." << endl;
+        return 1;
     }
 
     if (!yesForced && filesystem::exists(filesystem::path(outputPath)))
@@ -693,7 +717,7 @@ int buildMap(int argc, char **argv)
     p.startTask("Adjusting image size...", 0, 0);
     int matrixW;
     int matrixH;
-    vector<Color> imageColorsMatrix = loadColorMatrixFromImageAndPad(image, background, &matrixW, &matrixH);
+    mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(image, background, &matrixW, &matrixH);
 
     // Load colors
     p.startTask("Loading minecraft colors...", 0, 0);
@@ -750,7 +774,7 @@ int buildMap(int argc, char **argv)
     // Generate map art
     p.startTask("Adjusting image colors...", matrixH, threadNum);
     std::vector<size_t> countsMats(MAX_COLOR_GROUPS);
-    std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, imageColorsMatrix, matrixW, matrixH, colorAlgo, ditheringMethod, threadNum, p, countsMats);
+    std::vector<const minecraft::FinalColor *> mapArtColorMatrix = generateMapArt(colorSet, originalImageColorMatrix.colors, originalImageColorMatrix.transparency, matrixW, matrixH, preserveTransparency, colorAlgo, ditheringMethod, threadNum, p, countsMats);
 
     // Compute total maps
     int mapsCountX = matrixW / MAP_WIDTH;

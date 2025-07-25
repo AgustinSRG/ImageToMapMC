@@ -34,10 +34,22 @@ Once you selected the image you want, you have to decide how do you want to buil
 
  - **None** - Choose this if you have full access and you do not want to build it, you just want to create the `.dat` map files so you can directly import them in your world or server. **This gives access to all the available colors**
  - **Staircased** - Choose this method if you want to build the map in survival, and you want a difficulty balance. This method creates the map with staircases of blocks, with only single block jumps in height. **This gives access to 75% of the available colors**
- - **3D (Complex)** - Choose this one if you don't care about difficulty. This is the same as staircased, but with arbitrary jusmps in height, making it more compact but really hard to build. **This gives access to 75% of the available colors**
+ - **3D (Complex)** - Choose this one if you don't care about difficulty. This is the same as staircased, but with arbitrary jumps in height, making it more compact but really hard to build. **This gives access to 75% of the available colors**
  - **Flat** - Choose this one if you want a simple build. This is ideal if you want to manually modify it in creative, however it drastically reduces the amount of colors. **This gives access to 25% of the available colors**
 
 To change this option, use the menu: **Build Method**
+
+## Transparency
+
+In the **Transparency** menu, you can choose to use transparency, in order to preserve the transparency of images.
+
+Partially transparent maps cannot be built. So, if you plan on building the map as an structure or schematic, always select '**Use background color**'.
+
+The '**Use transparency**' option is only for creative players or server operators who wish to export the map files (`.dat`). Partially transparent maps can be placed using invisible item frames, preserving their transparency in game. You can get an invisible item frame with the following command:
+
+```
+/give @p minecraft:item_frame[minecraft:entity_data={id:"minecraft:item_frame",Invisible:1b},minecraft:custom_name='[{"text":"Invisible Item Frame"}]',minecraft:enchantments={protection:1}] 64
+```
 
 ## Choose the version
 

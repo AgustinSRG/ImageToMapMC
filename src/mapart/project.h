@@ -56,6 +56,8 @@ namespace mapart {
             std::vector<unsigned char> image_data;
             std::vector<unsigned char> image_alpha;
 
+            bool preserveTransparency;
+
             MapArtProject();
             MapArtProject(const MapArtProject &p1);
 
@@ -63,6 +65,7 @@ namespace mapart {
             bool saveToFile(std::string path);
 
             std::vector<colors::Color> getColors();
+            std::vector<bool> getTransparency();
 
             wxImage toImage();
 
@@ -72,10 +75,12 @@ namespace mapart {
     class MapArtPreviewData {
         public:
             std::vector<colors::Color> colors;
+            std::vector<bool> transparency;
             int width;
             int height;
+            bool preserveTransparency;
 
             MapArtPreviewData();
-            MapArtPreviewData(std::vector<const minecraft::FinalColor *> colors, int width, int height);
+            MapArtPreviewData(std::vector<const minecraft::FinalColor *> colors, std::vector<bool> transparency, int width, int height, bool preserveTransparency);
     };
 }

@@ -81,6 +81,8 @@ MapArtProject::MapArtProject()
     {
         image_alpha[i] = 255;
     }
+
+    preserveTransparency = false;
 }
 
 MapArtProject::MapArtProject(const MapArtProject &p1)
@@ -113,6 +115,9 @@ MapArtProject::MapArtProject(const MapArtProject &p1)
     // Image data
     image_data = p1.image_data;
     image_alpha = p1.image_alpha;
+
+    // Transparency
+    preserveTransparency = p1.preserveTransparency;
 }
 
 bool MapArtProject::loadFromFile(std::string path)
@@ -205,6 +210,12 @@ bool MapArtProject::loadFromFile(std::string path)
             buildMethod = MapBuildMethod::None;
         }
 
+        if (comp.has_key("preserve_transparency")) {
+            preserveTransparency = comp.at("preserve_transparency").as<nbt::tag_int>().get() != 0;
+        } else {
+            preserveTransparency = false;
+        }
+
         width = comp.at("width").as<nbt::tag_int>().get();
         height = comp.at("height").as<nbt::tag_int>().get();
 
@@ -267,6 +278,8 @@ bool MapArtProject::saveToFile(std::string path)
     root.insert("colors_conf", nbt::tag_string(colorSetConf));
 
     root.insert("version", nbt::tag_string(versionToString(version)));
+
+    root.insert("preserve_transparency", nbt::tag_int(preserveTransparency ? 1 : 0));
 
     switch (colorDistanceAlgorithm)
     {
@@ -352,6 +365,18 @@ std::vector<colors::Color> MapArtProject::getColors()
     return result;
 }
 
+std::vector<bool> MapArtProject::getTransparency()
+{
+    std::vector<bool> result(width * height);
+
+    for (size_t i = 0; i < result.size(); i++)
+    {
+        result[i] = image_alpha[i] == 0;
+    }
+
+    return result;
+}
+
 wxImage MapArtProject::toImage()
 {
     wxImage image(width, height);
@@ -411,10 +436,12 @@ void MapArtProject::loadImage(wxImage &image)
     }
 }
 
-MapArtPreviewData::MapArtPreviewData(std::vector<const minecraft::FinalColor *> colors, int width, int height)
+MapArtPreviewData::MapArtPreviewData(std::vector<const minecraft::FinalColor *> colors, std::vector<bool> transparency, int width, int height, bool preserveTransparency)
 {
     this->width = width;
     this->height = height;
+
+    this->preserveTransparency = preserveTransparency;
 
     this->colors.resize(colors.size());
 
@@ -422,11 +449,20 @@ MapArtPreviewData::MapArtPreviewData(std::vector<const minecraft::FinalColor *> 
     {
         this->colors[i] = colors[i]->color;
     }
+
+    this->transparency.resize(transparency.size());
+
+    for (size_t i = 0; i < transparency.size(); i++)
+    {
+        this->transparency[i] = transparency[i];
+    }
 }
 
 MapArtPreviewData::MapArtPreviewData()
 {
     this->colors.resize(0);
+    this->transparency.resize(0);
     this->width = 0;
     this->height = 0;
+    this->preserveTransparency = false;
 }

@@ -1,15 +1,15 @@
 /*
  * This file is part of ImageToMapMC project
- * 
+ *
  * Copyright (c) 2021 Agustin San Roman
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
 
@@ -165,7 +165,7 @@ void applyErrorDiffussion(std::vector<colors::Color> &colorMatrix, size_t width,
     }
 }
 
-void threadGenerateMapFunc(int id, size_t fromZ, size_t toZ, std::vector<const minecraft::FinalColor *> &result, const std::vector<minecraft::FinalColor> &colorSet, std::vector<colors::Color> &matrix, size_t width, size_t height, colors::ColorDistanceAlgorithm colorDistanceAlgo, mapart::DitheringMethod ditheringMethod, threading::Progress &progress, std::vector<size_t> &counts)
+void threadGenerateMapFunc(int id, size_t fromZ, size_t toZ, std::vector<const minecraft::FinalColor *> &result, const std::vector<minecraft::FinalColor> &colorSet, std::vector<colors::Color> &matrix, std::vector<bool> &transparency, size_t width, size_t height, bool preserveTransparency, colors::ColorDistanceAlgorithm colorDistanceAlgo, mapart::DitheringMethod ditheringMethod, threading::Progress &progress, std::vector<size_t> &counts)
 {
     size_t closest;
     vector<size_t> closest2;
@@ -178,6 +178,12 @@ void threadGenerateMapFunc(int id, size_t fromZ, size_t toZ, std::vector<const m
         for (size_t x = 0; x < width; x++)
         {
             size_t index = z * width + x;
+
+            if (preserveTransparency && transparency[index])
+            {
+                result[index] = &(colorSet[0]); // Void
+                continue;
+            }
 
             switch (ditheringMethod)
             {
@@ -263,9 +269,10 @@ void threadGenerateMapFunc(int id, size_t fromZ, size_t toZ, std::vector<const m
     }
 }
 
-std::vector<const minecraft::FinalColor *> mapart::generateMapArt(const std::vector<minecraft::FinalColor> &colorSet, const std::vector<colors::Color> &colorMatrix, size_t width, size_t height, colors::ColorDistanceAlgorithm colorDistanceAlgo, mapart::DitheringMethod ditheringMethod, size_t threadNum, threading::Progress &progress, std::vector<size_t> &counts)
+std::vector<const minecraft::FinalColor *> mapart::generateMapArt(const std::vector<minecraft::FinalColor> &colorSet, const std::vector<colors::Color> &colorMatrix, const std::vector<bool> &transparency, size_t width, size_t height, bool preserveTransparency, colors::ColorDistanceAlgorithm colorDistanceAlgo, mapart::DitheringMethod ditheringMethod, size_t threadNum, threading::Progress &progress, std::vector<size_t> &counts)
 {
-    std::vector<colors::Color> matrix(colorMatrix); // Make a copy of colorMatrix to work with
+    std::vector<colors::Color> matrix(colorMatrix);     // Make a copy of colorMatrix to work with
+    std::vector<bool> transparencyMatrix(transparency); // Make a copy of transparency to work with
     std::vector<const minecraft::FinalColor *> result(width * height);
 
     for (int j = 0; j < MAX_COLOR_GROUPS; j++)
@@ -308,7 +315,7 @@ std::vector<const minecraft::FinalColor *> mapart::generateMapArt(const std::vec
             // Last thread, get the rest
             endZ = height;
         }
-        threads[i] = std::thread(threadGenerateMapFunc, i, startZ, endZ, std::ref(result), std::ref(colorSet), std::ref(matrix), width, height, colorDistanceAlgo, ditheringMethod, std::ref(progress), std::ref(countParts[i]));
+        threads[i] = std::thread(threadGenerateMapFunc, i, startZ, endZ, std::ref(result), std::ref(colorSet), std::ref(matrix), std::ref(transparencyMatrix), width, height, preserveTransparency, colorDistanceAlgo, ditheringMethod, std::ref(progress), std::ref(countParts[i]));
     }
 
     // Wait for the threads

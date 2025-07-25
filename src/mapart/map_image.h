@@ -34,6 +34,16 @@
 #include "map_art.h"
 
 namespace mapart {
+    /**
+     * @brief  Struct to store colors and transparency map
+     * @note   
+     * @retval None
+     */
+    struct ImageColorMatrix {
+        std::vector<colors::Color> colors;
+        std::vector<bool> transparency;
+    };
+
 
     /**
      * @brief  Loads color matrix from image
@@ -44,5 +54,5 @@ namespace mapart {
      * @param  padHeight: By reference, to store matrix height
      * @retval 
      */
-    std::vector<colors::Color> loadColorMatrixFromImageAndPad(wxImage &image, colors::Color background, int * padWidth, int * padHeight);
+    ImageColorMatrix loadColorMatrixFromImageAndPad(wxImage &image, colors::Color background, int * padWidth, int * padHeight);
 }

@@ -89,6 +89,9 @@ enum Identifiers
     ID_Help_Guide_3 = 43,
 
     ID_Timer = 50,
+
+    ID_Transparency_Use_Background = 60,
+    ID_Transparency_Preserve = 61,
 };
 
 #define VERSION_ID_PREFIX (1500)
@@ -109,6 +112,8 @@ EVT_MENU(ID_Materials_Save_Split, MainWindow::OnSaveMaterialsListSplit)
 EVT_MENU(ID_Help_Guide_1, MainWindow::onHelp)
 EVT_MENU(ID_Help_Guide_2, MainWindow::onHelp)
 EVT_MENU(ID_Help_Guide_3, MainWindow::onHelp)
+EVT_MENU(ID_Transparency_Use_Background, MainWindow::onSetTransparencyNo)
+EVT_MENU(ID_Transparency_Preserve, MainWindow::onSetTransparencyYes)
 EVT_MENU_RANGE(VERSION_ID_PREFIX, VERSION_ID_PREFIX + 99, MainWindow::onChangeVersion)
 EVT_MENU_RANGE(COLOR_METHOD_ID_PREFIX, COLOR_METHOD_ID_PREFIX + 99, MainWindow::onChangeColorAlgo)
 EVT_MENU_RANGE(BUILD_METHOD_ID_PREFIX, BUILD_METHOD_ID_PREFIX + 99, MainWindow::onChangeBuildMethod)
@@ -260,6 +265,12 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::None), "&None", "Use all the colors (even the unobtainable with blocks)");
     menuBar->Append(menuBuildMethod, "&Build Method");
 
+    // Transparency
+    wxMenu *menuTransparency = new wxMenu();
+    menuTransparency->AppendRadioItem(ID_Transparency_Use_Background, "&Use background color", "Use a background color to replace transparency.")->Check(true);
+    menuTransparency->AppendRadioItem(ID_Transparency_Preserve, "&Use transparency", "Preserve image transparency. This makes it impossible to build in survival, but you can still export it to map files.");
+    menuBar->Append(menuTransparency, "&Transparency");
+
     // Version
     wxMenu *menuVersion = new wxMenu();
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_21), "&1.21", "Version: 1.21")->Check(true);
@@ -300,12 +311,12 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     originalImagePanel = new wxImagePanel(this);
     originalImagePanel->SetPosition(wxPoint(0, 0));
     originalImagePanel->SetSize(GetClientSize().GetWidth() / 2 - FRAME_PAD_PIXELS, GetClientSize().GetHeight());
-    originalImagePanel->setColors(project.getColors(), project.width, project.height);
+    originalImagePanel->setColors(project.getColors(), project.getTransparency(), project.width, project.height, true);
 
     previewPanel = new wxImagePanel(this);
     previewPanel->SetPosition(wxPoint(GetClientSize().GetWidth() / 2 + FRAME_PAD_PIXELS, 0));
     previewPanel->SetSize(GetClientSize().GetWidth() / 2 - FRAME_PAD_PIXELS, GetClientSize().GetHeight());
-    previewPanel->setColors(project.getColors(), project.width, project.height);
+    previewPanel->setColors(project.getColors(), project.getTransparency(), project.width, project.height, project.preserveTransparency);
 
     Maximize();
 
@@ -362,11 +373,11 @@ void MainWindow::updateOriginalImage()
 
     int matrixW;
     int matrixH;
-    vector<Color> originalImageColors = loadColorMatrixFromImageAndPad(imageCopy, project.background, &matrixW, &matrixH);
+    mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, project.background, &matrixW, &matrixH);
 
-    tools::editImage(originalImageColors, matrixW, matrixH, project.saturation, project.contrast, project.brightness);
+    tools::editImage(originalImageColorMatrix.colors, matrixW, matrixH, project.saturation, project.contrast, project.brightness);
 
-    originalImagePanel->setColors(originalImageColors, matrixW, matrixH);
+    originalImagePanel->setColors(originalImageColorMatrix.colors, originalImageColorMatrix.transparency, matrixW, matrixH, true);
     originalImagePanel->Refresh();
 
     stringstream ss;
@@ -434,6 +445,20 @@ void MainWindow::onChangeDithering(wxCommandEvent &evt)
     RequestPreviewGeneration();
 }
 
+void MainWindow::onSetTransparencyYes(wxCommandEvent &evt)
+{
+    project.preserveTransparency = true;
+    dirty = true;
+    RequestPreviewGeneration();
+}
+
+void MainWindow::onSetTransparencyNo(wxCommandEvent &evt)
+{
+    project.preserveTransparency = false;
+    dirty = true;
+    RequestPreviewGeneration();
+}
+
 void MainWindow::OnSize(wxSizeEvent &event)
 {
     if (originalImagePanel != NULL)
@@ -460,7 +485,13 @@ void MainWindow::OnSaveMaterialsList(wxCommandEvent &evt)
 {
     if (project.buildMethod == MapBuildMethod::None)
     {
-        wxMessageBox(wxString("You must choose a build method to create the materials list"), wxT("Error"), wxICON_ERROR);
+        wxMessageBox(wxString("You must choose a build method to create the materials list"), wxT("Cannot build map"), wxICON_INFORMATION);
+        return;
+    }
+
+    if (project.preserveTransparency)
+    {
+        wxMessageBox(wxString("You cannot export the materials when using transparency. Transparency is only available for exporting as map files."), wxT("Cannot build map"), wxICON_INFORMATION);
         return;
     }
 
@@ -481,7 +512,13 @@ void MainWindow::OnSaveMaterialsListSplit(wxCommandEvent &evt)
 {
     if (project.buildMethod == MapBuildMethod::None)
     {
-        wxMessageBox(wxString("You must choose a build method to create the materials list"), wxT("Error"), wxICON_ERROR);
+        wxMessageBox(wxString("You must choose a build method to create the materials list"), wxT("Cannot build map"), wxICON_INFORMATION);
+        return;
+    }
+
+    if (project.preserveTransparency)
+    {
+        wxMessageBox(wxString("You cannot export the materials when using transparency. Transparency is only available for exporting as map files."), wxT("Cannot build map"), wxICON_INFORMATION);
         return;
     }
 
@@ -624,7 +661,13 @@ void MainWindow::onExportToStructure(wxCommandEvent &evt)
 {
     if (project.buildMethod == MapBuildMethod::None)
     {
-        wxMessageBox(wxString("You must choose a build method to be able to export to structures."), wxT("Cannot export"), wxICON_INFORMATION);
+        wxMessageBox(wxString("You must choose a build method to be able to export to structures."), wxT("Cannot build map"), wxICON_INFORMATION);
+        return;
+    }
+
+    if (project.preserveTransparency)
+    {
+        wxMessageBox(wxString("The map cannot be built when using transparency. Transparency is only available for exporting as map files."), wxT("Cannot build map"), wxICON_INFORMATION);
         return;
     }
 
@@ -647,7 +690,13 @@ void MainWindow::onExportToStructureZip(wxCommandEvent &evt)
 {
     if (project.buildMethod == MapBuildMethod::None)
     {
-        wxMessageBox(wxString("You must choose a build method to be able to export to structures."), wxT("Cannot export"), wxICON_INFORMATION);
+        wxMessageBox(wxString("You must choose a build method to be able to export to structures."), wxT("Cannot build map"), wxICON_INFORMATION);
+        return;
+    }
+
+    if (project.preserveTransparency)
+    {
+        wxMessageBox(wxString("The map cannot be built when using transparency. Transparency is only available for exporting as map files."), wxT("Cannot build map"), wxICON_INFORMATION);
         return;
     }
 
@@ -668,7 +717,13 @@ void MainWindow::onExportToStructureSingleFile(wxCommandEvent &evt)
 {
     if (project.buildMethod == MapBuildMethod::None)
     {
-        wxMessageBox(wxString("You must choose a build method to be able to export to structures."), wxT("Cannot export"), wxICON_INFORMATION);
+        wxMessageBox(wxString("You must choose a build method to be able to export to structures."), wxT("Cannot build map"), wxICON_INFORMATION);
+        return;
+    }
+
+    if (project.preserveTransparency)
+    {
+        wxMessageBox(wxString("The map cannot be built when using transparency. Transparency is only available for exporting as map files."), wxT("Cannot build map"), wxICON_INFORMATION);
         return;
     }
 
@@ -689,7 +744,13 @@ void MainWindow::onExportToSchematicZip(wxCommandEvent &evt)
 {
     if (project.buildMethod == MapBuildMethod::None)
     {
-        wxMessageBox(wxString("You must choose a build method to be able to export to schematics."), wxT("Cannot export"), wxICON_INFORMATION);
+        wxMessageBox(wxString("You must choose a build method to be able to export to schematics."), wxT("Cannot build map"), wxICON_INFORMATION);
+        return;
+    }
+
+    if (project.preserveTransparency)
+    {
+        wxMessageBox(wxString("The map cannot be built when using transparency. Transparency is only available for exporting as map files."), wxT("Cannot build map"), wxICON_INFORMATION);
         return;
     }
 
@@ -710,7 +771,13 @@ void MainWindow::onExportToSchematicSingleFile(wxCommandEvent &evt)
 {
     if (project.buildMethod == MapBuildMethod::None)
     {
-        wxMessageBox(wxString("You must choose a build method to be able to export to schematics."), wxT("Cannot export"), wxICON_INFORMATION);
+        wxMessageBox(wxString("You must choose a build method to be able to export to schematics."), wxT("Cannot build map"), wxICON_INFORMATION);
+        return;
+    }
+
+    if (project.preserveTransparency)
+    {
+        wxMessageBox(wxString("The map cannot be built when using transparency. Transparency is only available for exporting as map files."), wxT("Cannot build map"), wxICON_INFORMATION);
         return;
     }
 
@@ -1019,209 +1086,136 @@ void MainWindow::onHelp(wxCommandEvent &evt)
     }
 }
 
+#define RADIO_MENUS_COUNT 5
+
 void MainWindow::updateMenuBarRadios()
 {
+    // File = 0, Image = 1, Materials = 2, ...
+    const int colorAproxMenuIndex = 3;
+    const int ditheringMenuIndex = 4;
+    const int buildMethodMenuIndex = 5;
+    const int transparencyMenuIndex = 6;
+    const int versionMenuIndex = 7;
+
+    // Reset radio menus
+
+    const int menusIndexes[RADIO_MENUS_COUNT] = {
+        colorAproxMenuIndex,
+        ditheringMenuIndex,
+        buildMethodMenuIndex,
+        transparencyMenuIndex,
+        versionMenuIndex,
+    };
+
+    for (int m = 0; m < RADIO_MENUS_COUNT; m++)
+    {
+        int menuIndex = menusIndexes[m];
+        for (int i = 0; i < GetMenuBar()->GetMenu(menuIndex)->GetMenuItems().size(); i++)
+        {
+            GetMenuBar()->GetMenu(menuIndex)->GetMenuItems()[i]->Check(false);
+        }
+    }
+
+    // Set radio menus selected options
+
     switch (project.colorDistanceAlgorithm)
     {
     case ColorDistanceAlgorithm::DeltaE:
-        GetMenuBar()->GetMenu(3)->GetMenuItems()[0]->Check(false);
-        GetMenuBar()->GetMenu(3)->GetMenuItems()[1]->Check(true);
+        GetMenuBar()->GetMenu(colorAproxMenuIndex)->GetMenuItems()[1]->Check(true);
         break;
     default:
-        GetMenuBar()->GetMenu(3)->GetMenuItems()[0]->Check(true);
-        GetMenuBar()->GetMenu(3)->GetMenuItems()[1]->Check(false);
+        GetMenuBar()->GetMenu(colorAproxMenuIndex)->GetMenuItems()[0]->Check(true);
     }
 
     switch (project.ditheringMethod)
     {
     case DitheringMethod::FloydSteinberg:
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[1]->Check(true);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[2]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[3]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[4]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[5]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[6]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[7]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[8]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(false);
+        GetMenuBar()->GetMenu(ditheringMenuIndex)->GetMenuItems()[1]->Check(true);
         break;
     case DitheringMethod::MinAvgErr:
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[1]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[2]->Check(true);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[3]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[4]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[5]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[6]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[7]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[8]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(false);
+        GetMenuBar()->GetMenu(ditheringMenuIndex)->GetMenuItems()[2]->Check(true);
         break;
     case DitheringMethod::Atkinson:
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[1]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[2]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[3]->Check(true);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[4]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[5]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[6]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[7]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[8]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(false);
+        GetMenuBar()->GetMenu(ditheringMenuIndex)->GetMenuItems()[3]->Check(true);
         break;
     case DitheringMethod::Stucki:
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[1]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[2]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[3]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[4]->Check(true);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[5]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[6]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[7]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[8]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(false);
+        GetMenuBar()->GetMenu(ditheringMenuIndex)->GetMenuItems()[4]->Check(true);
         break;
     case DitheringMethod::SierraLite:
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[1]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[2]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[3]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[4]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[5]->Check(true);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[6]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[7]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[8]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(false);
+        GetMenuBar()->GetMenu(ditheringMenuIndex)->GetMenuItems()[5]->Check(true);
         break;
     case DitheringMethod::Burkes:
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[1]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[2]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[3]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[4]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[5]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[6]->Check(true);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[7]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[8]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(false);
+        GetMenuBar()->GetMenu(ditheringMenuIndex)->GetMenuItems()[6]->Check(true);
         break;
     case DitheringMethod::Bayer22:
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[1]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[2]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[3]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[4]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[5]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[6]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[7]->Check(true);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[8]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(false);
+        GetMenuBar()->GetMenu(ditheringMenuIndex)->GetMenuItems()[7]->Check(true);
         break;
     case DitheringMethod::Bayer44:
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[1]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[2]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[3]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[4]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[5]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[6]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[7]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[8]->Check(true);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(false);
+        GetMenuBar()->GetMenu(ditheringMenuIndex)->GetMenuItems()[8]->Check(true);
         break;
     case DitheringMethod::Ordered33:
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[1]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[2]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[3]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[4]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[5]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[6]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[7]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[8]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(true);
+        GetMenuBar()->GetMenu(ditheringMenuIndex)->GetMenuItems()[9]->Check(true);
         break;
     default:
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[0]->Check(true);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[1]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[2]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[3]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[4]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[5]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[6]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[7]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[8]->Check(false);
-        GetMenuBar()->GetMenu(4)->GetMenuItems()[9]->Check(false);
+        GetMenuBar()->GetMenu(ditheringMenuIndex)->GetMenuItems()[0]->Check(true);
     }
 
     switch (project.buildMethod)
     {
-    case MapBuildMethod::Chaos:
-        GetMenuBar()->GetMenu(5)->GetMenuItems()[0]->Check(false);
-        GetMenuBar()->GetMenu(5)->GetMenuItems()[1]->Check(true);
-        GetMenuBar()->GetMenu(5)->GetMenuItems()[2]->Check(false);
-        GetMenuBar()->GetMenu(5)->GetMenuItems()[3]->Check(false);
-        break;
     case MapBuildMethod::Staircased:
-        GetMenuBar()->GetMenu(5)->GetMenuItems()[0]->Check(true);
-        GetMenuBar()->GetMenu(5)->GetMenuItems()[1]->Check(false);
-        GetMenuBar()->GetMenu(5)->GetMenuItems()[2]->Check(false);
-        GetMenuBar()->GetMenu(5)->GetMenuItems()[3]->Check(false);
+        GetMenuBar()->GetMenu(buildMethodMenuIndex)->GetMenuItems()[0]->Check(true);
         break;
+    case MapBuildMethod::Chaos:
+        GetMenuBar()->GetMenu(buildMethodMenuIndex)->GetMenuItems()[1]->Check(true);
+        break;
+
     case MapBuildMethod::Flat:
-        GetMenuBar()->GetMenu(5)->GetMenuItems()[0]->Check(false);
-        GetMenuBar()->GetMenu(5)->GetMenuItems()[1]->Check(false);
-        GetMenuBar()->GetMenu(5)->GetMenuItems()[2]->Check(true);
-        GetMenuBar()->GetMenu(5)->GetMenuItems()[3]->Check(false);
+        GetMenuBar()->GetMenu(buildMethodMenuIndex)->GetMenuItems()[2]->Check(true);
         break;
     default:
-        GetMenuBar()->GetMenu(5)->GetMenuItems()[0]->Check(false);
-        GetMenuBar()->GetMenu(5)->GetMenuItems()[1]->Check(false);
-        GetMenuBar()->GetMenu(5)->GetMenuItems()[2]->Check(false);
-        GetMenuBar()->GetMenu(5)->GetMenuItems()[3]->Check(true);
+        GetMenuBar()->GetMenu(buildMethodMenuIndex)->GetMenuItems()[3]->Check(true);
     }
 
-    GetMenuBar()->GetMenu(6)->GetMenuItems()[0]->Check(false);
-    GetMenuBar()->GetMenu(6)->GetMenuItems()[1]->Check(false);
-    GetMenuBar()->GetMenu(6)->GetMenuItems()[2]->Check(false);
-    GetMenuBar()->GetMenu(6)->GetMenuItems()[3]->Check(false);
-    GetMenuBar()->GetMenu(6)->GetMenuItems()[4]->Check(false);
-    GetMenuBar()->GetMenu(6)->GetMenuItems()[5]->Check(false);
-    GetMenuBar()->GetMenu(6)->GetMenuItems()[6]->Check(false);
-    GetMenuBar()->GetMenu(6)->GetMenuItems()[7]->Check(false);
+    if (project.preserveTransparency)
+    {
+        GetMenuBar()->GetMenu(transparencyMenuIndex)->GetMenuItems()[1]->Check(true);
+    }
+    else
+    {
+        GetMenuBar()->GetMenu(transparencyMenuIndex)->GetMenuItems()[0]->Check(true);
+    }
 
     switch (project.version)
     {
     case McVersion::MC_1_21:
-        GetMenuBar()->GetMenu(6)->GetMenuItems()[0]->Check(true);
+        GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[0]->Check(true);
         break;
     case McVersion::MC_1_20:
-        GetMenuBar()->GetMenu(6)->GetMenuItems()[1]->Check(true);
+        GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[1]->Check(true);
         break;
     case McVersion::MC_1_19:
-        GetMenuBar()->GetMenu(6)->GetMenuItems()[2]->Check(true);
+        GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[2]->Check(true);
         break;
     case McVersion::MC_1_18:
-        GetMenuBar()->GetMenu(6)->GetMenuItems()[3]->Check(true);
+        GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[3]->Check(true);
         break;
     case McVersion::MC_1_17:
-        GetMenuBar()->GetMenu(6)->GetMenuItems()[4]->Check(true);
+        GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[4]->Check(true);
         break;
     case McVersion::MC_1_16:
-        GetMenuBar()->GetMenu(6)->GetMenuItems()[5]->Check(true);
+        GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[5]->Check(true);
         break;
     case McVersion::MC_1_15:
-        GetMenuBar()->GetMenu(6)->GetMenuItems()[6]->Check(true);
+        GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[6]->Check(true);
         break;
     case McVersion::MC_1_14:
-        GetMenuBar()->GetMenu(6)->GetMenuItems()[7]->Check(true);
+        GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[7]->Check(true);
         break;
     case McVersion::MC_1_13:
-        GetMenuBar()->GetMenu(6)->GetMenuItems()[8]->Check(true);
+        GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[8]->Check(true);
         break;
     default:
-        GetMenuBar()->GetMenu(6)->GetMenuItems()[9]->Check(true);
+        GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[9]->Check(true);
         break;
     }
 }
@@ -1239,7 +1233,7 @@ void MainWindow::onWorkerError(wxCommandEvent &event)
 void MainWindow::onWorkerPreviewDone(wxCommandEvent &event)
 {
     MapArtPreviewData data = this->workerThread->GetPreviewData();
-    previewPanel->setColors(data.colors, data.width, data.height);
+    previewPanel->setColors(data.colors, data.transparency, data.width, data.height, data.preserveTransparency);
 }
 void MainWindow::onWorkerMaterialsGiven(wxCommandEvent &event)
 {

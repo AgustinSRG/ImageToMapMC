@@ -1,15 +1,15 @@
 /*
  * This file is part of ImageToMapMC project
- * 
+ *
  * Copyright (c) 2021 Agustin San Roman
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
 
@@ -26,6 +26,7 @@
 #include <wx/sizer.h>
 #include <wx/rawbmp.h>
 #include <wx/clipbrd.h>
+#include <wx/dcbuffer.h>
 #include "../resources/icon.xpm"
 
 using namespace std;
@@ -71,9 +72,15 @@ wxImagePanel::wxImagePanel(wxFrame *parent) : wxPanel(parent)
     matrixHeight = 0;
     matrixWidth = 0;
     bitmap = NULL;
+    bitmapBg = NULL;
+
+    SetBackgroundStyle(wxBG_STYLE_PAINT);
 }
 
-void wxImagePanel::setColors(const std::vector<const minecraft::FinalColor *> &colorsMatrix, size_t width, size_t height)
+const colors::Color bgColor1{200, 200, 200};
+const colors::Color bgColor2{150, 150, 150};
+
+void wxImagePanel::setColors(const std::vector<const minecraft::FinalColor *> &colorsMatrix, const std::vector<bool> &transparencyMatrix, size_t width, size_t height, bool preserveTransparency)
 {
     colorsMutex.Lock();
 
@@ -83,11 +90,62 @@ void wxImagePanel::setColors(const std::vector<const minecraft::FinalColor *> &c
         bitmap = NULL;
     }
 
+    if (bitmapBg != NULL)
+    {
+        delete bitmapBg;
+        bitmapBg = NULL;
+    }
+
     matrixHeight = height;
     matrixWidth = width;
 
     wxImage image(width, height);
+    wxImage imageBg(width, height);
+
+    image.InitAlpha();
+
     unsigned char *rawData = image.GetData();
+    unsigned char *alphaData = image.GetAlpha();
+
+    unsigned char *bgData = imageBg.GetData();
+
+    size_t checkerSize = 2;
+
+    if (width >= height)
+    {
+        checkerSize = 2 * (height / MAP_HEIGHT);
+    }
+    else
+    {
+        checkerSize = 2 * (width / MAP_WIDTH);
+    }
+
+    for (size_t y = 0; y < height; y++)
+    {
+        size_t checkerY = y / checkerSize;
+        for (size_t x = 0; x < width; x++)
+        {
+            size_t checkerX = x / checkerSize;
+
+            size_t colorIndex = (y * width + x) * 3;
+
+            bool altColor = (checkerY % 2 == 0) ? (checkerX % 2 == 0) : (checkerX % 2 != 0);
+
+            if (altColor)
+            {
+                bgData[colorIndex] = bgColor1.red;
+                bgData[colorIndex + 1] = bgColor1.green;
+                bgData[colorIndex + 2] = bgColor1.blue;
+            }
+            else
+            {
+                bgData[colorIndex] = bgColor2.red;
+                bgData[colorIndex + 1] = bgColor2.green;
+                bgData[colorIndex + 2] = bgColor2.blue;
+            }
+        }
+    }
+
     size_t size = width * height;
 
     size_t j = 0;
@@ -98,16 +156,26 @@ void wxImagePanel::setColors(const std::vector<const minecraft::FinalColor *> &c
         rawData[j++] = color.red;
         rawData[j++] = color.green;
         rawData[j++] = color.blue;
+
+        if (colorsMatrix[i]->baseColorIndex == (short)minecraft::McColors::NONE || (preserveTransparency && transparencyMatrix[i]))
+        {
+            alphaData[i] = 0;
+        }
+        else
+        {
+            alphaData[i] = 255;
+        }
     }
 
     bitmap = new wxBitmap(image);
+    bitmapBg = new wxBitmap(imageBg);
 
     colorsMutex.Unlock();
 
     this->Refresh();
 }
 
-void wxImagePanel::setColors(const std::vector<colors::Color> &colorsMatrix, size_t width, size_t height)
+void wxImagePanel::setColors(const std::vector<colors::Color> &colorsMatrix, const std::vector<bool> &transparencyMatrix, size_t width, size_t height, bool preserveTransparency)
 {
     colorsMutex.Lock();
 
@@ -117,11 +185,62 @@ void wxImagePanel::setColors(const std::vector<colors::Color> &colorsMatrix, siz
         bitmap = NULL;
     }
 
+    if (bitmapBg != NULL)
+    {
+        delete bitmapBg;
+        bitmapBg = NULL;
+    }
+
     matrixHeight = height;
     matrixWidth = width;
 
     wxImage image(width, height);
+    wxImage imageBg(width, height);
+
+    image.InitAlpha();
+
     unsigned char *rawData = image.GetData();
+    unsigned char *alphaData = image.GetAlpha();
+
+    unsigned char *bgData = imageBg.GetData();
+
+    size_t checkerSize = 2;
+
+    if (width >= height)
+    {
+        checkerSize = 2 * (height / MAP_HEIGHT);
+    }
+    else
+    {
+        checkerSize = 2 * (width / MAP_WIDTH);
+    }
+
+    for (size_t y = 0; y < height; y++)
+    {
+        size_t checkerY = y / checkerSize;
+        for (size_t x = 0; x < width; x++)
+        {
+            size_t checkerX = x / checkerSize;
+
+            size_t colorIndex = (y * width + x) * 3;
+
+            bool altColor = (checkerY % 2 == 0) ? (checkerX % 2 == 0) : (checkerX % 2 != 0);
+
+            if (altColor)
+            {
+                bgData[colorIndex] = bgColor1.red;
+                bgData[colorIndex + 1] = bgColor1.green;
+                bgData[colorIndex + 2] = bgColor1.blue;
+            }
+            else
+            {
+                bgData[colorIndex] = bgColor2.red;
+                bgData[colorIndex + 1] = bgColor2.green;
+                bgData[colorIndex + 2] = bgColor2.blue;
+            }
+        }
+    }
+
     size_t size = colorsMatrix.size();
 
     size_t j = 0;
@@ -132,9 +251,12 @@ void wxImagePanel::setColors(const std::vector<colors::Color> &colorsMatrix, siz
         rawData[j++] = color.red;
         rawData[j++] = color.green;
         rawData[j++] = color.blue;
+
+        alphaData[i] = preserveTransparency ? (transparencyMatrix[i] ? 0 : 255) : 255;
     }
 
     bitmap = new wxBitmap(image);
+    bitmapBg = new wxBitmap(imageBg);
 
     colorsMutex.Unlock();
 
@@ -152,7 +274,7 @@ wxImagePanel::~wxImagePanel()
 void wxImagePanel::paintEvent(wxPaintEvent &evt)
 {
     // depending on your system you may need to look at double-buffered dcs
-    wxPaintDC dc(this);
+    wxAutoBufferedPaintDC dc(this);
     render(dc);
 }
 
@@ -253,7 +375,14 @@ void wxImagePanel::render(wxDC &dc)
         }
 
         dc.Clear();
+
         dc.SetUserScale(scale, scale);
+
+        if (bitmapBg != NULL)
+        {
+            dc.DrawBitmap(*bitmapBg, offsetX, offsetY, false);
+        }
+
         dc.DrawBitmap(*bitmap, offsetX, offsetY, false);
     }
     else
@@ -333,14 +462,14 @@ DisplayImageFrame::~DisplayImageFrame()
 {
 }
 
-void DisplayImageFrame::setColors(std::vector<const minecraft::FinalColor *> &colorsMatrix, size_t width, size_t height)
+void DisplayImageFrame::setColors(const std::vector<const minecraft::FinalColor *> &colorsMatrix, const std::vector<bool> &transparencyMatrix, size_t width, size_t height, bool preserveTransparency)
 {
-    drawPane->setColors(colorsMatrix, width, height);
+    drawPane->setColors(colorsMatrix, transparencyMatrix, width, height, preserveTransparency);
 }
 
-void DisplayImageFrame::setColors(std::vector<colors::Color> &colorsMatrix, size_t width, size_t height)
+void DisplayImageFrame::setColors(const std::vector<colors::Color> &colorsMatrix, const std::vector<bool> &transparencyMatrix, size_t width, size_t height, bool preserveTransparency)
 {
-    drawPane->setColors(colorsMatrix, width, height);
+    drawPane->setColors(colorsMatrix, transparencyMatrix, width, height, preserveTransparency);
 }
 
 void DisplayImageFrame::OnSize(wxSizeEvent &event)
@@ -353,7 +482,8 @@ void widgets::displayMapImage(std::vector<const minecraft::FinalColor *> &colors
 {
     wxInitAllImageHandlers();
     DisplayImageFrame *frame = new DisplayImageFrame(NULL, (string("Rendering minecraft map: ") + string(app.argv[1])), wxPoint(50, 50), wxSize(800, 600));
-    frame->setColors(colorsMatrix, MAP_WIDTH, MAP_HEIGHT);
+    std::vector<bool> transparency(0);
+    frame->setColors(colorsMatrix, transparency, MAP_WIDTH, MAP_HEIGHT, false);
     frame->defaultFile = string(app.argv[1]) + string(".png");
     frame->Show(true);
 }

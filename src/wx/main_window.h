@@ -63,6 +63,8 @@ public:
     void onChangeColorAlgo(wxCommandEvent &evt);
     void onChangeDithering(wxCommandEvent &evt);
     void onChangeBuildMethod(wxCommandEvent &evt);
+    void onSetTransparencyYes(wxCommandEvent &evt);
+    void onSetTransparencyNo(wxCommandEvent &evt);
     void onCustomBlocks(wxCommandEvent &evt);
     void onExportToMaps(wxCommandEvent &evt);
     void onExportToMapsZip(wxCommandEvent &evt);
