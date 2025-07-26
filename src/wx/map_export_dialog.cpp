@@ -143,29 +143,37 @@ void MapExportDialog::figureOutMapNumber(std::string path)
     int lastMap = 0;
     bool foundAtLeastOneMap = false;
 
-    for (const auto &entry : filesystem::directory_iterator(path))
+    try
     {
-        std::string fileName = entry.path().filename().string();
-
-        if (fileName.length() > 8 && fileName.substr(0, 4).compare("map_") == 0 && fileName.substr(fileName.length() - 4, 4).compare(".dat") == 0)
+        for (const auto &entry : filesystem::directory_iterator(path))
         {
-            foundAtLeastOneMap = true;
-            std::string mapId = fileName.substr(4, fileName.length() - 8);
-            int mapIdInt = atoi(mapId.c_str());
+            std::string fileName = entry.path().filename().string();
 
-            if (mapIdInt > lastMap)
+            if (fileName.length() > 8 && fileName.substr(0, 4).compare("map_") == 0 && fileName.substr(fileName.length() - 4, 4).compare(".dat") == 0)
             {
-                lastMap = mapIdInt;
+                foundAtLeastOneMap = true;
+                std::string mapId = fileName.substr(4, fileName.length() - 8);
+                int mapIdInt = atoi(mapId.c_str());
+
+                if (mapIdInt > lastMap)
+                {
+                    lastMap = mapIdInt;
+                }
             }
         }
+    }
+    catch (...)
+    {
+        return;
     }
 
     if (textMapNumber != NULL)
     {
-        if (foundAtLeastOneMap) {
+        if (foundAtLeastOneMap)
+        {
             lastMap++;
         }
-        
+
         stringstream ss;
 
         ss << lastMap;
