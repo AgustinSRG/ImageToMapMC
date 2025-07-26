@@ -125,7 +125,7 @@ void StructureExportDialog::OnBrowse(wxCommandEvent &event)
         return; // the user changed idea...
     }
 
-    tools::setRememberedFolder(tools::FOLDER_PURPOSE_EXPORT_STRUCTURES, dialog.GetPath());
+    tools::setRememberedFolder(tools::FOLDER_PURPOSE_EXPORT_STRUCTURES, dialog.GetPath().ToStdString());
 
     textFolder->ChangeValue(dialog.GetPath());
 }

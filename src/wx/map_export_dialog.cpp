@@ -113,8 +113,8 @@ void MapExportDialog::OnBrowse(wxCommandEvent &event)
     }
 
     textFolder->ChangeValue(dialog.GetPath());
-    figureOutMapNumber(dialog.GetPath());
-    tools::setRememberedFolder(tools::FOLDER_PURPOSE_EXPORT_MAPS, dialog.GetPath());
+    figureOutMapNumber(dialog.GetPath().ToStdString());
+    tools::setRememberedFolder(tools::FOLDER_PURPOSE_EXPORT_MAPS, dialog.GetPath().ToStdString());
 }
 
 std::string MapExportDialog::getPath()
