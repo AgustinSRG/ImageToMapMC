@@ -194,7 +194,7 @@ MaterialsPanel::MaterialsPanel(MaterialsWindow *matWin) : wxScrolledWindow(matWi
         wxArrayString options;
         options.Add("block_id");
         options.Add("test_block");
-        groups[i].combo = new wxComboBox(this, MIN_ID_COMBO + i, wxString("block_id"), wxPoint(5, 5), wxSize(160, 40), options);
+        groups[i].combo = new wxComboBox(this, MIN_ID_COMBO + i, wxString("block_id"), wxPoint(5, 5), wxSize(160, 40), options, wxCB_READONLY);
         groups[i].combo->Bind(wxEVT_COMBOBOX, &MaterialsPanel::onComboBoxChanged, this);
         sizer->Add(groups[i].combo, wxSizerFlags(0).Border(wxALL, 10).Align(wxALIGN_CENTER_VERTICAL));
 
