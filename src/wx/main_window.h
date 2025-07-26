@@ -109,6 +109,7 @@ public:
     void resetProject();
 
     void updateMenuBarRadios();
+    void updateConfigStatusText();
 
     void OnClose(wxCloseEvent &event);
 private:

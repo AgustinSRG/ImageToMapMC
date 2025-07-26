@@ -94,6 +94,13 @@ enum Identifiers
     ID_Transparency_Preserve = 61,
 };
 
+enum StatusBatIdentifiers {
+    ProjectStatusText = 0,
+    StatusStatusText = 1,
+    SizeStatusText = 2,
+    ConfigStatusText = 3,
+};
+
 #define VERSION_ID_PREFIX (1500)
 #define COLOR_METHOD_ID_PREFIX (1600)
 #define BUILD_METHOD_ID_PREFIX (1700)
@@ -296,10 +303,10 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
 
     wxStatusBar *statusBar = CreateStatusBar();
     statusBar->SetFieldsCount(4);
-    statusBar->SetStatusText("Map art tool for Minecraft - v" APP_VERSION, 0);
-    statusBar->SetStatusText("Status: Ready", 1);
-    statusBar->SetStatusText("Size: 1 x 1 (1) maps", 2);
-    statusBar->SetStatusText("Project: (not saved yet)", 3);
+    statusBar->SetStatusText("Project: (not saved yet)", ProjectStatusText);
+    statusBar->SetStatusText("Status: Ready", StatusStatusText);
+    statusBar->SetStatusText("Size: 1 x 1 (1) maps", SizeStatusText);
+    updateConfigStatusText();
 
     wxTimer *progressTimer = new wxTimer(this, ID_Timer);
     progressTimer->Start(40); // 25 FPS
@@ -386,7 +393,7 @@ void MainWindow::updateOriginalImage()
 
     stringstream ss;
     ss << "Size: " << mapCountX << " x " << mapCountZ << " (" << totalMaps << ") maps";
-    GetStatusBar()->SetStatusText(ss.str(), 2);
+    GetStatusBar()->SetStatusText(ss.str(), SizeStatusText);
 
     RequestPreviewGeneration();
 }
@@ -421,6 +428,7 @@ void MainWindow::onChangeVersion(wxCommandEvent &evt)
         materialsWindow->setMaterialsConf(project.version, project.buildMethod, project.colorSetConf);
     }
     dirty = true;
+    updateConfigStatusText();
     RequestPreviewGeneration();
 }
 
@@ -432,6 +440,7 @@ void MainWindow::onChangeBuildMethod(wxCommandEvent &evt)
         materialsWindow->setMaterialsConf(project.version, project.buildMethod, project.colorSetConf);
     }
     dirty = true;
+    updateConfigStatusText();
     RequestPreviewGeneration();
 }
 
@@ -439,6 +448,7 @@ void MainWindow::onChangeColorAlgo(wxCommandEvent &evt)
 {
     project.colorDistanceAlgorithm = static_cast<ColorDistanceAlgorithm>(evt.GetId() - COLOR_METHOD_ID_PREFIX);
     dirty = true;
+    updateConfigStatusText();
     RequestPreviewGeneration();
 }
 
@@ -446,6 +456,7 @@ void MainWindow::onChangeDithering(wxCommandEvent &evt)
 {
     project.ditheringMethod = static_cast<DitheringMethod>(evt.GetId() - DITHERING_ID_PREFIX);
     dirty = true;
+    updateConfigStatusText();
     RequestPreviewGeneration();
 }
 
@@ -453,6 +464,7 @@ void MainWindow::onSetTransparencyYes(wxCommandEvent &evt)
 {
     project.preserveTransparency = true;
     dirty = true;
+    updateConfigStatusText();
     RequestPreviewGeneration();
 }
 
@@ -460,6 +472,7 @@ void MainWindow::onSetTransparencyNo(wxCommandEvent &evt)
 {
     project.preserveTransparency = false;
     dirty = true;
+    updateConfigStatusText();
     RequestPreviewGeneration();
 }
 
@@ -595,9 +608,10 @@ void MainWindow::handleDropFile(wxDropFilesEvent &event)
             // Not saved yet
             projectFile = filename;
 
-            GetStatusBar()->SetStatusText("Project: " + projectFile, 3);
+            GetStatusBar()->SetStatusText("Project: " + projectFile, ProjectStatusText);
 
             updateMenuBarRadios();
+            updateConfigStatusText();
 
             updateOriginalImage();
         }
@@ -885,9 +899,10 @@ void MainWindow::resetProject()
 
     // Map params
 
-    GetStatusBar()->SetStatusText("Project: (not saved yet)", 3);
+    GetStatusBar()->SetStatusText("Project: (not saved yet)", ProjectStatusText);
 
     updateMenuBarRadios();
+    updateConfigStatusText();
 
     updateOriginalImage();
 }
@@ -913,9 +928,10 @@ void MainWindow::loadProject(std::string path)
         // Not saved yet
         projectFile = path;
 
-        GetStatusBar()->SetStatusText("Project: " + projectFile, 3);
+        GetStatusBar()->SetStatusText("Project: " + projectFile, ProjectStatusText);
 
         updateMenuBarRadios();
+        updateConfigStatusText();
 
         updateOriginalImage();
     }
@@ -932,7 +948,7 @@ void MainWindow::saveProject(std::string path)
     {
         dirty = false;
         projectFile = path;
-        GetStatusBar()->SetStatusText("Project: " + projectFile, 3);
+        GetStatusBar()->SetStatusText("Project: " + projectFile, ProjectStatusText);
     }
     else
     {
@@ -1090,6 +1106,66 @@ void MainWindow::onHelp(wxCommandEvent &evt)
     }
 }
 
+void MainWindow::updateConfigStatusText() {
+    stringstream ss;
+
+     switch (project.colorDistanceAlgorithm)
+    {
+    case ColorDistanceAlgorithm::DeltaE:
+        ss << "Delta E";
+        break;
+    default:
+        ss << "Euclidean";
+    }
+
+    ss << ", ";
+
+    switch (project.ditheringMethod)
+    {
+    case DitheringMethod::None:
+        ss << "No Dithering";
+        break;
+    default:
+        ss << mapart::ditheringMethodToString(project.ditheringMethod);
+    }
+
+    ss << ", ";
+
+    switch (project.buildMethod)
+    {
+    case MapBuildMethod::Staircased:
+        ss << "Staircased";
+        break;
+    case MapBuildMethod::Chaos:
+        ss << "3D (Complex)";
+        break;
+    case MapBuildMethod::Flat:
+        ss << "Flat";
+        break;
+    default:
+        ss << "No-Build";
+    }
+
+    ss << ", ";
+
+    if (project.preserveTransparency)
+    {
+        ss << "Transparent Background";
+    }
+    else
+    {
+        ss << "Solid Background";
+    }
+
+    ss << ", MC ";
+
+    ss << minecraft::versionToString(project.version);
+
+    GetStatusBar()->SetStatusText(ss.str(), ConfigStatusText);
+}
+
+
+
 #define RADIO_MENUS_COUNT 5
 
 void MainWindow::updateMenuBarRadios()
@@ -1226,7 +1302,7 @@ void MainWindow::updateMenuBarRadios()
 
 void MainWindow::OnProgressTimer(wxTimerEvent &event)
 {
-    GetStatusBar()->SetStatusText(wxString(this->workerThread->GetStatus()), 1);
+    GetStatusBar()->SetStatusText(wxString(this->workerThread->GetStatus()), StatusStatusText);
 }
 
 void MainWindow::onWorkerError(wxCommandEvent &event)
