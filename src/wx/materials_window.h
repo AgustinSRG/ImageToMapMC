@@ -124,6 +124,8 @@ public:
     void OnSize(wxSizeEvent &event);
     void OnClose(wxCloseEvent &event);
 
+    void OnKeyPress(wxKeyEvent &event);
+
     void onLoadFile(wxCommandEvent &evt);
     void onSaveFile(wxCommandEvent &evt);
     void SetBlackList(wxCommandEvent &evt);

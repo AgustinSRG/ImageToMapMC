@@ -37,6 +37,7 @@ BEGIN_EVENT_TABLE(MapExportDialog, wxDialog)
 EVT_BUTTON(ID_OK, MapExportDialog::OnOk)
 EVT_BUTTON(ID_Cancel, MapExportDialog::OnCancel)
 EVT_BUTTON(ID_Browse, MapExportDialog::OnBrowse)
+EVT_CHAR_HOOK(MapExportDialog::OnKeyPress)
 END_EVENT_TABLE()
 
 MapExportDialog::MapExportDialog() : wxDialog(NULL, -1, wxString("Export to map files"), wxDefaultPosition, wxSize(350, 230))
@@ -97,4 +98,13 @@ std::string MapExportDialog::getPath()
 int MapExportDialog::getMapNumber()
 {
     return atoi(textMapNumber->GetValue().c_str());
+}
+
+void MapExportDialog::OnKeyPress(wxKeyEvent &event) {
+    if (event.GetKeyCode() == WXK_ESCAPE) {
+        EndModal(wxID_CANCEL);
+        return;
+    }
+
+    event.Skip();
 }

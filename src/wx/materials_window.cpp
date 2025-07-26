@@ -64,6 +64,7 @@ EVT_MENU(ID_File_Save, MaterialsWindow::onSaveFile)
 EVT_MENU(ID_BlackList_ON, MaterialsWindow::SetBlackList)
 EVT_MENU(ID_BlackList_OFF, MaterialsWindow::SetWhiteList)
 EVT_MENU_RANGE(ID_Preset_start, ID_Preset_start + 99, MaterialsWindow::usePreset)
+EVT_CHAR_HOOK(MaterialsWindow::OnKeyPress)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(MaterialsPanel, wxScrolledWindow)
@@ -524,4 +525,13 @@ void MaterialsPanel::displayCountMaterials(std::vector<size_t> &counts)
     }
     requiresCountRefresh = true;
     countMutex.Unlock();
+}
+
+void MaterialsWindow::OnKeyPress(wxKeyEvent &event) {
+    if (event.GetKeyCode() == WXK_ESCAPE) {
+        Hide();
+        return;
+    }
+
+    event.Skip();
 }

@@ -52,6 +52,7 @@ public:
     void OnCheckboxChanged(wxCommandEvent &event);
     void OnTextUpdateW(wxCommandEvent &event);
     void OnTextUpdateH(wxCommandEvent &event);
+    void OnKeyPress(wxKeyEvent &event);
 
 private:
     wxTextCtrl *wText;

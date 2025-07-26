@@ -43,6 +43,7 @@ EVT_BUTTON(ID_Cancel, ImageResizeDialog::OnCancel)
 EVT_TEXT(ID_Text_W, ImageResizeDialog::OnTextUpdateW)
 EVT_TEXT(ID_Text_H, ImageResizeDialog::OnTextUpdateH)
 EVT_CHECKBOX(ID_Checkbox, ImageResizeDialog::OnCheckboxChanged)
+EVT_CHAR_HOOK(ImageResizeDialog::OnKeyPress)
 END_EVENT_TABLE()
 
 ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1, wxString("Resize image"), wxDefaultPosition, wxSize(255, 180))
@@ -146,4 +147,13 @@ int ImageResizeDialog::getWidth() {
 
 int ImageResizeDialog::getHeight() {
     return resizedH;
+}
+
+void ImageResizeDialog::OnKeyPress(wxKeyEvent &event) {
+    if (event.GetKeyCode() == WXK_ESCAPE) {
+        Hide();
+        return;
+    }
+
+    event.Skip();
 }

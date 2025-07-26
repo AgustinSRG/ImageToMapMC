@@ -1,15 +1,15 @@
 /*
  * This file is part of ImageToMapMC project
- * 
+ *
  * Copyright (c) 2021 Agustin San Roman
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
 
@@ -36,7 +36,7 @@ class MainWindow;
 
 /**
  * @brief  Image Edit dialog (brightness, saturation, contrast)
- * @note   
+ * @note
  * @retval None
  */
 class ImageEditDialog : public wxDialog
@@ -53,10 +53,11 @@ public:
     void OnChangeContrast(wxScrollEvent &event);
     void OnChangeBrightness(wxScrollEvent &event);
     void OnClose(wxCloseEvent &event);
+    void OnKeyPress(wxKeyEvent &event);
 
     /**
      * @brief  Set dialog params
-     * @note   
+     * @note
      * @param  saturation: Value 0-2
      * @param  contrast: Value 0-2
      * @param  brightness: Value 0-2
@@ -84,7 +85,7 @@ private:
     wxSlider *sliderContrast;
     wxSlider *sliderBrightness;
 
-    wxPanel * panelColor;
+    wxPanel *panelColor;
 
     void UpdateControls();
     void OnChangeParams();

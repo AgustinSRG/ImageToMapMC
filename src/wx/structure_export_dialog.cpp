@@ -38,6 +38,7 @@ BEGIN_EVENT_TABLE(StructureExportDialog, wxDialog)
 EVT_BUTTON(ID_OK, StructureExportDialog::OnOk)
 EVT_BUTTON(ID_Cancel, StructureExportDialog::OnCancel)
 EVT_BUTTON(ID_Browse, StructureExportDialog::OnBrowse)
+EVT_CHAR_HOOK(StructureExportDialog::OnKeyPress)
 END_EVENT_TABLE()
 
 StructureExportDialog::StructureExportDialog(minecraft::McVersion version, ExportDialogMode mode) : wxDialog(NULL, -1, wxString("Export map art"), wxDefaultPosition, wxSize(350, 230))
@@ -216,4 +217,13 @@ std::string StructureExportDialog::getPath()
     }
 
     return structuresPath.string();
+}
+
+void StructureExportDialog::OnKeyPress(wxKeyEvent &event) {
+    if (event.GetKeyCode() == WXK_ESCAPE) {
+        EndModal(wxID_CANCEL);
+        return;
+    }
+
+    event.Skip();
 }

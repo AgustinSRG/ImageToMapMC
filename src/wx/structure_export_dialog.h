@@ -49,6 +49,8 @@ public:
 
     void OnBrowse(wxCommandEvent &event);
 
+    void OnKeyPress(wxKeyEvent &event);
+
 private:
     wxTextCtrl *textFolder;
     wxTextCtrl *textNamespace;

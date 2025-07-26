@@ -55,6 +55,7 @@ EVT_CLOSE(ImageEditDialog::OnClose)
 EVT_COMMAND_SCROLL(ID_Slider_Saturation, ImageEditDialog::OnChangeSaturation)
 EVT_COMMAND_SCROLL(ID_Slider_Contrast, ImageEditDialog::OnChangeContrast)
 EVT_COMMAND_SCROLL(ID_Slider_Brightness, ImageEditDialog::OnChangeBrightness)
+EVT_CHAR_HOOK(ImageEditDialog::OnKeyPress)
 END_EVENT_TABLE()
 
 ImageEditDialog::ImageEditDialog(MainWindow *mainWindow) : wxDialog(mainWindow, -1, wxString("Modify image"), wxDefaultPosition, wxSize(275, 310))
@@ -211,4 +212,13 @@ void ImageEditDialog::OnColorSelect(wxCommandEvent &event) {
     panelColor->Refresh();
 
     OnChangeParams();
+}
+
+void ImageEditDialog::OnKeyPress(wxKeyEvent &event) {
+    if (event.GetKeyCode() == WXK_ESCAPE) {
+        Hide();
+        return;
+    }
+
+    event.Skip();
 }
