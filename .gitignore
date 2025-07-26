@@ -1,3 +1,6 @@
+# Ignored files
+
+temp
 out
 build
 debug

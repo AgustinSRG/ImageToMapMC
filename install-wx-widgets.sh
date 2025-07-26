@@ -15,3 +15,4 @@ cd wxWidgets
 sudo make install
 
 cd ..
+cd ..
