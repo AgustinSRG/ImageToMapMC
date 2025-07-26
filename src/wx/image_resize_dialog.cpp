@@ -236,9 +236,18 @@ void ImageResizeDialog::OnCheckboxChanged(wxCommandEvent &event)
     if (this->linked)
     {
         resizedH = max(1, static_cast<int>(((double)height / (double)width) * (double)resizedW));
+        resizedHMaps = (double)resizedH / (double)MAP_SIZE;
 
         stringstream ss;
-        ss << resizedH;
+
+        if (usingMaps)
+        {
+            ss << resizedHMaps;
+        }
+        else
+        {
+            ss << resizedH;
+        }
 
         hText->ChangeValue(ss.str());
     }
