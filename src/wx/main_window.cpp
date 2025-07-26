@@ -298,7 +298,7 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     statusBar->SetFieldsCount(4);
     statusBar->SetStatusText("Map art tool for Minecraft - v" APP_VERSION, 0);
     statusBar->SetStatusText("Status: Ready", 1);
-    statusBar->SetStatusText("Size: 1 x 1", 2);
+    statusBar->SetStatusText("Size: 1 x 1 (1) maps", 2);
     statusBar->SetStatusText("Project: (not saved yet)", 3);
 
     wxTimer *progressTimer = new wxTimer(this, ID_Timer);
@@ -380,8 +380,12 @@ void MainWindow::updateOriginalImage()
     originalImagePanel->setColors(originalImageColorMatrix.colors, originalImageColorMatrix.transparency, matrixW, matrixH, true);
     originalImagePanel->Refresh();
 
+    int mapCountX = matrixW / MAP_WIDTH;
+    int mapCountZ = matrixH / MAP_HEIGHT;
+    int totalMaps = mapCountX * mapCountZ;
+
     stringstream ss;
-    ss << "Size: " << (matrixW / MAP_WIDTH) << " x " << (matrixH / MAP_HEIGHT);
+    ss << "Size: " << mapCountX << " x " << mapCountZ << " (" << totalMaps << ") maps";
     GetStatusBar()->SetStatusText(ss.str(), 2);
 
     RequestPreviewGeneration();
