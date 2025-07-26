@@ -239,36 +239,36 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
 
     // Color distance
     wxMenu *menuColorDistance = new wxMenu();
-    menuColorDistance->AppendRadioItem(getIdForColorAlgoMenu(ColorDistanceAlgorithm::Euclidean), "&Euclidean", "Simple squared euclidean distance in the RGB color space")->Check(true);
-    menuColorDistance->AppendRadioItem(getIdForColorAlgoMenu(ColorDistanceAlgorithm::DeltaE), "&Delta E", "Distance in the Lab color space");
+    menuColorDistance->AppendRadioItem(getIdForColorAlgoMenu(ColorDistanceAlgorithm::Euclidean), "&Euclidean\tE", "Simple squared euclidean distance in the RGB color space")->Check(true);
+    menuColorDistance->AppendRadioItem(getIdForColorAlgoMenu(ColorDistanceAlgorithm::DeltaE), "&Delta E\tD", "Distance in the Lab color space");
     menuBar->Append(menuColorDistance, "&Color aproximation");
 
     // Dithering
     wxMenu *menuDithering = new wxMenu();
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::None), "&None", "No dithering")->Check(true);
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::FloydSteinberg), "&Floyd Steinberg", "Diffusses the error to create the illusion of more colors");
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::MinAvgErr), "&Min Average Error", "Diffusses the error to create the illusion of more colors");
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Atkinson), "&Atkinson", "Diffusses the error to create the illusion of more colors");
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Stucki), "&Stucki", "Diffusses the error to create the illusion of more colors");
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::SierraLite), "&Sierra Lite", "Diffusses the error to create the illusion of more colors");
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Burkes), "&Burkes", "Diffusses the error to create the illusion of more colors");
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Bayer22), "&Bayer (2x2)", "Applies filter to create the illusion of more colors");
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Bayer44), "&Bayer (4x4)", "Applies filter to create the illusion of more colors");
-    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Ordered33), "&Ordered (3x3)", "Applies filter to create the illusion of more colors");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::None), "&None\t0", "No dithering")->Check(true);
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::FloydSteinberg), "&Floyd Steinberg\t1", "Diffusses the error to create the illusion of more colors");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::MinAvgErr), "&Min Average Error\t2", "Diffusses the error to create the illusion of more colors");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Atkinson), "&Atkinson\t3", "Diffusses the error to create the illusion of more colors");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Stucki), "&Stucki\t4", "Diffusses the error to create the illusion of more colors");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::SierraLite), "&Sierra Lite\t5", "Diffusses the error to create the illusion of more colors");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Burkes), "&Burkes\t6", "Diffusses the error to create the illusion of more colors");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Bayer22), "&Bayer (2x2)\t7", "Applies filter to create the illusion of more colors");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Bayer44), "&Bayer (4x4)\t8", "Applies filter to create the illusion of more colors");
+    menuDithering->AppendRadioItem(getIdForDitheringMenu(DitheringMethod::Ordered33), "&Ordered (3x3)\t9", "Applies filter to create the illusion of more colors");
     menuBar->Append(menuDithering, "&Dithering");
 
     // Build method
     wxMenu *menuBuildMethod = new wxMenu();
-    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Staircased), "&Staircased", "Staircased map with jumps of only a single block")->Check(true);
-    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Chaos), "&3D (Complex)", "Staircased map with jumps of arbitrary size");
-    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Flat), "&Flat", "Flat map (only 1/3 of the colors)");
-    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::None), "&None", "Use all the colors (even the unobtainable with blocks)");
+    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Staircased), "&Staircased\tS", "Staircased map with jumps of only a single block")->Check(true);
+    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Chaos), "&3D (Complex)\tC", "Staircased map with jumps of arbitrary size");
+    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::Flat), "&Flat\tF", "Flat map (only 1/3 of the colors)");
+    menuBuildMethod->AppendRadioItem(getIdForBuildMethodMenu(MapBuildMethod::None), "&None\tN", "Use all the colors (even the unobtainable with blocks)");
     menuBar->Append(menuBuildMethod, "&Build Method");
 
     // Transparency
     wxMenu *menuTransparency = new wxMenu();
-    menuTransparency->AppendRadioItem(ID_Transparency_Use_Background, "&Use background color", "Use a background color to replace transparency.")->Check(true);
-    menuTransparency->AppendRadioItem(ID_Transparency_Preserve, "&Use transparency", "Preserve image transparency. This makes it impossible to build in survival, but you can still export it to map files.");
+    menuTransparency->AppendRadioItem(ID_Transparency_Use_Background, "&Use background color\tB", "Use a background color to replace transparency.")->Check(true);
+    menuTransparency->AppendRadioItem(ID_Transparency_Preserve, "&Use transparency\tT", "Preserve image transparency. This makes it impossible to build in survival, but you can still export it to map files.");
     menuBar->Append(menuTransparency, "&Transparency");
 
     // Version
