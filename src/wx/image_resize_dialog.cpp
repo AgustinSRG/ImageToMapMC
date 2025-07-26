@@ -63,6 +63,11 @@ ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1,
 
     this->usingMaps = tools::getRememberedValue(tools::VALUE_PURPOSE_SIZE_UNITS).compare("map") == 0;
 
+    wxFont font = this->GetFont();
+    font.SetPixelSize(wxSize(0, 12));
+
+    this->SetFont(font);
+
     resizedW = max(1, width);
     resizedH = max(1, height);
 
@@ -145,7 +150,7 @@ ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1,
         this, wxID_ANY,
         usingMaps ? wxString("map") : wxString("px"),
         wxPoint(rowX, rowY + paddingTopLabels),
-        wxSize(labelUnitsWidth, labelHeight), wxALIGN_RIGHT);
+        wxSize(labelUnitsWidth, labelHeight));
 
     // Height row
 
@@ -183,7 +188,7 @@ ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1,
         this, wxID_ANY,
         usingMaps ? wxString("map") : wxString("px"),
         wxPoint(rowX, rowY + paddingTopLabels),
-        wxSize(labelUnitsWidth, labelHeight), wxALIGN_RIGHT);
+        wxSize(labelUnitsWidth, labelHeight));
 
     // Size units row
 
