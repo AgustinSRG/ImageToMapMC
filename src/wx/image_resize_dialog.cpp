@@ -21,10 +21,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "image_resize_dialog.h"
 #include <filesystem>
 #include <sstream>
 #include <algorithm>
+
+#include "image_resize_dialog.h"
+#include "../tools/value_remember.h"
 
 using namespace std;
 
@@ -59,7 +61,7 @@ ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1,
     this->width = max(1, width);
     this->height = max(1, height);
 
-    this->usingMaps = false;
+    this->usingMaps = tools::getRememberedValue(tools::VALUE_PURPOSE_SIZE_UNITS).compare("map") == 0;
 
     resizedW = max(1, width);
     resizedH = max(1, height);
@@ -121,7 +123,15 @@ ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1,
     rowX += labelWidth + labelTextSeparation;
 
     stringstream sw;
-    sw << width;
+
+    if (usingMaps)
+    {
+        sw << resizedWMaps;
+    }
+    else
+    {
+        sw << resizedW;
+    }
 
     wText = new wxTextCtrl(
         this, ID_Text_W,
@@ -132,7 +142,8 @@ ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1,
     rowX += textWidth + textUnitLabelSeparation;
 
     labelUnits1 = new wxStaticText(
-        this, wxID_ANY, wxString("px"),
+        this, wxID_ANY,
+        usingMaps ? wxString("map") : wxString("px"),
         wxPoint(rowX, rowY + paddingTopLabels),
         wxSize(labelUnitsWidth, labelHeight), wxALIGN_RIGHT);
 
@@ -150,7 +161,15 @@ ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1,
     rowX += labelWidth + labelTextSeparation;
 
     stringstream sh;
-    sh << height;
+
+    if (usingMaps)
+    {
+        sh << resizedHMaps;
+    }
+    else
+    {
+        sh << resizedH;
+    }
 
     hText = new wxTextCtrl(
         this, ID_Text_H,
@@ -162,7 +181,7 @@ ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1,
 
     labelUnits2 = new wxStaticText(
         this, wxID_ANY,
-        wxString("px"),
+        usingMaps ? wxString("map") : wxString("px"),
         wxPoint(rowX, rowY + paddingTopLabels),
         wxSize(labelUnitsWidth, labelHeight), wxALIGN_RIGHT);
 
@@ -180,11 +199,14 @@ ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1,
     rowX += labelWidth + labelTextSeparation;
 
     wxArrayString options;
-    options.Add("Pixels (1 px = 1 block)");
-    options.Add("Maps (1 map = 128 blocks)");
+    wxString optionPixels("Pixels (1 px = 1 block)");
+    wxString optionMaps("Maps (1 map = 128 blocks)");
+
+    options.Add(optionPixels);
+    options.Add(optionMaps);
     combo = new wxComboBox(
         this, ID_Combo,
-        wxString("Pixels (1 px = 1 block)"),
+        usingMaps ? optionMaps : optionPixels,
         wxPoint(rowX, rowY),
         wxSize(comboWidth, comboHeight),
         options, wxCB_READONLY);
@@ -403,6 +425,8 @@ void ImageResizeDialog::OnUnitsComboBoxChanged(wxCommandEvent &evt)
             labelUnits2->SetLabelText(wxString("px"));
         }
     }
+
+    tools::setRememberedValue(tools::VALUE_PURPOSE_SIZE_UNITS, usingMaps ? std::string("map") : std::string("px"));
 }
 
 void ImageResizeDialog::OnKeyPress(wxKeyEvent &event)

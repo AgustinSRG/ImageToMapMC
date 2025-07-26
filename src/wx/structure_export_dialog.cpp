@@ -23,7 +23,7 @@
 
 #include "structure_export_dialog.h"
 #include "../tools/text_file.h"
-#include "../tools/folder_remember.h"
+#include "../tools/value_remember.h"
 #include <filesystem>
 
 using namespace std;
@@ -67,7 +67,7 @@ StructureExportDialog::StructureExportDialog(minecraft::McVersion version, Expor
 
 void StructureExportDialog::OnShow(wxShowEvent& event) {
     if (event.IsShown() && textFolder != NULL) {
-        std::string rememberPath = tools::getRememberedFolder(tools::FOLDER_PURPOSE_EXPORT_STRUCTURES);
+        std::string rememberPath = tools::getRememberedValue(tools::VALUE_PURPOSE_EXPORT_STRUCTURES);
 
         if (rememberPath.length() > 0) {
             textFolder->ChangeValue(rememberPath);
@@ -101,7 +101,7 @@ void StructureExportDialog::OnOk(wxCommandEvent &event)
     filesystem::create_directories(getPath());
     createDataPackMetadata();
 
-    tools::setRememberedFolder(tools::FOLDER_PURPOSE_EXPORT_STRUCTURES, getPath());
+    tools::setRememberedValue(tools::VALUE_PURPOSE_EXPORT_STRUCTURES, getPath());
 
     EndModal(wxID_OK);
 }
@@ -125,7 +125,7 @@ void StructureExportDialog::OnBrowse(wxCommandEvent &event)
         return; // the user changed idea...
     }
 
-    tools::setRememberedFolder(tools::FOLDER_PURPOSE_EXPORT_STRUCTURES, dialog.GetPath().ToStdString());
+    tools::setRememberedValue(tools::VALUE_PURPOSE_EXPORT_STRUCTURES, dialog.GetPath().ToStdString());
 
     textFolder->ChangeValue(dialog.GetPath());
 }

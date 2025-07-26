@@ -27,24 +27,25 @@
 
 namespace tools
 {
-    const std::string FOLDER_PURPOSE_EXPORT_MAPS("folder-exp-maps");
-    const std::string FOLDER_PURPOSE_EXPORT_STRUCTURES("folder-exp-struct");
+    const std::string VALUE_PURPOSE_EXPORT_MAPS("folder-exp-maps");
+    const std::string VALUE_PURPOSE_EXPORT_STRUCTURES("folder-exp-struct");
+    const std::string VALUE_PURPOSE_SIZE_UNITS("resize-units");
 
     /**
-     * @brief  Gets the remembered folder
+     * @brief  Gets the remembered value
      * @note   
-     * @param  purpose: The purpose of the folder. Use the constants (tools::FOLDER_PURPOSE_{})
+     * @param  purpose: The purpose of the value. Use the constants (tools::VALUE_PURPOSE_{})
      * @retval The remembered folder, or an empty string by default
      */
-    std::string getRememberedFolder(std::string purpose);
+    std::string getRememberedValue(std::string purpose);
 
 
     /**
-     * @brief  Sets a folder to remember it
+     * @brief  Sets a value to remember it
      * @note   
-     * @param  purpose: The purpose of the folder. Use the constants (tools::FOLDER_PURPOSE_{})
+     * @param  purpose: The purpose of the value. Use the constants (tools::VALUE_PURPOSE_{})
      * @param  folder: The folder to be remembered
      * @retval None
      */
-    void setRememberedFolder(std::string purpose, std::string folder);
+    void setRememberedValue(std::string purpose, std::string folder);
 }

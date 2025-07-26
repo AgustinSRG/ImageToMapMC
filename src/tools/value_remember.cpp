@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "folder_remember.h"
+#include "value_remember.h"
 #include "text_file.h"
 
 #include <filesystem>
@@ -88,14 +88,14 @@ std::string getRememberFolderConfigFile(std::string purpose)
 #endif
 }
 
-std::string tools::getRememberedFolder(std::string purpose)
+std::string tools::getRememberedValue(std::string purpose)
 {
     std::string configFilePath = getRememberFolderConfigFile(purpose);
 
     return tools::readTextFile(configFilePath);
 }
 
-void tools::setRememberedFolder(std::string purpose, std::string folder) {
+void tools::setRememberedValue(std::string purpose, std::string folder) {
     std::string configFolder = getRememberFolderConfigFolder();
 
     if (!filesystem::exists(filesystem::path(configFolder))) {

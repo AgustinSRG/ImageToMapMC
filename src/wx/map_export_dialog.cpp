@@ -22,7 +22,7 @@
  */
 
 #include "map_export_dialog.h"
-#include "../tools/folder_remember.h"
+#include "../tools/value_remember.h"
 #include <filesystem>
 #include <sstream>
 
@@ -65,7 +65,7 @@ void MapExportDialog::OnShow(wxShowEvent &event)
 {
     if (event.IsShown() && textFolder != NULL)
     {
-        std::string rememberPath = tools::getRememberedFolder(tools::FOLDER_PURPOSE_EXPORT_MAPS);
+        std::string rememberPath = tools::getRememberedValue(tools::VALUE_PURPOSE_EXPORT_MAPS);
 
         if (rememberPath.length() > 0)
         {
@@ -125,7 +125,7 @@ void MapExportDialog::OnOk(wxCommandEvent &event)
         }
     }
 
-    tools::setRememberedFolder(tools::FOLDER_PURPOSE_EXPORT_MAPS, getPath());
+    tools::setRememberedValue(tools::VALUE_PURPOSE_EXPORT_MAPS, getPath());
 
     EndModal(wxID_OK);
 }
@@ -146,7 +146,7 @@ void MapExportDialog::OnBrowse(wxCommandEvent &event)
 
     textFolder->ChangeValue(dialog.GetPath());
     figureOutMapNumber(dialog.GetPath().ToStdString());
-    tools::setRememberedFolder(tools::FOLDER_PURPOSE_EXPORT_MAPS, dialog.GetPath().ToStdString());
+    tools::setRememberedValue(tools::VALUE_PURPOSE_EXPORT_MAPS, dialog.GetPath().ToStdString());
 }
 
 std::string MapExportDialog::getPath()
