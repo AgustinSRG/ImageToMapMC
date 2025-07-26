@@ -23,7 +23,7 @@ If there are no binaries available for your system, you can always compile them 
 
 ## Screenshots
 
-![Main view](./screenshots/main_display.jpg "Main view")
+![Main view](./screenshots/main_display-1.6.jpg "Main view")
 
 ![Map in-game (Minecraft)](./screenshots/mc_maps_imported.jpg "Map in-game (Minecraft)")
 
