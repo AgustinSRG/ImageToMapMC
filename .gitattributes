@@ -6,4 +6,5 @@
 *.woff binary
 *.woff2 binary
 *.png binary
+*.jpg binary
 *.mp4 binary
