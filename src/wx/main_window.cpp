@@ -172,6 +172,8 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     originalImagePanel = NULL;
     previewPanel = NULL;
 
+    totalMapCount = 1;
+
     project = MapArtProject();
 
     dirty = false;
@@ -390,6 +392,8 @@ void MainWindow::updateOriginalImage()
     int mapCountX = matrixW / MAP_WIDTH;
     int mapCountZ = matrixH / MAP_HEIGHT;
     int totalMaps = mapCountX * mapCountZ;
+
+    totalMapCount = totalMaps;
 
     stringstream ss;
     ss << "Size: " << mapCountX << " x " << mapCountZ << " (" << totalMaps << ") maps";
@@ -651,7 +655,7 @@ void MainWindow::onExportToMaps(wxCommandEvent &evt)
         return;
     }
 
-    MapExportDialog dialog;
+    MapExportDialog dialog(totalMapCount);
     if (dialog.ShowModal() == wxID_CANCEL)
     {
         return; // the user changed idea...

@@ -33,7 +33,7 @@
 class MapExportDialog : public wxDialog
 {
 public:
-    MapExportDialog();
+    MapExportDialog(int projectMapCount);
 
     std::string getPath();
     int getMapNumber();
@@ -46,6 +46,8 @@ public:
     void OnBrowse(wxCommandEvent &event);
     void OnKeyPress(wxKeyEvent &event);
 private:
+    int projectMapCount;
+
     wxTextCtrl *textFolder;
     wxTextCtrl *textMapNumber;
 

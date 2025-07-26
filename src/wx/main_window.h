@@ -131,6 +131,8 @@ private:
     std::string projectFile;
     bool dirty;
 
+    int totalMapCount;
+
     wxDECLARE_EVENT_TABLE();
 };
 

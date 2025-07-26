@@ -43,8 +43,10 @@ EVT_CHAR_HOOK(MapExportDialog::OnKeyPress)
 EVT_SHOW(MapExportDialog::OnShow)
 END_EVENT_TABLE()
 
-MapExportDialog::MapExportDialog() : wxDialog(NULL, -1, wxString("Export to map files"), wxDefaultPosition, wxSize(350, 230))
+MapExportDialog::MapExportDialog(int projectMapCount) : wxDialog(NULL, -1, wxString("Export to map files"), wxDefaultPosition, wxSize(350, 230))
 {
+    this->projectMapCount = projectMapCount;
+
     wxStaticText *label1 = new wxStaticText(this, wxID_ANY, wxString("Choose a folder:"), wxPoint(15, 15), wxSize(200, 15));
 
     textFolder = new wxTextCtrl(this, wxID_ANY, wxString("mapart"), wxPoint(15, 35), wxSize(305, 20));
@@ -75,19 +77,49 @@ void MapExportDialog::OnShow(wxShowEvent &event)
 
 void MapExportDialog::OnOk(wxCommandEvent &event)
 {
-    if (!filesystem::exists(getPath()))
+    std::string path = getPath();
+
+    if (!filesystem::exists(path))
     {
-        wxMessageBox(string("Cannot find the folder: ") + getPath(), wxT("Error"), wxICON_ERROR);
+        wxMessageBox(string("Cannot find the folder: ") + path, wxT("Error"), wxICON_ERROR);
         return;
     }
-    if (!filesystem::is_directory(getPath()))
+    if (!filesystem::is_directory(path))
     {
-        wxMessageBox(string("Cannot find the folder: ") + getPath(), wxT("Error"), wxICON_ERROR);
+        wxMessageBox(string("Cannot find the folder: ") + path, wxT("Error"), wxICON_ERROR);
         return;
     }
-    if (!filesystem::is_empty(getPath()))
+    if (!filesystem::is_empty(path))
     {
-        if (wxMessageBox(string("The folder is not empty ") + getPath() + "\nWant to export anyway? This may overwrite map files if you have them in that folder.", wxT("Warning"), wxICON_WARNING | wxYES_NO) == wxID_CANCEL)
+        int startMapNumber = this->getMapNumber();
+
+        bool foundOverwrite = false;
+        stringstream ssOverWriteList;
+
+        for (int i = 0; i < this->projectMapCount; i++)
+        {
+            int mapNumber = startMapNumber + i;
+
+            stringstream ss;
+            ss << "map_" << (mapNumber) << ".dat";
+
+            std::string mapFileName = ss.str();
+
+            filesystem::path outFilePath(path);
+            outFilePath /= mapFileName;
+
+            if (filesystem::exists(outFilePath)) {
+                if (foundOverwrite) {
+                    ssOverWriteList << ", ";
+                }
+
+                ssOverWriteList << mapFileName;
+
+                foundOverwrite = true;
+            }
+        }
+
+        if (foundOverwrite && wxMessageBox(string("The folder is not empty: ") + getPath() + "\nWant to export anyway? The following files will be overwritten:\n\n" + ssOverWriteList.str(), wxT("Warning"), wxICON_WARNING | wxYES_NO) != wxYES)
         {
             return;
         }
