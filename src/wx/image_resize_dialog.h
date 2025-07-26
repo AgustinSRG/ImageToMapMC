@@ -28,6 +28,8 @@
 #include <wx/wx.h>
 #endif
 
+#include <wx/combobox.h>
+
 #include <string>
 #include "../minecraft/mc_common.h"
 
@@ -53,18 +55,29 @@ public:
     void OnTextUpdateW(wxCommandEvent &event);
     void OnTextUpdateH(wxCommandEvent &event);
     void OnKeyPress(wxKeyEvent &event);
+    void OnUnitsComboBoxChanged(wxCommandEvent &evt);
 
 private:
     wxTextCtrl *wText;
     wxTextCtrl *hText;
+
+    wxStaticText *labelUnits1;
+    wxStaticText *labelUnits2;
+
+    wxComboBox *combo;
 
     wxCheckBox *checkbox;
 
     int width;
     int height;
 
+    bool usingMaps;
+
     int resizedW;
     int resizedH;
+
+    double resizedWMaps;
+    double resizedHMaps;
 
     bool linked;
 
