@@ -8,6 +8,12 @@ on:
     branches:
       - main
       - master
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - 'screenshots/*'
+      - 'guides/*'
+      - 'wix/*'
 
 jobs:
   build:
@@ -49,12 +55,12 @@ jobs:
         uses: aminya/setup-cpp@v1
         with:
           compiler: ${{ matrix.compiler }}
-          vcvarsall: true
           cmake: true
-          ninja: true
           vcpkg: true
-          cppcheck: true # instead of `true`, which chooses the default version, you can pass a specific version.
 
+      - name: Install dependencies
+        run: vcpkg install
+      
       - name: Configure
         run: cmake -DCMAKE_BUILD_TYPE=Release -Ssrc -Brelease
     
