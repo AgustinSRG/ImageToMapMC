@@ -23,6 +23,7 @@
 
 #include "structure_export_dialog.h"
 #include "../tools/text_file.h"
+#include "../tools/folder_remember.h"
 #include <filesystem>
 
 using namespace std;
@@ -39,6 +40,7 @@ EVT_BUTTON(ID_OK, StructureExportDialog::OnOk)
 EVT_BUTTON(ID_Cancel, StructureExportDialog::OnCancel)
 EVT_BUTTON(ID_Browse, StructureExportDialog::OnBrowse)
 EVT_CHAR_HOOK(StructureExportDialog::OnKeyPress)
+EVT_SHOW(StructureExportDialog::OnShow)
 END_EVENT_TABLE()
 
 StructureExportDialog::StructureExportDialog(minecraft::McVersion version, ExportDialogMode mode) : wxDialog(NULL, -1, wxString("Export map art"), wxDefaultPosition, wxSize(350, 230))
@@ -61,6 +63,16 @@ StructureExportDialog::StructureExportDialog(minecraft::McVersion version, Expor
     wxButton *cancelButton = new wxButton(this, ID_Cancel, wxString("Cancel"), wxPoint(110, 150), wxSize(100, 30));
 
     Centre();
+}
+
+void StructureExportDialog::OnShow(wxShowEvent& event) {
+    if (event.IsShown() && textFolder != NULL) {
+        std::string rememberPath = tools::getRememberedFolder(tools::FOLDER_PURPOSE_EXPORT_STRUCTURES);
+
+        if (rememberPath.length() > 0) {
+            textFolder->ChangeValue(rememberPath);
+        }
+    }
 }
 
 void StructureExportDialog::OnOk(wxCommandEvent &event)
@@ -89,6 +101,8 @@ void StructureExportDialog::OnOk(wxCommandEvent &event)
     filesystem::create_directories(getPath());
     createDataPackMetadata();
 
+    tools::setRememberedFolder(tools::FOLDER_PURPOSE_EXPORT_STRUCTURES, getPath());
+
     EndModal(wxID_OK);
 }
 
@@ -110,6 +124,8 @@ void StructureExportDialog::OnBrowse(wxCommandEvent &event)
     {
         return; // the user changed idea...
     }
+
+    tools::setRememberedFolder(tools::FOLDER_PURPOSE_EXPORT_STRUCTURES, dialog.GetPath());
 
     textFolder->ChangeValue(dialog.GetPath());
 }

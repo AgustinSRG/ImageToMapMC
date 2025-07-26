@@ -62,6 +62,7 @@ SET(SOURCES_WX
     "wx/worker_thread.h" "wx/worker_thread.cpp"
     "mapart/project.h" "mapart/project.cpp"
     "tools/open_desktop.h" "tools/open_desktop.cpp"
+    "tools/folder_remember.h" "tools/folder_remember.cpp"
 )
 
 SET(SOURCES_RC 

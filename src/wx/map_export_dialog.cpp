@@ -22,6 +22,7 @@
  */
 
 #include "map_export_dialog.h"
+#include "../tools/folder_remember.h"
 #include <filesystem>
 
 using namespace std;
@@ -38,6 +39,7 @@ EVT_BUTTON(ID_OK, MapExportDialog::OnOk)
 EVT_BUTTON(ID_Cancel, MapExportDialog::OnCancel)
 EVT_BUTTON(ID_Browse, MapExportDialog::OnBrowse)
 EVT_CHAR_HOOK(MapExportDialog::OnKeyPress)
+EVT_SHOW(MapExportDialog::OnShow)
 END_EVENT_TABLE()
 
 MapExportDialog::MapExportDialog() : wxDialog(NULL, -1, wxString("Export to map files"), wxDefaultPosition, wxSize(350, 230))
@@ -56,6 +58,16 @@ MapExportDialog::MapExportDialog() : wxDialog(NULL, -1, wxString("Export to map 
     Centre();
 }
 
+void MapExportDialog::OnShow(wxShowEvent& event) {
+    if (event.IsShown() && textFolder != NULL) {
+        std::string rememberPath = tools::getRememberedFolder(tools::FOLDER_PURPOSE_EXPORT_MAPS);
+
+        if (rememberPath.length() > 0) {
+            textFolder->ChangeValue(rememberPath);
+        }
+    }
+}
+
 void MapExportDialog::OnOk(wxCommandEvent &event)
 {
     if (!filesystem::exists(getPath())) {
@@ -71,6 +83,9 @@ void MapExportDialog::OnOk(wxCommandEvent &event)
             return;
         }
     }
+
+    tools::setRememberedFolder(tools::FOLDER_PURPOSE_EXPORT_MAPS, getPath());
+
     EndModal(wxID_OK);
 }
 
@@ -88,6 +103,7 @@ void MapExportDialog::OnBrowse(wxCommandEvent &event) {
     }
 
     textFolder->ChangeValue(dialog.GetPath());
+    tools::setRememberedFolder(tools::FOLDER_PURPOSE_EXPORT_MAPS, dialog.GetPath());
 }
 
 std::string MapExportDialog::getPath()

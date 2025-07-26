@@ -1,7 +1,7 @@
 /*
  * This file is part of ImageToMapMC project
  * 
- * Copyright (c) 2021 Agustin San Roman
+ * Copyright (c) 2025 Agustin San Roman
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -23,43 +23,28 @@
 
 #pragma once
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
 #include <string>
-#include "../minecraft/mc_common.h"
 
-enum class ExportDialogMode {
-    Structure,
-    Function
-};
-
-class StructureExportDialog : public wxDialog
+namespace tools
 {
-public:
-    StructureExportDialog(minecraft::McVersion version, ExportDialogMode mode);
+    const std::string FOLDER_PURPOSE_EXPORT_MAPS("folder-exp-maps");
+    const std::string FOLDER_PURPOSE_EXPORT_STRUCTURES("folder-exp-struct");
 
-    std::string getPath();
-    void createDataPackMetadata();
+    /**
+     * @brief  Gets the remembered folder
+     * @note   
+     * @param  purpose: The purpose of the folder. Use the constants (tools::FOLDER_PURPOSE_{})
+     * @retval The remembered folder, or an empty string by default
+     */
+    std::string getRememberedFolder(std::string purpose);
 
-    void OnOk(wxCommandEvent &event);
-    void OnCancel(wxCommandEvent &event);
 
-    void OnBrowse(wxCommandEvent &event);
-
-    void OnKeyPress(wxKeyEvent &event);
-
-    void OnShow(wxShowEvent& event);
-
-private:
-    wxTextCtrl *textFolder;
-    wxTextCtrl *textNamespace;
-
-    minecraft::McVersion version;
-
-    ExportDialogMode mode;
-
-    DECLARE_EVENT_TABLE()
-};
+    /**
+     * @brief  Sets a folder to remember it
+     * @note   
+     * @param  purpose: The purpose of the folder. Use the constants (tools::FOLDER_PURPOSE_{})
+     * @param  folder: The folder to be remembered
+     * @retval None
+     */
+    void setRememberedFolder(std::string purpose, std::string folder);
+}

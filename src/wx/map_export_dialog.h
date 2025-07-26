@@ -38,6 +38,8 @@ public:
     std::string getPath();
     int getMapNumber();
 
+    void OnShow(wxShowEvent& event);
+
     void OnOk(wxCommandEvent &event);
     void OnCancel(wxCommandEvent &event);
 
