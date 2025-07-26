@@ -1,15 +1,15 @@
 /*
  * This file is part of ImageToMapMC project
- * 
+ *
  * Copyright (c) 2021 Agustin San Roman
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
 
@@ -24,6 +24,7 @@
 #include "map_export_dialog.h"
 #include "../tools/folder_remember.h"
 #include <filesystem>
+#include <sstream>
 
 using namespace std;
 
@@ -44,42 +45,50 @@ END_EVENT_TABLE()
 
 MapExportDialog::MapExportDialog() : wxDialog(NULL, -1, wxString("Export to map files"), wxDefaultPosition, wxSize(350, 230))
 {
-    wxStaticText * label1 = new wxStaticText(this, wxID_ANY, wxString("Choose a folder:"), wxPoint(15, 15), wxSize(200, 15));
+    wxStaticText *label1 = new wxStaticText(this, wxID_ANY, wxString("Choose a folder:"), wxPoint(15, 15), wxSize(200, 15));
 
-    textFolder = new wxTextCtrl(this, wxID_ANY, wxString("mapart"), wxPoint(15, 35), wxSize(305, 20)); 
-    wxButton * browseButton = new wxButton(this, ID_Browse, wxString("Browse..."), wxPoint(15, 60), wxSize(80, 30));
+    textFolder = new wxTextCtrl(this, wxID_ANY, wxString("mapart"), wxPoint(15, 35), wxSize(305, 20));
+    wxButton *browseButton = new wxButton(this, ID_Browse, wxString("Browse..."), wxPoint(15, 60), wxSize(80, 30));
 
-    wxStaticText * label2 = new wxStaticText(this, wxID_ANY, wxString("Start with map number:"), wxPoint(15, 100), wxSize(200, 15));
-    textMapNumber = new wxTextCtrl(this, wxID_ANY, wxString("0"), wxPoint(15, 120), wxSize(305, 20)); 
-    
-    wxButton * okButton = new wxButton(this, ID_OK, wxString("Export"), wxPoint(220, 150), wxSize(100, 30));
-    wxButton * cancelButton = new wxButton(this, ID_Cancel, wxString("Cancel"), wxPoint(110, 150), wxSize(100, 30));
-   
+    wxStaticText *label2 = new wxStaticText(this, wxID_ANY, wxString("Start with map number:"), wxPoint(15, 100), wxSize(200, 15));
+    textMapNumber = new wxTextCtrl(this, wxID_ANY, wxString("0"), wxPoint(15, 120), wxSize(305, 20));
+
+    wxButton *okButton = new wxButton(this, ID_OK, wxString("Export"), wxPoint(220, 150), wxSize(100, 30));
+    wxButton *cancelButton = new wxButton(this, ID_Cancel, wxString("Cancel"), wxPoint(110, 150), wxSize(100, 30));
+
     Centre();
 }
 
-void MapExportDialog::OnShow(wxShowEvent& event) {
-    if (event.IsShown() && textFolder != NULL) {
+void MapExportDialog::OnShow(wxShowEvent &event)
+{
+    if (event.IsShown() && textFolder != NULL)
+    {
         std::string rememberPath = tools::getRememberedFolder(tools::FOLDER_PURPOSE_EXPORT_MAPS);
 
-        if (rememberPath.length() > 0) {
+        if (rememberPath.length() > 0)
+        {
             textFolder->ChangeValue(rememberPath);
+            figureOutMapNumber(rememberPath);
         }
     }
 }
 
 void MapExportDialog::OnOk(wxCommandEvent &event)
 {
-    if (!filesystem::exists(getPath())) {
+    if (!filesystem::exists(getPath()))
+    {
         wxMessageBox(string("Cannot find the folder: ") + getPath(), wxT("Error"), wxICON_ERROR);
         return;
     }
-    if (!filesystem::is_directory(getPath())) {
+    if (!filesystem::is_directory(getPath()))
+    {
         wxMessageBox(string("Cannot find the folder: ") + getPath(), wxT("Error"), wxICON_ERROR);
         return;
     }
-    if (!filesystem::is_empty(getPath())) {
-        if (wxMessageBox(string("The folder is not empty ") + getPath() + "\nWant to export anyway? This may overwrite map files if you have them in that folder.", wxT("Warning"), wxICON_WARNING | wxYES_NO) == wxID_CANCEL) {
+    if (!filesystem::is_empty(getPath()))
+    {
+        if (wxMessageBox(string("The folder is not empty ") + getPath() + "\nWant to export anyway? This may overwrite map files if you have them in that folder.", wxT("Warning"), wxICON_WARNING | wxYES_NO) == wxID_CANCEL)
+        {
             return;
         }
     }
@@ -94,7 +103,8 @@ void MapExportDialog::OnCancel(wxCommandEvent &event)
     EndModal(wxID_CANCEL);
 }
 
-void MapExportDialog::OnBrowse(wxCommandEvent &event) {
+void MapExportDialog::OnBrowse(wxCommandEvent &event)
+{
     wxDirDialog dialog(this, wxString("Choose the output folder"), wxEmptyString, wxDD_DIR_MUST_EXIST);
 
     if (dialog.ShowModal() == wxID_CANCEL)
@@ -103,6 +113,7 @@ void MapExportDialog::OnBrowse(wxCommandEvent &event) {
     }
 
     textFolder->ChangeValue(dialog.GetPath());
+    figureOutMapNumber(dialog.GetPath());
     tools::setRememberedFolder(tools::FOLDER_PURPOSE_EXPORT_MAPS, dialog.GetPath());
 }
 
@@ -116,11 +127,49 @@ int MapExportDialog::getMapNumber()
     return atoi(textMapNumber->GetValue().c_str());
 }
 
-void MapExportDialog::OnKeyPress(wxKeyEvent &event) {
-    if (event.GetKeyCode() == WXK_ESCAPE) {
+void MapExportDialog::OnKeyPress(wxKeyEvent &event)
+{
+    if (event.GetKeyCode() == WXK_ESCAPE)
+    {
         EndModal(wxID_CANCEL);
         return;
     }
 
     event.Skip();
+}
+
+void MapExportDialog::figureOutMapNumber(std::string path)
+{
+    int lastMap = 0;
+    bool foundAtLeastOneMap = false;
+
+    for (const auto &entry : filesystem::directory_iterator(path))
+    {
+        std::string fileName = entry.path().filename().string();
+
+        if (fileName.length() > 8 && fileName.substr(0, 4).compare("map_") == 0 && fileName.substr(fileName.length() - 4, 4).compare(".dat") == 0)
+        {
+            foundAtLeastOneMap = true;
+            std::string mapId = fileName.substr(4, fileName.length() - 8);
+            int mapIdInt = atoi(mapId.c_str());
+
+            if (mapIdInt > lastMap)
+            {
+                lastMap = mapIdInt;
+            }
+        }
+    }
+
+    if (textMapNumber != NULL)
+    {
+        if (foundAtLeastOneMap) {
+            lastMap++;
+        }
+        
+        stringstream ss;
+
+        ss << lastMap;
+
+        textMapNumber->SetValue(ss.str());
+    }
 }
