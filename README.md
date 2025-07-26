@@ -66,7 +66,7 @@ vcpkg install wxwidgets zlib libzip --triplet=x64-windows
 Install zlib and libzip via apt:
 
 ```sh
-sudo apt install zlib1g-dev libzip-dev
+sudo apt install zlib1g-dev libzip-dev libgtk-3-dev libglew-dev
 ```
 
 For wxWidgets, install from the source code:
