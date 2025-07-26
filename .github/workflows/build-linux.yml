@@ -19,10 +19,13 @@ jobs:
       run: sudo apt install -y cmake
 
     - name: Install C++ Dependencies
-      run: sudo apt install -y zlib1g-dev libzip-dev
+      run: sudo apt install -y zlib1g-dev libzip-dev libgtk-3-dev libglew-dev
 
     - name: Install wxWidgets
       run: ./install-wx-widgets.sh
 
+    - name: Configure
+      run: cmake -DCMAKE_BUILD_TYPE=Release -Ssrc -Brelease
+    
     - name: Build
-      run: ./build.sh
+      run: cmake --build release --config Release
