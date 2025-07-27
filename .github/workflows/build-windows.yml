@@ -46,12 +46,12 @@ jobs:
       - name: Setup Cpp
         uses: aminya/setup-cpp@v1
         with:
-          compiler: ${{ matrix.compiler }}
+          compiler: msvc
           cmake: true
           vcpkg: true
       
       - name: Install dependencies
-        run: vcpkg install
+        run: vcpkg install wxwidgets zlib libzip --triplet=x64-windows
 
       - name: Configure
         run: cmake -DCMAKE_BUILD_TYPE=Release -A x64 -Ssrc -Brelease
