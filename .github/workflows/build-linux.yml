@@ -47,7 +47,7 @@ jobs:
           cache-release-
 
     - name: Configure
-      run: cmake -DCMAKE_BUILD_TYPE=Release -Ssrc -Brelease
+      run: cmake -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release -Ssrc -Brelease
     
     - name: Build
       run: cmake --build release --config Release

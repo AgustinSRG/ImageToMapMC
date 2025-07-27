@@ -5,7 +5,6 @@ project ("ImageToMapMC")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "-std=c++17 -lstdc++fs") 
 
 # hack for buggy CMake's FindwxWidgets script
 if (DEFINED ENV_WX_CONFIG)
