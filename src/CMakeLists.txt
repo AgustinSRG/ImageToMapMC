@@ -1,11 +1,10 @@
 ﻿# CMakeList.txt: Project
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.10)
 
 project ("ImageToMapMC")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "-lc++fs -lstdc++fs") 
 
 # hack for buggy CMake's FindwxWidgets script
 if (DEFINED ENV_WX_CONFIG)
