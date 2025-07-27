@@ -42,4 +42,4 @@ jobs:
       run: cmake -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release -Ssrc -Brelease
     
     - name: Build
-      run: cmake -DCMAKE_CXX_COMPILER=g++ --build release --config Release
+      run: cmake --build release --config Release
