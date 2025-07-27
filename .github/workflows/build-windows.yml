@@ -54,7 +54,7 @@ jobs:
         run: vcpkg install
 
       - name: Configure
-        run: cmake -DCMAKE_BUILD_TYPE=Release -Ssrc -Brelease
+        run: cmake -DCMAKE_BUILD_TYPE=Release -A x64 -Ssrc -Brelease
         env:
           CMAKE_TOOLCHAIN_FILE: C:\Users\runneradmin\vcpkg\scripts\buildsystems\vcpkg.cmake
           VCPKG_TARGET_TRIPLET: x64-windows
