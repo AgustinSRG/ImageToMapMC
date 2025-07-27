@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
     <!-- Use * to generate product ID on every build -->
-    <Product Id="*" Name="ImageToMapMC" Version="1.6.3.0" Language="1033" Manufacturer="AgustinSRG" UpgradeCode="1a73ad10-cffe-462a-ab4e-aefc9a2bd53b">
+    <Product Id="*" Name="ImageToMapMC" Version="1.6.4.0" Language="1033" Manufacturer="AgustinSRG" UpgradeCode="1a73ad10-cffe-462a-ab4e-aefc9a2bd53b">
 
         <Package Compressed="yes" InstallScope="perMachine" Manufacturer="AgustinSRG" Description="Converts images to Minecraft maps." Platform="x64" />
 
