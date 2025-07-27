@@ -63,17 +63,14 @@ vcpkg install wxwidgets zlib libzip --triplet=x64-windows
 
 ### Specific library installation instructions for Linux
 
-Install zlib and libzip via apt:
+Install the C++ dependencies via APT:
 
 ```sh
-sudo apt install zlib1g-dev libzip-dev libgtk-3-dev libglew-dev
+sudo apt install zipcmp zipmerge ziptool zlib1g-dev libzip-dev libgtk-3-dev libglew-dev libwxgtk3.2-dev
 ```
 
-For wxWidgets, install from the source code:
+You'll also need the `tar` tool in order to package the project:
 
 ```sh
-git clone --recurse-submodules https://github.com/wxWidgets/wxWidgets.git
-cd wxWidgets
-./configure
-sudo make install
-```
+sudo apt install -y tar
+````
