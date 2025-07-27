@@ -68,7 +68,7 @@ ImageColorMatrix mapart::loadColorMatrixFromImageAndPad(wxImage &image, colors::
 
             if (alphaData != NULL) {
                 resultColors[indexFinal] = colors::bendColor(resultColors[indexFinal], alphaData[z * width + x], background);
-                resultTransparency[indexFinal] = alphaData[z * width + x] == 0;
+                resultTransparency[indexFinal] = alphaData[z * width + x] < 128;
             } else {
                 resultTransparency[indexFinal] = false;
             }
