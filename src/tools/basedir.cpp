@@ -83,7 +83,12 @@ namespace tools
     std::string getExecutablePath()
     {
         char rawPathName[PATH_MAX];
-        realpath(PROC_SELF_EXE, rawPathName);
+        char * e = realpath(PROC_SELF_EXE, rawPathName);
+
+        if (e == NULL) {
+            return std::string("");
+        }
+
         return std::string(rawPathName);
     }
 

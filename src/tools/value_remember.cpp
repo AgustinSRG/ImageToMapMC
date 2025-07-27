@@ -22,9 +22,8 @@
  */
 
 #include "value_remember.h"
+#include "fs.h"
 #include "text_file.h"
-
-#include <filesystem>
 
 #if defined(_WIN32)
 #include <shlobj.h>
@@ -98,8 +97,8 @@ std::string tools::getRememberedValue(std::string purpose)
 void tools::setRememberedValue(std::string purpose, std::string folder) {
     std::string configFolder = getRememberFolderConfigFolder();
 
-    if (!filesystem::exists(filesystem::path(configFolder))) {
-        bool ok = filesystem::create_directories(configFolder);
+    if (!fs::exists(fs::path(configFolder))) {
+        bool ok = fs::create_directories(configFolder);
 
         if (!ok) {
             return;

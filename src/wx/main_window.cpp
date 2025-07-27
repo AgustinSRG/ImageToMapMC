@@ -29,7 +29,6 @@
 #include "map_export_dialog.h"
 #include "structure_export_dialog.h"
 #include "image_resize_dialog.h"
-#include <filesystem>
 #include "../minecraft/structure.h"
 #include "../minecraft/mcfunction.h"
 #include "../tools/open_desktop.h"

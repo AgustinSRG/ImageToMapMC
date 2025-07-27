@@ -23,42 +23,13 @@
 
 #pragma once
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
+#ifndef __has_include
+  static_assert(false, "__has_include not supported");
+#else
+#  if __has_include(<filesystem>)
+#    include <filesystem>
+     namespace fs = std::filesystem;
+#  else
+     static_assert(false, "filesystem not supported");
+#  endif
 #endif
-
-#include <iostream>
-#include <string>
-#include <chrono>
-#include <thread>
-#include <sstream>
-#include <cmath>
-#include "mapart/map_art.h"
-#include "mapart/map_image.h"
-#include "threads/progress.h"
-#include "minecraft/structure.h"
-#include "minecraft/schematic.h"
-#include "minecraft/mcfunction.h"
-#include "tools/basedir.h"
-#include "tools/text_file.h"
-
-int printHelp();
-int printVersion();
-int printBlocks(int argc, char **argv);
-int renderMap(int argc, char ** argv);
-int buildMap(int argc, char ** argv);
-void progressReporter(threading::Progress &progress);
-
-enum class MapOutputFormat {
-    Map,
-    Structure,
-    StructureSingle,
-    Schematic,
-    SchematicSingle,
-    Function
-};
-
-#define REPORT_THREAD_DELAY (33)
-
-#define BLOCKS_PRINT_TEMPLATE ("| %-25s | %-7s | %s\n")

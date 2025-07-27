@@ -24,6 +24,8 @@
 #include "main_console.h"
 #include "version.h"
 
+#include "tools/fs.h"
+
 using namespace std;
 using namespace colors;
 using namespace minecraft;
@@ -658,7 +660,7 @@ int buildMap(int argc, char **argv)
         return 1;
     }
 
-    if (!yesForced && filesystem::exists(filesystem::path(outputPath)))
+    if (!yesForced && fs::exists(fs::path(outputPath)))
     {
         std::cerr << "The folder '" << outputPath << "' already exists. May contain another map art." << endl;
         std::cerr << "Do you want to overwrite? (Y/N): ";
@@ -671,10 +673,10 @@ int buildMap(int argc, char **argv)
         }
     }
 
-    if (outFormat != MapOutputFormat::StructureSingle && !filesystem::exists(filesystem::path(outputPath)))
+    if (outFormat != MapOutputFormat::StructureSingle && !fs::exists(fs::path(outputPath)))
     {
         // Create dir if not found
-        filesystem::create_directory(filesystem::path(outputPath));
+        fs::create_directory(fs::path(outputPath));
     }
 
     // Initializae progress report thread
@@ -738,7 +740,7 @@ int buildMap(int argc, char **argv)
     bool isBlacklist = true;
     if (colorSetFilename.size() > 0)
     {
-        filesystem::path setsPath(getExecutableDir());
+        fs::path setsPath(getExecutableDir());
         string setFn = colorSetFilename + ".txt";
 
         setsPath /= "presets";
@@ -796,7 +798,7 @@ int buildMap(int argc, char **argv)
                 // Save to file
                 stringstream ss;
                 ss << "map_" << (mapNumber++) << ".dat";
-                filesystem::path outFilePath(outputPath);
+                fs::path outFilePath(outputPath);
 
                 outFilePath /= ss.str();
 
@@ -969,7 +971,7 @@ int buildMap(int argc, char **argv)
                     // Save as structure file
                     stringstream ss2;
                     ss2 << "map_" << (total + 1) << ".nbt";
-                    filesystem::path outFilePath(outputPath);
+                    fs::path outFilePath(outputPath);
 
                     outFilePath /= ss2.str();
 
@@ -991,7 +993,7 @@ int buildMap(int argc, char **argv)
                     // Save as schematic file
                     stringstream ss2;
                     ss2 << "map_" << (total + 1) << ".schem";
-                    filesystem::path outFilePath(outputPath);
+                    fs::path outFilePath(outputPath);
 
                     outFilePath /= ss2.str();
 
@@ -1013,7 +1015,7 @@ int buildMap(int argc, char **argv)
                     // Save as structure file
                     stringstream ss2;
                     ss2 << "map_" << (total + 1) << ".mcfunction";
-                    filesystem::path outFilePath(outputPath);
+                    fs::path outFilePath(outputPath);
 
                     outFilePath /= ss2.str();
 

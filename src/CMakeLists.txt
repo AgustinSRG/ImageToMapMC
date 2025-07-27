@@ -50,6 +50,8 @@ SET(SOURCES_COMMON
     "tools/image_edit.h" "tools/image_edit.cpp"
 
     "version.h"
+
+    "tools/fs.h"
 )
 
 SET(SOURCES_WX 

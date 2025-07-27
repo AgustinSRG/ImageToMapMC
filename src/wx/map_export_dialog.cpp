@@ -22,8 +22,8 @@
  */
 
 #include "map_export_dialog.h"
+#include "../tools/fs.h"
 #include "../tools/value_remember.h"
-#include <filesystem>
 #include <sstream>
 
 using namespace std;
@@ -79,17 +79,17 @@ void MapExportDialog::OnOk(wxCommandEvent &event)
 {
     std::string path = getPath();
 
-    if (!filesystem::exists(path))
+    if (!fs::exists(path))
     {
         wxMessageBox(string("Cannot find the folder: ") + path, wxT("Error"), wxICON_ERROR);
         return;
     }
-    if (!filesystem::is_directory(path))
+    if (!fs::is_directory(path))
     {
         wxMessageBox(string("Cannot find the folder: ") + path, wxT("Error"), wxICON_ERROR);
         return;
     }
-    if (!filesystem::is_empty(path))
+    if (!fs::is_empty(path))
     {
         int startMapNumber = this->getMapNumber();
 
@@ -105,10 +105,10 @@ void MapExportDialog::OnOk(wxCommandEvent &event)
 
             std::string mapFileName = ss.str();
 
-            filesystem::path outFilePath(path);
+            fs::path outFilePath(path);
             outFilePath /= mapFileName;
 
-            if (filesystem::exists(outFilePath)) {
+            if (fs::exists(outFilePath)) {
                 if (foundOverwrite) {
                     ssOverWriteList << ", ";
                 }
@@ -177,7 +177,7 @@ void MapExportDialog::figureOutMapNumber(std::string path)
 
     try
     {
-        for (const auto &entry : filesystem::directory_iterator(path))
+        for (const auto &entry : fs::directory_iterator(path))
         {
             std::string fileName = entry.path().filename().string();
 

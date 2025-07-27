@@ -22,9 +22,9 @@
  */
 
 #include "structure_export_dialog.h"
+#include "../tools/fs.h"
 #include "../tools/text_file.h"
 #include "../tools/value_remember.h"
-#include <filesystem>
 
 using namespace std;
 
@@ -51,7 +51,7 @@ StructureExportDialog::StructureExportDialog(minecraft::McVersion version, Expor
 
     wxStaticText *label1 = new wxStaticText(this, wxID_ANY, wxString("Choose a minecraft world folder:"), wxPoint(15, 15), wxSize(200, 15));
 
-    filesystem::path savesPath(minecraft::getMinecraftFolderLocation());
+    fs::path savesPath(minecraft::getMinecraftFolderLocation());
     savesPath /= "saves";
     textFolder = new wxTextCtrl(this, wxID_ANY, wxString(savesPath.string()), wxPoint(15, 35), wxSize(305, 20));
     wxButton *browseButton = new wxButton(this, ID_Browse, wxString("Browse..."), wxPoint(15, 60), wxSize(80, 30));
@@ -77,28 +77,28 @@ void StructureExportDialog::OnShow(wxShowEvent& event) {
 
 void StructureExportDialog::OnOk(wxCommandEvent &event)
 {
-    filesystem::path worldPath(std::string(textFolder->GetValue()));
-    if (!filesystem::exists(worldPath.string()))
+    fs::path worldPath(std::string(textFolder->GetValue()));
+    if (!fs::exists(worldPath.string()))
     {
         wxMessageBox(string("Cannot find the folder: ") + worldPath.string(), wxT("Error"), wxICON_ERROR);
         return;
     }
-    if (!filesystem::is_directory(worldPath.string()))
+    if (!fs::is_directory(worldPath.string()))
     {
         wxMessageBox(string("Cannot find the folder: ") + worldPath.string(), wxT("Error"), wxICON_ERROR);
         return;
     }
 
     // Check if it's a minecraft world
-    filesystem::path levelDatPath = worldPath / "level.dat";
-    if (!filesystem::exists(levelDatPath.string()))
+    fs::path levelDatPath = worldPath / "level.dat";
+    if (!fs::exists(levelDatPath.string()))
     {
         wxMessageBox(string("Not a valid minecraft world: ") + worldPath.string(), wxT("Error"), wxICON_ERROR);
         return;
     }
 
     // Create structures folder
-    filesystem::create_directories(getPath());
+    fs::create_directories(getPath());
     createDataPackMetadata();
 
     tools::setRememberedValue(tools::VALUE_PURPOSE_EXPORT_STRUCTURES, getPath());
@@ -114,7 +114,7 @@ void StructureExportDialog::OnCancel(wxCommandEvent &event)
 void StructureExportDialog::OnBrowse(wxCommandEvent &event)
 {
 
-    filesystem::path savesPath(minecraft::getMinecraftFolderLocation());
+    fs::path savesPath(minecraft::getMinecraftFolderLocation());
 
     savesPath /= "saves";
 
@@ -132,7 +132,7 @@ void StructureExportDialog::OnBrowse(wxCommandEvent &event)
 
 void StructureExportDialog::createDataPackMetadata()
 {
-    filesystem::path dataPackPath(std::string(textFolder->GetValue()));
+    fs::path dataPackPath(std::string(textFolder->GetValue()));
 
     if (mode == ExportDialogMode::Function && version > minecraft::McVersion::MC_1_12)
     {
@@ -147,7 +147,7 @@ void StructureExportDialog::createDataPackMetadata()
 
 std::string StructureExportDialog::getPath()
 {
-    filesystem::path structuresPath(std::string(textFolder->GetValue()));
+    fs::path structuresPath(std::string(textFolder->GetValue()));
     std::string namespaceMC(textNamespace->GetValue());
 
     if (mode == ExportDialogMode::Function)

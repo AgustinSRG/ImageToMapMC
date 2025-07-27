@@ -23,7 +23,6 @@
 
 #include "image_edit_dialog.h"
 #include <wx/colordlg.h>
-#include <filesystem>
 #include <sstream>
 #include <algorithm>
 

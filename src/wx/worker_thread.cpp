@@ -25,7 +25,6 @@
 #include "worker_thread.h"
 
 #include <sstream>
-#include <filesystem>
 
 #include <zip.h>
 
@@ -34,6 +33,8 @@
 #include "../minecraft/mcfunction.h"
 
 #include "../tools/open_desktop.h"
+
+#include "../tools/fs.h"
 
 using namespace std;
 using namespace colors;
@@ -679,7 +680,7 @@ void WorkerThread::ExportMaps(mapart::MapArtProject &copyProject, std::string &c
                 // Save to file
                 stringstream ss;
                 ss << "map_" << (mapNumber++) << ".dat";
-                filesystem::path outFilePath(copyOutPath);
+                fs::path outFilePath(copyOutPath);
 
                 outFilePath /= ss.str();
 
@@ -861,13 +862,13 @@ void WorkerThread::ExportStruct(mapart::MapArtProject &copyProject, std::string 
                 // Save as structure file
                 stringstream ss2;
                 ss2 << "map_" << (total + 1) << ".nbt";
-                filesystem::path outFilePath(copyOutPath);
+                fs::path outFilePath(copyOutPath);
 
                 outFilePath /= ss2.str();
 
                 stringstream ss3;
                 ss3 << "map_" << (total + 1) << "_base.nbt";
-                filesystem::path outBaseFilePath(copyOutPath);
+                fs::path outBaseFilePath(copyOutPath);
 
                 outBaseFilePath /= ss3.str();
 
@@ -1335,7 +1336,7 @@ void WorkerThread::ExportFunc(mapart::MapArtProject &copyProject, std::string &c
                 // Save as structure file
                 stringstream ss2;
                 ss2 << "map_" << (total + 1) << ".mcfunction";
-                filesystem::path outFilePath(copyOutPath);
+                fs::path outFilePath(copyOutPath);
 
                 outFilePath /= ss2.str();
 
