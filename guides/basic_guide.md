@@ -28,6 +28,8 @@ Maybe you want to modify the original image before converting into a map, like c
 
 This is a common practice to make the map look better, to do that, go to the menu: **Image > Image Settings**
 
+You can also adjust the transparency tolerance if you are using images with transparency. The higher the tolerance, more translucid pixels will be considered as transparent instead of solid.
+
 ## Choose a build method
 
 Once you selected the image you want, you have to decide how do you want to build your map. Depending on your permissions in the world or server your are playing, you may choose:
