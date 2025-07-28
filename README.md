@@ -1,8 +1,9 @@
+# ImageToMapMC
+
 [![Build (Windows)](https://github.com/AgustinSRG/ImageToMapMC/actions/workflows/build-windows.yml/badge.svg)](https://github.com/AgustinSRG/ImageToMapMC/actions/workflows/build-windows.yml)
 [![Build (Linux)](https://github.com/AgustinSRG/ImageToMapMC/actions/workflows/build-linux.yml/badge.svg)](https://github.com/AgustinSRG/ImageToMapMC/actions/workflows/build-linux.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](./LICENSE)
 
-# ImageToMapMC
 
 This is a tool for converting images to Minecraft maps, in order to import images into the game without using mods.
 
