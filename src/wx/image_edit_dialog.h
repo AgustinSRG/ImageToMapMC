@@ -52,6 +52,7 @@ public:
     void OnChangeSaturation(wxScrollEvent &event);
     void OnChangeContrast(wxScrollEvent &event);
     void OnChangeBrightness(wxScrollEvent &event);
+    void OnChangeTransparencyTolerance(wxScrollEvent &event);
     void OnClose(wxCloseEvent &event);
     void OnKeyPress(wxKeyEvent &event);
 
@@ -64,7 +65,7 @@ public:
      * @param background: Background color
      * @retval None
      */
-    void SetParams(float saturation, float contrast, float brightness, colors::Color background);
+    void SetParams(float saturation, float contrast, float brightness, unsigned char transparencyTolerance, colors::Color background);
 
 private:
     MainWindow *mainWindow;
@@ -72,6 +73,7 @@ private:
     float saturation;
     float contrast;
     float brightness;
+    unsigned char transparencyTolerance;
     colors::Color background;
 
     int getSliderValue(float val);
@@ -79,11 +81,14 @@ private:
     wxStaticText *labelSaturation;
     wxStaticText *labelContrast;
     wxStaticText *labelBrightness;
+    wxStaticText *labelTransparencyTolerance;
+
     wxStaticText *labelBackground;
 
     wxSlider *sliderSaturation;
     wxSlider *sliderContrast;
     wxSlider *sliderBrightness;
+    wxSlider *sliderTransparencyTolerance;
 
     wxPanel *panelColor;
 

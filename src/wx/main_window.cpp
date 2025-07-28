@@ -93,7 +93,8 @@ enum Identifiers
     ID_Transparency_Preserve = 61,
 };
 
-enum StatusBatIdentifiers {
+enum StatusBatIdentifiers
+{
     ProjectStatusText = 0,
     StatusStatusText = 1,
     SizeStatusText = 2,
@@ -364,7 +365,7 @@ void MainWindow::loadImage(std::string file)
 
     if (imageEditDialog != NULL)
     {
-        imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness, project.background);
+        imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness, project.transparencyTolerance, project.background);
     }
 
     updateOriginalImage();
@@ -381,7 +382,7 @@ void MainWindow::updateOriginalImage()
 
     int matrixW;
     int matrixH;
-    mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, project.background, &matrixW, &matrixH);
+    mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, project.background, project.transparencyTolerance, &matrixW, &matrixH);
 
     tools::editImage(originalImageColorMatrix.colors, matrixW, matrixH, project.saturation, project.contrast, project.brightness);
 
@@ -597,7 +598,7 @@ void MainWindow::handleDropFile(wxDropFilesEvent &event)
 
             if (imageEditDialog != NULL)
             {
-                imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness, project.background);
+                imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness, project.transparencyTolerance, project.background);
             }
 
             if (materialsWindow != NULL)
@@ -861,7 +862,7 @@ void MainWindow::onImageEdit(wxCommandEvent &evt)
     {
         imageEditDialog = new ImageEditDialog(this);
         imageEditDialog->Show();
-        imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness, project.background);
+        imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness, project.transparencyTolerance, project.background);
     }
     else
     {
@@ -870,11 +871,12 @@ void MainWindow::onImageEdit(wxCommandEvent &evt)
     }
 }
 
-void MainWindow::onImageEditParamsChanged(float saturation, float contrast, float brightness, colors::Color background)
+void MainWindow::onImageEditParamsChanged(float saturation, float contrast, float brightness, unsigned char transparencyTolerance, colors::Color background)
 {
     project.saturation = saturation;
     project.contrast = contrast;
     project.brightness = brightness;
+    project.transparencyTolerance = transparencyTolerance;
     project.background = background;
     dirty = true;
     updateOriginalImage();
@@ -886,7 +888,7 @@ void MainWindow::resetProject()
 
     if (imageEditDialog != NULL)
     {
-        imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness, project.background);
+        imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness, project.transparencyTolerance, project.background);
     }
 
     // Not dirty
@@ -917,7 +919,7 @@ void MainWindow::loadProject(std::string path)
     {
         if (imageEditDialog != NULL)
         {
-            imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness, project.background);
+            imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness, project.transparencyTolerance, project.background);
         }
 
         if (materialsWindow != NULL)
@@ -1109,10 +1111,11 @@ void MainWindow::onHelp(wxCommandEvent &evt)
     }
 }
 
-void MainWindow::updateConfigStatusText() {
+void MainWindow::updateConfigStatusText()
+{
     stringstream ss;
 
-     switch (project.colorDistanceAlgorithm)
+    switch (project.colorDistanceAlgorithm)
     {
     case ColorDistanceAlgorithm::DeltaE:
         ss << "Delta E";
@@ -1166,8 +1169,6 @@ void MainWindow::updateConfigStatusText() {
 
     GetStatusBar()->SetStatusText(ss.str(), ConfigStatusText);
 }
-
-
 
 #define RADIO_MENUS_COUNT 5
 

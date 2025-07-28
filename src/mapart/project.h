@@ -30,6 +30,8 @@
 #include <wx/wx.h>
 #endif
 
+#define DEFAULT_TRANSPARENCY_TOLERANCE (128)
+
 namespace mapart {
     class MapArtProject {
         public:
@@ -42,6 +44,7 @@ namespace mapart {
             float saturation;
             float brightness;
             float contrast;
+            unsigned char transparencyTolerance;
 
             colors::Color background;
 

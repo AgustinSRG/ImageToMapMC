@@ -150,6 +150,7 @@ int printHelp()
     cout << "                                     -bm '2d' Build 2 dimensional map at the same level" << endl;
     cout << "                                     -bm 'stair' Build 3 dimensional map with 1 block height jumps max" << endl;
     cout << "    --transparency                 Set this flag to preserve transparency from original image" << endl;
+    cout << "    --transparency-tol [num]       Set transparency tolerance, from 1 to 255" << endl;
     cout << "    -cs, --color-set [name/file]   Specifies the color set to use." << endl;
     cout << "                                     Color sets can enable or disable colors and" << endl;
     cout << "                                     set the blocks to build each color." << endl;
@@ -330,6 +331,7 @@ int buildMap(int argc, char **argv)
     DitheringMethod ditheringMethod = DitheringMethod::None;
     MapBuildMethod buildMethod = MapBuildMethod::None;
     bool preserveTransparency = false;
+    unsigned char transparencyTolerance = 128;
     int rsW = -1;
     int rsH = -1;
     bool yesForced = false;
@@ -631,6 +633,24 @@ int buildMap(int argc, char **argv)
         {
             preserveTransparency = true;
         }
+        else if (arg.compare(string("--transparency-tol")) == 0)
+        {
+            if ((i + 1) < argc)
+            {
+                transparencyTolerance = static_cast<unsigned char>(atoi(argv[i + 1]));
+                if (transparencyTolerance == 0)
+                {
+                    transparencyTolerance = 128;
+                }
+                i++;
+            }
+            else
+            {
+                std::cerr << "Option " << arg << " requires a parameter." << endl;
+                std::cerr << "For help type: mcmap --help" << endl;
+                return 1;
+            }
+        }
         else if (arg.compare(string("-m")) == 0 || arg.compare(string("--materials")) == 0)
         {
             if ((i + 1) < argc)
@@ -719,7 +739,7 @@ int buildMap(int argc, char **argv)
     p.startTask("Adjusting image size...", 0, 0);
     int matrixW;
     int matrixH;
-    mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(image, background, &matrixW, &matrixH);
+    mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(image, background, transparencyTolerance, &matrixW, &matrixH);
 
     // Load colors
     p.startTask("Loading minecraft colors...", 0, 0);

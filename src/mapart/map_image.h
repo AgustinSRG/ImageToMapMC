@@ -50,9 +50,10 @@ namespace mapart {
      * @note   
      * @param  &image: Image
      * @param  background: Background color
+     * @param  transparencyTolerance: Transparency tolerance
      * @param  padWidth: By reference, to store matrix width
      * @param  padHeight: By reference, to store matrix height
      * @retval 
      */
-    ImageColorMatrix loadColorMatrixFromImageAndPad(wxImage &image, colors::Color background, int * padWidth, int * padHeight);
+    ImageColorMatrix loadColorMatrixFromImageAndPad(wxImage &image, colors::Color background, unsigned char transparencyTolerance, int * padWidth, int * padHeight);
 }

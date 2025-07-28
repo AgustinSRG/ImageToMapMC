@@ -27,7 +27,7 @@ using namespace std;
 using namespace colors;
 using namespace mapart;
 
-ImageColorMatrix mapart::loadColorMatrixFromImageAndPad(wxImage &image, colors::Color background, int *padWidth, int *padHeight)
+ImageColorMatrix mapart::loadColorMatrixFromImageAndPad(wxImage &image, colors::Color background, unsigned char transparencyTolerance, int *padWidth, int *padHeight)
 {
     int width = image.GetSize().GetWidth();
     int height = image.GetSize().GetHeight();
@@ -68,7 +68,7 @@ ImageColorMatrix mapart::loadColorMatrixFromImageAndPad(wxImage &image, colors::
 
             if (alphaData != NULL) {
                 resultColors[indexFinal] = colors::bendColor(resultColors[indexFinal], alphaData[z * width + x], background);
-                resultTransparency[indexFinal] = alphaData[z * width + x] < 128;
+                resultTransparency[indexFinal] = alphaData[z * width + x] < transparencyTolerance;
             } else {
                 resultTransparency[indexFinal] = false;
             }

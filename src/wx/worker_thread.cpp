@@ -410,7 +410,7 @@ void WorkerThread::GeneratePreview(mapart::MapArtProject &copyProject)
 
         int originalImageWidth;
         int originalImageHeight;
-        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, copyProject.transparencyTolerance, &originalImageWidth, &originalImageHeight);
 
         tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
@@ -471,7 +471,7 @@ void WorkerThread::ExportMaterials(mapart::MapArtProject &copyProject, std::stri
 
         int originalImageWidth;
         int originalImageHeight;
-        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, copyProject.transparencyTolerance, &originalImageWidth, &originalImageHeight);
 
         tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
@@ -550,7 +550,7 @@ void WorkerThread::ExportMaterialsSplit(mapart::MapArtProject &copyProject, std:
 
         int originalImageWidth;
         int originalImageHeight;
-        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, copyProject.transparencyTolerance, &originalImageWidth, &originalImageHeight);
 
         tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
@@ -641,7 +641,7 @@ void WorkerThread::ExportMaps(mapart::MapArtProject &copyProject, std::string &c
 
         int originalImageWidth;
         int originalImageHeight;
-        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, copyProject.transparencyTolerance, &originalImageWidth, &originalImageHeight);
 
         tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
@@ -724,7 +724,7 @@ void WorkerThread::ExportMapsZip(mapart::MapArtProject &copyProject, std::string
 
         int originalImageWidth;
         int originalImageHeight;
-        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, copyProject.transparencyTolerance, &originalImageWidth, &originalImageHeight);
 
         tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
@@ -821,7 +821,7 @@ void WorkerThread::ExportStruct(mapart::MapArtProject &copyProject, std::string 
 
         int originalImageWidth;
         int originalImageHeight;
-        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, copyProject.transparencyTolerance, &originalImageWidth, &originalImageHeight);
 
         tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
@@ -911,7 +911,7 @@ void WorkerThread::ExportStructSingleFile(mapart::MapArtProject &copyProject, st
 
         int originalImageWidth;
         int originalImageHeight;
-        mapart::ImageColorMatrix originalImageColorMatrix= loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix= loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, copyProject.transparencyTolerance, &originalImageWidth, &originalImageHeight);
 
         tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
@@ -1000,7 +1000,7 @@ void WorkerThread::ExportStructZip(mapart::MapArtProject &copyProject, std::stri
 
         int originalImageWidth;
         int originalImageHeight;
-        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, copyProject.transparencyTolerance, &originalImageWidth, &originalImageHeight);
 
         tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
@@ -1103,7 +1103,7 @@ void WorkerThread::ExportSchematicSingleFile(mapart::MapArtProject &copyProject,
 
         int originalImageWidth;
         int originalImageHeight;
-        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, copyProject.transparencyTolerance, &originalImageWidth, &originalImageHeight);
 
         tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
@@ -1192,7 +1192,7 @@ void WorkerThread::ExportSchematicZip(mapart::MapArtProject &copyProject, std::s
 
         int originalImageWidth;
         int originalImageHeight;
-        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, copyProject.transparencyTolerance, &originalImageWidth, &originalImageHeight);
 
         tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
@@ -1295,7 +1295,7 @@ void WorkerThread::ExportFunc(mapart::MapArtProject &copyProject, std::string &c
 
         int originalImageWidth;
         int originalImageHeight;
-        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, copyProject.transparencyTolerance, &originalImageWidth, &originalImageHeight);
 
         tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 

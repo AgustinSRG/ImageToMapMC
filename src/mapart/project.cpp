@@ -44,6 +44,7 @@ MapArtProject::MapArtProject()
     saturation = 1;
     contrast = 1;
     brightness = 1;
+    transparencyTolerance = DEFAULT_TRANSPARENCY_TOLERANCE;
 
     // Background
     background.red = 255;
@@ -91,6 +92,7 @@ MapArtProject::MapArtProject(const MapArtProject &p1)
     saturation = p1.saturation;
     contrast = p1.contrast;
     brightness = p1.brightness;
+    transparencyTolerance = p1.transparencyTolerance;
 
     // Background
     background = p1.background;
@@ -155,6 +157,16 @@ bool MapArtProject::loadFromFile(std::string path)
             background.red = 255;
             background.green = 255;
             background.blue = 255;
+        }
+
+        if (comp.has_key("transparency_tol")) {
+            transparencyTolerance = static_cast<unsigned char>(comp.at("preserve_transparency").as<nbt::tag_int>().get());
+
+            if (transparencyTolerance == 0) {
+                transparencyTolerance = DEFAULT_TRANSPARENCY_TOLERANCE;
+            }
+        } else {
+            transparencyTolerance = DEFAULT_TRANSPARENCY_TOLERANCE;
         }
 
         // Colors conf
@@ -274,6 +286,8 @@ bool MapArtProject::saveToFile(std::string path)
     root.insert("brightness", nbt::tag_float(brightness));
 
     root.insert("background", nbt::tag_string(colors::colorToHex(background)));
+
+    root.insert("transparency_tol", nbt::tag_int((int) transparencyTolerance));
 
     root.insert("colors_conf", nbt::tag_string(colorSetConf));
 
