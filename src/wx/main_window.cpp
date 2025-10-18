@@ -352,9 +352,9 @@ void MainWindow::loadImage(std::string file)
 {
     wxImage image;
     wxLogNull logNo;
-    if (!image.LoadFile(file))
+    if (!image.LoadFile(wxString::FromUTF8(file)))
     {
-        wxMessageBox(string("Invalid image file: ") + file, wxT("Error"), wxICON_ERROR);
+        wxMessageBox(wxString("Invalid image file: ") + wxString::FromUTF8(file), wxT("Error"), wxICON_ERROR);
         return;
     }
 
@@ -934,7 +934,7 @@ void MainWindow::loadProject(std::string path)
         // Not saved yet
         projectFile = path;
 
-        GetStatusBar()->SetStatusText("Project: " + projectFile, ProjectStatusText);
+        GetStatusBar()->SetStatusText(wxString("Project: ") + wxString::FromUTF8(projectFile), ProjectStatusText);
 
         updateMenuBarRadios();
         updateConfigStatusText();
@@ -943,7 +943,7 @@ void MainWindow::loadProject(std::string path)
     }
     else
     {
-        wxMessageBox(string("Could not load project file: ") + path, wxT("Error"), wxICON_ERROR);
+        wxMessageBox(wxString("Could not load project file: ") + wxString::FromUTF8(path), wxT("Error"), wxICON_ERROR);
         resetProject();
     }
 }
@@ -954,11 +954,11 @@ void MainWindow::saveProject(std::string path)
     {
         dirty = false;
         projectFile = path;
-        GetStatusBar()->SetStatusText("Project: " + projectFile, ProjectStatusText);
+        GetStatusBar()->SetStatusText(wxString("Project: ") + wxString::FromUTF8(path), ProjectStatusText);
     }
     else
     {
-        wxMessageBox(string("Could not save project file: ") + path, wxT("Error"), wxICON_ERROR);
+        wxMessageBox(wxString("Could not save project file: ") + wxString::FromUTF8(path), wxT("Error"), wxICON_ERROR);
     }
 }
 
@@ -1087,7 +1087,7 @@ void MainWindow::saveProject(wxCommandEvent &evt)
 
 void MainWindow::saveProjectAs(wxCommandEvent &evt)
 {
-    wxFileDialog saveFileDialog(this, _("Save project"), "", "", "Map art projects (*.mapart)|*.mapart", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    wxFileDialog saveFileDialog(this, _("Save project"), "", "project.mapart", "Map art projects (*.mapart)|*.mapart", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     if (saveFileDialog.ShowModal() == wxID_CANCEL)
     {
         return; // the user changed idea...
