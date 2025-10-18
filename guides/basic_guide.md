@@ -6,7 +6,7 @@ The app main interface consists of two panels:
 
 All of the options are available in the application top menu.
 
-![Main view](../screenshots/main_display.jpg "Main view")
+![Main view](../screenshots/gui_screenshot.jpg "Main view")
 
 ## Load an image
 
