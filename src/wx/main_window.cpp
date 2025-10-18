@@ -341,7 +341,7 @@ void MainWindow::onLoadImage(wxCommandEvent &evt)
 {
     wxFileDialog
         openFileDialog(this, _("Load image file"), "", "",
-                       "Image files (*.png, *.jpg)|*.png;*.jpg|All files|*.*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+                       "Image files (*.png, *.jpg, *.jpeg, *.gif, *.bmp)|*.png;*.jpg;*.jpeg;*.gif;*.bmp|All files|*.*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     if (openFileDialog.ShowModal() == wxID_CANCEL)
         return; // the user changed idea...
     loadImage(openFileDialog.GetPath().utf8_string());
