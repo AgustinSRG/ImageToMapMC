@@ -111,6 +111,8 @@ public:
     void updateMenuBarRadios();
     void updateConfigStatusText();
 
+    void OnKeyPress(wxKeyEvent &event);
+
     void OnClose(wxCloseEvent &event);
 private:
     wxImagePanel * originalImagePanel;

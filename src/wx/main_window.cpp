@@ -144,6 +144,7 @@ EVT_CLOSE(MainWindow::OnClose)
 EVT_COMMAND(wxID_ANY, wxEVT_WorkerThreadPreviewData, MainWindow::onWorkerPreviewDone)
 EVT_COMMAND(wxID_ANY, wxEVT_WorkerThreadMaterials, MainWindow::onWorkerMaterialsGiven)
 EVT_COMMAND(wxID_ANY, wxEVT_WorkerThreadError, MainWindow::onWorkerError)
+EVT_CHAR_HOOK(MainWindow::OnKeyPress)
 END_EVENT_TABLE()
 
 int getIdForVersionMenu(McVersion version)
@@ -1349,4 +1350,48 @@ void MainWindow::savePreviewAs(wxCommandEvent &evt)
     }
 
     previewPanel->bitmap->ConvertToImage().SaveFile(saveFileDialog.GetPath());
+}
+
+void MainWindow::OnKeyPress(wxKeyEvent &event)
+{
+    switch (event.GetKeyCode())
+    {
+    case WXK_NUMPAD0:
+        project.ditheringMethod = DitheringMethod::None;
+        break;
+    case WXK_NUMPAD1:
+        project.ditheringMethod = DitheringMethod::FloydSteinberg;
+        break;
+    case WXK_NUMPAD2:
+        project.ditheringMethod = DitheringMethod::MinAvgErr;
+        break;
+    case WXK_NUMPAD3:
+        project.ditheringMethod = DitheringMethod::Atkinson;
+        break;
+    case WXK_NUMPAD4:
+        project.ditheringMethod = DitheringMethod::Stucki;
+        break;
+    case WXK_NUMPAD5:
+        project.ditheringMethod = DitheringMethod::SierraLite;
+        break;
+    case WXK_NUMPAD6:
+        project.ditheringMethod = DitheringMethod::Burkes;
+        break;
+    case WXK_NUMPAD7:
+        project.ditheringMethod = DitheringMethod::Bayer22;
+        break;
+    case WXK_NUMPAD8:
+        project.ditheringMethod = DitheringMethod::Bayer44;
+        break;
+    case WXK_NUMPAD9:
+        project.ditheringMethod = DitheringMethod::Ordered33;
+        break;
+    default:
+        event.Skip();
+        return;
+    }
+
+    updateMenuBarRadios();
+    updateConfigStatusText();
+    RequestPreviewGeneration();
 }
