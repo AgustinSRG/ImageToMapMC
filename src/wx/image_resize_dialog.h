@@ -58,15 +58,6 @@ public:
     void OnUnitsComboBoxChanged(wxCommandEvent &evt);
 
 private:
-    wxBoxSizer *sizerTop;
-
-    wxFlexGridSizer *sizerGrid;
-
-    wxBoxSizer *sizerGroupWidth;
-    wxBoxSizer *sizerGroupHeight;
-
-    wxBoxSizer *sizerGroupButtons;
-
     wxTextCtrl *wText;
     wxTextCtrl *hText;
 

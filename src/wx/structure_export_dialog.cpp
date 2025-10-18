@@ -43,24 +43,79 @@ EVT_CHAR_HOOK(StructureExportDialog::OnKeyPress)
 EVT_SHOW(StructureExportDialog::OnShow)
 END_EVENT_TABLE()
 
-StructureExportDialog::StructureExportDialog(minecraft::McVersion version, ExportDialogMode mode) : wxDialog(NULL, -1, wxString("Export map art"), wxDefaultPosition, wxSize(350, 230))
+StructureExportDialog::StructureExportDialog(minecraft::McVersion version, ExportDialogMode mode) : wxDialog(NULL, -1, wxString("Export map art"), wxDefaultPosition, wxDefaultSize)
 {
 
     this->version = version;
     this->mode = mode;
 
-    wxStaticText *label1 = new wxStaticText(this, wxID_ANY, wxString("Choose a minecraft world folder:"), wxPoint(15, 15), wxSize(200, 15));
+    // Create sizers and wx components
+
+    wxBoxSizer *sizerTop = new wxBoxSizer(wxVERTICAL);
+
+    const int buttonWidth = 100;
+    const int buttonHeight = 30;
+
+    const int textWidth = 310;
+
+    const int spacing = 5;
+
+    // Folder select
+
+    wxStaticText *label1 = new wxStaticText(this, wxID_ANY, wxString("Choose a minecraft world folder:"), wxDefaultPosition, wxDefaultSize);
+
+    sizerTop->Add(label1, 0, wxALL, spacing);
 
     fs::path savesPath(minecraft::getMinecraftFolderLocation());
     savesPath /= "saves";
-    textFolder = new wxTextCtrl(this, wxID_ANY, wxString(savesPath.string()), wxPoint(15, 35), wxSize(305, 20));
-    wxButton *browseButton = new wxButton(this, ID_Browse, wxString("Browse..."), wxPoint(15, 60), wxSize(80, 30));
+    textFolder = new wxTextCtrl(this, wxID_ANY, wxString(savesPath.string()), wxDefaultPosition, wxSize(textWidth, -1));
 
-    wxStaticText *label2 = new wxStaticText(this, wxID_ANY, wxString("Namespace, or empty for 'minecraft':"), wxPoint(15, 100), wxSize(300, 15));
-    textNamespace = new wxTextCtrl(this, wxID_ANY, wxString(""), wxPoint(15, 120), wxSize(305, 20));
+    sizerTop->Add(textFolder, 0, wxALL, spacing);
 
-    wxButton *okButton = new wxButton(this, ID_OK, wxString("Export"), wxPoint(220, 150), wxSize(100, 30));
-    wxButton *cancelButton = new wxButton(this, ID_Cancel, wxString("Cancel"), wxPoint(110, 150), wxSize(100, 30));
+    wxButton *browseButton = new wxButton(this, ID_Browse, wxString("Browse..."), wxDefaultPosition, wxSize(buttonWidth, buttonHeight));
+
+    sizerTop->Add(browseButton, 0, wxALL, spacing);
+
+    // Namespace
+
+    wxStaticText *label2 = new wxStaticText(this, wxID_ANY, wxString("Namespace, or empty for 'minecraft':"), wxDefaultPosition, wxDefaultSize);
+
+    sizerTop->Add(label2, 0, wxALL, spacing);
+
+    textNamespace = new wxTextCtrl(this, wxID_ANY, wxString(""), wxDefaultPosition, wxSize(textWidth, -1));
+
+    sizerTop->Add(textNamespace, 0, wxALL, spacing);
+
+    // Buttons
+
+    wxBoxSizer *sizerGroupButtons = new wxBoxSizer(wxHORIZONTAL);
+
+    wxButton *okButton = new wxButton(
+        this, ID_OK, 
+        wxString("Export"), 
+        wxDefaultPosition, 
+        wxSize(buttonWidth, buttonHeight));
+
+    sizerGroupButtons->Add(okButton, 0, wxALL | wxALIGN_CENTER, spacing);
+
+    sizerGroupButtons->AddSpacer(spacing * 2);
+
+    wxButton *cancelButton = new wxButton(
+        this, ID_Cancel, 
+        wxString("Cancel"),
+         wxDefaultPosition, 
+         wxSize(buttonWidth, buttonHeight));
+
+    sizerGroupButtons->Add(cancelButton, 0, wxALL | wxALIGN_CENTER, spacing);
+
+    sizerTop->Add(sizerGroupButtons, 0, wxALL | wxALIGN_CENTER);
+
+    // End of wx composition
+
+    wxBoxSizer * sizerMain = new wxBoxSizer(wxVERTICAL);
+    sizerMain->Add(sizerTop, 0, wxALL | wxALIGN_CENTER, spacing);
+    sizerMain->SetSizeHints(this);
+    SetSizerAndFit(sizerMain);
 
     Centre();
 }

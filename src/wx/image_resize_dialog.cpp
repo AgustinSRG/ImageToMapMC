@@ -69,20 +69,20 @@ ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1,
 
     // Create sizers and wx components
 
-    const int spacing = 10;
+    const int spacing = 5;
 
     const int textWidth = 130;
 
     const int buttonWidth = 100;
     const int buttonHeight = 30;
 
-    sizerTop = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *sizerTop = new wxBoxSizer(wxVERTICAL);
 
     const int gridRows = 3;
     const int gridCols = 2;
     const int verticalSpacing = 0;
     const int horizontalSpacing = 0;
-    sizerGrid = new wxFlexGridSizer(gridRows, gridCols, verticalSpacing, horizontalSpacing);
+    wxFlexGridSizer *sizerGrid = new wxFlexGridSizer(gridRows, gridCols, verticalSpacing, horizontalSpacing);
 
     // Width group
 
@@ -94,7 +94,7 @@ ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1,
 
     sizerGrid->Add(label1, 0, wxALL | wxALIGN_CENTER_VERTICAL, spacing);
 
-    sizerGroupWidth = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer *sizerGroupWidth = new wxBoxSizer(wxHORIZONTAL);
 
     stringstream sw;
 
@@ -135,7 +135,7 @@ ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1,
 
     sizerGrid->Add(label2, 0, wxALL | wxALIGN_CENTER_VERTICAL, spacing);
 
-    sizerGroupHeight = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer *sizerGroupHeight = new wxBoxSizer(wxHORIZONTAL);
 
     stringstream sh;
 
@@ -208,7 +208,7 @@ ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1,
 
     // Buttons
 
-    sizerGroupButtons = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer *sizerGroupButtons = new wxBoxSizer(wxHORIZONTAL);
 
     wxButton *cancelButton = new wxButton(
         this, ID_Cancel,
@@ -217,6 +217,8 @@ ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1,
         wxSize(buttonWidth, buttonHeight));
 
     sizerGroupButtons->Add(cancelButton, 0, wxALL | wxALIGN_CENTER, spacing);
+
+    sizerGroupButtons->AddSpacer(spacing * 2);
 
     wxButton *okButton = new wxButton(
         this, ID_OK,
@@ -230,8 +232,10 @@ ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1,
 
     // End of wx composition
 
-    sizerTop->SetSizeHints(this);
-    SetSizerAndFit(sizerTop);
+    wxBoxSizer * sizerMain = new wxBoxSizer(wxVERTICAL);
+    sizerMain->Add(sizerTop, 0, wxALL | wxALIGN_CENTER, spacing);
+    sizerMain->SetSizeHints(this);
+    SetSizerAndFit(sizerMain);
 
     Centre();
 }
