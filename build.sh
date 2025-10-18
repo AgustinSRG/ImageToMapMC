@@ -15,6 +15,8 @@ mkdir release/bin
 cp release/mcmap release/bin/mcmap
 cp release/mcmap-gui release/bin/mcmap-gui
 
-tar -cvzf release/ImageToMapMC-1.7.1-linux-x64.tar.gz release/bin
+cd release/bin
+tar -cvzf ../ImageToMapMC-1.7.1-linux-x64.tar.gz *
+cd ../..
 
 echo "DONE: Created release ImageToMapMC-1.7.1-linux-x64.tar.gz"
