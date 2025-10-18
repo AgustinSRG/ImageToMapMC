@@ -31,6 +31,13 @@
 #include <stringapiset.h>
 #endif
 
+#if defined(__linux__)
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
+#include <stdlib.h>
+#endif
+
 using namespace std;
 
 std::string getRememberFolderConfigFolder()
@@ -67,11 +74,33 @@ std::string getRememberFolderConfigFolder()
 
 #elif defined(__linux__)
 
-    return std::string("~/.ImageToMapMC");
+    size_t bufsize = sysconf(_SC_GETPW_R_SIZE_MAX);
+    if (bufsize == -1) {
+        bufsize = 16384;
+    }
+
+    char *buf = (char*)malloc(bufsize);
+
+    if (buf == NULL) {
+        exit(1);
+    }
+
+    struct passwd pwd;
+    struct passwd *result;
+
+    getpwuid_r(getuid(), &pwd, buf, bufsize, &result);
+
+    if (result == NULL) {
+        return std::string("./.config");
+    }
+
+    const char *homedir = pwd.pw_dir;
+
+    return std::string(homedir) + std::string("/.config/ImageToMapMC");
 
 #else
 
-    return std::string("~/.ImageToMapMC");
+    return std::string("./.config");
 
 #endif
 }
@@ -94,18 +123,21 @@ std::string tools::getRememberedValue(std::string purpose)
     return tools::readTextFile(configFilePath);
 }
 
-void tools::setRememberedValue(std::string purpose, std::string folder) {
+void tools::setRememberedValue(std::string purpose, std::string folder)
+{
     std::string configFolder = getRememberFolderConfigFolder();
 
-    if (!fs::exists(fs::path(configFolder))) {
+    if (!fs::exists(fs::path(configFolder)))
+    {
         bool ok = fs::create_directories(configFolder);
 
-        if (!ok) {
+        if (!ok)
+        {
             return;
         }
     }
 
     std::string configFilePath = getRememberFolderConfigFile(purpose);
 
-    (void) tools::writeTextFile(configFilePath, folder);
+    (void)tools::writeTextFile(configFilePath, folder);
 }

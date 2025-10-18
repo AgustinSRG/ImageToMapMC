@@ -29,6 +29,13 @@
 #include <stringapiset.h>
 #endif
 
+#if defined(__linux__)
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
+#include <stdlib.h>
+#endif
+
 minecraft::McVersion minecraft::getVersionFromText(std::string versionStr)
 {
     if (versionStr.substr(0, 4).compare("1.12") == 0)
@@ -181,7 +188,29 @@ std::string minecraft::getMinecraftFolderLocation()
 
 #elif defined(__linux__)
 
-    return std::string("~/.minecraft");
+    size_t bufsize = sysconf(_SC_GETPW_R_SIZE_MAX);
+    if (bufsize == -1) {
+        bufsize = 16384;
+    }
+
+    char *buf = (char*)malloc(bufsize);
+
+    if (buf == NULL) {
+        exit(1);
+    }
+
+    struct passwd pwd;
+    struct passwd *result;
+
+    getpwuid_r(getuid(), &pwd, buf, bufsize, &result);
+
+    if (result == NULL) {
+        return std::string("");
+    }
+
+    const char *homedir = pwd.pw_dir;
+
+    return std::string(homedir) + std::string("/.minecraft");
 
 #else
 

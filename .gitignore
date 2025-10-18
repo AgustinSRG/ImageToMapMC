@@ -20,3 +20,5 @@ wix/ImageToMapMC
 *.wixobj
 *.msi
 *.exe
+/~
+/.config
