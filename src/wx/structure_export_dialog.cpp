@@ -90,16 +90,6 @@ StructureExportDialog::StructureExportDialog(minecraft::McVersion version, Expor
 
     wxBoxSizer *sizerGroupButtons = new wxBoxSizer(wxHORIZONTAL);
 
-    wxButton *okButton = new wxButton(
-        this, ID_OK, 
-        wxString("Export"), 
-        wxDefaultPosition, 
-        wxSize(buttonWidth, buttonHeight));
-
-    sizerGroupButtons->Add(okButton, 0, wxALL | wxALIGN_CENTER, spacing);
-
-    sizerGroupButtons->AddSpacer(spacing * 2);
-
     wxButton *cancelButton = new wxButton(
         this, ID_Cancel, 
         wxString("Cancel"),
@@ -107,6 +97,16 @@ StructureExportDialog::StructureExportDialog(minecraft::McVersion version, Expor
          wxSize(buttonWidth, buttonHeight));
 
     sizerGroupButtons->Add(cancelButton, 0, wxALL | wxALIGN_CENTER, spacing);
+
+    sizerGroupButtons->AddSpacer(spacing * 2);
+
+    wxButton *okButton = new wxButton(
+        this, ID_OK, 
+        wxString("Export"), 
+        wxDefaultPosition, 
+        wxSize(buttonWidth, buttonHeight));
+
+    sizerGroupButtons->Add(okButton, 0, wxALL | wxALIGN_CENTER, spacing);
 
     sizerTop->Add(sizerGroupButtons, 0, wxALL | wxALIGN_CENTER);
 

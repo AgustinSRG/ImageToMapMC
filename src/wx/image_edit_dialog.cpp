@@ -60,10 +60,7 @@ EVT_COMMAND_SCROLL(ID_Slider_Transparency_Tolerance, ImageEditDialog::OnChangeTr
 EVT_CHAR_HOOK(ImageEditDialog::OnKeyPress)
 END_EVENT_TABLE()
 
-const int DIALOG_WIDTH = 275;
-const int DIALOG_HEIGHT = 360;
-
-ImageEditDialog::ImageEditDialog(MainWindow *mainWindow) : wxDialog(mainWindow, -1, wxString("Modify image"), wxDefaultPosition, wxSize(DIALOG_WIDTH, DIALOG_HEIGHT))
+ImageEditDialog::ImageEditDialog(MainWindow *mainWindow) : wxDialog(mainWindow, -1, wxString("Modify image"), wxDefaultPosition, wxDefaultSize)
 {
     this->mainWindow = mainWindow;
     this->saturation = 1;
@@ -71,78 +68,75 @@ ImageEditDialog::ImageEditDialog(MainWindow *mainWindow) : wxDialog(mainWindow, 
     this->brightness = 1;
     this->transparencyTolerance = 128;
 
-    const int paddingLeftLabels = 15;
-    const int paddingLeftSliders = 5;
+    // Create sizers and wx components
 
-    const int paddingTop = 15;
+    wxBoxSizer *sizerTop = new wxBoxSizer(wxVERTICAL);
 
-    const int minValSliders = 0;
-    const int maxValSliders = 200;
-    const int defaultValSliders = 100;
+    const int buttonWidth = 100;
+    const int buttonHeight = 30;
 
-    const int labelWidth = 200;
-    const int labelHeight = 20;
+    const int spacing = 5;
 
     const int sliderWidth = 250;
     const int sliderHeight = 25;
 
-    const int sliderRowMarginBottom = 5;
-
-    int y = paddingTop;
+    const int minValSliders = 0;
+    const int maxValSliders = 200;
+    const int defaultValSliders = 100;
 
     // Saturation
 
     labelSaturation = new wxStaticText(
         this, ID_Label_Saturation,
         wxString("Saturation: 100%"),
-        wxPoint(paddingLeftLabels, y),
-        wxSize(labelWidth, labelHeight));
+        wxDefaultPosition,
+        wxDefaultSize);
 
-    y += labelHeight;
+    sizerTop->Add(labelSaturation, 0, wxALL, spacing);
 
     sliderSaturation = new wxSlider(
         this, ID_Slider_Saturation,
         defaultValSliders, minValSliders, maxValSliders,
-        wxPoint(paddingLeftSliders, y),
+        wxDefaultPosition,
         wxSize(sliderWidth, sliderHeight));
 
-    y += sliderHeight + sliderRowMarginBottom;
+    sizerTop->Add(sliderSaturation, 0, wxALL, spacing);
 
     // Contrast
 
     labelContrast = new wxStaticText(
         this, ID_Label_Contrast,
         wxString("Contrast: 100%"),
-        wxPoint(paddingLeftLabels, y),
-        wxSize(labelWidth, labelHeight));
+        wxDefaultPosition,
+        wxDefaultSize);
 
-    y += labelHeight;
+    sizerTop->Add(labelContrast, 0, wxALL, spacing);
 
     sliderContrast = new wxSlider(
         this, ID_Slider_Contrast,
         defaultValSliders, minValSliders, maxValSliders,
-        wxPoint(paddingLeftSliders, y),
+        wxDefaultPosition,
         wxSize(sliderWidth, sliderHeight));
 
-    y += sliderHeight + sliderRowMarginBottom;
+    sizerTop->Add(sliderContrast, 0, wxALL, spacing);
 
     // Brightness
 
     labelBrightness = new wxStaticText(
         this, ID_Label_Brightness,
         wxString("Brightness: 100%"),
-        wxPoint(paddingLeftLabels, y),
-        wxSize(labelWidth, labelHeight));
+        wxDefaultPosition,
+        wxDefaultSize);
 
-    y += labelHeight;
+    sizerTop->Add(labelBrightness, 0, wxALL, spacing);
 
     sliderBrightness = new wxSlider(
         this, ID_Slider_Brightness,
         defaultValSliders, minValSliders, maxValSliders,
-        wxPoint(paddingLeftSliders, y),
+        wxDefaultPosition,
         wxSize(sliderWidth, sliderHeight));
 
-    y += sliderHeight + sliderRowMarginBottom;
+    sizerTop->Add(sliderBrightness, 0, wxALL, spacing);
 
     // Transparency tolerance
 
@@ -152,76 +146,88 @@ ImageEditDialog::ImageEditDialog(MainWindow *mainWindow) : wxDialog(mainWindow, 
 
     labelTransparencyTolerance = new wxStaticText(
         this, ID_Label_Transparency_Tolerance,
-        wxString("Transparency tol.: 128 (50%)"),
-        wxPoint(paddingLeftLabels, y),
-        wxSize(labelWidth, labelHeight));
+        wxString("Transparency tolerance: 128 (50%)"),
+        wxDefaultPosition,
+        wxDefaultSize);
 
-    y += labelHeight;
+    sizerTop->Add(labelTransparencyTolerance, 0, wxALL, spacing);
 
     sliderTransparencyTolerance = new wxSlider(
         this, ID_Slider_Transparency_Tolerance,
         defaultTransparencyTolerance, minTransparencyTolerance, maxTransparencyTolerance,
-        wxPoint(paddingLeftSliders, y),
+        wxDefaultPosition,
         wxSize(sliderWidth, sliderHeight));
 
-    y += sliderHeight + sliderRowMarginBottom;
+    sizerTop->Add(sliderTransparencyTolerance, 0, wxALL, spacing);
 
     // Background color
 
-    const int bgColorPanelWidth = 100;
-    const int bgColorPanelHeight = 30;
-
-    const int paddingLeftBgColorPanel = 25;
-    const int marginTopBgColorPanel = 5;
-
-    const int buttonWidth = 100;
-    const int buttonHeight = 30;
-
-    const int buttonsSeparation = 10;
+    const int bgColorPanelWidth = buttonWidth;
+    const int bgColorPanelHeight = buttonHeight;
 
     labelBackground = new wxStaticText(
         this, ID_Label_Background,
         wxString("Background color:"),
-        wxPoint(paddingLeftLabels, y),
-        wxSize(labelWidth, labelHeight));
+        wxDefaultPosition,
+        wxDefaultSize);
 
-    y += labelHeight + marginTopBgColorPanel;
+    sizerTop->Add(labelBackground, 0, wxALL, spacing);
+
+    wxBoxSizer * sizerBgColor = new wxBoxSizer(wxHORIZONTAL);
 
     panelColor = new wxPanel(
         this, ID_Panel_Background,
-        wxPoint(paddingLeftBgColorPanel, y),
+        wxDefaultPosition,
         wxSize(bgColorPanelWidth, bgColorPanelHeight),
         wxSIMPLE_BORDER);
 
     panelColor->SetBackgroundColour(wxColour(255, 255, 255));
 
+    sizerBgColor->Add(panelColor, 0, wxALL | wxALIGN_CENTER, spacing);
+
+    sizerBgColor->AddSpacer(spacing * 2);
+
     wxButton *colorButton = new wxButton(
         this, ID_Color,
         wxString("Change color"),
-        wxPoint(paddingLeftBgColorPanel + bgColorPanelWidth + buttonsSeparation, y),
+        wxDefaultPosition,
         wxSize(buttonWidth, buttonHeight));
 
-    y += buttonHeight;
+    sizerBgColor->Add(colorButton, 0, wxALL | wxALIGN_CENTER, spacing);
+
+    sizerTop->Add(sizerBgColor, 0, wxALL | wxALIGN_CENTER);
 
     // Action buttons
 
-    const int actionButtonsMarginTop = 10;
-
-    const int paddingLeftActionButton = paddingLeftBgColorPanel;
-
-    y += actionButtonsMarginTop;
+    wxBoxSizer *sizerGroupButtons = new wxBoxSizer(wxHORIZONTAL);
 
     wxButton *cancelButton = new wxButton(
         this, ID_Cancel,
         wxString("Reset"),
-        wxPoint(paddingLeftActionButton, y),
+        wxDefaultPosition,
         wxSize(buttonWidth, buttonHeight));
+
+    sizerGroupButtons->Add(cancelButton, 0, wxALL | wxALIGN_CENTER, spacing);
+
+    sizerGroupButtons->AddSpacer(spacing * 2);
 
     wxButton *okButton = new wxButton(
         this, ID_OK,
         wxString("Done"),
-        wxPoint(paddingLeftActionButton + buttonWidth + buttonsSeparation, y),
+        wxDefaultPosition,
         wxSize(buttonWidth, buttonHeight));
+
+    sizerGroupButtons->Add(okButton, 0, wxALL | wxALIGN_CENTER, spacing);
+
+    sizerTop->AddSpacer(spacing);
+    sizerTop->Add(sizerGroupButtons, 0, wxALL | wxALIGN_CENTER);
+
+    // End of wx composition
+
+    wxBoxSizer *sizerMain = new wxBoxSizer(wxVERTICAL);
+    sizerMain->Add(sizerTop, 0, wxALL | wxALIGN_CENTER, spacing);
+    sizerMain->SetSizeHints(this);
+    SetSizerAndFit(sizerMain);
 
     Centre();
 }
@@ -284,7 +290,7 @@ void ImageEditDialog::UpdateControls()
     labelBrightness->SetLabel(ss3.str());
 
     stringstream ss4;
-    ss4 << "Transparency tol.: " << static_cast<int>(transparencyTolerance) << " (" << (((static_cast<int>(transparencyTolerance) - 1) * 100) / 254) << "%)";
+    ss4 << "Transparency tolerance: " << static_cast<int>(transparencyTolerance) << " (" << (((static_cast<int>(transparencyTolerance) - 1) * 100) / 254) << "%)";
     labelTransparencyTolerance->SetLabel(ss4.str());
 
     panelColor->SetBackgroundColour(wxColour(background.red, background.green, background.blue));
@@ -350,7 +356,7 @@ void ImageEditDialog::OnChangeTransparencyTolerance(wxScrollEvent &event)
     transparencyTolerance = static_cast<unsigned char>(val);
 
     stringstream ss;
-    ss << "Transparency tol.: " << static_cast<int>(transparencyTolerance) << " (" << (((static_cast<int>(transparencyTolerance) - 1) * 100) / 254) << "%)";
+    ss << "Transparency tolerance: " << static_cast<int>(transparencyTolerance) << " (" << (((static_cast<int>(transparencyTolerance) - 1) * 100) / 254) << "%)";
     labelTransparencyTolerance->SetLabel(ss.str());
 
     OnChangeParams();

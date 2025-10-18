@@ -86,16 +86,6 @@ MapExportDialog::MapExportDialog(int projectMapCount) : wxDialog(NULL, -1, wxStr
 
     wxBoxSizer *sizerGroupButtons = new wxBoxSizer(wxHORIZONTAL);
 
-    wxButton *okButton = new wxButton(
-        this, ID_OK, 
-        wxString("Export"), 
-        wxDefaultPosition, 
-        wxSize(buttonWidth, buttonHeight));
-
-    sizerGroupButtons->Add(okButton, 0, wxALL | wxALIGN_CENTER, spacing);
-
-    sizerGroupButtons->AddSpacer(spacing * 2);
-
     wxButton *cancelButton = new wxButton(
         this, ID_Cancel, 
         wxString("Cancel"),
@@ -103,6 +93,16 @@ MapExportDialog::MapExportDialog(int projectMapCount) : wxDialog(NULL, -1, wxStr
          wxSize(buttonWidth, buttonHeight));
 
     sizerGroupButtons->Add(cancelButton, 0, wxALL | wxALIGN_CENTER, spacing);
+
+    sizerGroupButtons->AddSpacer(spacing * 2);
+
+    wxButton *okButton = new wxButton(
+        this, ID_OK, 
+        wxString("Export"), 
+        wxDefaultPosition, 
+        wxSize(buttonWidth, buttonHeight));
+
+    sizerGroupButtons->Add(okButton, 0, wxALL | wxALIGN_CENTER, spacing);
 
     sizerTop->Add(sizerGroupButtons, 0, wxALL | wxALIGN_CENTER);
 
