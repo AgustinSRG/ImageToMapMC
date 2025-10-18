@@ -125,7 +125,7 @@ void StructureExportDialog::OnShow(wxShowEvent& event) {
         std::string rememberPath = tools::getRememberedValue(tools::VALUE_PURPOSE_EXPORT_STRUCTURES);
 
         if (rememberPath.length() > 0) {
-            textFolder->ChangeValue(rememberPath);
+            textFolder->ChangeValue(wxString::FromUTF8(rememberPath));
         }
     }
 }
@@ -180,7 +180,7 @@ void StructureExportDialog::OnBrowse(wxCommandEvent &event)
         return; // the user changed idea...
     }
 
-    tools::setRememberedValue(tools::VALUE_PURPOSE_EXPORT_STRUCTURES, dialog.GetPath().ToStdString());
+    tools::setRememberedValue(tools::VALUE_PURPOSE_EXPORT_STRUCTURES, dialog.GetPath().utf8_string());
 
     textFolder->ChangeValue(dialog.GetPath());
 }

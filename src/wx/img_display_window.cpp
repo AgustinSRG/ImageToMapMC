@@ -425,7 +425,7 @@ void DisplayImageFrame::OnSaveImage()
         return; // the user changed idea...
     }
 
-    bool ok = drawPane->bitmap->ConvertToImage().SaveFile(saveFileDialog.GetPath().ToStdString(), wxBITMAP_TYPE_PNG);
+    bool ok = drawPane->bitmap->ConvertToImage().SaveFile(saveFileDialog.GetPath().utf8_string(), wxBITMAP_TYPE_PNG);
 
     if (!ok)
     {

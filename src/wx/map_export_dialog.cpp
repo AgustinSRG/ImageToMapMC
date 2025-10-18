@@ -124,7 +124,7 @@ void MapExportDialog::OnShow(wxShowEvent &event)
 
         if (rememberPath.length() > 0)
         {
-            textFolder->ChangeValue(rememberPath);
+            textFolder->ChangeValue(wxString::FromUTF8(rememberPath));
             figureOutMapNumber(rememberPath);
         }
     }
@@ -200,13 +200,13 @@ void MapExportDialog::OnBrowse(wxCommandEvent &event)
     }
 
     textFolder->ChangeValue(dialog.GetPath());
-    figureOutMapNumber(dialog.GetPath().ToStdString());
-    tools::setRememberedValue(tools::VALUE_PURPOSE_EXPORT_MAPS, dialog.GetPath().ToStdString());
+    figureOutMapNumber(dialog.GetPath().utf8_string());
+    tools::setRememberedValue(tools::VALUE_PURPOSE_EXPORT_MAPS, dialog.GetPath().utf8_string());
 }
 
 std::string MapExportDialog::getPath()
 {
-    return textFolder->GetValue().ToStdString();
+    return textFolder->GetValue().utf8_string();
 }
 
 int MapExportDialog::getMapNumber()

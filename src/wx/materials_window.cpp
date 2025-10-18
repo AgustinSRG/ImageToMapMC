@@ -450,7 +450,7 @@ void MaterialsWindow::onLoadFile(wxCommandEvent &evt)
     if (openFileDialog.ShowModal() == wxID_CANCEL)
         return; // the user changed idea...
 
-    panel->setMaterialsConf(panel->version, panel->buildMethod, tools::readTextFile(openFileDialog.GetPath().ToStdString()));
+    panel->setMaterialsConf(panel->version, panel->buildMethod, tools::readTextFile(openFileDialog.GetPath().utf8_string()));
     mainWindow->changeColorSetConf(panel->getMaterialsConf());
 }
 
@@ -461,7 +461,7 @@ void MaterialsWindow::onSaveFile(wxCommandEvent &evt)
     {
         return; // the user changed idea...
     }
-    if (!tools::writeTextFile(saveFileDialog.GetPath().ToStdString(), panel->getMaterialsConf()))
+    if (!tools::writeTextFile(saveFileDialog.GetPath().utf8_string(), panel->getMaterialsConf()))
     {
         wxMessageBox(wxString("Could not save the configuration due to a file system error."), wxT("Error"), wxICON_ERROR);
     }

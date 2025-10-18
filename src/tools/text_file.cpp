@@ -23,18 +23,21 @@
 
 #include "text_file.h"
 #include <fstream>
+#include <sstream>
 
 using namespace std;
 
 std::string tools::readTextFile(std::string fileName)
 {
-    std::ifstream t(fileName);
+    
+    std::ifstream t(fileName, std::ios::in | std::ios::binary);
     if (!t)
     {
         return string("");
     }
-    std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
-    return str;
+    std::ostringstream sstr;
+    sstr << t.rdbuf();
+    return sstr.str();
 }
 
 bool tools::writeTextFile(std::string fileName, const std::string &colorSetFileContent)

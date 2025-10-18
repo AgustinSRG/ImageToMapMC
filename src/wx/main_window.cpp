@@ -344,7 +344,7 @@ void MainWindow::onLoadImage(wxCommandEvent &evt)
                        "Image files (*.png, *.jpg)|*.png;*.jpg|All files|*.*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     if (openFileDialog.ShowModal() == wxID_CANCEL)
         return; // the user changed idea...
-    loadImage(openFileDialog.GetPath().ToStdString());
+    loadImage(openFileDialog.GetPath().utf8_string());
     dirty = true;
 }
 
@@ -526,7 +526,7 @@ void MainWindow::OnSaveMaterialsList(wxCommandEvent &evt)
     wxFileDialog saveFileDialog(this, _("Save materials list"), "", "", "Text file (*.txt)|*.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     if (saveFileDialog.ShowModal() != wxID_CANCEL)
     {
-        this->workerThread->requestExportMaterials(project, saveFileDialog.GetPath().ToStdString());
+        this->workerThread->requestExportMaterials(project, saveFileDialog.GetPath().utf8_string());
     }
 }
 
@@ -553,7 +553,7 @@ void MainWindow::OnSaveMaterialsListSplit(wxCommandEvent &evt)
     wxFileDialog saveFileDialog(this, _("Save materials list"), "", "", "Text file (*.txt)|*.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     if (saveFileDialog.ShowModal() != wxID_CANCEL)
     {
-        this->workerThread->requestExportMaterialsSplit(project, saveFileDialog.GetPath().ToStdString());
+        this->workerThread->requestExportMaterialsSplit(project, saveFileDialog.GetPath().utf8_string());
     }
 }
 
@@ -643,7 +643,7 @@ void widgets::displayMainWindow(wxApp &app)
 
     if (app.argc > 1)
     {
-        frame->loadProject(app.argv[1].ToStdString());
+        frame->loadProject(app.argv[1].utf8_string());
     }
 }
 
@@ -676,7 +676,7 @@ void MainWindow::onExportToMapsZip(wxCommandEvent &evt)
     wxFileDialog saveFileDialog(this, _("Export as map files"), "", "", "Compressed zip files (*.zip)|*.zip", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     if (saveFileDialog.ShowModal() != wxID_CANCEL)
     {
-        this->workerThread->requestExportMapsZip(project, saveFileDialog.GetPath().ToStdString());
+        this->workerThread->requestExportMapsZip(project, saveFileDialog.GetPath().utf8_string());
     }
 }
 
@@ -732,7 +732,7 @@ void MainWindow::onExportToStructureZip(wxCommandEvent &evt)
     wxFileDialog saveFileDialog(this, _("Export as structure files"), "", "", "Compressed zip files (*.zip)|*.zip", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     if (saveFileDialog.ShowModal() != wxID_CANCEL)
     {
-        this->workerThread->requestExportStructZip(project, saveFileDialog.GetPath().ToStdString());
+        this->workerThread->requestExportStructZip(project, saveFileDialog.GetPath().utf8_string());
     }
 }
 
@@ -759,7 +759,7 @@ void MainWindow::onExportToStructureSingleFile(wxCommandEvent &evt)
     wxFileDialog saveFileDialog(this, _("Export as a single structure file"), "", "", "NBT structure files (*.nbt)|*.nbt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     if (saveFileDialog.ShowModal() != wxID_CANCEL)
     {
-        this->workerThread->requestExportStructSingleFile(project, saveFileDialog.GetPath().ToStdString());
+        this->workerThread->requestExportStructSingleFile(project, saveFileDialog.GetPath().utf8_string());
     }
 }
 
@@ -786,7 +786,7 @@ void MainWindow::onExportToSchematicZip(wxCommandEvent &evt)
     wxFileDialog saveFileDialog(this, _("Export as schematic files"), "", "", "Compressed zip files (*.zip)|*.zip", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     if (saveFileDialog.ShowModal() != wxID_CANCEL)
     {
-        this->workerThread->requestExportSchematicZip(project, saveFileDialog.GetPath().ToStdString());
+        this->workerThread->requestExportSchematicZip(project, saveFileDialog.GetPath().utf8_string());
     }
 }
 
@@ -813,7 +813,7 @@ void MainWindow::onExportToSchematicSingleFile(wxCommandEvent &evt)
     wxFileDialog saveFileDialog(this, _("Export as a single schematic file"), "", "", "Schematic files (*.schem)|*.schem", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     if (saveFileDialog.ShowModal() != wxID_CANCEL)
     {
-        this->workerThread->requestExportSchematicSingleFile(project, saveFileDialog.GetPath().ToStdString());
+        this->workerThread->requestExportSchematicSingleFile(project, saveFileDialog.GetPath().utf8_string());
     }
 }
 
@@ -1040,7 +1040,7 @@ void MainWindow::openProject(wxCommandEvent &evt)
         }
     }
 
-    loadProject(openFileDialog.GetPath().ToStdString());
+    loadProject(openFileDialog.GetPath().utf8_string());
 }
 
 void MainWindow::newProject(wxCommandEvent &evt)
@@ -1093,7 +1093,7 @@ void MainWindow::saveProjectAs(wxCommandEvent &evt)
         return; // the user changed idea...
     }
 
-    saveProject(saveFileDialog.GetPath().ToStdString());
+    saveProject(saveFileDialog.GetPath().utf8_string());
 }
 
 void MainWindow::onHelp(wxCommandEvent &evt)
