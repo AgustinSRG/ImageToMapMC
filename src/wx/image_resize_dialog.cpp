@@ -49,23 +49,15 @@ EVT_COMBOBOX(ID_Combo, ImageResizeDialog::OnUnitsComboBoxChanged)
 EVT_CHAR_HOOK(ImageResizeDialog::OnKeyPress)
 END_EVENT_TABLE()
 
-const int DIALOG_WIDTH = 255;
-const int DIALOG_HEIGHT = 205;
-
 const int MAP_SIZE = 128;
 
-ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1, wxString("Resize image"), wxDefaultPosition, wxSize(DIALOG_WIDTH, DIALOG_HEIGHT))
+ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1, wxString("Resize image"), wxDefaultPosition, wxDefaultSize)
 {
 
     this->width = max(1, width);
     this->height = max(1, height);
 
     this->usingMaps = tools::getRememberedValue(tools::VALUE_PURPOSE_SIZE_UNITS).compare("map") == 0;
-
-    wxFont font = this->GetFont();
-    font.SetPixelSize(wxSize(0, 12));
-
-    this->SetFont(font);
 
     resizedW = max(1, width);
     resizedH = max(1, height);
@@ -75,56 +67,34 @@ ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1,
 
     linked = true;
 
-    const int paddingTopLabels = 2;
-    const int paddingTopLabelCombo = 5;
+    // Create sizers and wx components
 
-    const int labelWidth = 40;
-    const int labelHeight = 20;
-
-    const int labelUnitsWidth = 25;
+    const int spacing = 10;
 
     const int textWidth = 130;
-    const int textHeight = 20;
-
-    const int comboWidth = 160;
-    const int comboHeight = 25;
 
     const int buttonWidth = 100;
     const int buttonHeight = 30;
 
-    const int checkboxWidth = 180;
-    const int checkboxHeight = 15;
+    sizerTop = new wxBoxSizer(wxVERTICAL);
 
-    const int spaceBetweenButtons = 10;
+    const int gridRows = 3;
+    const int gridCols = 2;
+    const int verticalSpacing = 0;
+    const int horizontalSpacing = 0;
+    sizerGrid = new wxFlexGridSizer(gridRows, gridCols, verticalSpacing, horizontalSpacing);
 
-    const int paddingLeft = 15;
-
-    const int labelTextSeparation = 10;
-    const int textUnitLabelSeparation = 5;
-
-    const int rowMarginBottom = 5;
-
-    const int checkBoxMarginTop = 5;
-
-    const int buttonsMarginTop = 10;
-
-    const int paddingTop = 15;
-
-    int rowY = paddingTop;
-
-    int rowX;
-
-    // Width row
-
-    rowX = paddingLeft;
+    // Width group
 
     wxStaticText *label1 = new wxStaticText(
         this, wxID_ANY,
-        wxString("Width:"),
-        wxPoint(rowX, rowY + paddingTopLabels),
-        wxSize(labelWidth, labelHeight));
+        wxString("Width: "),
+        wxDefaultPosition,
+        wxDefaultSize);
 
-    rowX += labelWidth + labelTextSeparation;
+    sizerGrid->Add(label1, 0, wxALL | wxALIGN_CENTER_VERTICAL, spacing);
+
+    sizerGroupWidth = new wxBoxSizer(wxHORIZONTAL);
 
     stringstream sw;
 
@@ -140,29 +110,32 @@ ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1,
     wText = new wxTextCtrl(
         this, ID_Text_W,
         wxString(sw.str()),
-        wxPoint(rowX, rowY),
-        wxSize(textWidth, textHeight));
+        wxDefaultPosition,
+        wxSize(textWidth, -1));
 
-    rowX += textWidth + textUnitLabelSeparation;
+    sizerGroupWidth->Add(wText, 0, wxALL | wxALIGN_CENTER_VERTICAL, spacing);
 
     labelUnits1 = new wxStaticText(
         this, wxID_ANY,
-        usingMaps ? wxString("map") : wxString("px"),
-        wxPoint(rowX, rowY + paddingTopLabels),
-        wxSize(labelUnitsWidth, labelHeight));
+        usingMaps ? wxString(" map") : wxString("  px"),
+        wxDefaultPosition,
+        wxDefaultSize);
 
-    // Height row
+    sizerGroupWidth->Add(labelUnits1, 0, wxALL | wxALIGN_CENTER_VERTICAL, spacing);
 
-    rowY += textHeight + rowMarginBottom;
-    rowX = paddingLeft;
+    sizerGrid->Add(sizerGroupWidth, 0, wxALIGN_CENTER_VERTICAL);
+
+    // Height group
 
     wxStaticText *label2 = new wxStaticText(
         this, wxID_ANY,
-        wxString("Height:"),
-        wxPoint(rowX, rowY + paddingTopLabels),
-        wxSize(labelWidth, labelHeight));
+        wxString("Height: "),
+        wxDefaultPosition,
+        wxDefaultSize);
 
-    rowX += labelWidth + labelTextSeparation;
+    sizerGrid->Add(label2, 0, wxALL | wxALIGN_CENTER_VERTICAL, spacing);
+
+    sizerGroupHeight = new wxBoxSizer(wxHORIZONTAL);
 
     stringstream sh;
 
@@ -178,30 +151,31 @@ ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1,
     hText = new wxTextCtrl(
         this, ID_Text_H,
         wxString(sh.str()),
-        wxPoint(rowX, rowY),
-        wxSize(textWidth, textHeight));
+        wxDefaultPosition,
+        wxSize(textWidth, -1));
 
-    rowX += textWidth + textUnitLabelSeparation;
+    sizerGroupHeight->Add(hText, 0, wxALL | wxALIGN_CENTER_VERTICAL, spacing);
 
     labelUnits2 = new wxStaticText(
         this, wxID_ANY,
-        usingMaps ? wxString("map") : wxString("px"),
-        wxPoint(rowX, rowY + paddingTopLabels),
-        wxSize(labelUnitsWidth, labelHeight));
+        usingMaps ? wxString(" map") : wxString("  px"),
+        wxDefaultPosition,
+        wxDefaultSize);
 
-    // Size units row
+    sizerGroupHeight->Add(labelUnits2, 0, wxALL | wxALIGN_CENTER_VERTICAL, spacing);
 
-    rowY += textHeight + rowMarginBottom;
-    rowX = paddingLeft;
+    sizerGrid->Add(sizerGroupHeight, 0, wxALIGN_CENTER_VERTICAL);
+
+    // Units switch
 
     wxStaticText *label3 = new wxStaticText(
         this, wxID_ANY,
         wxString("Units:"),
-        wxPoint(rowX, rowY + paddingTopLabelCombo),
-        wxSize(labelWidth, labelHeight));
+        wxDefaultPosition,
+        wxDefaultSize);
 
-    rowX += labelWidth + labelTextSeparation;
-
+    sizerGrid->Add(label3, 0, wxALL | wxALIGN_CENTER_VERTICAL, spacing);
+    
     wxArrayString options;
     wxString optionPixels("Pixels (1 px = 1 block)");
     wxString optionMaps("Maps (1 map = 128 blocks)");
@@ -211,37 +185,53 @@ ImageResizeDialog::ImageResizeDialog(int width, int height) : wxDialog(NULL, -1,
     combo = new wxComboBox(
         this, ID_Combo,
         usingMaps ? optionMaps : optionPixels,
-        wxPoint(rowX, rowY),
-        wxSize(comboWidth, comboHeight),
+        wxDefaultPosition,
+        wxDefaultSize,
         options, wxCB_READONLY);
 
-    // Keep aspect ratio checkbox row
+    sizerGrid->Add(combo, 0, wxALL | wxALIGN_CENTER_VERTICAL, spacing);
 
-    rowY += comboHeight + rowMarginBottom + checkBoxMarginTop;
-    rowX = paddingLeft;
+    // Finished width and height
+
+    sizerTop->Add(sizerGrid);
+
+    // Keep aspect ratio checkbox
 
     checkbox = new wxCheckBox(
         this, ID_Checkbox,
         wxString("Keep aspect ratio."),
-        wxPoint(rowX, rowY),
-        wxSize(checkboxWidth, checkboxHeight));
+        wxDefaultPosition,
+        wxDefaultSize);
     checkbox->SetValue(true);
+
+    sizerTop->Add(checkbox, 0, wxALL | wxALIGN_CENTER, spacing);
 
     // Buttons
 
-    rowY += checkboxHeight + rowMarginBottom + buttonsMarginTop;
+    sizerGroupButtons = new wxBoxSizer(wxHORIZONTAL);
 
     wxButton *cancelButton = new wxButton(
         this, ID_Cancel,
         wxString("Cancel"),
-        wxPoint(paddingLeft, rowY),
+        wxDefaultPosition,
         wxSize(buttonWidth, buttonHeight));
+
+    sizerGroupButtons->Add(cancelButton, 0, wxALL | wxALIGN_CENTER, spacing);
 
     wxButton *okButton = new wxButton(
         this, ID_OK,
         wxString("Resize"),
-        wxPoint(paddingLeft + buttonWidth + spaceBetweenButtons, rowY),
+        wxDefaultPosition,
         wxSize(buttonWidth, buttonHeight));
+
+    sizerGroupButtons->Add(okButton, 0, wxALL | wxALIGN_CENTER, spacing);
+
+    sizerTop->Add(sizerGroupButtons, 0, wxALL | wxALIGN_CENTER);
+
+    // End of wx composition
+
+    sizerTop->SetSizeHints(this);
+    SetSizerAndFit(sizerTop);
 
     Centre();
 }
