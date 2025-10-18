@@ -22,3 +22,4 @@ wix/ImageToMapMC
 *.exe
 /~
 /.config
+/test-images
