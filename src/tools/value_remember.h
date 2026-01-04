@@ -30,6 +30,7 @@ namespace tools
     const std::string VALUE_PURPOSE_EXPORT_MAPS("folder-exp-maps");
     const std::string VALUE_PURPOSE_EXPORT_STRUCTURES("folder-exp-struct");
     const std::string VALUE_PURPOSE_SIZE_UNITS("resize-units");
+    const std::string VALUE_PURPOSE_EXPORT_MAPS_LAST_ID("last-map-id");
 
     /**
      * @brief  Gets the remembered value

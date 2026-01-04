@@ -33,12 +33,14 @@ enum Identifiers
     ID_OK = 1,
     ID_Cancel = 2,
     ID_Browse = 3,
+    ID_Map_Id_Input = 4
 };
 
 BEGIN_EVENT_TABLE(MapExportDialog, wxDialog)
 EVT_BUTTON(ID_OK, MapExportDialog::OnOk)
 EVT_BUTTON(ID_Cancel, MapExportDialog::OnCancel)
 EVT_BUTTON(ID_Browse, MapExportDialog::OnBrowse)
+EVT_TEXT(ID_Map_Id_Input, MapExportDialog::OnMapIdChanged)
 EVT_CHAR_HOOK(MapExportDialog::OnKeyPress)
 EVT_SHOW(MapExportDialog::OnShow)
 END_EVENT_TABLE()
@@ -78,7 +80,7 @@ MapExportDialog::MapExportDialog(int projectMapCount) : wxDialog(NULL, -1, wxStr
 
     sizerTop->Add(label2, 0, wxALL, spacing);
 
-    textMapNumber = new wxTextCtrl(this, wxID_ANY, wxString("0"), wxDefaultPosition, wxSize(textWidth, -1));
+    textMapNumber = new wxTextCtrl(this, ID_Map_Id_Input, wxString("0"), wxDefaultPosition, wxSize(textWidth, -1));
 
     sizerTop->Add(textMapNumber, 0, wxALL, spacing);
 
@@ -87,19 +89,19 @@ MapExportDialog::MapExportDialog(int projectMapCount) : wxDialog(NULL, -1, wxStr
     wxBoxSizer *sizerGroupButtons = new wxBoxSizer(wxHORIZONTAL);
 
     wxButton *cancelButton = new wxButton(
-        this, ID_Cancel, 
+        this, ID_Cancel,
         wxString("Cancel"),
-         wxDefaultPosition, 
-         wxSize(buttonWidth, buttonHeight));
+        wxDefaultPosition,
+        wxSize(buttonWidth, buttonHeight));
 
     sizerGroupButtons->Add(cancelButton, 0, wxALL | wxALIGN_CENTER, spacing);
 
     sizerGroupButtons->AddSpacer(spacing * 2);
 
     wxButton *okButton = new wxButton(
-        this, ID_OK, 
-        wxString("Export"), 
-        wxDefaultPosition, 
+        this, ID_OK,
+        wxString("Export"),
+        wxDefaultPosition,
         wxSize(buttonWidth, buttonHeight));
 
     sizerGroupButtons->Add(okButton, 0, wxALL | wxALIGN_CENTER, spacing);
@@ -108,7 +110,7 @@ MapExportDialog::MapExportDialog(int projectMapCount) : wxDialog(NULL, -1, wxStr
 
     // End of wx composition
 
-    wxBoxSizer * sizerMain = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *sizerMain = new wxBoxSizer(wxVERTICAL);
     sizerMain->Add(sizerTop, 0, wxALL | wxALIGN_CENTER, spacing);
     sizerMain->SetSizeHints(this);
     SetSizerAndFit(sizerMain);
@@ -163,8 +165,10 @@ void MapExportDialog::OnOk(wxCommandEvent &event)
             fs::path outFilePath(path);
             outFilePath /= mapFileName;
 
-            if (fs::exists(outFilePath)) {
-                if (foundOverwrite) {
+            if (fs::exists(outFilePath))
+            {
+                if (foundOverwrite)
+                {
                     ssOverWriteList << ", ";
                 }
 
@@ -180,7 +184,14 @@ void MapExportDialog::OnOk(wxCommandEvent &event)
         }
     }
 
+    // Remember values for later
+
     tools::setRememberedValue(tools::VALUE_PURPOSE_EXPORT_MAPS, getPath());
+
+    int nextMapNumber = this->getMapNumber() + this->projectMapCount;
+    stringstream ss;
+    ss << nextMapNumber;
+    tools::setRememberedValue(tools::VALUE_PURPOSE_EXPORT_MAPS_LAST_ID, ss.str());
 
     EndModal(wxID_OK);
 }
@@ -212,6 +223,17 @@ std::string MapExportDialog::getPath()
 int MapExportDialog::getMapNumber()
 {
     return atoi(textMapNumber->GetValue().c_str());
+}
+
+void MapExportDialog::OnMapIdChanged(wxCommandEvent &event)
+{
+    int mapNumber = this->getMapNumber();
+
+    stringstream ss;
+
+    ss << mapNumber;
+
+    tools::setRememberedValue(tools::VALUE_PURPOSE_EXPORT_MAPS_LAST_ID, ss.str());
 }
 
 void MapExportDialog::OnKeyPress(wxKeyEvent &event)
@@ -259,12 +281,23 @@ void MapExportDialog::figureOutMapNumber(std::string path)
         if (foundAtLeastOneMap)
         {
             lastMap++;
+
+            stringstream ss;
+
+            ss << lastMap;
+
+            textMapNumber->SetValue(ss.str());
         }
+        else
+        {
+            std::string lastRememberedIdString = tools::getRememberedValue(tools::VALUE_PURPOSE_EXPORT_MAPS_LAST_ID);
+            int mapIdInt = atoi(lastRememberedIdString.c_str());
 
-        stringstream ss;
+            stringstream ss;
 
-        ss << lastMap;
+            ss << mapIdInt;
 
-        textMapNumber->SetValue(ss.str());
+            textMapNumber->SetValue(ss.str());
+        }
     }
 }

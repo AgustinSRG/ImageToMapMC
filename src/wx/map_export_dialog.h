@@ -45,6 +45,8 @@ public:
 
     void OnBrowse(wxCommandEvent &event);
     void OnKeyPress(wxKeyEvent &event);
+
+    void OnMapIdChanged(wxCommandEvent& event);
 private:
     int projectMapCount;
 
