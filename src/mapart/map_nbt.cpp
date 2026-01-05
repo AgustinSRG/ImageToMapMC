@@ -1,15 +1,15 @@
 /*
  * This file is part of ImageToMapMC project
- * 
+ *
  * Copyright (c) 2021 Agustin San Roman
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
 
@@ -87,9 +87,18 @@ void mapart::writeMapNBTFile(std::string fileName, const std::vector<map_color_t
     // Set meta data
     data.insert("width", nbt::tag_int(MAP_WIDTH));
     data.insert("height", nbt::tag_int(MAP_HEIGHT));
-    data.insert("dimension", nbt::tag_int(0));
+
+    if (version >= McVersion::MC_1_16)
+    {
+        data.insert("dimension", nbt::tag_string("minecraft:overworld"));
+    }
+    else
+    {
+        data.insert("dimension", nbt::tag_int(0));
+    }
+
     data.insert("scale", nbt::tag_int(0));
-    data.insert("trackingPosition:", nbt::tag_int(0));
+    data.insert("trackingPosition", nbt::tag_int(0));
     data.insert("unlimitedTracking", nbt::tag_int(0));
 
     if (version >= McVersion::MC_1_14)
@@ -186,11 +195,11 @@ void mapart::writeMapNBTFileZip(std::string fileName, zip_t *zipper, const std::
 
         int len = data.size();
 
-        char * buffer = new char[len];
+        char *buffer = new char[len];
 
         memcpy(buffer, data.c_str(), len);
 
-        zip_source_t * bsource = zip_source_buffer(zipper, buffer, len, 1);
+        zip_source_t *bsource = zip_source_buffer(zipper, buffer, len, 1);
 
         zip_file_add(zipper, fileName.c_str(), bsource, ZIP_FL_ENC_UTF_8 | ZIP_FL_OVERWRITE);
     }
