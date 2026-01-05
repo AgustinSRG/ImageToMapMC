@@ -101,23 +101,23 @@ std::string minecraft::versionToString(minecraft::McVersion version)
     switch (version)
     {
     case McVersion::MC_1_12:
-        return std::string("1.12.2");
+        return std::string("1.12");
     case McVersion::MC_1_13:
-        return std::string("1.13.2");
+        return std::string("1.13");
     case McVersion::MC_1_14:
-        return std::string("1.14.4");
+        return std::string("1.14");
     case McVersion::MC_1_15:
-        return std::string("1.15.2");
+        return std::string("1.15");
     case McVersion::MC_1_16:
-        return std::string("1.16.5");
+        return std::string("1.16");
     case McVersion::MC_1_17:
-        return std::string("1.17.1");
+        return std::string("1.17");
     case McVersion::MC_1_18:
-        return std::string("1.18.2");
+        return std::string("1.18");
     case McVersion::MC_1_19:
-        return std::string("1.19.4");
+        return std::string("1.19");
     case McVersion::MC_1_20:
-        return std::string("1.20.5");
+        return std::string("1.20");
     case McVersion::MC_1_21:
         return std::string("1.21");
     default:
@@ -130,27 +130,27 @@ int minecraft::versionToDataVersion(minecraft::McVersion version)
     switch (version)
     {
     case McVersion::MC_1_12:
-        return 1343;
+        return 1139;
     case McVersion::MC_1_13:
-        return 1631;
+        return 1519;
     case McVersion::MC_1_14:
-        return 1976;
+        return 1952;
     case McVersion::MC_1_15:
-        return 2230;
+        return 2225;
     case McVersion::MC_1_16:
-        return 2586;
+        return 2566;
     case McVersion::MC_1_17:
-        return 2730;
+        return 2724;
     case McVersion::MC_1_18:
-        return 2975;
+        return 2860;
     case McVersion::MC_1_19:
-        return 3337;
+        return 3105;
     case McVersion::MC_1_20:
-        return 3837;
+        return 3463;
     case McVersion::MC_1_21:
         return 3953;
     default:
-        return 1343;
+        return 3953;
     }
 }
 

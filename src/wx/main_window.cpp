@@ -284,15 +284,15 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     // Version
     wxMenu *menuVersion = new wxMenu();
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_21), "&1.21", "Version: 1.21")->Check(true);
-    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_20), "&1.20.5", "Version: 1.20.5");
-    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_19), "&1.19.4", "Version: 1.19.4");
-    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_18), "&1.18.2", "Version: 1.18.2");
-    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_17), "&1.17.1", "Version: 1.17.1");
-    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_16), "&1.16.5", "Version: 1.16.5");
-    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_15), "&1.15.2", "Version: 1.15.2");
-    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_14), "&1.14.4", "Version: 1.14.4");
-    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_13), "&1.13.2", "Version: 1.13.2");
-    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_12), "&1.12.2", "Version: 1.12.2");
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_20), "&1.20", "Version: 1.20");
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_19), "&1.19", "Version: 1.19");
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_18), "&1.18", "Version: 1.18");
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_17), "&1.17", "Version: 1.17");
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_16), "&1.16", "Version: 1.16");
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_15), "&1.15", "Version: 1.15");
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_14), "&1.14", "Version: 1.14");
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_13), "&1.13", "Version: 1.13");
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_12), "&1.12", "Version: 1.12");
     menuBar->Append(menuVersion, "&Version");
 
     // Help
