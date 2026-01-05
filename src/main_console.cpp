@@ -57,6 +57,10 @@ int main(int argc, char **argv)
     {
         return renderMap(argc, argv);
     }
+    else if (firstArg.compare(string("-f")) == 0 || firstArg.compare(string("--fix")) == 0)
+    {
+        return fixMaps(argc, argv);
+    }
     else if (firstArg.compare(string("-h")) == 0 || firstArg.compare(string("--help")) == 0)
     {
         return printHelp();
@@ -107,6 +111,7 @@ int printHelp()
     cout << "    --print-blocks [ver]    Prints all available base colors with its associated blocks" << endl;
     cout << "    -b, --build             Builds a map from input image" << endl;
     cout << "    -r, --render            Renders image from input map file in '.dat' format" << endl;
+    cout << "    -f, --fix <file>...     Fix issues for Minecraft map '.dat' files." << endl;
 
     cout << endl;
 
@@ -116,7 +121,7 @@ int printHelp()
     cout << "Available options:" << endl;
     cout << "    -o, --output [path]            Specifies the output folder or file." << endl;
     cout << "                                     By default the folder name is 'mapart'" << endl;
-    cout << "    -f, --format [format]          Specifies the output format. By defaulty is 'map'" << endl;
+    cout << "    -f, --format [format]          Specifies the output format. By default is 'map'" << endl;
     cout << "                                     'map' format creates '.dat' files for the maps" << endl;
     cout << "                                     'structure' format creates nbt structure files" << endl;
     cout << "                                     'structure-single' format creates a single nbt structure file" << endl;
@@ -128,7 +133,7 @@ int printHelp()
     cout << "    -bg, --background [#FFFFFF]    Specifies the background color in hex format." << endl;
     cout << "                                     By default, the background color is white." << endl;
     cout << "    -rs, --resize [WxH]            Resizes the image before building the map" << endl;
-    cout << "    -cm, --color-method [method]   Specifies the method to aproximate the color. By default, 'euclidean'" << endl;
+    cout << "    -cm, --color-method [method]   Specifies the method to approximate the color. By default, 'euclidean'" << endl;
     cout << "                                     'euclidean' - Simple RGB 3D squared distance" << endl;
     cout << "                                     'delta-e' - More complex method but more accurate." << endl;
     cout << "    -d, --dithering [method]       Applies dithering to the image (https://en.wikipedia.org/wiki/Dither)" << endl;
@@ -310,6 +315,49 @@ int renderMap(int argc, char **argv)
     }
 
     return 0;
+}
+
+int fixMaps(int argc, char **argv)
+{
+    if (argc < 3)
+    {
+        std::cerr << "Usage: mcmap --fix [input-map.dat]..." << endl;
+        return 1;
+    }
+
+    bool atLeastOneSuccess = false;
+
+    for (int i = 2; i < argc; i++) {
+        std::string fileName(argv[i]);
+
+        bool fixed = false;
+
+        try {
+            fixed = mapart::fixMapNBTFile(fileName);
+        } catch (int code) {
+            if (code == -1) {
+                std::cerr << "Error: Could not open map file: " << fileName << endl;
+            } else if (code == -2) {
+                std::cerr << "Error: Invalid data found in file: " << fileName << endl;
+            } else if (code == -3) {
+                std::cerr << "Error: Could not save file: " << fileName << endl;
+            } else {
+                std::cerr << "Error: " << code << " for file: " << fileName << endl;
+            }
+
+            continue;
+        }
+
+        atLeastOneSuccess = true;
+
+        if (fixed) {
+            std::cerr << "Done: Fixed issues found in file: " << fileName << endl;
+        } else {
+            std::cerr << "Skip: No issues found in file: " << fileName << endl;
+        }
+    }
+
+    return atLeastOneSuccess ? 0 : 1;
 }
 
 int buildMap(int argc, char **argv)

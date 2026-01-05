@@ -48,6 +48,7 @@ int printVersion();
 int printBlocks(int argc, char **argv);
 int renderMap(int argc, char ** argv);
 int buildMap(int argc, char ** argv);
+int fixMaps(int argc, char ** argv);
 void progressReporter(threading::Progress &progress);
 
 enum class MapOutputFormat {

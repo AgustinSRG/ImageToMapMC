@@ -23,6 +23,8 @@
 
 #include "map_nbt.h"
 
+#include "../tools/fs.h"
+
 #include <fstream>
 
 #include <io/stream_reader.h>
@@ -152,9 +154,16 @@ void mapart::writeMapNBTFileZip(std::string fileName, zip_t *zipper, const std::
     // Set meta data
     data.insert("width", nbt::tag_int(MAP_WIDTH));
     data.insert("height", nbt::tag_int(MAP_HEIGHT));
-    data.insert("dimension", nbt::tag_int(0));
+    if (version >= McVersion::MC_1_16)
+    {
+        data.insert("dimension", nbt::tag_string("minecraft:overworld"));
+    }
+    else
+    {
+        data.insert("dimension", nbt::tag_int(0));
+    }
     data.insert("scale", nbt::tag_int(0));
-    data.insert("trackingPosition:", nbt::tag_int(0));
+    data.insert("trackingPosition", nbt::tag_int(0));
     data.insert("unlimitedTracking", nbt::tag_int(0));
 
     if (version >= McVersion::MC_1_14)
@@ -207,4 +216,82 @@ void mapart::writeMapNBTFileZip(std::string fileName, zip_t *zipper, const std::
     {
         throw -2;
     }
+}
+
+bool mapart::fixMapNBTFile(std::string fileName)
+{
+    std::ifstream file(fileName, std::ios::binary);
+
+    if (!file)
+    {
+        throw -1;
+    }
+
+    try
+    {
+        zlib::izlibstream igzs(file);
+
+        auto pair = nbt::io::read_compound(igzs);
+
+        file.close();
+
+        nbt::tag_compound comp = *pair.second;
+
+        int data_version = comp.at(std::string("DataVersion")).as<nbt::tag_int>().get();
+        nbt::tag_compound *map_data = &(&comp.at(std::string("data")))->as<nbt::tag_compound>();
+
+        if (data_version > 2566)
+        {
+            nbt::value *dimension = &map_data->at(std::string("dimension"));
+
+            if (dimension->get_type() == nbt::tag_type::Int)
+            {
+                // The map needs fixing
+
+                int dim_val = dimension->as<nbt::tag_int>();
+
+                if (dim_val == 1)
+                {
+                    map_data->put("dimension", nbt::tag_string("minecraft:the_end"));
+                }
+                else if (dim_val == -1)
+                {
+                    map_data->put("dimension", nbt::tag_string("minecraft:the_nether"));
+                }
+                else
+                {
+                    map_data->put("dimension", nbt::tag_string("minecraft:overworld"));
+                }
+
+                // Save map
+
+                std::string fileNameTemp = fileName + ".tmp";
+
+                std::ofstream file(fileNameTemp, std::ios::binary);
+
+                if (!file) {
+                    throw -3;
+                }
+
+                zlib::ozlibstream ogzs(file, -1, true);
+                nbt::io::write_tag("", comp, ogzs);
+
+                ogzs.close();
+
+                file.close();
+
+                // Replace file
+
+                fs::rename(fileNameTemp, fileName);
+
+                return true;
+            }
+        }
+    }
+    catch (...)
+    {
+        throw -2;
+    }
+
+    return false;
 }

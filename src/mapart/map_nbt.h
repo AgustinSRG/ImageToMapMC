@@ -28,7 +28,7 @@
 
 namespace mapart {
     /**
-     * @brief  Reds map data from nbt file
+     * @brief  Reads map data from nbt file
      * @note   
      * @param  fileName: File name
      * @retval Map data
@@ -55,4 +55,12 @@ namespace mapart {
      * @retval None
      */
     void writeMapNBTFileZip(std::string fileName, zip_t *zipper, const std::vector<map_color_t> &mapColors, minecraft::McVersion version);
+
+    /**
+     * @brief  Checks a map file and fixes it if it finds any inconsistencies
+     * @note   
+     * @param  fileName: File name
+     * @retval True only if the map was fixed
+     */
+    bool fixMapNBTFile(std::string fileName);
 }
