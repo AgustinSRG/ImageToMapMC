@@ -1,15 +1,15 @@
 /*
  * This file is part of ImageToMapMC project
- * 
+ *
  * Copyright (c) 2021 Agustin San Roman
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
 
@@ -204,6 +204,95 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         0            // Data value
     );
 
+    // Sandstone Slab
+    block = blockList->addBlock(string("sandstone_slab"));
+
+    desc = block->addBlockDescription(
+        "Sandstone Slab",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "stone_slab", // NBT name
+        44,           // Block ID
+        1             // Data value
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    desc = block->addBlockDescription(
+        "Sandstone Slab",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "sandstone_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Birch log
+    block = blockList->addBlock(string("birch_log"));
+
+    desc = block->addBlockDescription(
+        "Birch Log (vertical)",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "log", // NBT name
+        17,    // Block ID
+        2      // Data value
+    );
+    desc->addTag(string("variant"), string("birch"));
+    desc->addTag(string("axis"), string("y"));
+
+    desc = block->addBlockDescription(
+        "Birch Log (vertical)",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "birch_log" // NBT name
+    );
+    desc->addTag(string("axis"), string("y"));
+
+    // Birch planks
+    block = blockList->addBlock(string("birch_planks"));
+
+    desc = block->addBlockDescription(
+        "Birch Planks",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "planks", // NBT name
+        5,        // Block ID
+        2         // Data value
+    );
+    desc->addTag(string("variant"), string("birch"));
+
+    desc = block->addBlockDescription(
+        "Birch Planks",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "birch_planks" // NBT name
+    );
+
+    // Birch slab
+    block = blockList->addBlock(string("birch_slab"));
+
+    desc = block->addBlockDescription(
+        "Birch Slab",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "wood_slab", // NBT name
+        126,         // Block ID
+        2            // Data value
+    );
+    desc->addTag(string("variant"), string("birch"));
+    desc->addTag(string("type"), string("bottom"));
+
+    desc = block->addBlockDescription(
+        "Birch Slab",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "birch_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Birch pressure plate
+    block = blockList->addBlock(string("birch_pressure_plate"));
+
+    desc = block->addBlockDescription(
+        "Birch Pressure Plate",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "birch_pressure_plate" // NBT name
+    );
+
     // Glowstone
     block = blockList->addBlock(string("glowstone"));
 
@@ -226,6 +315,34 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         0            // Data value
     );
 
+    // End Stone Bricks
+    block = blockList->addBlock(string("end_stone_bricks"));
+
+    desc = block->addBlockDescription(
+        "End Stone Bricks",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "end_bricks", // NBT name
+        206,          // Block ID
+        0             // Data value
+    );
+
+    desc = block->addBlockDescription(
+        "End Stone Bricks",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "end_stone_bricks" // NBT name
+    );
+
+    // End Stone Brick Slab
+    block = blockList->addBlock(string("end_stone_brick_slab"));
+
+    desc = block->addBlockDescription(
+        "End Stone Brick Slab",
+        McVersion::MC_1_14, MC_LAST_VERSION,
+        "end_stone_brick_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
     // Bone Block
     block = blockList->addBlock(string("bone_block"));
 
@@ -235,6 +352,15 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "bone_block", // NBT name
         216,          // Block ID
         0             // Data value
+    );
+
+    // Ochre Lichen
+    block = blockList->addBlock(string("ochre_froglight"));
+
+    desc = block->addBlockDescription(
+        "Ochre Froglight",
+        McVersion::MC_1_19, MC_LAST_VERSION,
+        "ochre_froglight" // NBT name
     );
 
     // ---------------
@@ -2300,14 +2426,17 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
             // ---------------
             blockList = &(list[(size_t)McColors::GLOW_LICHEN]);
 
-            // Glow Lichen
-            block = blockList->addBlock(string("glow_lichen"));
+            // Verdant Froglight
+            block = blockList->addBlock(string("verdant_froglight"));
 
             desc = block->addBlockDescription(
                 "Verdant Froglight",
                 McVersion::MC_1_19, MC_LAST_VERSION,
                 "verdant_froglight" // NBT name
             );
+
+            // Glow Lichen
+            block = blockList->addBlock(string("glow_lichen"));
 
             desc = block->addBlockDescription(
                 "Glow Lichen",
