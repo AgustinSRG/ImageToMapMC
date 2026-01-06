@@ -2761,7 +2761,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     );
 
     // ---------------
-    // ---- GOLD ----
+    // ---- GOLD -----
     // ---------------
     blockList = &(list[(size_t)McColors::GOLD]);
 
@@ -2796,9 +2796,9 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "raw_gold_block" // NBT name
     );
 
-    // ---------------
+    // -----------------
     // ---- DIAMOND ----
-    // ---------------
+    // -----------------
     blockList = &(list[(size_t)McColors::DIAMOND]);
 
     // Prismarine Bricks
@@ -2818,6 +2818,46 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "prismarine_bricks" // NBT name
     );
+
+    // Prismarine Brick Slab
+    block = blockList->addBlock(string("prismarine_brick_slab"));
+
+    desc = block->addBlockDescription(
+        "Prismarine Brick Slab",
+        McVersion::MC_1_14, MC_LAST_VERSION,
+        "prismarine_brick_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Dark Prismarine
+    block = blockList->addBlock(string("dark_prismarine"));
+
+    desc = block->addBlockDescription(
+        "Dark Prismarine",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "prismarine", // NBT name
+        168,          // Block ID
+        2             // Data value
+    );
+    desc->addTag(string("variant"), string("dark_prismarine"));
+
+    desc = block->addBlockDescription(
+        "Dark Prismarine",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "dark_prismarine" // NBT name
+    );
+
+    // Dark Prismarine Slab
+    block = blockList->addBlock(string("dark_prismarine_slab"));
+
+    desc = block->addBlockDescription(
+        "Dark Prismarine Slab",
+        McVersion::MC_1_14, MC_LAST_VERSION,
+        "dark_prismarine_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
 
     // Block of Diamond
     block = blockList->addBlock(string("diamond_block"));
