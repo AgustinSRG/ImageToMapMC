@@ -793,17 +793,10 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
 
     desc = block->addBlockDescription(
         "White Glazed Terracota",
-        McVersion::MC_1_12, McVersion::MC_1_12,
+        McVersion::MC_1_12, MC_LAST_VERSION,
         "white_glazed_terracota", // NBT name
         235,                      // Block ID
         0                         // Data value
-    );
-    desc->addTag(string("color"), string("white"));
-
-    desc = block->addBlockDescription(
-        "White Glazed Terracota",
-        McVersion::MC_1_13, MC_LAST_VERSION,
-        "white_glazed_terracota" // NBT name
     );
 
     // ---------------
@@ -1502,6 +1495,17 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "orange_concrete_powder" // NBT name
     );
 
+    // Orange Glazed Terracota
+    block = blockList->addBlock(string("orange_glazed_terracota"));
+
+    desc = block->addBlockDescription(
+        "Orange Glazed Terracota",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "orange_glazed_terracota", // NBT name
+        236,                       // Block ID
+        0                          // Data value
+    );
+
     // -----------------------
     // ---- COLOR_MAGENTA ----
     // -----------------------
@@ -1577,6 +1581,17 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Magenta Concrete Powder",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "magenta_concrete_powder" // NBT name
+    );
+
+    // Magenta Glazed Terracota
+    block = blockList->addBlock(string("magenta_glazed_terracota"));
+
+    desc = block->addBlockDescription(
+        "Magenta Glazed Terracota",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "magenta_glazed_terracota", // NBT name
+        237,                        // Block ID
+        0                           // Data value
     );
 
     // --------------------------
@@ -1656,6 +1671,17 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "light_blue_concrete_powder" // NBT name
     );
 
+    // Light Blue Glazed Terracota
+    block = blockList->addBlock(string("light_blue_glazed_terracota"));
+
+    desc = block->addBlockDescription(
+        "Light Blue Glazed Terracota",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "light_blue_glazed_terracota", // NBT name
+        238,                           // Block ID
+        0                              // Data value
+    );
+
     // ----------------------
     // ---- COLOR_YELLOW ----
     // ----------------------
@@ -1731,6 +1757,17 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Yellow Concrete Powder",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "yellow_concrete_powder" // NBT name
+    );
+
+    // Yellow Glazed Terracota
+    block = blockList->addBlock(string("yellow_glazed_terracota"));
+
+    desc = block->addBlockDescription(
+        "Yellow Glazed Terracota",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "yellow_glazed_terracota", // NBT name
+        239,                       // Block ID
+        0                          // Data value
     );
 
     // ---------------------------
@@ -1810,6 +1847,17 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "lime_concrete_powder" // NBT name
     );
 
+    // Lime Glazed Terracota
+    block = blockList->addBlock(string("lime_glazed_terracota"));
+
+    desc = block->addBlockDescription(
+        "Lime Glazed Terracota",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "lime_glazed_terracota", // NBT name
+        240,                     // Block ID
+        0                        // Data value
+    );
+
     // --------------------
     // ---- COLOR_PINK ----
     // --------------------
@@ -1885,6 +1933,17 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Pink Concrete Powder",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "pink_concrete_powder" // NBT name
+    );
+
+    // Pink Glazed Terracota
+    block = blockList->addBlock(string("pink_glazed_terracota"));
+
+    desc = block->addBlockDescription(
+        "Pink Glazed Terracota",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "pink_glazed_terracota", // NBT name
+        241,                     // Block ID
+        0                        // Data value
     );
 
     // --------------------
@@ -1964,6 +2023,17 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "gray_concrete_powder" // NBT name
     );
 
+    // Gray Glazed Terracota
+    block = blockList->addBlock(string("gray_glazed_terracota"));
+
+    desc = block->addBlockDescription(
+        "Gray Glazed Terracota",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "gray_glazed_terracota", // NBT name
+        242,                     // Block ID
+        0                        // Data value
+    );
+
     // --------------------------
     // ---- COLOR_LIGHT_GRAY ----
     // --------------------------
@@ -2039,6 +2109,17 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Light Gray Concrete Powder",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "light_gray_concrete_powder" // NBT name
+    );
+
+    // Light Gray Glazed Terracota
+    block = blockList->addBlock(string("light_gray_glazed_terracota"));
+
+    desc = block->addBlockDescription(
+        "Light Gray Glazed Terracota",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "light_gray_glazed_terracota", // NBT name
+        243,                           // Block ID
+        0                              // Data value
     );
 
     // --------------------
@@ -2118,6 +2199,17 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "cyan_concrete_powder" // NBT name
     );
 
+    // Cyan Glazed Terracota
+    block = blockList->addBlock(string("cyan_glazed_terracota"));
+
+    desc = block->addBlockDescription(
+        "Cyan Glazed Terracota",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "cyan_glazed_terracota", // NBT name
+        244,                     // Block ID
+        0                        // Data value
+    );
+
     // ----------------------
     // ---- COLOR_PURPLE ----
     // ----------------------
@@ -2193,6 +2285,17 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Purple Concrete Powder",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "purple_concrete_powder" // NBT name
+    );
+
+    // Purple Glazed Terracota
+    block = blockList->addBlock(string("purple_glazed_terracota"));
+
+    desc = block->addBlockDescription(
+        "Purple Glazed Terracota",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "purple_glazed_terracota", // NBT name
+        245,                       // Block ID
+        0                          // Data value
     );
 
     // --------------------
@@ -2272,6 +2375,17 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "blue_concrete_powder" // NBT name
     );
 
+    // Blue Glazed Terracota
+    block = blockList->addBlock(string("blue_glazed_terracota"));
+
+    desc = block->addBlockDescription(
+        "Blue Glazed Terracota",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "blue_glazed_terracota", // NBT name
+        246,                     // Block ID
+        0                        // Data value
+    );
+
     // ---------------------
     // ---- COLOR_BROWN ----
     // ---------------------
@@ -2347,6 +2461,17 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Brown Concrete Powder",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "brown_concrete_powder" // NBT name
+    );
+
+    // Brown Glazed Terracota
+    block = blockList->addBlock(string("brown_glazed_terracota"));
+
+    desc = block->addBlockDescription(
+        "Brown Glazed Terracota",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "brown_glazed_terracota", // NBT name
+        247,                      // Block ID
+        0                         // Data value
     );
 
     // ---------------------
@@ -2426,6 +2551,17 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "green_concrete_powder" // NBT name
     );
 
+    // Green Glazed Terracota
+    block = blockList->addBlock(string("green_glazed_terracota"));
+
+    desc = block->addBlockDescription(
+        "Green Glazed Terracota",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "green_glazed_terracota", // NBT name
+        248,                      // Block ID
+        0                         // Data value
+    );
+
     // -------------------
     // ---- COLOR_RED ----
     // -------------------
@@ -2503,6 +2639,17 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "red_concrete_powder" // NBT name
     );
 
+    // Red Glazed Terracota
+    block = blockList->addBlock(string("red_glazed_terracota"));
+
+    desc = block->addBlockDescription(
+        "Red Glazed Terracota",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "red_glazed_terracota", // NBT name
+        249,                    // Block ID
+        0                       // Data value
+    );
+
     // ---------------------
     // ---- COLOR_BLACK ----
     // ---------------------
@@ -2578,6 +2725,17 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Black Concrete Powder",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "black_concrete_powder" // NBT name
+    );
+
+    // Black Glazed Terracota
+    block = blockList->addBlock(string("black_glazed_terracota"));
+
+    desc = block->addBlockDescription(
+        "Black Glazed Terracota",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "black_glazed_terracota", // NBT name
+        250,                      // Block ID
+        0                         // Data value
     );
 
     // Coal block
