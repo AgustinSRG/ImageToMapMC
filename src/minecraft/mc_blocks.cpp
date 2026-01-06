@@ -226,11 +226,11 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
 
     desc->addTag(string("type"), string("bottom"));
 
-    // Birch log
+    // Birch Log (Vertical)
     block = blockList->addBlock(string("birch_log"));
 
     desc = block->addBlockDescription(
-        "Birch Log (vertical)",
+        "Birch Log (Vertical)",
         McVersion::MC_1_12, McVersion::MC_1_12,
         "log", // NBT name
         17,    // Block ID
@@ -240,7 +240,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     desc->addTag(string("axis"), string("y"));
 
     desc = block->addBlockDescription(
-        "Birch Log (vertical)",
+        "Birch Log (Vertical)",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "birch_log" // NBT name
     );
@@ -270,9 +270,9 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     desc = block->addBlockDescription(
         "Birch Slab",
         McVersion::MC_1_12, McVersion::MC_1_12,
-        "wood_slab", // NBT name
-        126,         // Block ID
-        2            // Data value
+        "wooden_slab", // NBT name
+        126,           // Block ID
+        2              // Data value
     );
     desc->addTag(string("variant"), string("birch"));
     desc->addTag(string("half"), string("bottom"));
@@ -676,7 +676,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     desc->addTag(string("persistent"), string("true"));
 
     // Bamboo Blocks
-    block = blockList->addBlock(string("bamboo_block"));
+    block = blockList->addBlock(string("bamboo_block_horizontal"));
 
     desc = block->addBlockDescription(
         "Block of Bamboo (Horizontal)",
@@ -873,9 +873,9 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     desc = block->addBlockDescription(
         "Jungle Slab",
         McVersion::MC_1_12, McVersion::MC_1_12,
-        "wood_slab", // NBT name
-        126,         // Block ID
-        3            // Data value
+        "wooden_slab", // NBT name
+        126,           // Block ID
+        3              // Data value
     );
     desc->addTag(string("variant"), string("jungle"));
     desc->addTag(string("half"), string("bottom"));
@@ -897,11 +897,11 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "jungle_pressure_plate" // NBT name
     );
 
-    // Jungle log
+    // Jungle Log (Vertical)
     block = blockList->addBlock(string("jungle_log"));
 
     desc = block->addBlockDescription(
-        "Jungle Log (vertical)",
+        "Jungle Log (Vertical)",
         McVersion::MC_1_12, McVersion::MC_1_12,
         "log", // NBT name
         17,    // Block ID
@@ -911,7 +911,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     desc->addTag(string("axis"), string("y"));
 
     desc = block->addBlockDescription(
-        "Jungle Log (vertical)",
+        "Jungle Log (Vertical)",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "jungle_log" // NBT name
     );
@@ -1120,7 +1120,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     );
 
     // Stone Brick Slab
-    block = blockList->addBlock(string("stone_bricks"));
+    block = blockList->addBlock(string("stone_brick_slab"));
 
     desc = block->addBlockDescription(
         "Stone Brick Slab",
@@ -1226,9 +1226,9 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     desc = block->addBlockDescription(
         "Oak Slab",
         McVersion::MC_1_12, McVersion::MC_1_12,
-        "wood_slab", // NBT name
-        126,         // Block ID
-        0            // Data value
+        "wooden_slab", // NBT name
+        126,           // Block ID
+        0              // Data value
     );
     desc->addTag(string("variant"), string("oak"));
     desc->addTag(string("half"), string("bottom"));
@@ -1236,7 +1236,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     desc = block->addBlockDescription(
         "Oak Slab",
         McVersion::MC_1_13, MC_LAST_VERSION,
-        "jungle_slab" // NBT name
+        "oak_slab" // NBT name
     );
 
     desc->addTag(string("type"), string("bottom"));
@@ -1250,11 +1250,11 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "oak_pressure_plate" // NBT name
     );
 
-    // Oak log
+    // Oak Log (Vertical)
     block = blockList->addBlock(string("oak_log"));
 
     desc = block->addBlockDescription(
-        "Oak Log (vertical)",
+        "Oak Log (Vertical)",
         McVersion::MC_1_12, McVersion::MC_1_12,
         "log", // NBT name
         17,    // Block ID
@@ -1264,7 +1264,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     desc->addTag(string("axis"), string("y"));
 
     desc = block->addBlockDescription(
-        "Oak Log (vertical)",
+        "Oak Log (Vertical)",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "oak_log" // NBT name
     );
@@ -1370,11 +1370,11 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         0              // Data value
     );
 
-    // Pale Oak Log (vertical)
+    // Pale Oak Log (Vertical)
     block = blockList->addBlock(string("pale_oak_log"));
 
     desc = block->addBlockDescription(
-        "Pale Oak Log (vertical)",
+        "Pale Oak Log (Vertical)",
         McVersion::MC_1_21_4, MC_LAST_VERSION,
         "pale_oak_log" // NBT name
     );
@@ -2897,9 +2897,9 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         0              // Data value
     );
 
-    // ---------------
+    // -----------------
     // ---- EMERALD ----
-    // ---------------
+    // -----------------
     blockList = &(list[(size_t)McColors::EMERALD]);
 
     // Block of Emerald
@@ -2913,9 +2913,9 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         0                // Data value
     );
 
-    // ---------------
+    // ----------------
     // ---- PODZOL ----
-    // ---------------
+    // ----------------
     blockList = &(list[(size_t)McColors::PODZOL]);
 
     // Spruce planks
@@ -2936,6 +2936,36 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "spruce_planks" // NBT name
     );
 
+    // Spruce slab
+    block = blockList->addBlock(string("spruce_slab"));
+
+    desc = block->addBlockDescription(
+        "Spruce Slab",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "wooden_slab", // NBT name
+        126,           // Block ID
+        1              // Data value
+    );
+    desc->addTag(string("variant"), string("spruce"));
+    desc->addTag(string("half"), string("bottom"));
+
+    desc = block->addBlockDescription(
+        "Spruce Slab",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "spruce_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Spruce pressure plate
+    block = blockList->addBlock(string("spruce_pressure_plate"));
+
+    desc = block->addBlockDescription(
+        "Spruce Pressure Plate",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "spruce_pressure_plate" // NBT name
+    );
+
     // Podzol
     block = blockList->addBlock(string("podzol"));
 
@@ -2954,11 +2984,11 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "podzol" // NBT name
     );
 
-    // Spruce log
+    // Spruce log (Vertical)
     block = blockList->addBlock(string("spruce_log"));
 
     desc = block->addBlockDescription(
-        "Spruce Log (vertical)",
+        "Spruce Log (Vertical)",
         McVersion::MC_1_12, McVersion::MC_1_12,
         "log", // NBT name
         17,    // Block ID
@@ -2968,15 +2998,74 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     desc->addTag(string("axis"), string("y"));
 
     desc = block->addBlockDescription(
-        "Spruce Log (vertical)",
+        "Spruce Log (Vertical)",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "spruce_log" // NBT name
     );
     desc->addTag(string("axis"), string("y"));
 
-    // ---------------
+    // Oak Log (Horizontal)
+    block = blockList->addBlock(string("oak_log_horizontal"));
+
+    desc = block->addBlockDescription(
+        "Oak Log (Horizontal)",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "log", // NBT name
+        17,    // Block ID
+        0      // Data value
+    );
+    desc->addTag(string("variant"), string("oak"));
+    desc->addTag(string("axis"), string("x"));
+
+    desc = block->addBlockDescription(
+        "Oak Log (Horizontal)",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "oak_log" // NBT name
+    );
+    desc->addTag(string("axis"), string("x"));
+
+    // Jungle Log (Horizontal)
+    block = blockList->addBlock(string("jungle_log_horizontal"));
+
+    desc = block->addBlockDescription(
+        "Jungle Log (Horizontal)",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "log", // NBT name
+        17,    // Block ID
+        3      // Data value
+    );
+    desc->addTag(string("variant"), string("jungle"));
+    desc->addTag(string("axis"), string("x"));
+
+    desc = block->addBlockDescription(
+        "Jungle Log (Horizontal)",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "jungle_log" // NBT name
+    );
+    desc->addTag(string("axis"), string("x"));
+
+    // Mangrove Log (Horizontal)
+    block = blockList->addBlock(string("mangrove_log_horizontal"));
+
+    desc = block->addBlockDescription(
+        "Mangrove Log (Horizontal)",
+        McVersion::MC_1_19, MC_LAST_VERSION,
+        "mangrove_log" // NBT name
+    );
+    desc->addTag(string("axis"), string("x"));
+
+    // Mangrove Roots
+    block = blockList->addBlock(string("mangrove_roots"));
+
+    desc = block->addBlockDescription(
+        "Mangrove Roots",
+        McVersion::MC_1_19, MC_LAST_VERSION,
+        "mangrove_roots" // NBT name
+    );
+
+    // ----------------
     // ---- NETHER ----
-    // ---------------
+    // ----------------
     blockList = &(list[(size_t)McColors::NETHER]);
 
     // Netherrack
@@ -2989,6 +3078,90 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         87,           // Block ID
         0             // Data value
     );
+
+    // Nether Bricks
+    block = blockList->addBlock(string("nether_bricks"));
+
+    desc = block->addBlockDescription(
+        "Nether Bricks",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "nether_brick", // NBT name
+        112,            // Block ID
+        0               // Data value
+    );
+
+    desc = block->addBlockDescription(
+        "Nether Bricks",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "nether_bricks" // NBT name
+    );
+
+    // Nether Brick Slab
+    block = blockList->addBlock(string("nether_brick_slab"));
+
+    desc = block->addBlockDescription(
+        "Nether Brick Slab",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stone_slab", // NBT name
+        44,           // Block ID
+        6             // Data value
+    );
+
+    desc->addTag(string("variant"), string("nether_brick"));
+    desc->addTag(string("half"), string("bottom"));
+
+    desc = block->addBlockDescription(
+        "Nether Brick Slab",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "nether_brick_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Magma Block
+    block = blockList->addBlock(string("magma_block"));
+
+    desc = block->addBlockDescription(
+        "Magma Block",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "magma", // NBT name
+        213,     // Block ID
+        0        // Data value
+    );
+
+    desc = block->addBlockDescription(
+        "Magma Block",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "magma_block" // NBT name
+    );
+
+    // Red Nether Bricks
+    block = blockList->addBlock(string("red_nether_bricks"));
+
+    desc = block->addBlockDescription(
+        "Red Nether Bricks",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "red_nether_brick", // NBT name
+        215,                // Block ID
+        0                   // Data value
+    );
+
+    desc = block->addBlockDescription(
+        "Red Nether Bricks",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "red_nether_bricks" // NBT name
+    );
+
+    // Red Nether Brick Slab
+    block = blockList->addBlock(string("red_nether_brick_slab"));
+
+    desc = block->addBlockDescription(
+        "Red Nether Brick Slab",
+        McVersion::MC_1_14, MC_LAST_VERSION,
+        "red_nether_brick_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
 
     // --------------------------
     // ---- TERRACOTTA_WHITE ----
@@ -3022,7 +3195,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "calcite" // NBT name
     );
 
-    // Cherry Log (vertical)
+    // Cherry Log (Vertical)
     block = blockList->addBlock(string("cherry_log"));
 
     desc = block->addBlockDescription(
@@ -3032,7 +3205,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     );
     desc->addTag(string("axis"), string("y"));
 
-    // Stripped Cherry Log (vertical)
+    // Stripped Cherry Log (Vertical)
     block = blockList->addBlock(string("stripped_cherry_log"));
 
     desc = block->addBlockDescription(
@@ -3250,7 +3423,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     );
 
     // Stripped Cherry Log (horizontal)
-    block = blockList->addBlock(string("stripped_cherry_log"));
+    block = blockList->addBlock(string("stripped_cherry_log_horizontal"));
 
     desc = block->addBlockDescription(
         "Stripped Cherry Log (Horizontal)",
@@ -3312,7 +3485,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     desc->addTag(string("type"), string("bottom"));
 
     // Cherry Log (horizontal)
-    block = blockList->addBlock(string("cherry_log"));
+    block = blockList->addBlock(string("cherry_log_horizontal"));
 
     desc = block->addBlockDescription(
         "Cherry Log (Horizontal)",
