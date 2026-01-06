@@ -215,7 +215,8 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         1             // Data value
     );
 
-    desc->addTag(string("type"), string("bottom"));
+    desc->addTag(string("variant"), string("sandstone"));
+    desc->addTag(string("half"), string("bottom"));
 
     desc = block->addBlockDescription(
         "Sandstone Slab",
@@ -274,7 +275,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         2            // Data value
     );
     desc->addTag(string("variant"), string("birch"));
-    desc->addTag(string("type"), string("bottom"));
+    desc->addTag(string("half"), string("bottom"));
 
     desc = block->addBlockDescription(
         "Birch Slab",
@@ -884,7 +885,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         3            // Data value
     );
     desc->addTag(string("variant"), string("jungle"));
-    desc->addTag(string("type"), string("bottom"));
+    desc->addTag(string("half"), string("bottom"));
 
     desc = block->addBlockDescription(
         "Jungle Slab",
@@ -1016,7 +1017,8 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         3             // Data value
     );
 
-    desc->addTag(string("type"), string("bottom"));
+    desc->addTag(string("variant"), string("cobblestone"));
+    desc->addTag(string("half"), string("bottom"));
 
     desc = block->addBlockDescription(
         "Cobblestone Slab",
@@ -1135,11 +1137,16 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         5             // Data value
     );
 
+    desc->addTag(string("variant"), string("stone_brick"));
+    desc->addTag(string("half"), string("bottom"));
+
     desc = block->addBlockDescription(
         "Stone Brick Slab",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "stone_brick_slab" // NBT name
     );
+
+    desc->addTag(string("type"), string("bottom"));
 
     // Andesite
     block = blockList->addBlock(string("andesite"));
@@ -1231,7 +1238,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         0            // Data value
     );
     desc->addTag(string("variant"), string("oak"));
-    desc->addTag(string("type"), string("bottom"));
+    desc->addTag(string("half"), string("bottom"));
 
     desc = block->addBlockDescription(
         "Oak Slab",
@@ -1292,9 +1299,9 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         0            // Data value
     );
 
-    // ---------------
+    // ----------------
     // ---- QUARTZ ----
-    // ---------------
+    // ----------------
     blockList = &(list[(size_t)McColors::QUARTZ]);
 
     // Diorite
@@ -1315,6 +1322,17 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "diorite" // NBT name
     );
 
+    // Diorite Slab
+    block = blockList->addBlock(string("diorite_slab"));
+
+    desc = block->addBlockDescription(
+        "Diorite Slab",
+        McVersion::MC_1_14, MC_LAST_VERSION,
+        "diorite_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
     // Quartz block
     block = blockList->addBlock(string("quartz_block"));
 
@@ -1326,6 +1344,28 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         0               // Data value
     );
 
+    // Quartz Slab
+    block = blockList->addBlock(string("quartz_slab"));
+
+    desc = block->addBlockDescription(
+        "Quartz Slab",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stone_slab", // NBT name
+        44,           // Block ID
+        7             // Data value
+    );
+
+    desc->addTag(string("variant"), string("quartz"));
+    desc->addTag(string("half"), string("bottom"));
+
+    desc = block->addBlockDescription(
+        "Quartz Slab",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "quartz_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
     // Sea lantern
     block = blockList->addBlock(string("sea_lantern"));
 
@@ -1335,6 +1375,54 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "sea_lantern", // NBT name
         169,           // Block ID
         0              // Data value
+    );
+
+    // Pale Oak Log (vertical)
+    block = blockList->addBlock(string("pale_oak_log"));
+
+    desc = block->addBlockDescription(
+        "Pale Oak Log (vertical)",
+        McVersion::MC_1_21_4, MC_LAST_VERSION,
+        "pale_oak_log" // NBT name
+    );
+    desc->addTag(string("axis"), string("y"));
+
+    // Pale Oak Planks
+    block = blockList->addBlock(string("pale_oak_planks"));
+
+    desc = block->addBlockDescription(
+        "Pale Oak Planks",
+        McVersion::MC_1_21_4, MC_LAST_VERSION,
+        "pale_oak_planks" // NBT name
+    );
+
+    // Pale Oak Slab
+    block = blockList->addBlock(string("pale_oak_slab"));
+
+    desc = block->addBlockDescription(
+        "Pale Oak Slab",
+        McVersion::MC_1_21_4, MC_LAST_VERSION,
+        "pale_oak_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Pale Oak Pressure Plate
+    block = blockList->addBlock(string("pale_oak_pressure_plate"));
+
+    desc = block->addBlockDescription(
+        "Pale Oak Pressure Plate",
+        McVersion::MC_1_21_4, MC_LAST_VERSION,
+        "pale_oak_pressure_plate" // NBT name
+    );
+
+    // Target Block
+    block = blockList->addBlock(string("target"));
+
+    desc = block->addBlockDescription(
+        "Target Block",
+        McVersion::MC_1_16, MC_LAST_VERSION,
+        "target" // NBT name
     );
 
     // ---------------
