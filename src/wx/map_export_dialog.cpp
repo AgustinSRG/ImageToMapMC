@@ -138,12 +138,12 @@ void MapExportDialog::OnOk(wxCommandEvent &event)
 
     if (!fs::exists(path))
     {
-        wxMessageBox(string("Cannot find the folder: ") + path, wxT("Error"), wxICON_ERROR);
+        wxMessageBox(wxString::FromUTF8(std::string("Cannot find the folder: ") + path), wxT("Error"), wxICON_ERROR);
         return;
     }
     if (!fs::is_directory(path))
     {
-        wxMessageBox(string("Cannot find the folder: ") + path, wxT("Error"), wxICON_ERROR);
+        wxMessageBox(wxString::FromUTF8(std::string("Cannot find the folder: ") + path), wxT("Error"), wxICON_ERROR);
         return;
     }
     if (!fs::is_empty(path))
@@ -249,6 +249,18 @@ void MapExportDialog::OnKeyPress(wxKeyEvent &event)
 
 void MapExportDialog::figureOutMapNumber(std::string path)
 {
+    if (textMapNumber != NULL)
+    {
+        std::string lastRememberedIdString = tools::getRememberedValue(tools::VALUE_PURPOSE_EXPORT_MAPS_LAST_ID);
+        int mapIdInt = atoi(lastRememberedIdString.c_str());
+
+        stringstream ss;
+
+        ss << mapIdInt;
+
+        textMapNumber->SetValue(ss.str());
+    }
+
     int lastMap = 0;
     bool foundAtLeastOneMap = false;
 
@@ -285,17 +297,6 @@ void MapExportDialog::figureOutMapNumber(std::string path)
             stringstream ss;
 
             ss << lastMap;
-
-            textMapNumber->SetValue(ss.str());
-        }
-        else
-        {
-            std::string lastRememberedIdString = tools::getRememberedValue(tools::VALUE_PURPOSE_EXPORT_MAPS_LAST_ID);
-            int mapIdInt = atoi(lastRememberedIdString.c_str());
-
-            stringstream ss;
-
-            ss << mapIdInt;
 
             textMapNumber->SetValue(ss.str());
         }
