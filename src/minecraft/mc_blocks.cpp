@@ -1005,6 +1005,55 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         0              // Data value
     );
 
+    // Cobblestone Slab
+    block = blockList->addBlock(string("cobblestone_slab"));
+
+    desc = block->addBlockDescription(
+        "Cobblestone Slab",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stone_slab", // NBT name
+        44,           // Block ID
+        3             // Data value
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    desc = block->addBlockDescription(
+        "Cobblestone Slab",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "cobblestone_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Mossy Cobblestone
+    block = blockList->addBlock(string("mossy_cobblestone"));
+
+    desc = block->addBlockDescription(
+        "Mossy Cobblestone",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "mossy_cobblestone", // NBT name
+        48,                  // Block ID
+        0                    // Data value
+    );
+
+    desc = block->addBlockDescription(
+        "Mossy Cobblestone",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "mossy_cobblestone" // NBT name
+    );
+
+    // Mossy Cobblestone Slab
+    block = blockList->addBlock(string("mossy_cobblestone_slab"));
+
+    desc = block->addBlockDescription(
+        "Mossy Cobblestone Slab",
+        McVersion::MC_1_14, MC_LAST_VERSION,
+        "mossy_cobblestone_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
     // Stone
     block = blockList->addBlock(string("stone"));
 
@@ -1014,6 +1063,82 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "stone", // NBT name
         1,       // Block ID
         0        // Data value
+    );
+
+    // Stone Slab
+    block = blockList->addBlock(string("stone_slab"));
+
+    desc = block->addBlockDescription(
+        "Stone Slab",
+        McVersion::MC_1_14, MC_LAST_VERSION,
+        "stone_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Stone Pressure Plate
+    block = blockList->addBlock(string("stone_pressure_plate"));
+
+    desc = block->addBlockDescription(
+        "Stone Pressure Plate",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "stone_pressure_plate", // NBT name
+        70,                     // Block ID
+        0                       // Data value
+    );
+
+    // Smooth Stone
+    block = blockList->addBlock(string("smooth_stone"));
+
+    desc = block->addBlockDescription(
+        "Smooth Stone",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "smooth_stone" // NBT name
+    );
+
+    // Smooth Stone Slab
+    block = blockList->addBlock(string("smooth_stone_slab"));
+
+    desc = block->addBlockDescription(
+        "Smooth Stone Slab",
+        McVersion::MC_1_14, MC_LAST_VERSION,
+        "smooth_stone_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Stone Bricks
+    block = blockList->addBlock(string("stone_bricks"));
+
+    desc = block->addBlockDescription(
+        "Stone Bricks",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stonebrick", // NBT name
+        98,           // Block ID
+        0             // Data value
+    );
+
+    desc = block->addBlockDescription(
+        "Stone Bricks",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "stone_bricks" // NBT name
+    );
+
+    // Stone Brick Slab
+    block = blockList->addBlock(string("stone_bricks"));
+
+    desc = block->addBlockDescription(
+        "Stone Brick Slab",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stone_slab", // NBT name
+        44,           // Block ID
+        5             // Data value
+    );
+
+    desc = block->addBlockDescription(
+        "Stone Brick Slab",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "stone_brick_slab" // NBT name
     );
 
     // Andesite
@@ -1032,6 +1157,28 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Andesite",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "andesite" // NBT name
+    );
+
+    // Andesite Slab
+    block = blockList->addBlock(string("andesite_slab"));
+
+    desc = block->addBlockDescription(
+        "Andesite Slab",
+        McVersion::MC_1_14, MC_LAST_VERSION,
+        "andesite_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Gravel
+    block = blockList->addBlock(string("gravel"));
+
+    desc = block->addBlockDescription(
+        "Gravel",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "gravel", // NBT name
+        13,       // Block ID
+        0         // Data value
     );
 
     // ---------------
