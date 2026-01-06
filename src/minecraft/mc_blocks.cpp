@@ -675,7 +675,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     );
     desc->addTag(string("persistent"), string("true"));
 
-    // Bamboo Blocks
+    // Block of Bamboo (Horizontal)
     block = blockList->addBlock(string("bamboo_block_horizontal"));
 
     desc = block->addBlockDescription(
@@ -2087,6 +2087,67 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Yellow Stained Glass",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "yellow_stained_glass" // NBT name
+    );
+
+    // Hay Bale
+    block = blockList->addBlock(string("hay_block"));
+
+    desc = block->addBlockDescription(
+        "Hay Bale",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "hay_block", // NBT name
+        170,              // Block ID
+        0                // Data value
+    );
+
+    // Sponge
+    block = blockList->addBlock(string("sponge"));
+
+    desc = block->addBlockDescription(
+        "Sponge",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "sponge", // NBT name
+        19,              // Block ID
+        0                // Data value
+    );
+
+    // Block of Bamboo (Vertical)
+    block = blockList->addBlock(string("bamboo_block"));
+
+    desc = block->addBlockDescription(
+        "Block of Bamboo (Vertical)",
+        McVersion::MC_1_20, MC_LAST_VERSION,
+        "bamboo_block" // NBT name
+    );
+    desc->addTag(string("axis"), string("y"));
+
+    // Bamboo Planks
+    block = blockList->addBlock(string("bamboo_planks"));
+
+    desc = block->addBlockDescription(
+        "Bamboo Planks",
+        McVersion::MC_1_20, MC_LAST_VERSION,
+        "bamboo_planks" // NBT name
+    );
+
+    // Bamboo Slab
+    block = blockList->addBlock(string("bamboo_slab"));
+
+    desc = block->addBlockDescription(
+        "Bamboo Slab",
+        McVersion::MC_1_20, MC_LAST_VERSION,
+        "bamboo_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Bamboo Pressure Plate
+    block = blockList->addBlock(string("bamboo_pressure_plate"));
+
+    desc = block->addBlockDescription(
+        "Bamboo Pressure Plate",
+        McVersion::MC_1_20, MC_LAST_VERSION,
+        "bamboo_pressure_plate" // NBT name
     );
 
     // ---------------------------
