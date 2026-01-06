@@ -3502,6 +3502,114 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "red_stained_glass" // NBT name
     );
 
+    // Bricks
+    block = blockList->addBlock(string("bricks"));
+
+    desc = block->addBlockDescription(
+        "Bricks",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "brick_block", // NBT name
+        45,            // Block ID
+        0              // Data value
+    );
+
+    desc = block->addBlockDescription(
+        "Bricks",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "bricks" // NBT name
+    );
+
+    // Brick Slab
+    block = blockList->addBlock(string("brick_slab"));
+
+    desc = block->addBlockDescription(
+        "Brick Slab",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stone_slab", // NBT name
+        44,           // Block ID
+        4             // Data value
+    );
+
+    desc->addTag(string("variant"), string("brick"));
+    desc->addTag(string("half"), string("bottom"));
+
+    desc = block->addBlockDescription(
+        "Brick Slab",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "brick_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Nether Wart Block
+    block = blockList->addBlock(string("nether_wart_block"));
+
+    desc = block->addBlockDescription(
+        "Nether Wart Block",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "nether_wart_block", // NBT name
+        214,                 // Block ID
+        0                    // Data value
+    );
+
+    // Shroomlight
+    block = blockList->addBlock(string("shroomlight"));
+
+    desc = block->addBlockDescription(
+        "Shroomlight",
+        McVersion::MC_1_16, MC_LAST_VERSION,
+        "shroomlight" // NBT name
+    );
+
+    // Mangrove Log (Vertical)
+    block = blockList->addBlock(string("mangrove_log"));
+
+    desc = block->addBlockDescription(
+        "Mangrove Log (Vertical)",
+        McVersion::MC_1_19, MC_LAST_VERSION,
+        "mangrove_log" // NBT name
+    );
+
+    desc->addTag(string("axis"), string("y"));
+
+    // Mangrove Planks
+    block = blockList->addBlock(string("mangrove_planks"));
+
+    desc = block->addBlockDescription(
+        "Mangrove Planks",
+        McVersion::MC_1_19, MC_LAST_VERSION,
+        "mangrove_planks" // NBT name
+    );
+
+    // Mangrove Slab
+    block = blockList->addBlock(string("mangrove_slab"));
+
+    desc = block->addBlockDescription(
+        "Mangrove Slab",
+        McVersion::MC_1_19, MC_LAST_VERSION,
+        "mangrove_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Mangrove Pressure Plate
+    block = blockList->addBlock(string("mangrove_pressure_plate"));
+
+    desc = block->addBlockDescription(
+        "Mangrove Pressure Plate",
+        McVersion::MC_1_19, MC_LAST_VERSION,
+        "mangrove_pressure_plate" // NBT name
+    );
+
+    // Red Mushroom Block
+    block = blockList->addBlock(string("red_mushroom_block"));
+
+    desc = block->addBlockDescription(
+        "Red Mushroom Block",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "red_mushroom_block" // NBT name
+    );
+
     // ---------------------
     // ---- COLOR_BLACK ----
     // ---------------------
