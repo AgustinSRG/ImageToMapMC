@@ -1542,6 +1542,202 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "orange_stained_glass" // NBT name
     );
 
+    // Pumpkin
+    block = blockList->addBlock(string("pumpkin"));
+
+    desc = block->addBlockDescription(
+        "Pumpkin",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "pumpkin", // NBT name
+        86,        // Block ID
+        0          // Data value
+    );
+
+    // Acacia Log (Vertical)
+    block = blockList->addBlock(string("acacia_log"));
+
+    desc = block->addBlockDescription(
+        "Acacia Log (Vertical)",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "log2", // NBT name
+        162,    // Block ID
+        0      // Data value
+    );
+    desc->addTag(string("variant"), string("acacia"));
+    desc->addTag(string("axis"), string("y"));
+
+    desc = block->addBlockDescription(
+        "Acacia Log (Vertical)",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "acacia_log" // NBT name
+    );
+    desc->addTag(string("axis"), string("y"));
+
+    // Acacia planks
+    block = blockList->addBlock(string("acacia_planks"));
+
+    desc = block->addBlockDescription(
+        "Acacia Planks",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "planks", // NBT name
+        5,        // Block ID
+        4         // Data value
+    );
+    desc->addTag(string("variant"), string("acacia"));
+
+    desc = block->addBlockDescription(
+        "Acacia Planks",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "acacia_planks" // NBT name
+    );
+
+    // Acacia slab
+    block = blockList->addBlock(string("acacia_slab"));
+
+    desc = block->addBlockDescription(
+        "Acacia Slab",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "wooden_slab", // NBT name
+        126,           // Block ID
+        4              // Data value
+    );
+    desc->addTag(string("variant"), string("acacia"));
+    desc->addTag(string("half"), string("bottom"));
+
+    desc = block->addBlockDescription(
+        "Acacia Slab",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "acacia_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Acacia pressure plate
+    block = blockList->addBlock(string("acacia_pressure_plate"));
+
+    desc = block->addBlockDescription(
+        "Acacia Pressure Plate",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "acacia_pressure_plate" // NBT name
+    );
+
+    // Red Sand
+    block = blockList->addBlock(string("red_sand"));
+
+    desc = block->addBlockDescription(
+        "Red Sand",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "sand", // NBT name
+        12,        // Block ID
+        1         // Data value
+    );
+    desc->addTag(string("variant"), string("red_sand"));
+
+    desc = block->addBlockDescription(
+        "Red Sand",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "red_sand" // NBT name
+    );
+
+    // Red Sandstone
+    block = blockList->addBlock(string("red_sandstone"));
+
+    desc = block->addBlockDescription(
+        "Red Sandstone",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "red_sandstone", // NBT name
+        179,        // Block ID
+        0         // Data value
+    );
+
+    // Red Sandstone Slab
+    block = blockList->addBlock(string("red_sandstone_slab"));
+
+    desc = block->addBlockDescription(
+        "Red Sandstone Slab",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stone_slab2", // NBT name
+        182,           // Block ID
+        0             // Data value
+    );
+
+    desc->addTag(string("variant"), string("red_sandstone"));
+    desc->addTag(string("half"), string("bottom"));
+
+    desc = block->addBlockDescription(
+        "Red Sandstone Slab",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "red_sandstone_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Terracotta
+    block = blockList->addBlock(string("terracotta"));
+
+    desc = block->addBlockDescription(
+        "Terracotta",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "hardened_clay", // NBT name
+        172,           // Block ID
+        0             // Data value
+    );
+
+    desc = block->addBlockDescription(
+        "Terracotta",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "terracotta" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Honey Block
+    block = blockList->addBlock(string("honey_block"));
+
+    desc = block->addBlockDescription(
+        "Honey Block",
+        McVersion::MC_1_15, MC_LAST_VERSION,
+        "honey_block" // NBT name
+    );
+
+    // Honeycomb Block
+    block = blockList->addBlock(string("honeycomb_block"));
+
+    desc = block->addBlockDescription(
+        "Honeycomb Block",
+        McVersion::MC_1_15, MC_LAST_VERSION,
+        "honeycomb_block" // NBT name
+    );
+
+    // Block of Raw Copper
+    block = blockList->addBlock(string("raw_copper_block"));
+
+    desc = block->addBlockDescription(
+        "Block of Raw Copper",
+        McVersion::MC_1_17, MC_LAST_VERSION,
+        "raw_copper_block" // NBT name
+    );
+
+    // Waxed Copper Block
+    block = blockList->addBlock(string("waxed_copper_block"));
+
+    desc = block->addBlockDescription(
+        "Waxed Copper Block",
+        McVersion::MC_1_17, MC_LAST_VERSION,
+        "waxed_copper_block" // NBT name
+    );
+
+    // Waxed Cut Copper Slab
+    block = blockList->addBlock(string("waxed_cut_copper_slab"));
+
+    desc = block->addBlockDescription(
+        "Waxed Cut Copper Slab",
+        McVersion::MC_1_17, MC_LAST_VERSION,
+        "waxed_cut_copper_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
     // -----------------------
     // ---- COLOR_MAGENTA ----
     // -----------------------
