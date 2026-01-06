@@ -2671,6 +2671,24 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "light_gray_stained_glass" // NBT name
     );
 
+    // Pale Moss Block
+    block = blockList->addBlock(string("pale_moss_block"));
+
+    desc = block->addBlockDescription(
+        "Pale Moss Block",
+        McVersion::MC_1_21_4, MC_LAST_VERSION,
+        "pale_moss_block" // NBT name
+    );
+
+    // Pale Moss Carpet
+    block = blockList->addBlock(string("pale_moss_carpet"));
+
+    desc = block->addBlockDescription(
+        "Pale Moss Carpet",
+        McVersion::MC_1_21_4, MC_LAST_VERSION,
+        "pale_moss_carpet" // NBT name
+    );
+
     // --------------------
     // ---- COLOR_CYAN ----
     // --------------------
@@ -2777,6 +2795,28 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "cyan_stained_glass" // NBT name
     );
 
+    // Prismarine
+    block = blockList->addBlock(string("prismarine"));
+
+    desc = block->addBlockDescription(
+        "Prismarine",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "prismarine", // NBT name
+        168,          // Block ID
+        0             // Data value
+    );
+
+    // Prismarine Slab
+    block = blockList->addBlock(string("prismarine_slab"));
+
+    desc = block->addBlockDescription(
+        "Prismarine Slab",
+        McVersion::MC_1_14, MC_LAST_VERSION,
+        "prismarine_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
     // ----------------------
     // ---- COLOR_PURPLE ----
     // ----------------------
@@ -2881,6 +2921,26 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Purple Stained Glass",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "purple_stained_glass" // NBT name
+    );
+
+    // Mycelium
+    block = blockList->addBlock(string("mycelium"));
+
+    desc = block->addBlockDescription(
+        "Mycelium",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "mycelium", // NBT name
+        110,        // Block ID
+        0           // Data value
+    );
+
+    // Amethyst Block
+    block = blockList->addBlock(string("amethyst_block"));
+
+    desc = block->addBlockDescription(
+        "Amethyst Block",
+        McVersion::MC_1_17, MC_LAST_VERSION,
+        "amethyst_block" // NBT name
     );
 
     // --------------------
