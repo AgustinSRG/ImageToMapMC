@@ -3369,6 +3369,33 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "green_stained_glass" // NBT name
     );
 
+    // Dried Kelp Block
+    block = blockList->addBlock(string("dried_kelp_block"));
+
+    desc = block->addBlockDescription(
+        "Dried Kelp Block",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "dried_kelp_block" // NBT name
+    );
+
+    // Moss Block
+    block = blockList->addBlock(string("moss_block"));
+
+    desc = block->addBlockDescription(
+        "Moss Block",
+        McVersion::MC_1_17, MC_LAST_VERSION,
+        "moss_block" // NBT name
+    );
+
+    // Moss Carpet
+    block = blockList->addBlock(string("moss_carpet"));
+
+    desc = block->addBlockDescription(
+        "Moss Carpet",
+        McVersion::MC_1_17, MC_LAST_VERSION,
+        "moss_carpet" // NBT name
+    );
+
     // -------------------
     // ---- COLOR_RED ----
     // -------------------
