@@ -1220,6 +1220,36 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "oak_planks" // NBT name
     );
 
+    // Oak slab
+    block = blockList->addBlock(string("oak_slab"));
+
+    desc = block->addBlockDescription(
+        "Oak Slab",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "wood_slab", // NBT name
+        126,         // Block ID
+        0            // Data value
+    );
+    desc->addTag(string("variant"), string("oak"));
+    desc->addTag(string("type"), string("bottom"));
+
+    desc = block->addBlockDescription(
+        "Oak Slab",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "jungle_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Oak pressure plate
+    block = blockList->addBlock(string("oak_pressure_plate"));
+
+    desc = block->addBlockDescription(
+        "Oak Pressure Plate",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "oak_pressure_plate" // NBT name
+    );
+
     // Oak log
     block = blockList->addBlock(string("oak_log"));
 
@@ -1239,6 +1269,28 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "oak_log" // NBT name
     );
     desc->addTag(string("axis"), string("y"));
+
+    // Crafting Table
+    block = blockList->addBlock(string("crafting_table"));
+
+    desc = block->addBlockDescription(
+        "Crafting Table",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "crafting_table", // NBT name
+        58,               // Block ID
+        0                 // Data value
+    );
+
+    // Bookshelf
+    block = blockList->addBlock(string("bookshelf"));
+
+    desc = block->addBlockDescription(
+        "Bookshelf",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "bookshelf", // NBT name
+        47,          // Block ID
+        0            // Data value
+    );
 
     // ---------------
     // ---- QUARTZ ----
