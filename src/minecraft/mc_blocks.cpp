@@ -706,6 +706,15 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "snow_block" // NBT name
     );
 
+    // Snow layer
+    block = blockList->addBlock(string("snow_layer"));
+
+    desc = block->addBlockDescription(
+        "Snow Layer",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "snow" // NBT name
+    );
+
     // White wool
     block = blockList->addBlock(string("white_wool"));
 
@@ -758,6 +767,42 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "White Concrete",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "white_concrete" // NBT name
+    );
+
+    // White concrete powder
+    block = blockList->addBlock(string("white_concrete_powder"));
+
+    desc = block->addBlockDescription(
+        "White Concrete Powder",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete_powder", // NBT name
+        252,        // Block ID
+        0           // Data value
+    );
+    desc->addTag(string("color"), string("white"));
+
+    desc = block->addBlockDescription(
+        "White Concrete Powder",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "white_concrete_powder" // NBT name
+    );
+
+    // White Glazed Terracota
+    block = blockList->addBlock(string("white_glazed_terracota"));
+
+    desc = block->addBlockDescription(
+        "White Glazed Terracota",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "white_glazed_terracota", // NBT name
+        235,        // Block ID
+        0           // Data value
+    );
+    desc->addTag(string("color"), string("white"));
+
+    desc = block->addBlockDescription(
+        "White Glazed Terracota",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "white_glazed_terracota" // NBT name
     );
 
     // ---------------
