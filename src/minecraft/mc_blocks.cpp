@@ -3731,11 +3731,83 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     block = blockList->addBlock(string("obsidian"));
 
     desc = block->addBlockDescription(
-        "Block of Coal",
+        "Obsidian",
         McVersion::MC_1_12, MC_LAST_VERSION,
         "obsidian", // NBT name
         49,         // Block ID
         0           // Data value
+    );
+
+    // Crying Obsidian
+    block = blockList->addBlock(string("crying_obsidian"));
+
+    desc = block->addBlockDescription(
+        "Crying Obsidian",
+        McVersion::MC_1_16, MC_LAST_VERSION,
+        "crying_obsidian" // NBT name
+    );
+
+    // Blackstone
+    block = blockList->addBlock(string("blackstone"));
+
+    desc = block->addBlockDescription(
+        "Blackstone",
+        McVersion::MC_1_16, MC_LAST_VERSION,
+        "blackstone" // NBT name
+    );
+
+    // Blackstone Slab
+    block = blockList->addBlock(string("blackstone_slab"));
+
+    desc = block->addBlockDescription(
+        "Blackstone Slab",
+        McVersion::MC_1_16, MC_LAST_VERSION,
+        "blackstone_slab" // NBT name
+    );
+
+    // Polished Blackstone Pressure Plate
+    block = blockList->addBlock(string("polished_blackstone_pressure_plate"));
+
+    desc = block->addBlockDescription(
+        "Polished Blackstone Pressure Plate",
+        McVersion::MC_1_16, MC_LAST_VERSION,
+        "polished_blackstone_pressure_plate" // NBT name
+    );
+
+    // Basalt
+    block = blockList->addBlock(string("basalt"));
+
+    desc = block->addBlockDescription(
+        "Basalt",
+        McVersion::MC_1_16, MC_LAST_VERSION,
+        "basalt" // NBT name
+    );
+
+    // Smooth Basalt
+    block = blockList->addBlock(string("smooth_basalt"));
+
+    desc = block->addBlockDescription(
+        "Smooth Basalt",
+        McVersion::MC_1_16, MC_LAST_VERSION,
+        "smooth_basalt" // NBT name
+    );
+
+    // Block of Netherite
+    block = blockList->addBlock(string("netherite_block"));
+
+    desc = block->addBlockDescription(
+        "Block of Netherite",
+        McVersion::MC_1_16, MC_LAST_VERSION,
+        "netherite_block" // NBT name
+    );
+
+    // Sculk
+    block = blockList->addBlock(string("sculk"));
+
+    desc = block->addBlockDescription(
+        "Sculk",
+        McVersion::MC_1_19, MC_LAST_VERSION,
+        "sculk" // NBT name
     );
 
     // ---------------
