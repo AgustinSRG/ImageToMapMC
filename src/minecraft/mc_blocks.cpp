@@ -2502,6 +2502,69 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "gray_stained_glass" // NBT name
     );
 
+    // Dead Tube Coral Block
+    block = blockList->addBlock(string("dead_tube_coral_block"));
+
+    desc = block->addBlockDescription(
+        "Dead Tube Coral Block",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "dead_tube_coral_block" // NBT name
+    );
+
+    // Dead Brain Coral Block
+    block = blockList->addBlock(string("dead_brain_coral_block"));
+
+    desc = block->addBlockDescription(
+        "Dead Brain Coral Block",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "dead_brain_coral_block" // NBT name
+    );
+
+    // Dead Bubble Coral Block
+    block = blockList->addBlock(string("dead_bubble_coral_block"));
+
+    desc = block->addBlockDescription(
+        "Dead Bubble Coral Block",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "dead_bubble_coral_block" // NBT name
+    );
+
+    // Dead Fire Coral Block
+    block = blockList->addBlock(string("dead_fire_coral_block"));
+
+    desc = block->addBlockDescription(
+        "Dead Fire Coral Block",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "dead_fire_coral_block" // NBT name
+    );
+
+    // Dead Horn Coral Block
+    block = blockList->addBlock(string("dead_horn_coral_block"));
+
+    desc = block->addBlockDescription(
+        "Dead Horn Coral Block",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "dead_horn_coral_block" // NBT name
+    );
+
+    // Tinted Glass
+    block = blockList->addBlock(string("tinted_glass"));
+
+    desc = block->addBlockDescription(
+        "Tinted Glass",
+        McVersion::MC_1_17, MC_LAST_VERSION,
+        "tinted_glass" // NBT name
+    );
+
+    // Acacia Wood
+    block = blockList->addBlock(string("acacia_wood"));
+
+    desc = block->addBlockDescription(
+        "Acacia Wood",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "acacia_wood" // NBT name
+    );
+
     // --------------------------
     // ---- COLOR_LIGHT_GRAY ----
     // --------------------------
