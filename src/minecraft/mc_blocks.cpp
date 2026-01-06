@@ -2990,9 +2990,9 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         0             // Data value
     );
 
-    // ---------------
+    // --------------------------
     // ---- TERRACOTTA_WHITE ----
-    // ---------------
+    // --------------------------
     blockList = &(list[(size_t)McColors::TERRACOTTA_WHITE]);
 
     // White Terracotta
@@ -3013,9 +3013,67 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "white_terracotta" // NBT name
     );
 
-    // ---------------
+    // Calcite
+    block = blockList->addBlock(string("calcite"));
+
+    desc = block->addBlockDescription(
+        "Calcite",
+        McVersion::MC_1_17, MC_LAST_VERSION,
+        "calcite" // NBT name
+    );
+
+    // Cherry Log (vertical)
+    block = blockList->addBlock(string("cherry_log"));
+
+    desc = block->addBlockDescription(
+        "Cherry Log (Vertical)",
+        McVersion::MC_1_20, MC_LAST_VERSION,
+        "cherry_log" // NBT name
+    );
+    desc->addTag(string("axis"), string("y"));
+
+    // Stripped Cherry Log (vertical)
+    block = blockList->addBlock(string("stripped_cherry_log"));
+
+    desc = block->addBlockDescription(
+        "Stripped Cherry Log (Vertical)",
+        McVersion::MC_1_20, MC_LAST_VERSION,
+        "stripped_cherry_log" // NBT name
+    );
+    desc->addTag(string("axis"), string("y"));
+
+    // Cherry Planks
+    block = blockList->addBlock(string("cherry_planks"));
+
+    desc = block->addBlockDescription(
+        "Cherry Planks",
+        McVersion::MC_1_20, MC_LAST_VERSION,
+        "cherry_planks" // NBT name
+    );
+
+    // Cherry Slab
+    block = blockList->addBlock(string("cherry_slab"));
+
+    desc = block->addBlockDescription(
+        "Cherry Slab",
+        McVersion::MC_1_20, MC_LAST_VERSION,
+        "cherry_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Cherry Pressure Plate
+    block = blockList->addBlock(string("cherry_pressure_plate"));
+
+    desc = block->addBlockDescription(
+        "Cherry Pressure Plate",
+        McVersion::MC_1_20, MC_LAST_VERSION,
+        "cherry_pressure_plate" // NBT name
+    );
+
+    // ---------------------------
     // ---- TERRACOTTA_ORANGE ----
-    // ---------------
+    // ---------------------------
     blockList = &(list[(size_t)McColors::TERRACOTTA_ORANGE]);
 
     // Orange Terracotta
@@ -3036,9 +3094,49 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "orange_terracotta" // NBT name
     );
 
-    // ---------------
+    // Redstone Lamp
+    block = blockList->addBlock(string("redstone_lamp"));
+
+    desc = block->addBlockDescription(
+        "Redstone Lamp",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "redstone_lamp", // NBT name
+        123,             // Block ID
+        0                // Data value
+    );
+
+    // Block of Resin
+    block = blockList->addBlock(string("resin_block"));
+
+    desc = block->addBlockDescription(
+        "Block of Resin",
+        McVersion::MC_1_21_4, MC_LAST_VERSION,
+        "resin_block" // NBT name
+    );
+
+    // Resin Bricks
+    block = blockList->addBlock(string("resin_bricks"));
+
+    desc = block->addBlockDescription(
+        "Resin Bricks",
+        McVersion::MC_1_21_4, MC_LAST_VERSION,
+        "resin_bricks" // NBT name
+    );
+
+    // Resin Brick Slab
+    block = blockList->addBlock(string("resin_brick_slab"));
+
+    desc = block->addBlockDescription(
+        "Resin Brick Slab",
+        McVersion::MC_1_21_4, MC_LAST_VERSION,
+        "resin_brick_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // ----------------------------
     // ---- TERRACOTTA_MAGENTA ----
-    // ---------------
+    // ----------------------------
     blockList = &(list[(size_t)McColors::TERRACOTTA_MAGENTA]);
 
     // Magenta Terracotta
@@ -3059,9 +3157,9 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "magenta_terracotta" // NBT name
     );
 
-    // ---------------
+    // -------------------------------
     // ---- TERRACOTTA_LIGHT_BLUE ----
-    // ---------------
+    // -------------------------------
     blockList = &(list[(size_t)McColors::TERRACOTTA_LIGHT_BLUE]);
 
     // Light Blue Terracotta
@@ -3082,9 +3180,9 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "light_blue_terracotta" // NBT name
     );
 
-    // ---------------
+    // ---------------------------
     // ---- TERRACOTTA_YELLOW ----
-    // ---------------
+    // ---------------------------
     blockList = &(list[(size_t)McColors::TERRACOTTA_YELLOW]);
 
     // Yellow Terracotta
@@ -3105,9 +3203,9 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "yellow_terracotta" // NBT name
     );
 
-    // ---------------
+    // --------------------------------
     // ---- TERRACOTTA_LIGHT_GREEN ----
-    // ---------------
+    // --------------------------------
     blockList = &(list[(size_t)McColors::TERRACOTTA_LIGHT_GREEN]);
 
     // Lime Terracotta
@@ -3128,9 +3226,9 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "lime_terracotta" // NBT name
     );
 
-    // ---------------
+    // -------------------------
     // ---- TERRACOTTA_PINK ----
-    // ---------------
+    // -------------------------
     blockList = &(list[(size_t)McColors::TERRACOTTA_PINK]);
 
     // Pink Terracotta
@@ -3151,9 +3249,28 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "pink_terracotta" // NBT name
     );
 
-    // ---------------
+    // Stripped Cherry Log (horizontal)
+    block = blockList->addBlock(string("stripped_cherry_log"));
+
+    desc = block->addBlockDescription(
+        "Stripped Cherry Log (Horizontal)",
+        McVersion::MC_1_20, MC_LAST_VERSION,
+        "stripped_cherry_log" // NBT name
+    );
+    desc->addTag(string("axis"), string("x"));
+
+    // Stripped Cherry Wood
+    block = blockList->addBlock(string("stripped_cherry_wood"));
+
+    desc = block->addBlockDescription(
+        "Stripped Cherry Wood",
+        McVersion::MC_1_20, MC_LAST_VERSION,
+        "stripped_cherry_wood" // NBT name
+    );
+
+    // -------------------------
     // ---- TERRACOTTA_GRAY ----
-    // ---------------
+    // -------------------------
     blockList = &(list[(size_t)McColors::TERRACOTTA_GRAY]);
 
     // Gray Terracotta
@@ -3174,9 +3291,48 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "gray_terracotta" // NBT name
     );
 
-    // ---------------
+    // Tuff
+    block = blockList->addBlock(string("tuff"));
+
+    desc = block->addBlockDescription(
+        "Tuff",
+        McVersion::MC_1_17, MC_LAST_VERSION,
+        "tuff" // NBT name
+    );
+
+    // Tuff Slab
+    block = blockList->addBlock(string("tuff_slab"));
+
+    desc = block->addBlockDescription(
+        "Tuff Slab",
+        McVersion::MC_1_17, MC_LAST_VERSION,
+        "tuff_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Cherry Log (horizontal)
+    block = blockList->addBlock(string("cherry_log"));
+
+    desc = block->addBlockDescription(
+        "Cherry Log (Horizontal)",
+        McVersion::MC_1_20, MC_LAST_VERSION,
+        "cherry_log" // NBT name
+    );
+    desc->addTag(string("axis"), string("x"));
+
+    // Cherry Wood
+    block = blockList->addBlock(string("cherry_wood"));
+
+    desc = block->addBlockDescription(
+        "Cherry Wood",
+        McVersion::MC_1_20, MC_LAST_VERSION,
+        "cherry_wood" // NBT name
+    );
+
+    // -------------------------------
     // ---- TERRACOTTA_LIGHT_GRAY ----
-    // ---------------
+    // -------------------------------
     blockList = &(list[(size_t)McColors::TERRACOTTA_LIGHT_GRAY]);
 
     // Light Gray Terracotta
@@ -3197,9 +3353,49 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "light_gray_terracotta" // NBT name
     );
 
-    // ---------------
+    // Waxed Exposed Copper
+    block = blockList->addBlock(string("waxed_exposed_copper"));
+
+    desc = block->addBlockDescription(
+        "Waxed Exposed Copper",
+        McVersion::MC_1_17, MC_LAST_VERSION,
+        "waxed_exposed_copper" // NBT name
+    );
+
+    // Waxed Exposed Cut Copper Slab
+    block = blockList->addBlock(string("waxed_exposed_cut_copper_slab"));
+
+    desc = block->addBlockDescription(
+        "Waxed Exposed Cut Copper Slab",
+        McVersion::MC_1_17, MC_LAST_VERSION,
+        "waxed_exposed_cut_copper_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Mud Bricks
+    block = blockList->addBlock(string("mud_bricks"));
+
+    desc = block->addBlockDescription(
+        "Mud Bricks",
+        McVersion::MC_1_19, MC_LAST_VERSION,
+        "mud_bricks" // NBT name
+    );
+
+    // Mud Brick Slab
+    block = blockList->addBlock(string("mud_brick_slab"));
+
+    desc = block->addBlockDescription(
+        "Mud Brick Slab",
+        McVersion::MC_1_19, MC_LAST_VERSION,
+        "mud_brick_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // -------------------------
     // ---- TERRACOTTA_CYAN ----
-    // ---------------
+    // -------------------------
     blockList = &(list[(size_t)McColors::TERRACOTTA_CYAN]);
 
     // Cyan Terracotta
@@ -3220,9 +3416,18 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "cyan_terracotta" // NBT name
     );
 
-    // ---------------
+    // Mud
+    block = blockList->addBlock(string("mud"));
+
+    desc = block->addBlockDescription(
+        "Mud",
+        McVersion::MC_1_19, MC_LAST_VERSION,
+        "mud" // NBT name
+    );
+
+    // ---------------------------
     // ---- TERRACOTTA_PURPLE ----
-    // ---------------
+    // ---------------------------
     blockList = &(list[(size_t)McColors::TERRACOTTA_PURPLE]);
 
     // Purple Terracotta
@@ -3243,9 +3448,9 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "purple_terracotta" // NBT name
     );
 
-    // ---------------
+    // -------------------------
     // ---- TERRACOTTA_BLUE ----
-    // ---------------
+    // -------------------------
     blockList = &(list[(size_t)McColors::TERRACOTTA_BLUE]);
 
     // Blue Terracotta
@@ -3266,9 +3471,9 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "blue_terracotta" // NBT name
     );
 
-    // ---------------
+    // --------------------------
     // ---- TERRACOTTA_BROWN ----
-    // ---------------
+    // --------------------------
     blockList = &(list[(size_t)McColors::TERRACOTTA_BROWN]);
 
     // Brown Terracotta
@@ -3289,9 +3494,18 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "brown_terracotta" // NBT name
     );
 
-    // ---------------
+    // Dripstone Block
+    block = blockList->addBlock(string("dripstone_block"));
+
+    desc = block->addBlockDescription(
+        "Dripstone Block",
+        McVersion::MC_1_17, MC_LAST_VERSION,
+        "dripstone_block" // NBT name
+    );
+
+    // --------------------------
     // ---- TERRACOTTA_GREEN ----
-    // ---------------
+    // --------------------------
     blockList = &(list[(size_t)McColors::TERRACOTTA_GREEN]);
 
     // Green Terracotta
@@ -3312,9 +3526,9 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "green_terracotta" // NBT name
     );
 
-    // ---------------
+    // ------------------------
     // ---- TERRACOTTA_RED ----
-    // ---------------
+    // ------------------------
     blockList = &(list[(size_t)McColors::TERRACOTTA_RED]);
 
     // Green Terracotta
@@ -3335,9 +3549,18 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "red_terracotta" // NBT name
     );
 
-    // ---------------
+    // Decorated Pot
+    block = blockList->addBlock(string("decorated_pot"));
+
+    desc = block->addBlockDescription(
+        "Decorated Pot",
+        McVersion::MC_1_20, MC_LAST_VERSION,
+        "decorated_pot" // NBT name
+    );
+
+    // --------------------------
     // ---- TERRACOTTA_BLACK ----
-    // ---------------
+    // --------------------------
     blockList = &(list[(size_t)McColors::TERRACOTTA_BLACK]);
 
     // Black Terracotta
