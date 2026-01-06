@@ -620,7 +620,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_12, McVersion::MC_1_12,
         "leaves2", // NBT name
         161,       // Block ID
-        0         // Data value
+        0          // Data value
     );
     desc->addTag(string("decayable"), string("false"));
     desc->addTag(string("check_decay"), string("false"));
@@ -641,7 +641,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_12, McVersion::MC_1_12,
         "leaves2", // NBT name
         161,       // Block ID
-        1         // Data value
+        1          // Data value
     );
     desc->addTag(string("decayable"), string("false"));
     desc->addTag(string("check_decay"), string("false"));
@@ -776,8 +776,8 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "White Concrete Powder",
         McVersion::MC_1_12, McVersion::MC_1_12,
         "concrete_powder", // NBT name
-        252,        // Block ID
-        0           // Data value
+        252,               // Block ID
+        0                  // Data value
     );
     desc->addTag(string("color"), string("white"));
 
@@ -794,8 +794,8 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "White Glazed Terracota",
         McVersion::MC_1_12, McVersion::MC_1_12,
         "white_glazed_terracota", // NBT name
-        235,        // Block ID
-        0           // Data value
+        235,                      // Block ID
+        0                         // Data value
     );
     desc->addTag(string("color"), string("white"));
 
@@ -844,6 +844,17 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "granite" // NBT name
     );
 
+    // Granite Slab
+    block = blockList->addBlock(string("granite_slab"));
+
+    desc = block->addBlockDescription(
+        "Granite Slab",
+        McVersion::MC_1_14, MC_LAST_VERSION,
+        "granite_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
     // Jungle planks
     block = blockList->addBlock(string("jungle_planks"));
 
@@ -860,6 +871,36 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Jungle Planks",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "jungle_planks" // NBT name
+    );
+
+    // Jungle slab
+    block = blockList->addBlock(string("jungle_slab"));
+
+    desc = block->addBlockDescription(
+        "Jungle Slab",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "wood_slab", // NBT name
+        126,         // Block ID
+        3            // Data value
+    );
+    desc->addTag(string("variant"), string("jungle"));
+    desc->addTag(string("type"), string("bottom"));
+
+    desc = block->addBlockDescription(
+        "Jungle Slab",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "jungle_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Jungle pressure plate
+    block = blockList->addBlock(string("jungle_pressure_plate"));
+
+    desc = block->addBlockDescription(
+        "Jungle Pressure Plate",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "jungle_pressure_plate" // NBT name
     );
 
     // Jungle log
@@ -881,6 +922,72 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "jungle_log" // NBT name
     );
     desc->addTag(string("axis"), string("y"));
+
+    // Dirt
+    block = blockList->addBlock(string("dirt"));
+
+    desc = block->addBlockDescription(
+        "Dirt",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "dirt", // NBT name
+        3,      // Block ID
+        0       // Data value
+    );
+
+    // Coarse Dirt
+    block = blockList->addBlock(string("coarse_dirt"));
+
+    desc = block->addBlockDescription(
+        "Coarse Dirt",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "dirt", // NBT name
+        3,      // Block ID
+        1       // Data value
+    );
+
+    desc = block->addBlockDescription(
+        "Coarse Dirt",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "coarse_dirt" // NBT name
+    );
+
+    // Rooted Dirt
+    block = blockList->addBlock(string("rooted_dirt"));
+
+    desc = block->addBlockDescription(
+        "Rooted Dirt",
+        McVersion::MC_1_17, MC_LAST_VERSION,
+        "rooted_dirt" // NBT name
+    );
+
+    // Packed mud
+    block = blockList->addBlock(string("packed_mud"));
+
+    desc = block->addBlockDescription(
+        "Packed Dirt",
+        McVersion::MC_1_19, MC_LAST_VERSION,
+        "packed_mud" // NBT name
+    );
+
+    // Brown Mushroom Block
+    block = blockList->addBlock(string("brown_mushroom_block"));
+
+    desc = block->addBlockDescription(
+        "Brown Mushroom Block",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "brown_mushroom_block" // NBT name
+    );
+
+    // Jukebox
+    block = blockList->addBlock(string("jukebox"));
+
+    desc = block->addBlockDescription(
+        "Jukebox",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "jukebox", // NBT name
+        84,        // Block ID
+        0          // Data value
+    );
 
     // ---------------
     // ---- STONE ----
