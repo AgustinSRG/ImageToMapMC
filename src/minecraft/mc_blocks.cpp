@@ -1425,9 +1425,9 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "target" // NBT name
     );
 
-    // ---------------
+    // ----------------------
     // ---- COLOR_ORANGE ----
-    // ---------------
+    // ----------------------
     blockList = &(list[(size_t)McColors::COLOR_ORANGE]);
 
     // Orange wool
@@ -1484,9 +1484,27 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "orange_concrete" // NBT name
     );
 
-    // ---------------
+    // Orange concrete powder
+    block = blockList->addBlock(string("orange_concrete_powder"));
+
+    desc = block->addBlockDescription(
+        "Orange Concrete Powder",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete_powder", // NBT name
+        252,               // Block ID
+        1                  // Data value
+    );
+    desc->addTag(string("color"), string("orange"));
+
+    desc = block->addBlockDescription(
+        "Orange Concrete Powder",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "orange_concrete_powder" // NBT name
+    );
+
+    // -----------------------
     // ---- COLOR_MAGENTA ----
-    // ---------------
+    // -----------------------
     blockList = &(list[(size_t)McColors::COLOR_MAGENTA]);
 
     // Magenta wool
@@ -1543,9 +1561,27 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "magenta_concrete" // NBT name
     );
 
-    // ---------------
+    // Magenta concrete powder
+    block = blockList->addBlock(string("magenta_concrete_powder"));
+
+    desc = block->addBlockDescription(
+        "Magenta Concrete Powder",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete_powder", // NBT name
+        252,               // Block ID
+        2                  // Data value
+    );
+    desc->addTag(string("color"), string("magenta"));
+
+    desc = block->addBlockDescription(
+        "Magenta Concrete Powder",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "magenta_concrete_powder" // NBT name
+    );
+
+    // --------------------------
     // ---- COLOR_LIGHT_BLUE ----
-    // ---------------
+    // --------------------------
     blockList = &(list[(size_t)McColors::COLOR_LIGHT_BLUE]);
 
     // Light Blue wool
@@ -1602,9 +1638,27 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "light_blue_concrete" // NBT name
     );
 
-    // ---------------
+    // Light Blue concrete powder
+    block = blockList->addBlock(string("light_blue_concrete_powder"));
+
+    desc = block->addBlockDescription(
+        "Light Blue Concrete Powder",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete_powder", // NBT name
+        252,               // Block ID
+        3                  // Data value
+    );
+    desc->addTag(string("color"), string("light_blue"));
+
+    desc = block->addBlockDescription(
+        "Light Blue Concrete Powder",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "light_blue_concrete_powder" // NBT name
+    );
+
+    // ----------------------
     // ---- COLOR_YELLOW ----
-    // ---------------
+    // ----------------------
     blockList = &(list[(size_t)McColors::COLOR_YELLOW]);
 
     // Yellow wool
@@ -1661,9 +1715,27 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "yellow_concrete" // NBT name
     );
 
-    // ---------------
+    // Yellow concrete powder
+    block = blockList->addBlock(string("yellow_concrete_powder"));
+
+    desc = block->addBlockDescription(
+        "Yellow Concrete Powder",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete_powder", // NBT name
+        252,               // Block ID
+        4                  // Data value
+    );
+    desc->addTag(string("color"), string("yellow"));
+
+    desc = block->addBlockDescription(
+        "Yellow Concrete Powder",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "yellow_concrete_powder" // NBT name
+    );
+
+    // ---------------------------
     // ---- COLOR_LIGHT_GREEN ----
-    // ---------------
+    // ---------------------------
     blockList = &(list[(size_t)McColors::COLOR_LIGHT_GREEN]);
 
     // Lime wool
@@ -1720,9 +1792,27 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "lime_concrete" // NBT name
     );
 
-    // ---------------
+    // Lime concrete powder
+    block = blockList->addBlock(string("lime_concrete_powder"));
+
+    desc = block->addBlockDescription(
+        "Lime Concrete Powder",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete_powder", // NBT name
+        252,               // Block ID
+        5                  // Data value
+    );
+    desc->addTag(string("color"), string("lime"));
+
+    desc = block->addBlockDescription(
+        "Lime Concrete Powder",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "lime_concrete_powder" // NBT name
+    );
+
+    // --------------------
     // ---- COLOR_PINK ----
-    // ---------------
+    // --------------------
     blockList = &(list[(size_t)McColors::COLOR_PINK]);
 
     // Pink wool
@@ -1779,9 +1869,27 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "pink_concrete" // NBT name
     );
 
-    // ---------------
+    // Pink concrete powder
+    block = blockList->addBlock(string("pink_concrete_powder"));
+
+    desc = block->addBlockDescription(
+        "Pink Concrete Powder",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete_powder", // NBT name
+        252,               // Block ID
+        6                  // Data value
+    );
+    desc->addTag(string("color"), string("pink"));
+
+    desc = block->addBlockDescription(
+        "Pink Concrete Powder",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "pink_concrete_powder" // NBT name
+    );
+
+    // --------------------
     // ---- COLOR_GRAY ----
-    // ---------------
+    // --------------------
     blockList = &(list[(size_t)McColors::COLOR_GRAY]);
 
     // Gray wool
@@ -1838,9 +1946,27 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "gray_concrete" // NBT name
     );
 
-    // ---------------
+    // Gray concrete powder
+    block = blockList->addBlock(string("gray_concrete_powder"));
+
+    desc = block->addBlockDescription(
+        "Gray Concrete Powder",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete_powder", // NBT name
+        252,               // Block ID
+        7                  // Data value
+    );
+    desc->addTag(string("color"), string("gray"));
+
+    desc = block->addBlockDescription(
+        "Gray Concrete Powder",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "gray_concrete_powder" // NBT name
+    );
+
+    // --------------------------
     // ---- COLOR_LIGHT_GRAY ----
-    // ---------------
+    // --------------------------
     blockList = &(list[(size_t)McColors::COLOR_LIGHT_GRAY]);
 
     // Light Gray wool
@@ -1897,9 +2023,27 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "light_gray_concrete" // NBT name
     );
 
-    // ---------------
+    // Light Gray concrete powder
+    block = blockList->addBlock(string("light_gray_concrete_powder"));
+
+    desc = block->addBlockDescription(
+        "Light Gray Concrete Powder",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete_powder", // NBT name
+        252,               // Block ID
+        8                  // Data value
+    );
+    desc->addTag(string("color"), string("silver"));
+
+    desc = block->addBlockDescription(
+        "Light Gray Concrete Powder",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "light_gray_concrete_powder" // NBT name
+    );
+
+    // --------------------
     // ---- COLOR_CYAN ----
-    // ---------------
+    // --------------------
     blockList = &(list[(size_t)McColors::COLOR_CYAN]);
 
     // Cyan wool
@@ -1956,9 +2100,27 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "cyan_concrete" // NBT name
     );
 
-    // ---------------
+    // Cyan concrete powder
+    block = blockList->addBlock(string("cyan_concrete_powder"));
+
+    desc = block->addBlockDescription(
+        "Cyan Concrete Powder",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete_powder", // NBT name
+        252,               // Block ID
+        9                  // Data value
+    );
+    desc->addTag(string("color"), string("cyan"));
+
+    desc = block->addBlockDescription(
+        "Cyan Concrete Powder",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "cyan_concrete_powder" // NBT name
+    );
+
+    // ----------------------
     // ---- COLOR_PURPLE ----
-    // ---------------
+    // ----------------------
     blockList = &(list[(size_t)McColors::COLOR_PURPLE]);
 
     // Purple wool
@@ -2015,9 +2177,27 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "purple_concrete" // NBT name
     );
 
-    // ---------------
+    // Purple concrete powder
+    block = blockList->addBlock(string("purple_concrete_powder"));
+
+    desc = block->addBlockDescription(
+        "Purple Concrete Powder",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete_powder", // NBT name
+        252,               // Block ID
+        10                 // Data value
+    );
+    desc->addTag(string("color"), string("purple"));
+
+    desc = block->addBlockDescription(
+        "Purple Concrete Powder",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "purple_concrete_powder" // NBT name
+    );
+
+    // --------------------
     // ---- COLOR_BLUE ----
-    // ---------------
+    // --------------------
     blockList = &(list[(size_t)McColors::COLOR_BLUE]);
 
     // Blue wool
@@ -2074,9 +2254,27 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "blue_concrete" // NBT name
     );
 
-    // ---------------
+    // Blue concrete powder
+    block = blockList->addBlock(string("blue_concrete_powder"));
+
+    desc = block->addBlockDescription(
+        "Blue Concrete Powder",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete_powder", // NBT name
+        252,               // Block ID
+        11                 // Data value
+    );
+    desc->addTag(string("color"), string("blue"));
+
+    desc = block->addBlockDescription(
+        "Blue Concrete Powder",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "blue_concrete_powder" // NBT name
+    );
+
+    // ---------------------
     // ---- COLOR_BROWN ----
-    // ---------------
+    // ---------------------
     blockList = &(list[(size_t)McColors::COLOR_BROWN]);
 
     // Brown wool
@@ -2133,9 +2331,27 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "brown_concrete" // NBT name
     );
 
-    // ---------------
+    // Brown concrete powder
+    block = blockList->addBlock(string("brown_concrete_powder"));
+
+    desc = block->addBlockDescription(
+        "Brown Concrete Powder",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete_powder", // NBT name
+        252,               // Block ID
+        12                 // Data value
+    );
+    desc->addTag(string("color"), string("brown"));
+
+    desc = block->addBlockDescription(
+        "Brown Concrete Powder",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "brown_concrete_powder" // NBT name
+    );
+
+    // ---------------------
     // ---- COLOR_GREEN ----
-    // ---------------
+    // ---------------------
     blockList = &(list[(size_t)McColors::COLOR_GREEN]);
 
     // Green wool
@@ -2192,9 +2408,27 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "green_concrete" // NBT name
     );
 
-    // ---------------
+    // Green concrete powder
+    block = blockList->addBlock(string("green_concrete_powder"));
+
+    desc = block->addBlockDescription(
+        "Green Concrete Powder",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete_powder", // NBT name
+        252,               // Block ID
+        13                 // Data value
+    );
+    desc->addTag(string("color"), string("green"));
+
+    desc = block->addBlockDescription(
+        "Green Concrete Powder",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "green_concrete_powder" // NBT name
+    );
+
+    // -------------------
     // ---- COLOR_RED ----
-    // ---------------
+    // -------------------
     blockList = &(list[(size_t)McColors::COLOR_RED]);
 
     // Red wool
@@ -2251,9 +2485,27 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "red_concrete" // NBT name
     );
 
-    // ---------------
+    // Red concrete powder
+    block = blockList->addBlock(string("red_concrete_powder"));
+
+    desc = block->addBlockDescription(
+        "Red Concrete Powder",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete_powder", // NBT name
+        252,               // Block ID
+        14                 // Data value
+    );
+    desc->addTag(string("color"), string("red"));
+
+    desc = block->addBlockDescription(
+        "Red Concrete Powder",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "red_concrete_powder" // NBT name
+    );
+
+    // ---------------------
     // ---- COLOR_BLACK ----
-    // ---------------
+    // ---------------------
     blockList = &(list[(size_t)McColors::COLOR_BLACK]);
 
     // Black wool
@@ -2308,6 +2560,24 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Black Concrete",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "black_concrete" // NBT name
+    );
+
+    // Black concrete powder
+    block = blockList->addBlock(string("black_concrete_powder"));
+
+    desc = block->addBlockDescription(
+        "Black Concrete Powder",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "concrete_powder", // NBT name
+        252,               // Block ID
+        15                 // Data value
+    );
+    desc->addTag(string("color"), string("black"));
+
+    desc = block->addBlockDescription(
+        "Black Concrete Powder",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "black_concrete_powder" // NBT name
     );
 
     // Coal block
