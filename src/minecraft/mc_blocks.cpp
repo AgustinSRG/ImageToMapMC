@@ -1561,7 +1561,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_12, McVersion::MC_1_12,
         "log2", // NBT name
         162,    // Block ID
-        0      // Data value
+        0       // Data value
     );
     desc->addTag(string("variant"), string("acacia"));
     desc->addTag(string("axis"), string("y"));
@@ -1628,8 +1628,8 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Red Sand",
         McVersion::MC_1_12, McVersion::MC_1_12,
         "sand", // NBT name
-        12,        // Block ID
-        1         // Data value
+        12,     // Block ID
+        1       // Data value
     );
     desc->addTag(string("variant"), string("red_sand"));
 
@@ -1646,8 +1646,8 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Red Sandstone",
         McVersion::MC_1_12, MC_LAST_VERSION,
         "red_sandstone", // NBT name
-        179,        // Block ID
-        0         // Data value
+        179,             // Block ID
+        0                // Data value
     );
 
     // Red Sandstone Slab
@@ -1658,7 +1658,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_12, McVersion::MC_1_12,
         "stone_slab2", // NBT name
         182,           // Block ID
-        0             // Data value
+        0              // Data value
     );
 
     desc->addTag(string("variant"), string("red_sandstone"));
@@ -1679,8 +1679,8 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Terracotta",
         McVersion::MC_1_12, McVersion::MC_1_12,
         "hardened_clay", // NBT name
-        172,           // Block ID
-        0             // Data value
+        172,             // Block ID
+        0                // Data value
     );
 
     desc = block->addBlockDescription(
@@ -1851,8 +1851,8 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Purpur Block",
         McVersion::MC_1_12, MC_LAST_VERSION,
         "purpur_block", // NBT name
-        201,                        // Block ID
-        0                           // Data value
+        201,            // Block ID
+        0               // Data value
     );
 
     // Purpur Slab
@@ -1863,7 +1863,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_12, McVersion::MC_1_12,
         "purpur_slab", // NBT name
         205,           // Block ID
-        0             // Data value
+        0              // Data value
     );
 
     desc->addTag(string("half"), string("bottom"));
@@ -1875,7 +1875,6 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     );
 
     desc->addTag(string("type"), string("bottom"));
-
 
     // --------------------------
     // ---- COLOR_LIGHT_BLUE ----
@@ -2096,8 +2095,8 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Hay Bale",
         McVersion::MC_1_12, MC_LAST_VERSION,
         "hay_block", // NBT name
-        170,              // Block ID
-        0                // Data value
+        170,         // Block ID
+        0            // Data value
     );
 
     // Sponge
@@ -2107,8 +2106,8 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Sponge",
         McVersion::MC_1_12, MC_LAST_VERSION,
         "sponge", // NBT name
-        19,              // Block ID
-        0                // Data value
+        19,       // Block ID
+        0         // Data value
     );
 
     // Block of Bamboo (Vertical)
@@ -2254,6 +2253,23 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "Lime Stained Glass",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "lime_stained_glass" // NBT name
+    );
+
+    // Melon
+    block = blockList->addBlock(string("melon"));
+
+    desc = block->addBlockDescription(
+        "Melon",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "melon_block", // NBT name
+        103,           // Block ID
+        0              // Data value
+    );
+
+    desc = block->addBlockDescription(
+        "Melon",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "melon" // NBT name
     );
 
     // --------------------
