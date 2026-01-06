@@ -138,7 +138,7 @@ void MapExportDialog::OnOk(wxCommandEvent &event)
 
     if (!fs::exists(path))
     {
-        if (wxMessageBox(wxString::FromUTF8(string("The folder does not exists: ") + getPath() + "\nDo you want to create it?"), wxT("Warning"), wxICON_WARNING | wxYES_NO) == wxYES) {
+        if (wxMessageBox(wxString::FromUTF8(string("The folder does not exist: ") + getPath() + "\nDo you want to create it?"), wxT("Warning"), wxICON_WARNING | wxYES_NO) == wxYES) {
             fs::create_directories(path);
         } else {
             return;
