@@ -1844,6 +1844,39 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "magenta_stained_glass" // NBT name
     );
 
+    // Purpur Block
+    block = blockList->addBlock(string("purpur_block"));
+
+    desc = block->addBlockDescription(
+        "Purpur Block",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "purpur_block", // NBT name
+        201,                        // Block ID
+        0                           // Data value
+    );
+
+    // Purpur Slab
+    block = blockList->addBlock(string("purpur_slab"));
+
+    desc = block->addBlockDescription(
+        "Purpur Slab",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "purpur_slab", // NBT name
+        205,           // Block ID
+        0             // Data value
+    );
+
+    desc->addTag(string("half"), string("bottom"));
+
+    desc = block->addBlockDescription(
+        "Purpur Slab",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "purpur_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+
     // --------------------------
     // ---- COLOR_LIGHT_BLUE ----
     // --------------------------
