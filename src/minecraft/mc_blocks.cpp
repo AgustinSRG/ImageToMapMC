@@ -494,6 +494,35 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         0                                // Data value
     );
 
+    // Brewing stand
+    block = blockList->addBlock(string("brewing_stand"));
+
+    desc = block->addBlockDescription(
+        "Brewing Stand",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "brewing_stand", // NBT name
+        379,             // Block ID
+        0                // Data value
+    );
+
+    // Grindstone
+    block = blockList->addBlock(string("grindstone"));
+
+    desc = block->addBlockDescription(
+        "Grindstone",
+        McVersion::MC_1_14, MC_LAST_VERSION,
+        "grindstone" // NBT name
+    );
+
+    // Pale Oak Leaves
+    block = blockList->addBlock(string("pale_oak_leaves"));
+
+    desc = block->addBlockDescription(
+        "Pale Oak Leaves",
+        McVersion::MC_1_21_4, MC_LAST_VERSION,
+        "pale_oak_leaves" // NBT name
+    );
+
     // ---------------
     // ---- PLANT ----
     // ---------------

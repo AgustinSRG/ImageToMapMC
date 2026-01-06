@@ -283,7 +283,8 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
 
     // Version
     wxMenu *menuVersion = new wxMenu();
-    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_21), "&1.21", "Version: 1.21")->Check(true);
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_21_4), "&1.21.4", "Version: 1.21.4")->Check(true);
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_21), "&1.21", "Version: 1.21");
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_20), "&1.20", "Version: 1.20");
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_19), "&1.19", "Version: 1.19");
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_18), "&1.18", "Version: 1.18");
@@ -1270,38 +1271,13 @@ void MainWindow::updateMenuBarRadios()
         GetMenuBar()->GetMenu(transparencyMenuIndex)->GetMenuItems()[0]->Check(true);
     }
 
-    switch (project.version)
-    {
-    case McVersion::MC_1_21:
-        GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[0]->Check(true);
-        break;
-    case McVersion::MC_1_20:
-        GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[1]->Check(true);
-        break;
-    case McVersion::MC_1_19:
-        GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[2]->Check(true);
-        break;
-    case McVersion::MC_1_18:
-        GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[3]->Check(true);
-        break;
-    case McVersion::MC_1_17:
-        GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[4]->Check(true);
-        break;
-    case McVersion::MC_1_16:
-        GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[5]->Check(true);
-        break;
-    case McVersion::MC_1_15:
-        GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[6]->Check(true);
-        break;
-    case McVersion::MC_1_14:
-        GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[7]->Check(true);
-        break;
-    case McVersion::MC_1_13:
-        GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[8]->Check(true);
-        break;
-    default:
-        GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[9]->Check(true);
-        break;
+    int versionChosenId = getIdForVersionMenu(project.version);
+
+    for (int i = 0; i < GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems().size(); i++) {
+        if (GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[i]->GetId() == versionChosenId) {
+            GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[i]->Check(true);
+            break;
+        }
     }
 }
 

@@ -85,7 +85,20 @@ minecraft::McVersion minecraft::getVersionFromText(std::string versionStr)
 
     if (versionStr.substr(0, 4).compare("1.21") == 0)
     {
-        return McVersion::MC_1_21;
+        if (versionStr.length() > 5 && versionStr.substr(0, 5).compare("1.21.") == 0)
+        {
+            int patch_ver = atoi(versionStr.substr(0, 5).c_str());
+
+            if (patch_ver >= 4) {
+                return McVersion::MC_1_21_4;
+            } else {
+                return McVersion::MC_1_21;
+            }
+        }
+        else
+        {
+            return McVersion::MC_1_21;
+        }
     }
 
     if (versionStr.compare("last") == 0)
@@ -120,6 +133,8 @@ std::string minecraft::versionToString(minecraft::McVersion version)
         return std::string("1.20");
     case McVersion::MC_1_21:
         return std::string("1.21");
+    case McVersion::MC_1_21_4:
+        return std::string("1.21.4");
     default:
         return std::string("???");
     }
@@ -149,8 +164,10 @@ int minecraft::versionToDataVersion(minecraft::McVersion version)
         return 3463;
     case McVersion::MC_1_21:
         return 3953;
+    case McVersion::MC_1_21_4:
+        return 4189;
     default:
-        return 3953;
+        return 4189;
     }
 }
 
@@ -189,13 +206,15 @@ std::string minecraft::getMinecraftFolderLocation()
 #elif defined(__linux__)
 
     size_t bufsize = sysconf(_SC_GETPW_R_SIZE_MAX);
-    if (bufsize == -1) {
+    if (bufsize == -1)
+    {
         bufsize = 16384;
     }
 
-    char *buf = (char*)malloc(bufsize);
+    char *buf = (char *)malloc(bufsize);
 
-    if (buf == NULL) {
+    if (buf == NULL)
+    {
         exit(1);
     }
 
@@ -204,7 +223,8 @@ std::string minecraft::getMinecraftFolderLocation()
 
     getpwuid_r(getuid(), &pwd, buf, bufsize, &result);
 
-    if (result == NULL) {
+    if (result == NULL)
+    {
         return std::string("");
     }
 
