@@ -562,7 +562,7 @@ void MainWindow::handleDropFile(wxDropFilesEvent &event)
 {
     if (event.GetNumberOfFiles() > 0)
     {
-        string filename = string(event.GetFiles()[0]);
+        string filename = event.GetFiles()[0].utf8_string();
 
         MapArtProject tryProject;
 
