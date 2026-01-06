@@ -799,6 +799,24 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         0                         // Data value
     );
 
+    // White Stained Glass
+    block = blockList->addBlock(string("white_stained_glass"));
+
+    desc = block->addBlockDescription(
+        "White Stained Glass",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_glass", // NBT name
+        95,              // Block ID
+        0                // Data value
+    );
+    desc->addTag(string("color"), string("white"));
+
+    desc = block->addBlockDescription(
+        "White Stained Glass",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "white_stained_glass" // NBT name
+    );
+
     // ---------------
     // ---- CLAY ----
     // ---------------
@@ -1506,6 +1524,24 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         0                          // Data value
     );
 
+    // Orange Stained Glass
+    block = blockList->addBlock(string("orange_stained_glass"));
+
+    desc = block->addBlockDescription(
+        "Orange Stained Glass",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_glass", // NBT name
+        95,              // Block ID
+        1                // Data value
+    );
+    desc->addTag(string("color"), string("orange"));
+
+    desc = block->addBlockDescription(
+        "Orange Stained Glass",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "orange_stained_glass" // NBT name
+    );
+
     // -----------------------
     // ---- COLOR_MAGENTA ----
     // -----------------------
@@ -1592,6 +1628,24 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "magenta_glazed_terracota", // NBT name
         237,                        // Block ID
         0                           // Data value
+    );
+
+    // Magenta Stained Glass
+    block = blockList->addBlock(string("magenta_stained_glass"));
+
+    desc = block->addBlockDescription(
+        "Magenta Stained Glass",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_glass", // NBT name
+        95,              // Block ID
+        2                // Data value
+    );
+    desc->addTag(string("color"), string("magenta"));
+
+    desc = block->addBlockDescription(
+        "Magenta Stained Glass",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "magenta_stained_glass" // NBT name
     );
 
     // --------------------------
@@ -1682,6 +1736,24 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         0                              // Data value
     );
 
+    // Light Blue Stained Glass
+    block = blockList->addBlock(string("light_blue_stained_glass"));
+
+    desc = block->addBlockDescription(
+        "Light Blue Stained Glass",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_glass", // NBT name
+        95,              // Block ID
+        3                // Data value
+    );
+    desc->addTag(string("color"), string("light_blue"));
+
+    desc = block->addBlockDescription(
+        "Light Blue Stained Glass",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "light_blue_stained_glass" // NBT name
+    );
+
     // ----------------------
     // ---- COLOR_YELLOW ----
     // ----------------------
@@ -1768,6 +1840,24 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "yellow_glazed_terracota", // NBT name
         239,                       // Block ID
         0                          // Data value
+    );
+
+    // Yellow Stained Glass
+    block = blockList->addBlock(string("yellow_stained_glass"));
+
+    desc = block->addBlockDescription(
+        "Yellow Stained Glass",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_glass", // NBT name
+        95,              // Block ID
+        4                // Data value
+    );
+    desc->addTag(string("color"), string("yellow"));
+
+    desc = block->addBlockDescription(
+        "Yellow Stained Glass",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "yellow_stained_glass" // NBT name
     );
 
     // ---------------------------
@@ -1858,6 +1948,24 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         0                        // Data value
     );
 
+    // Lime Stained Glass
+    block = blockList->addBlock(string("lime_stained_glass"));
+
+    desc = block->addBlockDescription(
+        "Lime Stained Glass",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_glass", // NBT name
+        95,              // Block ID
+        5                // Data value
+    );
+    desc->addTag(string("color"), string("lime"));
+
+    desc = block->addBlockDescription(
+        "Lime Stained Glass",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "lime_stained_glass" // NBT name
+    );
+
     // --------------------
     // ---- COLOR_PINK ----
     // --------------------
@@ -1944,6 +2052,24 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "pink_glazed_terracota", // NBT name
         241,                     // Block ID
         0                        // Data value
+    );
+
+    // Pink Stained Glass
+    block = blockList->addBlock(string("pink_stained_glass"));
+
+    desc = block->addBlockDescription(
+        "Pink Stained Glass",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_glass", // NBT name
+        95,              // Block ID
+        6                // Data value
+    );
+    desc->addTag(string("color"), string("pink"));
+
+    desc = block->addBlockDescription(
+        "Pink Stained Glass",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "pink_stained_glass" // NBT name
     );
 
     // --------------------
@@ -2034,6 +2160,24 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         0                        // Data value
     );
 
+    // Gray Stained Glass
+    block = blockList->addBlock(string("gray_stained_glass"));
+
+    desc = block->addBlockDescription(
+        "Gray Stained Glass",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_glass", // NBT name
+        95,              // Block ID
+        7                // Data value
+    );
+    desc->addTag(string("color"), string("gray"));
+
+    desc = block->addBlockDescription(
+        "Gray Stained Glass",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "gray_stained_glass" // NBT name
+    );
+
     // --------------------------
     // ---- COLOR_LIGHT_GRAY ----
     // --------------------------
@@ -2120,6 +2264,24 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "light_gray_glazed_terracota", // NBT name
         243,                           // Block ID
         0                              // Data value
+    );
+
+    // Light Gray Stained Glass
+    block = blockList->addBlock(string("light_gray_stained_glass"));
+
+    desc = block->addBlockDescription(
+        "Light Gray Stained Glass",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_glass", // NBT name
+        95,              // Block ID
+        8                // Data value
+    );
+    desc->addTag(string("color"), string("silver"));
+
+    desc = block->addBlockDescription(
+        "Light Gray Stained Glass",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "light_gray_stained_glass" // NBT name
     );
 
     // --------------------
@@ -2210,6 +2372,24 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         0                        // Data value
     );
 
+    // Cyan Stained Glass
+    block = blockList->addBlock(string("cyan_stained_glass"));
+
+    desc = block->addBlockDescription(
+        "Cyan Stained Glass",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_glass", // NBT name
+        95,              // Block ID
+        9                // Data value
+    );
+    desc->addTag(string("color"), string("cyan"));
+
+    desc = block->addBlockDescription(
+        "Cyan Stained Glass",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "cyan_stained_glass" // NBT name
+    );
+
     // ----------------------
     // ---- COLOR_PURPLE ----
     // ----------------------
@@ -2296,6 +2476,24 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "purple_glazed_terracota", // NBT name
         245,                       // Block ID
         0                          // Data value
+    );
+
+    // Purple Stained Glass
+    block = blockList->addBlock(string("purple_stained_glass"));
+
+    desc = block->addBlockDescription(
+        "Purple Stained Glass",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_glass", // NBT name
+        95,              // Block ID
+        10               // Data value
+    );
+    desc->addTag(string("color"), string("purple"));
+
+    desc = block->addBlockDescription(
+        "Purple Stained Glass",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "purple_stained_glass" // NBT name
     );
 
     // --------------------
@@ -2386,6 +2584,24 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         0                        // Data value
     );
 
+    // Blue Stained Glass
+    block = blockList->addBlock(string("blue_stained_glass"));
+
+    desc = block->addBlockDescription(
+        "Blue Stained Glass",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_glass", // NBT name
+        95,              // Block ID
+        11               // Data value
+    );
+    desc->addTag(string("color"), string("blue"));
+
+    desc = block->addBlockDescription(
+        "Blue Stained Glass",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "blue_stained_glass" // NBT name
+    );
+
     // ---------------------
     // ---- COLOR_BROWN ----
     // ---------------------
@@ -2472,6 +2688,24 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "brown_glazed_terracota", // NBT name
         247,                      // Block ID
         0                         // Data value
+    );
+
+    // Brown Stained Glass
+    block = blockList->addBlock(string("brown_stained_glass"));
+
+    desc = block->addBlockDescription(
+        "Brown Stained Glass",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_glass", // NBT name
+        95,              // Block ID
+        12               // Data value
+    );
+    desc->addTag(string("color"), string("brown"));
+
+    desc = block->addBlockDescription(
+        "Brown Stained Glass",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "brown_stained_glass" // NBT name
     );
 
     // ---------------------
@@ -2562,6 +2796,24 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         0                         // Data value
     );
 
+    // Green Stained Glass
+    block = blockList->addBlock(string("green_stained_glass"));
+
+    desc = block->addBlockDescription(
+        "Green Stained Glass",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_glass", // NBT name
+        95,              // Block ID
+        13               // Data value
+    );
+    desc->addTag(string("color"), string("green"));
+
+    desc = block->addBlockDescription(
+        "Green Stained Glass",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "green_stained_glass" // NBT name
+    );
+
     // -------------------
     // ---- COLOR_RED ----
     // -------------------
@@ -2650,6 +2902,24 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         0                       // Data value
     );
 
+    // Red Stained Glass
+    block = blockList->addBlock(string("red_stained_glass"));
+
+    desc = block->addBlockDescription(
+        "Red Stained Glass",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_glass", // NBT name
+        95,              // Block ID
+        14               // Data value
+    );
+    desc->addTag(string("color"), string("red"));
+
+    desc = block->addBlockDescription(
+        "Red Stained Glass",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "red_stained_glass" // NBT name
+    );
+
     // ---------------------
     // ---- COLOR_BLACK ----
     // ---------------------
@@ -2736,6 +3006,24 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "black_glazed_terracota", // NBT name
         250,                      // Block ID
         0                         // Data value
+    );
+
+    // Black Stained Glass
+    block = blockList->addBlock(string("black_stained_glass"));
+
+    desc = block->addBlockDescription(
+        "Black Stained Glass",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stained_glass", // NBT name
+        95,              // Block ID
+        15               // Data value
+    );
+    desc->addTag(string("color"), string("black"));
+
+    desc = block->addBlockDescription(
+        "Black Stained Glass",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "black_stained_glass" // NBT name
     );
 
     // Coal block
