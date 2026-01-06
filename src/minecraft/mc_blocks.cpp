@@ -2378,6 +2378,24 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "pink_stained_glass" // NBT name
     );
 
+    // Pearlescent Froglight
+    block = blockList->addBlock(string("pearlescent_froglight"));
+
+    desc = block->addBlockDescription(
+        "Pearlescent Froglight",
+        McVersion::MC_1_19, MC_LAST_VERSION,
+        "pearlescent_froglight" // NBT name
+    );
+
+    // Cherry Leaves
+    block = blockList->addBlock(string("cherry_leaves"));
+
+    desc = block->addBlockDescription(
+        "Cherry Leaves",
+        McVersion::MC_1_20, MC_LAST_VERSION,
+        "cherry_leaves" // NBT name
+    );
+
     // --------------------
     // ---- COLOR_GRAY ----
     // --------------------
