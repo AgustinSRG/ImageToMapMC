@@ -138,6 +138,15 @@ void MapExportDialog::OnOk(wxCommandEvent &event)
 
     if (!fs::exists(path))
     {
+        if (wxMessageBox(wxString::FromUTF8(string("The folder does not exists: ") + getPath() + "\nDo you want to create it?"), wxT("Warning"), wxICON_WARNING | wxYES_NO) == wxYES) {
+            fs::create_directories(path);
+        } else {
+            return;
+        }
+    }
+
+    if (!fs::exists(path))
+    {
         wxMessageBox(wxString::FromUTF8(std::string("Cannot find the folder: ") + path), wxT("Error"), wxICON_ERROR);
         return;
     }
@@ -178,7 +187,7 @@ void MapExportDialog::OnOk(wxCommandEvent &event)
             }
         }
 
-        if (foundOverwrite && wxMessageBox(string("The folder is not empty: ") + getPath() + "\nWant to export anyway? The following files will be overwritten:\n\n" + ssOverWriteList.str(), wxT("Warning"), wxICON_WARNING | wxYES_NO) != wxYES)
+        if (foundOverwrite && wxMessageBox(wxString::FromUTF8(string("The folder is not empty: ") + getPath() + "\nWant to export anyway? The following files will be overwritten:\n\n" + ssOverWriteList.str()), wxT("Warning"), wxICON_WARNING | wxYES_NO) != wxYES)
         {
             return;
         }
