@@ -3362,9 +3362,9 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     {
         // 1.16+
 
-        // ---------------
+        // ------------------------
         // ---- CRIMSON_NYLIUM ----
-        // ---------------
+        // ------------------------
         blockList = &(list[(size_t)McColors::CRIMSON_NYLIUM]);
 
         // Crimson Nylium
@@ -3376,9 +3376,9 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
             "crimson_nylium" // NBT name
         );
 
-        // ---------------
+        // ----------------------
         // ---- CRIMSON_STEM ----
-        // ---------------
+        // ----------------------
         blockList = &(list[(size_t)McColors::CRIMSON_STEM]);
 
         // Crimson Planks
@@ -3390,9 +3390,49 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
             "crimson_planks" // NBT name
         );
 
-        // ---------------
+        // Crimson Slab
+        block = blockList->addBlock(string("crimson_slab"));
+
+        desc = block->addBlockDescription(
+            "Crimson Slab",
+            McVersion::MC_1_16, MC_LAST_VERSION,
+            "crimson_slab" // NBT name
+        );
+
+        desc->addTag(string("type"), string("bottom"));
+
+        // Crimson Pressure Plate
+        block = blockList->addBlock(string("crimson_pressure_plate"));
+
+        desc = block->addBlockDescription(
+            "Crimson Pressure Plate",
+            McVersion::MC_1_16, MC_LAST_VERSION,
+            "crimson_pressure_plate" // NBT name
+        );
+
+        // Crimson Stem
+        block = blockList->addBlock(string("crimson_stem"));
+
+        desc = block->addBlockDescription(
+            "Crimson Stem",
+            McVersion::MC_1_16, MC_LAST_VERSION,
+            "crimson_stem" // NBT name
+        );
+        desc->addTag(string("axis"), string("y"));
+
+        // Stripped Crimson Stem
+        block = blockList->addBlock(string("stripped_crimson_stem"));
+
+        desc = block->addBlockDescription(
+            "Stripped Crimson Stem",
+            McVersion::MC_1_16, MC_LAST_VERSION,
+            "stripped_crimson_stem" // NBT name
+        );
+        desc->addTag(string("axis"), string("y"));
+
+        // ------------------------
         // ---- CRIMSON_HYPHAE ----
-        // ---------------
+        // ------------------------
         blockList = &(list[(size_t)McColors::CRIMSON_HYPHAE]);
 
         // Crimson Hyphae
@@ -3404,9 +3444,18 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
             "crimson_hyphae" // NBT name
         );
 
-        // ---------------
+        // Stripped Crimson Hyphae
+        block = blockList->addBlock(string("stripped_crimson_hyphae"));
+
+        desc = block->addBlockDescription(
+            "Stripped Crimson Hyphae",
+            McVersion::MC_1_16, MC_LAST_VERSION,
+            "stripped_crimson_hyphae" // NBT name
+        );
+
+        // -----------------------
         // ---- WARPED_NYLIUM ----
-        // ---------------
+        // -----------------------
         blockList = &(list[(size_t)McColors::WARPED_NYLIUM]);
 
         // Warped Nylium
@@ -3418,9 +3467,29 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
             "warped_nylium" // NBT name
         );
 
-        // ---------------
+        // Waxed Oxidized Copper
+        block = blockList->addBlock(string("waxed_oxidized_copper"));
+
+        desc = block->addBlockDescription(
+            "Waxed Oxidized Copper",
+            McVersion::MC_1_17, MC_LAST_VERSION,
+            "waxed_oxidized_copper" // NBT name
+        );
+
+        // Waxed Oxidized Cut Copper Slab
+        block = blockList->addBlock(string("waxed_oxidized_cut_copper_slab"));
+
+        desc = block->addBlockDescription(
+            "Waxed Oxidized Cut Copper Slab",
+            McVersion::MC_1_17, MC_LAST_VERSION,
+            "waxed_oxidized_cut_copper_slab" // NBT name
+        );
+
+        desc->addTag(string("type"), string("bottom"));
+
+        // ---------------------
         // ---- WARPED_STEM ----
-        // ---------------
+        // ---------------------
         blockList = &(list[(size_t)McColors::WARPED_STEM]);
 
         // Warped Planks
@@ -3432,9 +3501,69 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
             "warped_planks" // NBT name
         );
 
-        // ---------------
+        // Warped Slab
+        block = blockList->addBlock(string("warped_slab"));
+
+        desc = block->addBlockDescription(
+            "Warped Slab",
+            McVersion::MC_1_16, MC_LAST_VERSION,
+            "warped_slab" // NBT name
+        );
+
+        desc->addTag(string("type"), string("bottom"));
+
+        // Warped Pressure Plate
+        block = blockList->addBlock(string("warped_pressure_plate"));
+
+        desc = block->addBlockDescription(
+            "Warped Pressure Plate",
+            McVersion::MC_1_16, MC_LAST_VERSION,
+            "warped_pressure_plate" // NBT name
+        );
+
+        // Warped Stem
+        block = blockList->addBlock(string("warped_stem"));
+
+        desc = block->addBlockDescription(
+            "Warped Stem",
+            McVersion::MC_1_16, MC_LAST_VERSION,
+            "warped_stem" // NBT name
+        );
+        desc->addTag(string("axis"), string("y"));
+
+        // Stripped Warped Stem
+        block = blockList->addBlock(string("stripped_warped_stem"));
+
+        desc = block->addBlockDescription(
+            "Stripped Warped Stem",
+            McVersion::MC_1_16, MC_LAST_VERSION,
+            "stripped_warped_stem" // NBT name
+        );
+        desc->addTag(string("axis"), string("y"));
+
+        // Waxed Weathered Copper
+        block = blockList->addBlock(string("waxed_weathered_copper"));
+
+        desc = block->addBlockDescription(
+            "Waxed Weathered Copper",
+            McVersion::MC_1_17, MC_LAST_VERSION,
+            "waxed_weathered_copper" // NBT name
+        );
+
+        // Waxed Weathered Cut Copper Slab
+        block = blockList->addBlock(string("waxed_weathered_cut_copper_slab"));
+
+        desc = block->addBlockDescription(
+            "Waxed Weathered Cut Copper Slab",
+            McVersion::MC_1_17, MC_LAST_VERSION,
+            "waxed_weathered_cut_copper_slab" // NBT name
+        );
+
+        desc->addTag(string("type"), string("bottom"));
+
+        // -----------------------
         // ---- WARPED_HYPHAE ----
-        // ---------------
+        // -----------------------
         blockList = &(list[(size_t)McColors::WARPED_HYPHAE]);
 
         // Warped Hyphae
@@ -3446,9 +3575,18 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
             "warped_hyphae" // NBT name
         );
 
-        // ---------------
+        // Stripped Warped Hyphae
+        block = blockList->addBlock(string("stripped_warped_hyphae"));
+
+        desc = block->addBlockDescription(
+            "Stripped Warped Hyphae",
+            McVersion::MC_1_16, MC_LAST_VERSION,
+            "stripped_warped_hyphae" // NBT name
+        );
+
+        // ---------------------------
         // ---- WARPED_WART_BLOCK ----
-        // ---------------
+        // ---------------------------
         blockList = &(list[(size_t)McColors::WARPED_WART_BLOCK]);
 
         // Warped Wart Block
