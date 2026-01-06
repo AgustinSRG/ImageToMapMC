@@ -3155,6 +3155,114 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         "brown_stained_glass" // NBT name
     );
 
+    // Dark Oak planks
+    block = blockList->addBlock(string("dark_oak_planks"));
+
+    desc = block->addBlockDescription(
+        "Dark Oak Planks",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "planks", // NBT name
+        5,        // Block ID
+        5         // Data value
+    );
+    desc->addTag(string("variant"), string("dark_oak"));
+
+    desc = block->addBlockDescription(
+        "Dark Oak Planks",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "dark_oak_planks" // NBT name
+    );
+
+    // Dark Oak slab
+    block = blockList->addBlock(string("dark_oak_slab"));
+
+    desc = block->addBlockDescription(
+        "Dark Oak Slab",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "wooden_slab", // NBT name
+        126,           // Block ID
+        5              // Data value
+    );
+    desc->addTag(string("variant"), string("dark_oak"));
+    desc->addTag(string("half"), string("bottom"));
+
+    desc = block->addBlockDescription(
+        "Dark Oak Slab",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "dark_oak_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("bottom"));
+
+    // Dark Oak pressure plate
+    block = blockList->addBlock(string("dark_oak_pressure_plate"));
+
+    desc = block->addBlockDescription(
+        "Dark Oak Pressure Plate",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "dark_oak_pressure_plate" // NBT name
+    );
+
+    // Dark Oak Log
+    block = blockList->addBlock(string("dark_oak_log"));
+
+    desc = block->addBlockDescription(
+        "Dark Oak Log",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "log2", // NBT name
+        162,    // Block ID
+        1       // Data value
+    );
+    desc->addTag(string("variant"), string("dark_oak"));
+    desc->addTag(string("axis"), string("y"));
+
+    desc = block->addBlockDescription(
+        "Dark Oak Log",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "dark_oak_log" // NBT name
+    );
+    desc->addTag(string("axis"), string("y"));
+
+    // Spruce Log (Horizontal)
+    block = blockList->addBlock(string("spruce_log_horizontal"));
+
+    desc = block->addBlockDescription(
+        "Spruce Log (Horizontal)",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "log", // NBT name
+        17,    // Block ID
+        1      // Data value
+    );
+    desc->addTag(string("variant"), string("spruce"));
+    desc->addTag(string("axis"), string("x"));
+
+    desc = block->addBlockDescription(
+        "Spruce Log (Horizontal)",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "spruce_log" // NBT name
+    );
+    desc->addTag(string("axis"), string("x"));
+
+    // Soul Sand
+    block = blockList->addBlock(string("soul_sand"));
+
+    desc = block->addBlockDescription(
+        "Soul Sand",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "soul_sand", // NBT name
+        88,          // Block ID
+        0            // Data value
+    );
+
+    // Soul Soil
+    block = blockList->addBlock(string("soul_soil"));
+
+    desc = block->addBlockDescription(
+        "Soul Sand",
+        McVersion::MC_1_16, MC_LAST_VERSION,
+        "soul_soil" // NBT name
+    );
+
     // ---------------------
     // ---- COLOR_GREEN ----
     // ---------------------
