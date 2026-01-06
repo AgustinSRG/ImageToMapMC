@@ -209,7 +209,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
 
     desc = block->addBlockDescription(
         "Sandstone Slab",
-        McVersion::MC_1_12, MC_LAST_VERSION,
+        McVersion::MC_1_12, McVersion::MC_1_12,
         "stone_slab", // NBT name
         44,           // Block ID
         1             // Data value
@@ -320,7 +320,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
 
     desc = block->addBlockDescription(
         "End Stone Bricks",
-        McVersion::MC_1_12, MC_LAST_VERSION,
+        McVersion::MC_1_12, McVersion::MC_1_12,
         "end_bricks", // NBT name
         206,          // Block ID
         0             // Data value
@@ -528,11 +528,11 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     // ---------------
     blockList = &(list[(size_t)McColors::PLANT]);
 
-    // Leaves
-    block = blockList->addBlock(string("leaves"));
+    // Oak Leaves
+    block = blockList->addBlock(string("oak_leaves"));
 
     desc = block->addBlockDescription(
-        "Leaves",
+        "Oak Leaves",
         McVersion::MC_1_12, McVersion::MC_1_12,
         "leaves", // NBT name
         18,       // Block ID
@@ -543,11 +543,146 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
     desc->addTag(string("variant"), string("oak"));
 
     desc = block->addBlockDescription(
-        "Leaves",
+        "Oak Leaves",
         McVersion::MC_1_13, MC_LAST_VERSION,
         "oak_leaves" // NBT name
     );
     desc->addTag(string("persistent"), string("true"));
+
+    // Spruce Leaves
+    block = blockList->addBlock(string("spruce_leaves"));
+
+    desc = block->addBlockDescription(
+        "Spruce Leaves",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "leaves", // NBT name
+        18,       // Block ID
+        1         // Data value
+    );
+    desc->addTag(string("decayable"), string("false"));
+    desc->addTag(string("check_decay"), string("false"));
+    desc->addTag(string("variant"), string("spruce"));
+
+    desc = block->addBlockDescription(
+        "Spruce Leaves",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "spruce_leaves" // NBT name
+    );
+    desc->addTag(string("persistent"), string("true"));
+
+    // Birch Leaves
+    block = blockList->addBlock(string("birch_leaves"));
+
+    desc = block->addBlockDescription(
+        "Birch Leaves",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "leaves", // NBT name
+        18,       // Block ID
+        2         // Data value
+    );
+    desc->addTag(string("decayable"), string("false"));
+    desc->addTag(string("check_decay"), string("false"));
+    desc->addTag(string("variant"), string("birch"));
+
+    desc = block->addBlockDescription(
+        "Birch Leaves",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "birch_leaves" // NBT name
+    );
+    desc->addTag(string("persistent"), string("true"));
+
+    // Jungle Leaves
+    block = blockList->addBlock(string("jungle_leaves"));
+
+    desc = block->addBlockDescription(
+        "Jungle Leaves",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "leaves", // NBT name
+        18,       // Block ID
+        3         // Data value
+    );
+    desc->addTag(string("decayable"), string("false"));
+    desc->addTag(string("check_decay"), string("false"));
+    desc->addTag(string("variant"), string("jungle"));
+
+    desc = block->addBlockDescription(
+        "Jungle Leaves",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "jungle_leaves" // NBT name
+    );
+    desc->addTag(string("persistent"), string("true"));
+
+    // Acacia Leaves
+    block = blockList->addBlock(string("acacia_leaves"));
+
+    desc = block->addBlockDescription(
+        "Acacia Leaves",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "leaves2", // NBT name
+        161,       // Block ID
+        0         // Data value
+    );
+    desc->addTag(string("decayable"), string("false"));
+    desc->addTag(string("check_decay"), string("false"));
+    desc->addTag(string("variant"), string("acacia"));
+
+    desc = block->addBlockDescription(
+        "Acacia Leaves",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "acacia_leaves" // NBT name
+    );
+    desc->addTag(string("persistent"), string("true"));
+
+    // Dark Oak Leaves
+    block = blockList->addBlock(string("dark_oak_leaves"));
+
+    desc = block->addBlockDescription(
+        "Dark Oak Leaves",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "leaves2", // NBT name
+        161,       // Block ID
+        1         // Data value
+    );
+    desc->addTag(string("decayable"), string("false"));
+    desc->addTag(string("check_decay"), string("false"));
+    desc->addTag(string("variant"), string("dark_oak"));
+
+    desc = block->addBlockDescription(
+        "Dark Oak Leaves",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "dark_oak_leaves" // NBT name
+    );
+    desc->addTag(string("persistent"), string("true"));
+
+    // Azalea Leaves
+    block = blockList->addBlock(string("azalea_leaves"));
+
+    desc = block->addBlockDescription(
+        "Azalea Leaves",
+        McVersion::MC_1_17, MC_LAST_VERSION,
+        "azalea_leaves" // NBT name
+    );
+    desc->addTag(string("persistent"), string("true"));
+
+    // Mangrove Leaves
+    block = blockList->addBlock(string("mangrove_leaves"));
+
+    desc = block->addBlockDescription(
+        "Mangrove Leaves",
+        McVersion::MC_1_19, MC_LAST_VERSION,
+        "mangrove_leaves" // NBT name
+    );
+    desc->addTag(string("persistent"), string("true"));
+
+    // Bamboo Blocks
+    block = blockList->addBlock(string("bamboo_block"));
+
+    desc = block->addBlockDescription(
+        "Block of Bamboo (Horizontal)",
+        McVersion::MC_1_20, MC_LAST_VERSION,
+        "bamboo_block" // NBT name
+    );
+    desc->addTag(string("axis"), string("x"));
 
     // ---------------
     // ---- SNOW ----
