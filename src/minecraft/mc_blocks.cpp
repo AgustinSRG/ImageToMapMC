@@ -3464,9 +3464,9 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         {
             // 1.17+
 
-            // ---------------
+            // -------------------
             // ---- DEEPSLATE ----
-            // ---------------
+            // -------------------
             blockList = &(list[(size_t)McColors::DEEPSLATE]);
 
             // Deepslate
@@ -3478,9 +3478,29 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
                 "deepslate" // NBT name
             );
 
-            // ---------------
+            // Cobbled Deepslate
+            block = blockList->addBlock(string("cobbled_deepslate"));
+
+            desc = block->addBlockDescription(
+                "Cobbled Deepslate",
+                McVersion::MC_1_17, MC_LAST_VERSION,
+                "cobbled_deepslate" // NBT name
+            );
+
+            // Cobbled Deepslate Slab
+            block = blockList->addBlock(string("cobbled_deepslate_slab"));
+
+            desc = block->addBlockDescription(
+                "Cobbled Deepslate Slab",
+                McVersion::MC_1_17, MC_LAST_VERSION,
+                "cobbled_deepslate_slab" // NBT name
+            );
+
+            desc->addTag(string("type"), string("bottom"));
+
+            // ------------------
             // ---- RAW_IRON ----
-            // ---------------
+            // ------------------
             blockList = &(list[(size_t)McColors::RAW_IRON]);
 
             // Block of Raw Iron
@@ -3492,9 +3512,9 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
                 "raw_iron_block" // NBT name
             );
 
-            // ---------------
+            // ---------------------
             // ---- GLOW_LICHEN ----
-            // ---------------
+            // ---------------------
             blockList = &(list[(size_t)McColors::GLOW_LICHEN]);
 
             // Verdant Froglight
