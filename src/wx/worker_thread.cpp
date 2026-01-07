@@ -208,7 +208,7 @@ void WorkerThread::requestExportMaterialsSplit(mapart::MapArtProject &project, s
     sem.Post();
 }
 
-void WorkerThread::requestExportMaps(mapart::MapArtProject &project, std::string outPath, int mapNumber)
+void WorkerThread::requestExportMaps(mapart::MapArtProject &project, std::string outPath, int mapNumber, bool mustOpenFolderAfterExport)
 {
     stateMutex.Lock();
 
@@ -226,6 +226,7 @@ void WorkerThread::requestExportMaps(mapart::MapArtProject &project, std::string
     this->project = project;
     this->outPath = outPath;
     this->mapNumber = mapNumber;
+    this->mustOpenFolderAfterExport = mustOpenFolderAfterExport;
 
     stateMutex.Unlock();
 
@@ -627,7 +628,7 @@ void WorkerThread::ExportMaterialsSplit(mapart::MapArtProject &copyProject, std:
     progress.setEnded();
 }
 
-void WorkerThread::ExportMaps(mapart::MapArtProject &copyProject, std::string &copyOutPath, int copyMapNumber)
+void WorkerThread::ExportMaps(mapart::MapArtProject &copyProject, std::string &copyOutPath, int copyMapNumber, bool copyMustOpenFolderAfterExport)
 {
     try
     {
@@ -699,7 +700,9 @@ void WorkerThread::ExportMaps(mapart::MapArtProject &copyProject, std::string &c
             }
         }
 
-        tools::openForDesktop(copyOutPath);
+        if (copyMustOpenFolderAfterExport) {
+            tools::openForDesktop(copyOutPath);
+        }
     }
     catch (int)
     {
@@ -1372,6 +1375,7 @@ wxThread::ExitCode WorkerThread::Entry()
     mapart::MapArtProject copyProject;
     std::string copyOutPath;
     int copyMapNumber;
+    bool copyMustOpenFolderAfterExport;
 
     while (!TestDestroy())
     {
@@ -1389,6 +1393,7 @@ wxThread::ExitCode WorkerThread::Entry()
         copyProject = project;
         copyOutPath = outPath;
         copyMapNumber = mapNumber;
+        copyMustOpenFolderAfterExport = mustOpenFolderAfterExport;
 
         progress.reset();
 
@@ -1408,7 +1413,7 @@ wxThread::ExitCode WorkerThread::Entry()
             ExportMaterialsSplit(copyProject, copyOutPath);
             break;
         case TaskType::Export_Maps:
-            ExportMaps(copyProject, copyOutPath, copyMapNumber);
+            ExportMaps(copyProject, copyOutPath, copyMapNumber, copyMustOpenFolderAfterExport);
             break;
         case TaskType::Export_Maps_Zip:
             ExportMapsZip(copyProject, copyOutPath);

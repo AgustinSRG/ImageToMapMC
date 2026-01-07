@@ -37,6 +37,7 @@ public:
 
     std::string getPath();
     int getMapNumber();
+    bool mustOpenFolderAfterExport();
 
     void OnShow(wxShowEvent& event);
 
@@ -47,11 +48,13 @@ public:
     void OnKeyPress(wxKeyEvent &event);
 
     void OnMapIdChanged(wxCommandEvent& event);
+    void OnCheckboxChanged(wxCommandEvent &event);
 private:
     int projectMapCount;
 
     wxTextCtrl *textFolder;
     wxTextCtrl *textMapNumber;
+    wxCheckBox *checkboxOpenFolder;
 
     void figureOutMapNumber(std::string path);
 

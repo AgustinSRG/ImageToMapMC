@@ -33,7 +33,8 @@ enum Identifiers
     ID_OK = 1,
     ID_Cancel = 2,
     ID_Browse = 3,
-    ID_Map_Id_Input = 4
+    ID_Map_Id_Input = 4,
+    ID_Checkbox_Open_Folder = 5
 };
 
 BEGIN_EVENT_TABLE(MapExportDialog, wxDialog)
@@ -41,6 +42,7 @@ EVT_BUTTON(ID_OK, MapExportDialog::OnOk)
 EVT_BUTTON(ID_Cancel, MapExportDialog::OnCancel)
 EVT_BUTTON(ID_Browse, MapExportDialog::OnBrowse)
 EVT_TEXT(ID_Map_Id_Input, MapExportDialog::OnMapIdChanged)
+EVT_CHECKBOX(ID_Checkbox_Open_Folder, MapExportDialog::OnCheckboxChanged)
 EVT_CHAR_HOOK(MapExportDialog::OnKeyPress)
 EVT_SHOW(MapExportDialog::OnShow)
 END_EVENT_TABLE()
@@ -83,6 +85,18 @@ MapExportDialog::MapExportDialog(int projectMapCount) : wxDialog(NULL, -1, wxStr
     textMapNumber = new wxTextCtrl(this, ID_Map_Id_Input, wxString("0"), wxDefaultPosition, wxSize(textWidth, -1));
 
     sizerTop->Add(textMapNumber, 0, wxALL, spacing);
+
+    // Checkbox
+
+    checkboxOpenFolder = new wxCheckBox(
+        this, ID_Checkbox_Open_Folder,
+        wxString("Open folder after exporting the maps."),
+        wxDefaultPosition,
+        wxDefaultSize);
+    
+    checkboxOpenFolder->SetValue(tools::getRememberedValue(tools::VALUE_PURPOSE_OPEN_FOLDER_EXPORT).compare("false") != 0);
+
+    sizerTop->Add(checkboxOpenFolder, 0, wxALL | wxALIGN_CENTER, spacing);
 
     // Buttons
 
@@ -309,5 +323,22 @@ void MapExportDialog::figureOutMapNumber(std::string path)
 
             textMapNumber->SetValue(ss.str());
         }
+    }
+}
+
+bool MapExportDialog::mustOpenFolderAfterExport() {
+    if (!this->checkboxOpenFolder) {
+        return tools::getRememberedValue(tools::VALUE_PURPOSE_OPEN_FOLDER_EXPORT).compare("false") != 0;
+    }
+
+    return this->checkboxOpenFolder->IsChecked();
+}
+
+void MapExportDialog::OnCheckboxChanged(wxCommandEvent &event)
+{
+    if (this->mustOpenFolderAfterExport()) {
+        tools::setRememberedValue(tools::VALUE_PURPOSE_OPEN_FOLDER_EXPORT, "true");
+    } else {
+        tools::setRememberedValue(tools::VALUE_PURPOSE_OPEN_FOLDER_EXPORT, "false");
     }
 }

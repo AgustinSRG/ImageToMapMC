@@ -73,7 +73,7 @@ public:
     void requestExportMaterials(mapart::MapArtProject &project, std::string outPath);
     void requestExportMaterialsSplit(mapart::MapArtProject &project, std::string outPath);
 
-    void requestExportMaps(mapart::MapArtProject &project, std::string outPath, int mapNumber);
+    void requestExportMaps(mapart::MapArtProject &project, std::string outPath, int mapNumber, bool mustOpenFolderAfterExport);
     void requestExportMapsZip(mapart::MapArtProject &project, std::string outPath);
 
     void requestExportStruct(mapart::MapArtProject &project, std::string outPath);
@@ -96,6 +96,7 @@ private:
     mapart::MapArtProject project;
     std::string outPath;
     int mapNumber;
+    bool mustOpenFolderAfterExport;
 
     threading::Progress progress;
 
@@ -111,7 +112,7 @@ private:
     void ExportMaterials(mapart::MapArtProject &copyProject, std::string &copyOutPath);
     void ExportMaterialsSplit(mapart::MapArtProject &copyProject, std::string &copyOutPath);
 
-    void ExportMaps(mapart::MapArtProject &copyProject, std::string &copyOutPath, int copyMapNumber);
+    void ExportMaps(mapart::MapArtProject &copyProject, std::string &copyOutPath, int copyMapNumber, bool copyMustOpenFolderAfterExport);
     void ExportMapsZip(mapart::MapArtProject &copyProject, std::string &outFilePath);
 
     void ExportStruct(mapart::MapArtProject &copyProject, std::string &copyOutPath);

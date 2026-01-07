@@ -663,7 +663,7 @@ void MainWindow::onExportToMaps(wxCommandEvent &evt)
         return; // the user changed idea...
     }
 
-    this->workerThread->requestExportMaps(project, dialog.getPath(), dialog.getMapNumber());
+    this->workerThread->requestExportMaps(project, dialog.getPath(), dialog.getMapNumber(), dialog.mustOpenFolderAfterExport());
 }
 
 void MainWindow::onExportToMapsZip(wxCommandEvent &evt)
