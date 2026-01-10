@@ -70,6 +70,9 @@ namespace minecraft
           short blockId;
           short dataValue;
 
+          // Requires support block
+          bool requiresSupportBlock;
+
           /**
            * @brief  Adds NBT tag
            * @note

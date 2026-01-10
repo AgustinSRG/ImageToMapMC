@@ -72,6 +72,7 @@ minecraft::BlockDescription *Block::addBlockDescription(std::string name, minecr
     bd->nbtName = nbtName;
     bd->blockId = blockId;
     bd->dataValue = dataValue;
+    bd->requiresSupportBlock = false;
 
     return bd;
 }
@@ -233,6 +234,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         12,     // Block ID
         0       // Data value
     );
+    desc->requiresSupportBlock = true;
 
     // Sandstone
     block = blockList->addBlock(string("sandstone"));
@@ -334,6 +336,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "birch_pressure_plate" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Glowstone
     block = blockList->addBlock(string("glowstone"));
@@ -444,6 +447,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_17, MC_LAST_VERSION,
         "white_candle" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // ---------------
     // ---- FIRE ----
@@ -535,6 +539,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         148,                             // Block ID
         0                                // Data value
     );
+    desc->requiresSupportBlock = true;
 
     // Brewing stand
     block = blockList->addBlock(string("brewing_stand"));
@@ -756,6 +761,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "snow" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // White wool
     block = blockList->addBlock(string("white_wool"));
@@ -785,6 +791,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         171,      // Block ID
         0         // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("white"));
 
     desc = block->addBlockDescription(
@@ -792,6 +799,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "white_carpet" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // White concrete
     block = blockList->addBlock(string("white_concrete"));
@@ -821,6 +829,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         252,               // Block ID
         0                  // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("white"));
 
     desc = block->addBlockDescription(
@@ -828,6 +837,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "white_concrete_powder" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // White Glazed Terracota
     block = blockList->addBlock(string("white_glazed_terracota"));
@@ -955,6 +965,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "jungle_pressure_plate" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Jungle Log (Vertical)
     block = blockList->addBlock(string("jungle_log"));
@@ -1140,6 +1151,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         70,                     // Block ID
         0                       // Data value
     );
+    desc->requiresSupportBlock = true;
 
     // Smooth Stone
     block = blockList->addBlock(string("smooth_stone"));
@@ -1239,6 +1251,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         13,       // Block ID
         0         // Data value
     );
+    desc->requiresSupportBlock = true;
 
     // ---------------
     // ---- WATER ----
@@ -1255,6 +1268,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         9,       // Block ID
         0        // Data value
     );
+    desc->requiresSupportBlock = true;
 
     // ---------------
     // ---- WOOD ----
@@ -1308,6 +1322,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "oak_pressure_plate" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Oak Log (Vertical)
     block = blockList->addBlock(string("oak_log"));
@@ -1467,6 +1482,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_21_4, MC_LAST_VERSION,
         "pale_oak_pressure_plate" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Target Block
     block = blockList->addBlock(string("target"));
@@ -1510,6 +1526,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         171,      // Block ID
         1         // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("orange"));
 
     desc = block->addBlockDescription(
@@ -1517,6 +1534,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "orange_carpet" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Orange concrete
     block = blockList->addBlock(string("orange_concrete"));
@@ -1546,6 +1564,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         252,               // Block ID
         1                  // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("orange"));
 
     desc = block->addBlockDescription(
@@ -1553,6 +1572,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "orange_concrete_powder" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Orange Glazed Terracota
     block = blockList->addBlock(string("orange_glazed_terracota"));
@@ -1593,6 +1613,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         86,        // Block ID
         0          // Data value
     );
+    desc->requiresSupportBlock = true;
 
     // Acacia Log (Vertical)
     block = blockList->addBlock(string("acacia_log"));
@@ -1661,6 +1682,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "acacia_pressure_plate" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Red Sand
     block = blockList->addBlock(string("red_sand"));
@@ -1672,6 +1694,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         12,     // Block ID
         1       // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("variant"), string("red_sand"));
 
     desc = block->addBlockDescription(
@@ -1679,6 +1702,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "red_sand" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Red Sandstone
     block = blockList->addBlock(string("red_sandstone"));
@@ -1812,6 +1836,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         171,      // Block ID
         2         // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("magenta"));
 
     desc = block->addBlockDescription(
@@ -1819,6 +1844,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "magenta_carpet" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Magenta concrete
     block = blockList->addBlock(string("magenta_concrete"));
@@ -1848,6 +1874,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         252,               // Block ID
         2                  // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("magenta"));
 
     desc = block->addBlockDescription(
@@ -1855,6 +1882,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "magenta_concrete_powder" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Magenta Glazed Terracota
     block = blockList->addBlock(string("magenta_glazed_terracota"));
@@ -1950,6 +1978,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         171,      // Block ID
         3         // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("light_blue"));
 
     desc = block->addBlockDescription(
@@ -1957,6 +1986,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "light_blue_carpet" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Light Blue concrete
     block = blockList->addBlock(string("light_blue_concrete"));
@@ -1986,6 +2016,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         252,               // Block ID
         3                  // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("light_blue"));
 
     desc = block->addBlockDescription(
@@ -1993,6 +2024,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "light_blue_concrete_powder" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Light Blue Glazed Terracota
     block = blockList->addBlock(string("light_blue_glazed_terracota"));
@@ -2056,6 +2088,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         171,      // Block ID
         4         // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("yellow"));
 
     desc = block->addBlockDescription(
@@ -2063,6 +2096,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "yellow_carpet" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Yellow concrete
     block = blockList->addBlock(string("yellow_concrete"));
@@ -2092,6 +2126,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         252,               // Block ID
         4                  // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("yellow"));
 
     desc = block->addBlockDescription(
@@ -2099,6 +2134,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "yellow_concrete_powder" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Yellow Glazed Terracota
     block = blockList->addBlock(string("yellow_glazed_terracota"));
@@ -2189,6 +2225,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_20, MC_LAST_VERSION,
         "bamboo_pressure_plate" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // ---------------------------
     // ---- COLOR_LIGHT_GREEN ----
@@ -2223,6 +2260,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         171,      // Block ID
         5         // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("lime"));
 
     desc = block->addBlockDescription(
@@ -2230,6 +2268,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "lime_carpet" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Lime concrete
     block = blockList->addBlock(string("lime_concrete"));
@@ -2259,6 +2298,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         252,               // Block ID
         5                  // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("lime"));
 
     desc = block->addBlockDescription(
@@ -2266,6 +2306,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "lime_concrete_powder" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Lime Glazed Terracota
     block = blockList->addBlock(string("lime_glazed_terracota"));
@@ -2346,6 +2387,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         171,      // Block ID
         6         // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("pink"));
 
     desc = block->addBlockDescription(
@@ -2353,6 +2395,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "pink_carpet" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Pink concrete
     block = blockList->addBlock(string("pink_concrete"));
@@ -2382,6 +2425,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         252,               // Block ID
         6                  // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("pink"));
 
     desc = block->addBlockDescription(
@@ -2389,6 +2433,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "pink_concrete_powder" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Pink Glazed Terracota
     block = blockList->addBlock(string("pink_glazed_terracota"));
@@ -2470,6 +2515,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         171,      // Block ID
         7         // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("gray"));
 
     desc = block->addBlockDescription(
@@ -2477,6 +2523,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "gray_carpet" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Gray concrete
     block = blockList->addBlock(string("gray_concrete"));
@@ -2506,6 +2553,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         252,               // Block ID
         7                  // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("gray"));
 
     desc = block->addBlockDescription(
@@ -2513,6 +2561,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "gray_concrete_powder" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Gray Glazed Terracota
     block = blockList->addBlock(string("gray_glazed_terracota"));
@@ -2639,6 +2688,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         171,      // Block ID
         8         // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("silver"));
 
     desc = block->addBlockDescription(
@@ -2646,6 +2696,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "light_gray_carpet" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Light Gray concrete
     block = blockList->addBlock(string("light_gray_concrete"));
@@ -2675,6 +2726,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         252,               // Block ID
         8                  // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("silver"));
 
     desc = block->addBlockDescription(
@@ -2682,6 +2734,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "light_gray_concrete_powder" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Light Gray Glazed Terracota
     block = blockList->addBlock(string("light_gray_glazed_terracota"));
@@ -2729,6 +2782,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_21_4, MC_LAST_VERSION,
         "pale_moss_carpet" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // --------------------
     // ---- COLOR_CYAN ----
@@ -2763,6 +2817,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         171,      // Block ID
         9         // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("cyan"));
 
     desc = block->addBlockDescription(
@@ -2770,6 +2825,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "cyan_carpet" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Cyan concrete
     block = blockList->addBlock(string("cyan_concrete"));
@@ -2799,6 +2855,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         252,               // Block ID
         9                  // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("cyan"));
 
     desc = block->addBlockDescription(
@@ -2806,6 +2863,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "cyan_concrete_powder" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Cyan Glazed Terracota
     block = blockList->addBlock(string("cyan_glazed_terracota"));
@@ -2891,6 +2949,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         171,      // Block ID
         10        // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("purple"));
 
     desc = block->addBlockDescription(
@@ -2898,6 +2957,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "purple_carpet" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Purple concrete
     block = blockList->addBlock(string("purple_concrete"));
@@ -2927,6 +2987,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         252,               // Block ID
         10                 // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("purple"));
 
     desc = block->addBlockDescription(
@@ -2934,6 +2995,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "purple_concrete_powder" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Purple Glazed Terracota
     block = blockList->addBlock(string("purple_glazed_terracota"));
@@ -3017,6 +3079,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         171,      // Block ID
         11        // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("blue"));
 
     desc = block->addBlockDescription(
@@ -3024,6 +3087,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "blue_carpet" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Blue concrete
     block = blockList->addBlock(string("blue_concrete"));
@@ -3053,6 +3117,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         252,               // Block ID
         11                 // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("blue"));
 
     desc = block->addBlockDescription(
@@ -3060,6 +3125,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "blue_concrete_powder" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Blue Glazed Terracota
     block = blockList->addBlock(string("blue_glazed_terracota"));
@@ -3123,6 +3189,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         171,      // Block ID
         12        // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("brown"));
 
     desc = block->addBlockDescription(
@@ -3130,6 +3197,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "brown_carpet" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Brown concrete
     block = blockList->addBlock(string("brown_concrete"));
@@ -3159,6 +3227,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         252,               // Block ID
         12                 // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("brown"));
 
     desc = block->addBlockDescription(
@@ -3166,6 +3235,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "brown_concrete_powder" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Brown Glazed Terracota
     block = blockList->addBlock(string("brown_glazed_terracota"));
@@ -3243,6 +3313,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "dark_oak_pressure_plate" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Dark Oak Log
     block = blockList->addBlock(string("dark_oak_log"));
@@ -3337,6 +3408,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         171,      // Block ID
         13        // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("green"));
 
     desc = block->addBlockDescription(
@@ -3344,6 +3416,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "green_carpet" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Green concrete
     block = blockList->addBlock(string("green_concrete"));
@@ -3373,6 +3446,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         252,               // Block ID
         13                 // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("green"));
 
     desc = block->addBlockDescription(
@@ -3380,6 +3454,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "green_concrete_powder" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Green Glazed Terracota
     block = blockList->addBlock(string("green_glazed_terracota"));
@@ -3436,6 +3511,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_17, MC_LAST_VERSION,
         "moss_carpet" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // -------------------
     // ---- COLOR_RED ----
@@ -3470,6 +3546,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         171,      // Block ID
         14        // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("red"));
 
     desc = block->addBlockDescription(
@@ -3477,6 +3554,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "red_carpet" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Red concrete
     block = blockList->addBlock(string("red_concrete"));
@@ -3506,6 +3584,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         252,               // Block ID
         14                 // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("red"));
 
     desc = block->addBlockDescription(
@@ -3513,6 +3592,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "red_concrete_powder" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Red Glazed Terracota
     block = blockList->addBlock(string("red_glazed_terracota"));
@@ -3641,6 +3721,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_19, MC_LAST_VERSION,
         "mangrove_pressure_plate" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Red Mushroom Block
     block = blockList->addBlock(string("red_mushroom_block"));
@@ -3684,6 +3765,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         171,      // Block ID
         15        // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("black"));
 
     desc = block->addBlockDescription(
@@ -3691,6 +3773,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "black_carpet" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Black concrete
     block = blockList->addBlock(string("black_concrete"));
@@ -3720,6 +3803,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         252,               // Block ID
         15                 // Data value
     );
+    desc->requiresSupportBlock = true;
     desc->addTag(string("color"), string("black"));
 
     desc = block->addBlockDescription(
@@ -3727,6 +3811,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "black_concrete_powder" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Black Glazed Terracota
     block = blockList->addBlock(string("black_glazed_terracota"));
@@ -3814,6 +3899,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_16, MC_LAST_VERSION,
         "polished_blackstone_pressure_plate" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Basalt
     block = blockList->addBlock(string("basalt"));
@@ -3877,6 +3963,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         147,                             // Block ID
         0                                // Data value
     );
+    desc->requiresSupportBlock = true;
 
     // Raw Gold
     block = blockList->addBlock(string("gold_block"));
@@ -4056,6 +4143,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_13, MC_LAST_VERSION,
         "spruce_pressure_plate" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // Podzol
     block = blockList->addBlock(string("podzol"));
@@ -4334,6 +4422,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_20, MC_LAST_VERSION,
         "cherry_pressure_plate" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // ---------------------------
     // ---- TERRACOTTA_ORANGE ----
@@ -4821,6 +4910,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
         McVersion::MC_1_20, MC_LAST_VERSION,
         "decorated_pot" // NBT name
     );
+    desc->requiresSupportBlock = true;
 
     // --------------------------
     // ---- TERRACOTTA_BLACK ----
@@ -4896,6 +4986,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
             McVersion::MC_1_16, MC_LAST_VERSION,
             "crimson_pressure_plate" // NBT name
         );
+        desc->requiresSupportBlock = true;
 
         // Crimson Stem
         block = blockList->addBlock(string("crimson_stem"));
@@ -5007,6 +5098,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
             McVersion::MC_1_16, MC_LAST_VERSION,
             "warped_pressure_plate" // NBT name
         );
+        desc->requiresSupportBlock = true;
 
         // Warped Stem
         block = blockList->addBlock(string("warped_stem"));
@@ -5159,6 +5251,7 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
                 McVersion::MC_1_17, MC_LAST_VERSION,
                 "glow_lichen" // NBT name
             );
+            desc->requiresSupportBlock = true;
             desc->addTag(string("down"), string("true"));
         }
     }
