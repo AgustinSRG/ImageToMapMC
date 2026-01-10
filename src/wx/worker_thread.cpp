@@ -857,6 +857,8 @@ void WorkerThread::ExportStruct(mapart::MapArtProject &copyProject, std::string 
         std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
         std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
         std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
+        minecraft::BlockList supportBlockList = loadSupportBlocks();
+        mapart::MapBuildingSupportBlock supportBlockOptions = mapart::getSupportBlockOptions(supportBlockList, copyProject.version, copyProject.supportBlockMaterial, copyProject.supportBlocksAlways);
         std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
         std::vector<bool> enabledConf(baseColors.size());
         std::vector<size_t> countsMats(MAX_COLOR_GROUPS);
@@ -902,8 +904,8 @@ void WorkerThread::ExportStruct(mapart::MapArtProject &copyProject, std::string 
 
                 try
                 {
-                    writeStructureNBTFile(outFilePath.string(), buildingBlocks, copyProject.version, false);
-                    writeStructureNBTFile(outBaseFilePath.string(), buildingBlocks, copyProject.version, true);
+                    writeStructureNBTFile(outFilePath.string(), buildingBlocks, supportBlockOptions, copyProject.version, false);
+                    writeStructureNBTFile(outBaseFilePath.string(), buildingBlocks, supportBlockOptions, copyProject.version, true);
                 }
                 catch (...)
                 {
@@ -947,6 +949,8 @@ void WorkerThread::ExportStructSingleFile(mapart::MapArtProject &copyProject, st
         std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
         std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
         std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
+        minecraft::BlockList supportBlockList = loadSupportBlocks();
+        mapart::MapBuildingSupportBlock supportBlockOptions = mapart::getSupportBlockOptions(supportBlockList, copyProject.version, copyProject.supportBlockMaterial, copyProject.supportBlocksAlways);
         std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
         std::vector<bool> enabledConf(baseColors.size());
         std::vector<size_t> countsMats(MAX_COLOR_GROUPS);
@@ -992,11 +996,11 @@ void WorkerThread::ExportStructSingleFile(mapart::MapArtProject &copyProject, st
         {
             if (copyProject.buildMethod == MapBuildMethod::Flat)
             {
-                writeStructureNBTFileCompactFlat(outFilePath, chunks, mapsCountX, copyProject.version, progress);
+                writeStructureNBTFileCompactFlat(outFilePath, chunks, supportBlockOptions, mapsCountX, copyProject.version, progress);
             }
             else
             {
-                writeStructureNBTFileCompact(outFilePath, chunks, copyProject.version, progress);
+                writeStructureNBTFileCompact(outFilePath, chunks, supportBlockOptions, copyProject.version, progress);
             }
         }
         catch (...)
@@ -1036,6 +1040,8 @@ void WorkerThread::ExportStructZip(mapart::MapArtProject &copyProject, std::stri
         std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
         std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
         std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
+        minecraft::BlockList supportBlockList = loadSupportBlocks();
+        mapart::MapBuildingSupportBlock supportBlockOptions = mapart::getSupportBlockOptions(supportBlockList, copyProject.version, copyProject.supportBlockMaterial, copyProject.supportBlocksAlways);
         std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
         std::vector<bool> enabledConf(baseColors.size());
         std::vector<size_t> countsMats(MAX_COLOR_GROUPS);
@@ -1089,8 +1095,8 @@ void WorkerThread::ExportStructZip(mapart::MapArtProject &copyProject, std::stri
 
                 try
                 {
-                    writeStructureNBTFileZip(fPath, zipper, buildingBlocks, copyProject.version, false);
-                    writeStructureNBTFileZip(fPathBase, zipper, buildingBlocks, copyProject.version, true);
+                    writeStructureNBTFileZip(fPath, zipper, buildingBlocks, supportBlockOptions, copyProject.version, false);
+                    writeStructureNBTFileZip(fPathBase, zipper, buildingBlocks, supportBlockOptions, copyProject.version, true);
                 }
                 catch (...)
                 {

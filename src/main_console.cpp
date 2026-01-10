@@ -119,52 +119,54 @@ int printHelp()
     cout << "Note: You have to manually resize the image first if it's too large" << endl;
     cout << "This tool will assume a 1:1 scale unless you use the --resize option" << endl;
     cout << "Available options:" << endl;
-    cout << "    -o, --output [path]            Specifies the output folder or file." << endl;
-    cout << "                                     By default the folder name is 'mapart'" << endl;
-    cout << "    -f, --format [format]          Specifies the output format. By default is 'map'" << endl;
-    cout << "                                     'map' format creates '.dat' files for the maps" << endl;
-    cout << "                                     'structure' format creates nbt structure files" << endl;
-    cout << "                                     'structure-single' format creates a single nbt structure file" << endl;
-    cout << "                                     'schematic' format creates schematic files" << endl;
-    cout << "                                     'schematic-single' format creates a single schematic file" << endl;
-    cout << "                                     'function' format creates .mcfunction files" << endl;
-    cout << "    -mv, --mc-version [version]    Specifies the minecraft version in A.B format (eg, 1.12)." << endl;
-    cout << "                                     Set to 'last' to use the most recent minecraft version available" << endl;
-    cout << "    -bg, --background [#FFFFFF]    Specifies the background color in hex format." << endl;
-    cout << "                                     By default, the background color is white." << endl;
-    cout << "    -rs, --resize [WxH]            Resizes the image before building the map" << endl;
-    cout << "    -cm, --color-method [method]   Specifies the method to approximate the color. By default, 'euclidean'" << endl;
-    cout << "                                     'euclidean' - Simple RGB 3D squared distance" << endl;
-    cout << "                                     'delta-e' - More complex method but more accurate." << endl;
-    cout << "    -d, --dithering [method]       Applies dithering to the image (https://en.wikipedia.org/wiki/Dither)" << endl;
-    cout << "                                     'none' - No dithering" << endl;
-    cout << "                                     'floyd-steinberg'" << endl;
-    cout << "                                     'min-average-error'" << endl;
-    cout << "                                     'burkes'" << endl;
-    cout << "                                     'sierra-lite'" << endl;
-    cout << "                                     'stucki'" << endl;
-    cout << "                                     'atkinson'" << endl;
-    cout << "                                     'bayer-44' (Bayer 4x4)" << endl;
-    cout << "                                     'bayer-22' (Bayer 2x2)" << endl;
-    cout << "                                     'ordered-33' (Ordered 3x3)" << endl;
-    cout << "    -mn, --map-number [num]        Sets the last map ID or total number of maps in your world." << endl;
-    cout << "                                     This applies only when --format is set to 'map'" << endl;
-    cout << "    -bm, --build-method [method]   Sets the build method. By default '3d'" << endl;
-    cout << "                                     This applies only when --format is set to 'structure'" << endl;
-    cout << "                                     -bm '3d' Build 3 dimensional map with arbitrary height jumps" << endl;
-    cout << "                                     -bm '2d' Build 2 dimensional map at the same level" << endl;
-    cout << "                                     -bm 'stair' Build 3 dimensional map with 1 block height jumps max" << endl;
-    cout << "    --transparency                 Set this flag to preserve transparency from original image" << endl;
-    cout << "    --transparency-tol [num]       Set transparency tolerance, from 1 to 255" << endl;
-    cout << "    -cs, --color-set [name/file]   Specifies the color set to use." << endl;
-    cout << "                                     Color sets can enable or disable colors and" << endl;
-    cout << "                                     set the blocks to build each color." << endl;
-    cout << "                                     By default all available colors are used" << endl;
-    cout << "    -m, --materials [file]         Specifies a file to print the list of required materials." << endl;
-    cout << "                                     This applies only when --format is set to 'structure' or 'function'" << endl;
-    cout << "    -t, --threads [num]            Specifies the number of threads to use." << endl;
-    cout << "                                     By default all available cores will be used" << endl;
-    cout << "    -y, --yes [num]                Prevents asking any user input." << endl;
+    cout << "    -o, --output [path]                    Specifies the output folder or file." << endl;
+    cout << "                                             By default the folder name is 'mapart'" << endl;
+    cout << "    -f, --format [format]                  Specifies the output format. By default is 'map'" << endl;
+    cout << "                                             'map' format creates '.dat' files for the maps" << endl;
+    cout << "                                             'structure' format creates nbt structure files" << endl;
+    cout << "                                             'structure-single' format creates a single nbt structure file" << endl;
+    cout << "                                             'schematic' format creates schematic files" << endl;
+    cout << "                                             'schematic-single' format creates a single schematic file" << endl;
+    cout << "                                             'function' format creates .mcfunction files" << endl;
+    cout << "    -mv, --mc-version [version]            Specifies the minecraft version in A.B format (eg, 1.12)." << endl;
+    cout << "                                             Set to 'last' to use the most recent minecraft version available" << endl;
+    cout << "    -bg, --background [#FFFFFF]            Specifies the background color in hex format." << endl;
+    cout << "                                             By default, the background color is white." << endl;
+    cout << "    -rs, --resize [WxH]                    Resizes the image before building the map" << endl;
+    cout << "    -cm, --color-method [method]           Specifies the method to approximate the color. By default, 'euclidean'" << endl;
+    cout << "                                             'euclidean' - Simple RGB 3D squared distance" << endl;
+    cout << "                                             'delta-e' - More complex method but more accurate." << endl;
+    cout << "    -d, --dithering [method]               Applies dithering to the image (https://en.wikipedia.org/wiki/Dither)" << endl;
+    cout << "                                             'none' - No dithering" << endl;
+    cout << "                                             'floyd-steinberg'" << endl;
+    cout << "                                             'min-average-error'" << endl;
+    cout << "                                             'burkes'" << endl;
+    cout << "                                             'sierra-lite'" << endl;
+    cout << "                                             'stucki'" << endl;
+    cout << "                                             'atkinson'" << endl;
+    cout << "                                             'bayer-44' (Bayer 4x4)" << endl;
+    cout << "                                             'bayer-22' (Bayer 2x2)" << endl;
+    cout << "                                             'ordered-33' (Ordered 3x3)" << endl;
+    cout << "    -mn, --map-number [num]                Sets the last map ID or total number of maps in your world." << endl;
+    cout << "                                           This applies only when --format is set to 'map'" << endl;
+    cout << "    -bm, --build-method [method]           Sets the build method. By default '3d'" << endl;
+    cout << "                                           This applies only when --format is set to 'structure'" << endl;
+    cout << "                                             -bm '3d' Build 3 dimensional map with arbitrary height jumps" << endl;
+    cout << "                                             -bm '2d' Build 2 dimensional map at the same level" << endl;
+    cout << "                                             -bm 'stair' Build 3 dimensional map with 1 block height jumps max" << endl;
+    cout << "    --transparency                         Set this flag to preserve transparency from original image" << endl;
+    cout << "    --transparency-tol [num]               Set transparency tolerance, from 1 to 255" << endl;
+    cout << "    -cs, --color-set [name/file]           Specifies the color set to use." << endl;
+    cout << "                                             Color sets can enable or disable colors and" << endl;
+    cout << "                                             set the blocks to build each color." << endl;
+    cout << "                                             By default all available colors are used" << endl;
+    cout << "    -m, --materials [file]                 Specifies a file to print the list of required materials." << endl;
+    cout << "                                             This applies only when --format is set to 'structure' or 'function'" << endl;
+    cout << "    -sbm, --support-block-material [id]    Specifies the material to use for the support blocks." << endl;
+    cout << "    --minimize-support-blocks              Minimizes the support blocks, using them only when necessary" << endl;
+    cout << "    -t, --threads [num]                    Specifies the number of threads to use." << endl;
+    cout << "                                             By default all available cores will be used" << endl;
+    cout << "    -y, --yes [num]                        Prevents asking any user input." << endl;
 
     cout << endl;
 
@@ -386,6 +388,8 @@ int buildMap(int argc, char **argv)
     unsigned int threadNum = max((unsigned int)1, std::thread::hardware_concurrency());
     string materialsOutFile = "";
     Color background = {255, 255, 255};
+    string supportBlockMaterial = DEFAULT_SUPPORT_BLOCK_ID;
+    bool supportBlocksAlways = true;
 
     // Load arguments
     for (int i = 3; i < argc; i++)
@@ -516,6 +520,24 @@ int buildMap(int argc, char **argv)
                 std::cerr << "For help type: mcmap --help" << endl;
                 return 1;
             }
+        }
+        else if (arg.compare(string("-sbm")) == 0 || arg.compare(string("--support-block-material")) == 0)
+        {
+            if ((i + 1) < argc)
+            {
+                supportBlockMaterial = string(argv[i + 1]);
+                i++;
+            }
+            else
+            {
+                std::cerr << "Option " << arg << " requires a parameter." << endl;
+                std::cerr << "For help type: mcmap --help" << endl;
+                return 1;
+            }
+        }
+        else if (arg.compare(string("--minimize-support-blocks")) == 0)
+        {
+            supportBlocksAlways = false;
         }
         else if (arg.compare(string("-rs")) == 0 || arg.compare(string("--resize")) == 0)
         {
@@ -794,6 +816,8 @@ int buildMap(int argc, char **argv)
     std::vector<colors::Color> baseColors = minecraft::loadBaseColors(version);
     std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
     std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
+    minecraft::BlockList supportBlockList = loadSupportBlocks();
+    mapart::MapBuildingSupportBlock supportBlockOptions = mapart::getSupportBlockOptions(supportBlockList, version, supportBlockMaterial, supportBlocksAlways);
     std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
     std::vector<bool> enabledConf(baseColors.size());
     MaterialsList materials(baseColorNames);
@@ -928,11 +952,11 @@ int buildMap(int argc, char **argv)
         {
             if (buildMethod == MapBuildMethod::Flat)
             {
-                writeStructureNBTFileCompactFlat(outputPath, chunks, mapsCountX, version, p);
+                writeStructureNBTFileCompactFlat(outputPath, chunks, supportBlockOptions, mapsCountX, version, p);
             }
             else
             {
-                writeStructureNBTFileCompact(outputPath, chunks, version, p);
+                writeStructureNBTFileCompact(outputPath, chunks, supportBlockOptions, version, p);
             }
         }
         catch (...)
@@ -1045,7 +1069,7 @@ int buildMap(int argc, char **argv)
 
                     try
                     {
-                        writeStructureNBTFile(outFilePath.string(), buildingBlocks, version, false);
+                        writeStructureNBTFile(outFilePath.string(), buildingBlocks, supportBlockOptions, version, false);
                     }
                     catch (...)
                     {

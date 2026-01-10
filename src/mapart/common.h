@@ -101,6 +101,21 @@ namespace mapart
         int z;
     };
 
+    struct MapBuildingSupportBlock
+    {
+        const minecraft::BlockDescription *block_ptr;
+        bool placeAlways;
+    };
+
+    /**
+     * Gets the options for support blocks
+     * @param supportBlockList Block list for support blocks
+     * @param version Minecraft version
+     * @param supportBlockMaterial The material to use for support blocks (Block ID)
+     * @param supportBlocksAlways True to always place support blocks
+     */
+    MapBuildingSupportBlock getSupportBlockOptions(const minecraft::BlockList &supportBlockList, minecraft::McVersion version, std::string supportBlockMaterial, bool supportBlocksAlways);
+
     /**
      * @brief  Represents a plateau
      * @note   

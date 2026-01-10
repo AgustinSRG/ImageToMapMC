@@ -108,7 +108,7 @@ nbt::tag_compound blockToTagOffset(const mapart::MapBuildingBlock &block, vector
     return tag;
 }
 
-void minecraft::writeStructureNBTFileCompact(std::string fileName, std::vector<std::vector<mapart::MapBuildingBlock>> &chunks, minecraft::McVersion version, threading::Progress &progress)
+void minecraft::writeStructureNBTFileCompact(std::string fileName, std::vector<std::vector<mapart::MapBuildingBlock>> &chunks, mapart::MapBuildingSupportBlock &supportBlocks, minecraft::McVersion version, threading::Progress &progress)
 {
     nbt::tag_compound root;
     nbt::tag_list blocksTag;
@@ -123,14 +123,21 @@ void minecraft::writeStructureNBTFileCompact(std::string fileName, std::vector<s
     }
 
     // Add base blocks to palette
-    minecraft::BlockDescription baseBlockDesc;
-    baseBlockDesc.name = "Base Block";
-    baseBlockDesc.minVersion = McVersion::MC_1_12;
-    baseBlockDesc.maxVersion = MC_LAST_VERSION;
-    baseBlockDesc.nbtName = "stone";
     palette[0] = 0;
 
-    paletteTag.push_back(blockDescriptionToTag(&baseBlockDesc));
+    if (supportBlocks.block_ptr != NULL)
+    {
+        paletteTag.push_back(blockDescriptionToTag(supportBlocks.block_ptr));
+    }
+    else
+    {
+        minecraft::BlockDescription baseBlockDesc;
+        baseBlockDesc.name = DEFAULT_SUPPORT_BLOCK_NAME;
+        baseBlockDesc.minVersion = McVersion::MC_1_12;
+        baseBlockDesc.maxVersion = MC_LAST_VERSION;
+        baseBlockDesc.nbtName = DEFAULT_SUPPORT_BLOCK_ID;
+        paletteTag.push_back(blockDescriptionToTag(&baseBlockDesc));
+    }
 
     size_t chunk_count = chunks.size();
     size_t total_width = chunk_count * MAP_WIDTH;
@@ -171,7 +178,10 @@ void minecraft::writeStructureNBTFileCompact(std::string fileName, std::vector<s
                 }
 
                 // Base block
-                blocksTag.push_back(blockToTagOffset(buildData->at(i), palette, true, offset_x, 0));
+                if (supportBlocks.placeAlways || blockPtr->requiresSupportBlock)
+                {
+                    blocksTag.push_back(blockToTagOffset(buildData->at(i), palette, true, offset_x, 0));
+                }
 
                 // Real block
                 blocksTag.push_back(blockToTagOffset(buildData->at(i), palette, false, offset_x, 0));
@@ -228,7 +238,7 @@ void minecraft::writeStructureNBTFileCompact(std::string fileName, std::vector<s
     }
 }
 
-void minecraft::writeStructureNBTFileCompactFlat(std::string fileName, std::vector<std::vector<mapart::MapBuildingBlock>> &chunks, size_t width, minecraft::McVersion version, threading::Progress &progress)
+void minecraft::writeStructureNBTFileCompactFlat(std::string fileName, std::vector<std::vector<mapart::MapBuildingBlock>> &chunks, mapart::MapBuildingSupportBlock &supportBlocks, size_t width, minecraft::McVersion version, threading::Progress &progress)
 {
     nbt::tag_compound root;
     nbt::tag_list blocksTag;
@@ -243,14 +253,21 @@ void minecraft::writeStructureNBTFileCompactFlat(std::string fileName, std::vect
     }
 
     // Add base blocks to palette
-    minecraft::BlockDescription baseBlockDesc;
-    baseBlockDesc.name = "Base Block";
-    baseBlockDesc.minVersion = McVersion::MC_1_12;
-    baseBlockDesc.maxVersion = MC_LAST_VERSION;
-    baseBlockDesc.nbtName = "stone";
     palette[0] = 0;
 
-    paletteTag.push_back(blockDescriptionToTag(&baseBlockDesc));
+    if (supportBlocks.block_ptr != NULL)
+    {
+        paletteTag.push_back(blockDescriptionToTag(supportBlocks.block_ptr));
+    }
+    else
+    {
+        minecraft::BlockDescription baseBlockDesc;
+        baseBlockDesc.name = DEFAULT_SUPPORT_BLOCK_NAME;
+        baseBlockDesc.minVersion = McVersion::MC_1_12;
+        baseBlockDesc.maxVersion = MC_LAST_VERSION;
+        baseBlockDesc.nbtName = DEFAULT_SUPPORT_BLOCK_ID;
+        paletteTag.push_back(blockDescriptionToTag(&baseBlockDesc));
+    }
 
     size_t chunk_count = chunks.size();
     size_t chunks_height = chunk_count / width;
@@ -299,7 +316,10 @@ void minecraft::writeStructureNBTFileCompactFlat(std::string fileName, std::vect
                 }
 
                 // Base block
-                blocksTag.push_back(blockToTagOffset(buildData->at(i), palette, true, offset_x, offset_z));
+                if (supportBlocks.placeAlways || blockPtr->requiresSupportBlock)
+                {
+                    blocksTag.push_back(blockToTagOffset(buildData->at(i), palette, true, offset_x, offset_z));
+                }
 
                 // Real block
                 blocksTag.push_back(blockToTagOffset(buildData->at(i), palette, false, offset_x, offset_z));
@@ -356,7 +376,7 @@ void minecraft::writeStructureNBTFileCompactFlat(std::string fileName, std::vect
     }
 }
 
-void minecraft::writeStructureNBTFile(std::string fileName, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version, bool isBase)
+void minecraft::writeStructureNBTFile(std::string fileName, std::vector<mapart::MapBuildingBlock> &buildData, mapart::MapBuildingSupportBlock &supportBlocks, minecraft::McVersion version, bool isBase)
 {
     nbt::tag_compound root;
     nbt::tag_list blocksTag;
@@ -371,14 +391,21 @@ void minecraft::writeStructureNBTFile(std::string fileName, std::vector<mapart::
     }
 
     // Add base blocks to palette
-    minecraft::BlockDescription baseBlockDesc;
-    baseBlockDesc.name = "Base Block";
-    baseBlockDesc.minVersion = McVersion::MC_1_12;
-    baseBlockDesc.maxVersion = MC_LAST_VERSION;
-    baseBlockDesc.nbtName = "stone";
     palette[0] = 0;
 
-    paletteTag.push_back(blockDescriptionToTag(&baseBlockDesc));
+    if (supportBlocks.block_ptr != NULL)
+    {
+        paletteTag.push_back(blockDescriptionToTag(supportBlocks.block_ptr));
+    }
+    else
+    {
+        minecraft::BlockDescription baseBlockDesc;
+        baseBlockDesc.name = DEFAULT_SUPPORT_BLOCK_NAME;
+        baseBlockDesc.minVersion = McVersion::MC_1_12;
+        baseBlockDesc.maxVersion = MC_LAST_VERSION;
+        baseBlockDesc.nbtName = DEFAULT_SUPPORT_BLOCK_ID;
+        paletteTag.push_back(blockDescriptionToTag(&baseBlockDesc));
+    }
 
     // Blocks parsing
     size_t size = buildData.size();
@@ -410,7 +437,10 @@ void minecraft::writeStructureNBTFile(std::string fileName, std::vector<mapart::
             }
 
             // Base block
-            blocksTag.push_back(blockToTag(buildData[i], palette, true));
+            if (supportBlocks.placeAlways || blockPtr->requiresSupportBlock)
+            {
+                blocksTag.push_back(blockToTag(buildData[i], palette, true));
+            }
 
             // Real block
             if (!isBase)
@@ -460,7 +490,7 @@ void minecraft::writeStructureNBTFile(std::string fileName, std::vector<mapart::
     }
 }
 
-void minecraft::writeStructureNBTFileZip(std::string fileName, zip_t *zipper, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version, bool isBase)
+void minecraft::writeStructureNBTFileZip(std::string fileName, zip_t *zipper, std::vector<mapart::MapBuildingBlock> &buildData, mapart::MapBuildingSupportBlock &supportBlocks, minecraft::McVersion version, bool isBase)
 {
     nbt::tag_compound root;
     nbt::tag_list blocksTag;
@@ -474,15 +504,22 @@ void minecraft::writeStructureNBTFileZip(std::string fileName, zip_t *zipper, st
         palette[i] = -1; // Initiallize
     }
 
-    // Add Base blocks to palette
-    minecraft::BlockDescription baseBlockDesc;
-    baseBlockDesc.name = "Base Block";
-    baseBlockDesc.minVersion = McVersion::MC_1_12;
-    baseBlockDesc.maxVersion = MC_LAST_VERSION;
-    baseBlockDesc.nbtName = "stone";
+    // Add base blocks to palette
     palette[0] = 0;
 
-    paletteTag.push_back(blockDescriptionToTag(&baseBlockDesc));
+    if (supportBlocks.block_ptr != NULL)
+    {
+        paletteTag.push_back(blockDescriptionToTag(supportBlocks.block_ptr));
+    }
+    else
+    {
+        minecraft::BlockDescription baseBlockDesc;
+        baseBlockDesc.name = DEFAULT_SUPPORT_BLOCK_NAME;
+        baseBlockDesc.minVersion = McVersion::MC_1_12;
+        baseBlockDesc.maxVersion = MC_LAST_VERSION;
+        baseBlockDesc.nbtName = DEFAULT_SUPPORT_BLOCK_ID;
+        paletteTag.push_back(blockDescriptionToTag(&baseBlockDesc));
+    }
 
     // Blocks parsing
     size_t size = buildData.size();
@@ -514,7 +551,9 @@ void minecraft::writeStructureNBTFileZip(std::string fileName, zip_t *zipper, st
             }
 
             // Base block
-            blocksTag.push_back(blockToTag(buildData[i], palette, true));
+            if (supportBlocks.placeAlways || blockPtr->requiresSupportBlock) {
+                blocksTag.push_back(blockToTag(buildData[i], palette, true));
+            }
 
             // Real block
             if (!isBase)

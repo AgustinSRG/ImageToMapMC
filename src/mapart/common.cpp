@@ -149,3 +149,10 @@ std::vector<const minecraft::FinalColor *> mapart::mapColorsToRGB(const std::vec
 
     return result;
 }
+
+MapBuildingSupportBlock mapart::getSupportBlockOptions(const minecraft::BlockList &supportBlockList, minecraft::McVersion version, std::string supportBlockMaterial, bool supportBlocksAlways) {
+    MapBuildingSupportBlock result;
+    result.block_ptr = supportBlockList.findBlockDescription(version, supportBlockMaterial);
+    result.placeAlways = supportBlocksAlways;
+    return result;
+}
