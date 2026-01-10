@@ -45,6 +45,8 @@ class MaterialsWindow;
 
 class ImageEditDialog;
 
+class SupportBlockOptionsDialog;
+
 class MainWindow : public wxFrame
 {
 public:
@@ -76,6 +78,7 @@ public:
     void onExportToFunctions(wxCommandEvent &evt);
     void onImageResize(wxCommandEvent &evt);
     void onImageEdit(wxCommandEvent &evt);
+    void onSupportBlockOptions(wxCommandEvent &evt);
 
     void onHelp(wxCommandEvent &evt);
 
@@ -104,6 +107,8 @@ public:
 
     void onImageEditParamsChanged(float saturation, float contrast, float brightness, unsigned char transparencyTolerance, colors::Color background);
 
+    void onSupportBlockOptionsChanged(std::string supportBlockMaterial, bool supportBlocksAlways);
+
     void loadProject(std::string path);
     void saveProject(std::string path);
     void resetProject();
@@ -126,6 +131,7 @@ private:
 
     MaterialsWindow * materialsWindow;
     ImageEditDialog * imageEditDialog;
+    SupportBlockOptionsDialog * supportBlockOptionsDialog;
 
     std::vector<size_t> countsMats;
 
@@ -147,3 +153,4 @@ namespace widgets {
 
 #include "materials_window.h"
 #include "image_edit_dialog.h"
+#include "support_block_options_dialog.h"

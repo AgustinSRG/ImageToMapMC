@@ -131,9 +131,10 @@ short BlockList::findBlockByVersionIndex(minecraft::McVersion version, int versi
     {
         if (this->blocks[i].getBlockDescription(version) != NULL)
         {
-            if (vIndex == versionIndex) {
+            if (vIndex == versionIndex)
+            {
                 return (short)i;
-            }   
+            }
 
             vIndex++;
         }
@@ -147,13 +148,15 @@ const minecraft::BlockDescription *BlockList::findBlockDescription(minecraft::Mc
     size_t size = this->blocks.size();
     for (size_t i = 0; i < size; i++)
     {
-        const minecraft::BlockDescription * desc = this->blocks[i].getBlockDescription(version);
+        const minecraft::BlockDescription *desc = this->blocks[i].getBlockDescription(version);
 
-        if (desc == NULL) {
+        if (desc == NULL)
+        {
             continue;
         }
 
-        if (id.compare(this->blocks[i].id) == 0) {
+        if (id.compare(this->blocks[i].id) == 0)
+        {
             return desc;
         }
     }
@@ -5170,7 +5173,7 @@ minecraft::BlockList minecraft::loadSupportBlocks()
     BlockDescription *desc;
 
     // Stone
-    block = blockList->addBlock(string("stone"));
+    block = blockList.addBlock(string("stone"));
 
     desc = block->addBlockDescription(
         "Stone",
@@ -5181,7 +5184,7 @@ minecraft::BlockList minecraft::loadSupportBlocks()
     );
 
     // Stone Slab
-    block = blockList->addBlock(string("stone_slab"));
+    block = blockList.addBlock(string("stone_slab"));
 
     desc = block->addBlockDescription(
         "Stone Slab",
@@ -5192,7 +5195,7 @@ minecraft::BlockList minecraft::loadSupportBlocks()
     desc->addTag(string("type"), string("top"));
 
     // Cobblestone
-    block = blockList->addBlock(string("cobblestone"));
+    block = blockList.addBlock(string("cobblestone"));
 
     desc = block->addBlockDescription(
         "Cobblestone",
@@ -5203,7 +5206,7 @@ minecraft::BlockList minecraft::loadSupportBlocks()
     );
 
     // Cobblestone Slab
-    block = blockList->addBlock(string("cobblestone_slab"));
+    block = blockList.addBlock(string("cobblestone_slab"));
 
     desc = block->addBlockDescription(
         "Cobblestone Slab",
@@ -5225,7 +5228,7 @@ minecraft::BlockList minecraft::loadSupportBlocks()
     desc->addTag(string("type"), string("top"));
 
     // Dirt
-    block = blockList->addBlock(string("dirt"));
+    block = blockList.addBlock(string("dirt"));
 
     desc = block->addBlockDescription(
         "Dirt",
@@ -5236,7 +5239,7 @@ minecraft::BlockList minecraft::loadSupportBlocks()
     );
 
     // Netherrack
-    block = blockList->addBlock(string("netherrack"));
+    block = blockList.addBlock(string("netherrack"));
 
     desc = block->addBlockDescription(
         "Netherrack",
@@ -5247,7 +5250,7 @@ minecraft::BlockList minecraft::loadSupportBlocks()
     );
 
     // Moss Block
-    block = blockList->addBlock(string("moss_block"));
+    block = blockList.addBlock(string("moss_block"));
 
     desc = block->addBlockDescription(
         "Moss Block",
@@ -5256,14 +5259,14 @@ minecraft::BlockList minecraft::loadSupportBlocks()
     );
 
     // Bedrock
-    block = blockList->addBlock(string("bedrock"));
+    block = blockList.addBlock(string("bedrock"));
 
     desc = block->addBlockDescription(
         "Bedrock",
         McVersion::MC_1_12, MC_LAST_VERSION,
         "bedrock", // NBT name
-        7,           // Block ID
-        0             // Data value
+        7,         // Block ID
+        0          // Data value
     );
 
     return blockList;

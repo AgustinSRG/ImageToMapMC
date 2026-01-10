@@ -1,15 +1,15 @@
 /*
  * This file is part of ImageToMapMC project
- * 
+ *
  * Copyright (c) 2021 Agustin San Roman
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
 
@@ -32,58 +32,64 @@
 
 #define DEFAULT_TRANSPARENCY_TOLERANCE (128)
 
-namespace mapart {
-    class MapArtProject {
-        public:
-            int width;
-            int height;
+namespace mapart
+{
+    class MapArtProject
+    {
+    public:
+        int width;
+        int height;
 
-            int resize_width;
-            int resize_height;
+        int resize_width;
+        int resize_height;
 
-            float saturation;
-            float brightness;
-            float contrast;
-            unsigned char transparencyTolerance;
+        float saturation;
+        float brightness;
+        float contrast;
+        unsigned char transparencyTolerance;
 
-            colors::Color background;
+        colors::Color background;
 
-            mapart::MapBuildMethod buildMethod;
-            colors::ColorDistanceAlgorithm colorDistanceAlgorithm;
-            mapart::DitheringMethod ditheringMethod;
+        mapart::MapBuildMethod buildMethod;
+        colors::ColorDistanceAlgorithm colorDistanceAlgorithm;
+        mapart::DitheringMethod ditheringMethod;
 
-            minecraft::McVersion version;
+        minecraft::McVersion version;
 
-            std::string colorSetConf;
+        std::string colorSetConf;
 
-            std::vector<unsigned char> image_data;
-            std::vector<unsigned char> image_alpha;
+        std::string supportBlockMaterial;
+        bool supportBlocksAlways;
 
-            bool preserveTransparency;
+        std::vector<unsigned char> image_data;
+        std::vector<unsigned char> image_alpha;
 
-            MapArtProject();
-            MapArtProject(const MapArtProject &p1);
+        bool preserveTransparency;
 
-            bool loadFromFile(std::string path);
-            bool saveToFile(std::string path);
+        MapArtProject();
+        MapArtProject(const MapArtProject &p1);
 
-            std::vector<colors::Color> getColors();
-            std::vector<bool> getTransparency();
+        bool loadFromFile(std::string path);
+        bool saveToFile(std::string path);
 
-            wxImage toImage();
+        std::vector<colors::Color> getColors();
+        std::vector<bool> getTransparency();
 
-            void loadImage(wxImage &image);
+        wxImage toImage();
+
+        void loadImage(wxImage &image);
     };
 
-    class MapArtPreviewData {
-        public:
-            std::vector<colors::Color> colors;
-            std::vector<bool> transparency;
-            int width;
-            int height;
-            bool preserveTransparency;
+    class MapArtPreviewData
+    {
+    public:
+        std::vector<colors::Color> colors;
+        std::vector<bool> transparency;
+        int width;
+        int height;
+        bool preserveTransparency;
 
-            MapArtPreviewData();
-            MapArtPreviewData(std::vector<const minecraft::FinalColor *> colors, std::vector<bool> transparency, int width, int height, bool preserveTransparency);
+        MapArtPreviewData();
+        MapArtPreviewData(std::vector<const minecraft::FinalColor *> colors, std::vector<bool> transparency, int width, int height, bool preserveTransparency);
     };
 }

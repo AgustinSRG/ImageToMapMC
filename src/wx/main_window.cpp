@@ -79,6 +79,7 @@ enum Identifiers
     ID_Materials_Show = 21,
     ID_Materials_Save = 22,
     ID_Materials_Save_Split = 23,
+    ID_Support_Block_Options = 24,
 
     ID_Save_Image = 31,
     ID_Save_Preview = 32,
@@ -139,6 +140,7 @@ EVT_MENU(ID_Export_Schematic_Single, MainWindow::onExportToSchematicSingleFile)
 EVT_MENU(ID_Export_Function, MainWindow::onExportToFunctions)
 EVT_MENU(ID_Resize_Image, MainWindow::onImageResize)
 EVT_MENU(ID_Edit_Image, MainWindow::onImageEdit)
+EVT_MENU(ID_Support_Block_Options, MainWindow::onSupportBlockOptions)
 EVT_TIMER(ID_Timer, MainWindow::OnProgressTimer)
 EVT_CLOSE(MainWindow::OnClose)
 EVT_COMMAND(wxID_ANY, wxEVT_WorkerThreadPreviewData, MainWindow::onWorkerPreviewDone)
@@ -181,6 +183,7 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     projectFile = "";
 
     imageEditDialog = NULL;
+    supportBlockOptionsDialog = NULL;
 
     std::vector<size_t> cmats(MAX_COLOR_GROUPS);
     for (size_t i = 0; i < MAX_COLOR_GROUPS; i++)
@@ -242,6 +245,8 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
     // Materials
     wxMenu *menuMaterials = new wxMenu();
     menuMaterials->Append(ID_Blocks_Custom, "&Customize materials\tCtrl+M", "Customizes materials to use");
+    menuMaterials->AppendSeparator();
+    menuMaterials->Append(ID_Support_Block_Options, "&Support blocks options", "Customizes options for support blocks");
     menuMaterials->AppendSeparator();
     menuMaterials->Append(ID_Materials_Save, "&Export materials list\tCtrl+Shift+M", "Exports list of materials to a text file");
     menuMaterials->Append(ID_Materials_Save_Split, "&Export materials list (128x128 sections)", "Exports list of materials to a text file. The materials are split in 128x128 blocks sections.");
@@ -608,6 +613,11 @@ void MainWindow::handleDropFile(wxDropFilesEvent &event)
                 materialsWindow->setMaterialsConf(project.version, project.buildMethod, project.colorSetConf);
             }
 
+            if (supportBlockOptionsDialog != NULL)
+            {
+                supportBlockOptionsDialog->SetParams(project.version, project.supportBlockMaterial, project.supportBlocksAlways);
+            }
+
             // Not dirty
             dirty = false;
 
@@ -873,6 +883,21 @@ void MainWindow::onImageEdit(wxCommandEvent &evt)
     }
 }
 
+void MainWindow::onSupportBlockOptions(wxCommandEvent &evt)
+{
+    if (supportBlockOptionsDialog == NULL)
+    {
+        supportBlockOptionsDialog = new SupportBlockOptionsDialog(this);
+        supportBlockOptionsDialog->Show();
+        supportBlockOptionsDialog->SetParams(project.version, project.supportBlockMaterial, project.supportBlocksAlways);
+    }
+    else
+    {
+        supportBlockOptionsDialog->Show();
+        supportBlockOptionsDialog->Raise();
+    }
+}
+
 void MainWindow::onImageEditParamsChanged(float saturation, float contrast, float brightness, unsigned char transparencyTolerance, colors::Color background)
 {
     project.saturation = saturation;
@@ -884,6 +909,13 @@ void MainWindow::onImageEditParamsChanged(float saturation, float contrast, floa
     updateOriginalImage();
 }
 
+void MainWindow::onSupportBlockOptionsChanged(std::string supportBlockMaterial, bool supportBlocksAlways)
+{
+    project.supportBlockMaterial = supportBlockMaterial;
+    project.supportBlocksAlways = supportBlocksAlways;
+    dirty = true;
+}
+
 void MainWindow::resetProject()
 {
     project = MapArtProject();
@@ -891,6 +923,11 @@ void MainWindow::resetProject()
     if (imageEditDialog != NULL)
     {
         imageEditDialog->SetParams(project.saturation, project.contrast, project.brightness, project.transparencyTolerance, project.background);
+    }
+
+    if (supportBlockOptionsDialog != NULL)
+    {
+        supportBlockOptionsDialog->SetParams(project.version, project.supportBlockMaterial, project.supportBlocksAlways);
     }
 
     // Not dirty
@@ -927,6 +964,11 @@ void MainWindow::loadProject(std::string path)
         if (materialsWindow != NULL)
         {
             materialsWindow->setMaterialsConf(project.version, project.buildMethod, project.colorSetConf);
+        }
+
+        if (supportBlockOptionsDialog != NULL)
+        {
+            supportBlockOptionsDialog->SetParams(project.version, project.supportBlockMaterial, project.supportBlocksAlways);
         }
 
         // Not dirty
@@ -1273,8 +1315,10 @@ void MainWindow::updateMenuBarRadios()
 
     int versionChosenId = getIdForVersionMenu(project.version);
 
-    for (int i = 0; i < GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems().size(); i++) {
-        if (GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[i]->GetId() == versionChosenId) {
+    for (int i = 0; i < GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems().size(); i++)
+    {
+        if (GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[i]->GetId() == versionChosenId)
+        {
             GetMenuBar()->GetMenu(versionMenuIndex)->GetMenuItems()[i]->Check(true);
             break;
         }

@@ -416,7 +416,7 @@ void MaterialsPanel::setMaterialsConf(minecraft::McVersion version, mapart::MapB
                     {
                         groups[i].combo->Append(blockSet[i].blocks[j].getBlockDescription(version)->name);
 
-                        if (blockSet[i].useBlockIndex == = j)
+                        if (blockSet[i].useBlockIndex == j)
                         {
                             groups[i].combo->SetSelection(comboIndex);
                             foundSelectedBlock = true;

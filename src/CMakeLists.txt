@@ -62,6 +62,7 @@ SET(SOURCES_WX
     "wx/structure_export_dialog.h" "wx/structure_export_dialog.cpp"
     "wx/image_resize_dialog.h" "wx/image_resize_dialog.cpp"
     "wx/image_edit_dialog.h" "wx/image_edit_dialog.cpp"
+    "wx/support_block_options_dialog.h" "wx/support_block_options_dialog.cpp"
     "wx/worker_thread.h" "wx/worker_thread.cpp"
     "mapart/project.h" "mapart/project.cpp"
     "tools/open_desktop.h" "tools/open_desktop.cpp"

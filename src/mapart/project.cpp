@@ -54,6 +54,10 @@ MapArtProject::MapArtProject()
     // Colors conf
     colorSetConf = "MODE(BLACKLIST)\n";
 
+    // Support blocks
+    supportBlockMaterial = std::string("stone");
+    supportBlocksAlways = true;
+
     // Version
     version = MC_LAST_VERSION;
 
@@ -99,6 +103,10 @@ MapArtProject::MapArtProject(const MapArtProject &p1)
 
     // Colors conf
     colorSetConf = p1.colorSetConf;
+
+    // Support blocks
+    supportBlockMaterial = p1.supportBlockMaterial;
+    supportBlocksAlways = p1.supportBlocksAlways;
 
     // Version
     version = p1.version;
@@ -157,6 +165,16 @@ bool MapArtProject::loadFromFile(std::string path)
             background.red = 255;
             background.green = 255;
             background.blue = 255;
+        }
+
+        if (comp.has_key("support_block_material")) {
+            supportBlockMaterial = comp.at("support_block_material").as<nbt::tag_string>().get();
+        }
+
+        if (comp.has_key("support_block_always")) {
+            supportBlocksAlways = comp.at("support_block_always").as<nbt::tag_int>().get() != 0;
+        } else {
+            supportBlocksAlways = true;
         }
 
         if (comp.has_key("transparency_tol")) {
@@ -290,6 +308,9 @@ bool MapArtProject::saveToFile(std::string path)
     root.insert("transparency_tol", nbt::tag_int((int) transparencyTolerance));
 
     root.insert("colors_conf", nbt::tag_string(colorSetConf));
+
+    root.insert("support_block_material", nbt::tag_string(supportBlockMaterial));
+    root.insert("support_block_always", nbt::tag_int(supportBlocksAlways ? 1 : 0));
 
     root.insert("version", nbt::tag_string(versionToString(version)));
 
