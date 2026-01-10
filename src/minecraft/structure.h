@@ -33,7 +33,7 @@ namespace minecraft {
      * @note   
      * @param  fileName File name
      * @param  buildData Building data
-     * @param  supportBlocks SXupport block options
+     * @param  supportBlocks Support block options
      * @param  version Minecraft version
      * @param  isBase Set to true to only save the base blocks (stone) 
      * @retval None
@@ -45,7 +45,7 @@ namespace minecraft {
      * @note   
      * @param  fileName File name
      * @param  chunks Building chunks
-     * @param  supportBlocks SXupport block options
+     * @param  supportBlocks Support block options
      * @param  version Minecraft version
      * @param  progress progress reporter
      * @retval None
@@ -57,7 +57,7 @@ namespace minecraft {
      * @note   
      * @param  fileName File name
      * @param  chunks Building chunks
-     * @param  supportBlocks SXupport block options
+     * @param  supportBlocks Support block options
      * @param  width Matrix width
      * @param  version Minecraft version
      * @param  progress progress reporter
@@ -71,7 +71,7 @@ namespace minecraft {
      * @param  fileName: File name
      * @param  zipper: Zip file descriptor
      * @param  buildData: Building data
-     * @param  supportBlocks SXupport block options
+     * @param  supportBlocks Support block options
      * @param  version: Minecraft version
      * @param  isBase: Set to true to only save the base blocks (stone) 
      * @retval None

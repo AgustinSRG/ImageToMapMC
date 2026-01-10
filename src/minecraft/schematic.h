@@ -31,46 +31,50 @@ namespace minecraft {
     /**
      * @brief  Writes schematic to file
      * @note   
-     * @param  fileName: File name
-     * @param  &buildData: Building data
-     * @param  version: Minecraft version
-     * @param  isBase: Set to true to only save the base blocks (stone) 
+     * @param  fileName File name
+     * @param  buildData Building data
+     * @param  supportBlocks Support block options
+     * @param  version Minecraft version
+     * @param  isBase Set to true to only save the base blocks (stone) 
      * @retval None
      */
-    void writeSchematicNBTFile(std::string fileName, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version, bool isBase);
+    void writeSchematicNBTFile(std::string fileName, std::vector<mapart::MapBuildingBlock> &buildData, mapart::MapBuildingSupportBlock &supportBlocks, minecraft::McVersion version, bool isBase);
 
     /**
      * @brief  Writes schematic to file (compact, single file)
      * @note   
-     * @param  fileName: File name
-     * @param  &chunks: Building chunks
-     * @param  version: Minecraft version
-     * @param  &progress: progress reporter
+     * @param  fileName File name
+     * @param  chunks Building chunks
+     * @param  supportBlocks Support block options
+     * @param  version Minecraft version
+     * @param  progress progress reporter
      * @retval None
      */
-    void writeSchematicNBTFileCompact(std::string fileName, std::vector<std::vector<mapart::MapBuildingBlock>> &chunks, minecraft::McVersion version, threading::Progress &progress);
+    void writeSchematicNBTFileCompact(std::string fileName, std::vector<std::vector<mapart::MapBuildingBlock>> &chunks, mapart::MapBuildingSupportBlock &supportBlocks, minecraft::McVersion version, threading::Progress &progress);
 
      /**
      * @brief  Writes schematic to file (compact, single file) (for flat maps only)
      * @note   
-     * @param  fileName: File name
-     * @param  &chunks: Building chunks
-     * @param  width: Matrix width
-     * @param  version: Minecraft version
-     * @param  &progress: progress reporter
+     * @param  fileName File name
+     * @param  chunks Building chunks
+     * @param  supportBlocks Support block options
+     * @param  width Matrix width
+     * @param  version Minecraft version
+     * @param  progress progress reporter
      * @retval None
      */
-    void writeSchematicNBTFileCompactFlat(std::string fileName, std::vector<std::vector<mapart::MapBuildingBlock>> &chunks, size_t width, minecraft::McVersion version, threading::Progress &progress);
+    void writeSchematicNBTFileCompactFlat(std::string fileName, std::vector<std::vector<mapart::MapBuildingBlock>> &chunks, mapart::MapBuildingSupportBlock &supportBlocks, size_t width, minecraft::McVersion version, threading::Progress &progress);
 
     /**
      * @brief  Writes schematic to file
      * @note   
-     * @param  fileName: File name
-     * @param  zipper: Zip file descriptor
-     * @param  &buildData: Building data
-     * @param  version: Minecraft version
-     * @param  isBase: Set to true to only save the base blocks (stone) 
+     * @param  fileName File name
+     * @param  zipper Zip file descriptor
+     * @param  buildData Building data
+     * @param  supportBlocks Support block options
+     * @param  version Minecraft version
+     * @param  isBase Set to true to only save the base blocks (stone) 
      * @retval None
      */
-    void writeSchematicNBTFileZip(std::string fileName, zip_t *zipper, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version, bool isBase);
+    void writeSchematicNBTFileZip(std::string fileName, zip_t *zipper, std::vector<mapart::MapBuildingBlock> &buildData, mapart::MapBuildingSupportBlock &supportBlocks, minecraft::McVersion version, bool isBase);
 }

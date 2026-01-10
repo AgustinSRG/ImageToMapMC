@@ -66,7 +66,7 @@ std::string blockDescriptionToTagName(const minecraft::BlockDescription *desc)
     return ss.str();
 }
 
-void minecraft::writeSchematicNBTFile(std::string fileName, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version, bool isBase)
+void minecraft::writeSchematicNBTFile(std::string fileName, std::vector<mapart::MapBuildingBlock> &buildData, mapart::MapBuildingSupportBlock &supportBlocks, minecraft::McVersion version, bool isBase)
 {
     nbt::tag_compound root;
     nbt::tag_compound schematic;
@@ -82,16 +82,26 @@ void minecraft::writeSchematicNBTFile(std::string fileName, std::vector<mapart::
         palette[i] = -1; // Initialize
     }
 
+    // Add air to palette
+    paletteTag.insert("minecraft:air", 0);
+
     // Add base blocks to palette
-    minecraft::BlockDescription baseBlockDesc;
-    baseBlockDesc.name = "Base Block";
-    baseBlockDesc.minVersion = McVersion::MC_1_12;
-    baseBlockDesc.maxVersion = MC_LAST_VERSION;
-    baseBlockDesc.nbtName = "stone";
     palette[0] = 1;
 
-    paletteTag.insert("minecraft:air", 0);
-    paletteTag.insert(blockDescriptionToTagName(&baseBlockDesc), 1);
+    if (supportBlocks.block_ptr != NULL)
+    {
+        paletteTag.insert(blockDescriptionToTagName(supportBlocks.block_ptr), 1);
+    }
+    else
+    {
+        minecraft::BlockDescription baseBlockDesc;
+        baseBlockDesc.name = DEFAULT_SUPPORT_BLOCK_NAME;
+        baseBlockDesc.minVersion = McVersion::MC_1_12;
+        baseBlockDesc.maxVersion = MC_LAST_VERSION;
+        baseBlockDesc.nbtName = DEFAULT_SUPPORT_BLOCK_ID;
+
+        paletteTag.insert(blockDescriptionToTagName(&baseBlockDesc), 1);
+    }
 
     size_t total_width = MAP_WIDTH;
     size_t total_length = MAP_HEIGHT + 1;
@@ -202,7 +212,7 @@ void minecraft::writeSchematicNBTFile(std::string fileName, std::vector<mapart::
     }
 }
 
-void minecraft::writeSchematicNBTFileCompact(std::string fileName, std::vector<std::vector<mapart::MapBuildingBlock>> &chunks, minecraft::McVersion version, threading::Progress &progress)
+void minecraft::writeSchematicNBTFileCompact(std::string fileName, std::vector<std::vector<mapart::MapBuildingBlock>> &chunks, mapart::MapBuildingSupportBlock &supportBlocks, minecraft::McVersion version, threading::Progress &progress)
 {
     nbt::tag_compound root;
     nbt::tag_compound schematic;
@@ -218,16 +228,26 @@ void minecraft::writeSchematicNBTFileCompact(std::string fileName, std::vector<s
         palette[i] = -1; // Initialize
     }
 
+    // Add air to palette
+    paletteTag.insert("minecraft:air", 0);
+
     // Add base blocks to palette
-    minecraft::BlockDescription baseBlockDesc;
-    baseBlockDesc.name = "Base Block";
-    baseBlockDesc.minVersion = McVersion::MC_1_12;
-    baseBlockDesc.maxVersion = MC_LAST_VERSION;
-    baseBlockDesc.nbtName = "stone";
     palette[0] = 1;
 
-    paletteTag.insert("minecraft:air", 0);
-    paletteTag.insert(blockDescriptionToTagName(&baseBlockDesc), 1);
+    if (supportBlocks.block_ptr != NULL)
+    {
+        paletteTag.insert(blockDescriptionToTagName(supportBlocks.block_ptr), 1);
+    }
+    else
+    {
+        minecraft::BlockDescription baseBlockDesc;
+        baseBlockDesc.name = DEFAULT_SUPPORT_BLOCK_NAME;
+        baseBlockDesc.minVersion = McVersion::MC_1_12;
+        baseBlockDesc.maxVersion = MC_LAST_VERSION;
+        baseBlockDesc.nbtName = DEFAULT_SUPPORT_BLOCK_ID;
+
+        paletteTag.insert(blockDescriptionToTagName(&baseBlockDesc), 1);
+    }
 
     size_t chunk_count = chunks.size();
     size_t total_width = chunk_count * MAP_WIDTH;
@@ -359,7 +379,7 @@ void minecraft::writeSchematicNBTFileCompact(std::string fileName, std::vector<s
     }
 }
 
-void minecraft::writeSchematicNBTFileCompactFlat(std::string fileName, std::vector<std::vector<mapart::MapBuildingBlock>> &chunks, size_t width, minecraft::McVersion version, threading::Progress &progress)
+void minecraft::writeSchematicNBTFileCompactFlat(std::string fileName, std::vector<std::vector<mapart::MapBuildingBlock>> &chunks, mapart::MapBuildingSupportBlock &supportBlocks, size_t width, minecraft::McVersion version, threading::Progress &progress)
 {
     nbt::tag_compound root;
     nbt::tag_compound schematic;
@@ -375,16 +395,26 @@ void minecraft::writeSchematicNBTFileCompactFlat(std::string fileName, std::vect
         palette[i] = -1; // Initialize
     }
 
+   // Add air to palette
+    paletteTag.insert("minecraft:air", 0);
+
     // Add base blocks to palette
-    minecraft::BlockDescription baseBlockDesc;
-    baseBlockDesc.name = "Base Block";
-    baseBlockDesc.minVersion = McVersion::MC_1_12;
-    baseBlockDesc.maxVersion = MC_LAST_VERSION;
-    baseBlockDesc.nbtName = "stone";
     palette[0] = 1;
 
-    paletteTag.insert("minecraft:air", 0);
-    paletteTag.insert(blockDescriptionToTagName(&baseBlockDesc), 1);
+    if (supportBlocks.block_ptr != NULL)
+    {
+        paletteTag.insert(blockDescriptionToTagName(supportBlocks.block_ptr), 1);
+    }
+    else
+    {
+        minecraft::BlockDescription baseBlockDesc;
+        baseBlockDesc.name = DEFAULT_SUPPORT_BLOCK_NAME;
+        baseBlockDesc.minVersion = McVersion::MC_1_12;
+        baseBlockDesc.maxVersion = MC_LAST_VERSION;
+        baseBlockDesc.nbtName = DEFAULT_SUPPORT_BLOCK_ID;
+
+        paletteTag.insert(blockDescriptionToTagName(&baseBlockDesc), 1);
+    }
 
     size_t chunk_count = chunks.size();
     size_t chunks_length = chunk_count / width;
@@ -524,7 +554,7 @@ void minecraft::writeSchematicNBTFileCompactFlat(std::string fileName, std::vect
     }
 }
 
-void minecraft::writeSchematicNBTFileZip(std::string fileName, zip_t *zipper, std::vector<mapart::MapBuildingBlock> &buildData, minecraft::McVersion version, bool isBase)
+void minecraft::writeSchematicNBTFileZip(std::string fileName, zip_t *zipper, std::vector<mapart::MapBuildingBlock> &buildData, mapart::MapBuildingSupportBlock &supportBlocks, minecraft::McVersion version, bool isBase)
 {
     nbt::tag_compound root;
     nbt::tag_compound schematic;
@@ -540,16 +570,26 @@ void minecraft::writeSchematicNBTFileZip(std::string fileName, zip_t *zipper, st
         palette[i] = -1; // Initialize
     }
 
+    // Add air to palette
+    paletteTag.insert("minecraft:air", 0);
+
     // Add base blocks to palette
-    minecraft::BlockDescription baseBlockDesc;
-    baseBlockDesc.name = "Base Block";
-    baseBlockDesc.minVersion = McVersion::MC_1_12;
-    baseBlockDesc.maxVersion = MC_LAST_VERSION;
-    baseBlockDesc.nbtName = "stone";
     palette[0] = 1;
 
-    paletteTag.insert("minecraft:air", 0);
-    paletteTag.insert(blockDescriptionToTagName(&baseBlockDesc), 1);
+    if (supportBlocks.block_ptr != NULL)
+    {
+        paletteTag.insert(blockDescriptionToTagName(supportBlocks.block_ptr), 1);
+    }
+    else
+    {
+        minecraft::BlockDescription baseBlockDesc;
+        baseBlockDesc.name = DEFAULT_SUPPORT_BLOCK_NAME;
+        baseBlockDesc.minVersion = McVersion::MC_1_12;
+        baseBlockDesc.maxVersion = MC_LAST_VERSION;
+        baseBlockDesc.nbtName = DEFAULT_SUPPORT_BLOCK_ID;
+
+        paletteTag.insert(blockDescriptionToTagName(&baseBlockDesc), 1);
+    }
 
     size_t total_width = MAP_WIDTH;
     size_t total_length = MAP_HEIGHT + 1;

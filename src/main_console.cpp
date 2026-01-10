@@ -1012,11 +1012,11 @@ int buildMap(int argc, char **argv)
         {
             if (buildMethod == MapBuildMethod::Flat)
             {
-                writeSchematicNBTFileCompactFlat(outputPath, chunks, mapsCountX, version, p);
+                writeSchematicNBTFileCompactFlat(outputPath, chunks, supportBlockOptions, mapsCountX, version, p);
             }
             else
             {
-                writeSchematicNBTFileCompact(outputPath, chunks, version, p);
+                writeSchematicNBTFileCompact(outputPath, chunks, supportBlockOptions, version, p);
             }
         }
         catch (...)
@@ -1091,7 +1091,7 @@ int buildMap(int argc, char **argv)
 
                     try
                     {
-                        writeSchematicNBTFile(outFilePath.string(), buildingBlocks, version, false);
+                        writeSchematicNBTFile(outFilePath.string(), buildingBlocks, supportBlockOptions, version, false);
                     }
                     catch (...)
                     {

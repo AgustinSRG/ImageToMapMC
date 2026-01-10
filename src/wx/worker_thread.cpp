@@ -1145,6 +1145,8 @@ void WorkerThread::ExportSchematicSingleFile(mapart::MapArtProject &copyProject,
         std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
         std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
         std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
+        minecraft::BlockList supportBlockList = loadSupportBlocks();
+        mapart::MapBuildingSupportBlock supportBlockOptions = mapart::getSupportBlockOptions(supportBlockList, copyProject.version, copyProject.supportBlockMaterial, copyProject.supportBlocksAlways);
         std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
         std::vector<bool> enabledConf(baseColors.size());
         std::vector<size_t> countsMats(MAX_COLOR_GROUPS);
@@ -1190,11 +1192,11 @@ void WorkerThread::ExportSchematicSingleFile(mapart::MapArtProject &copyProject,
         {
             if (copyProject.buildMethod == MapBuildMethod::Flat)
             {
-                writeSchematicNBTFileCompactFlat(outFilePath, chunks, mapsCountX, copyProject.version, progress);
+                writeSchematicNBTFileCompactFlat(outFilePath, chunks, supportBlockOptions, mapsCountX, copyProject.version, progress);
             }
             else
             {
-                writeSchematicNBTFileCompact(outFilePath, chunks, copyProject.version, progress);
+                writeSchematicNBTFileCompact(outFilePath, chunks, supportBlockOptions, copyProject.version, progress);
             }
         }
         catch (...)
@@ -1234,6 +1236,8 @@ void WorkerThread::ExportSchematicZip(mapart::MapArtProject &copyProject, std::s
         std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
         std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
         std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
+        minecraft::BlockList supportBlockList = loadSupportBlocks();
+        mapart::MapBuildingSupportBlock supportBlockOptions = mapart::getSupportBlockOptions(supportBlockList, copyProject.version, copyProject.supportBlockMaterial, copyProject.supportBlocksAlways);
         std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
         std::vector<bool> enabledConf(baseColors.size());
         std::vector<size_t> countsMats(MAX_COLOR_GROUPS);
@@ -1287,8 +1291,8 @@ void WorkerThread::ExportSchematicZip(mapart::MapArtProject &copyProject, std::s
 
                 try
                 {
-                    writeSchematicNBTFileZip(fPath, zipper, buildingBlocks, copyProject.version, false);
-                    writeSchematicNBTFileZip(fPathBase, zipper, buildingBlocks, copyProject.version, true);
+                    writeSchematicNBTFileZip(fPath, zipper, buildingBlocks, supportBlockOptions, copyProject.version, false);
+                    writeSchematicNBTFileZip(fPathBase, zipper, buildingBlocks, supportBlockOptions, copyProject.version, true);
                 }
                 catch (...)
                 {

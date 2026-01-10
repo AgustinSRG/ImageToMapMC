@@ -174,7 +174,7 @@ std::string MaterialsList::toString()
 
     ss << endl;
 
-    ss << "Base blocks (" << supportBlockMaterialName << "): " << base << " ( " << compactAmount(base) << " )" << endl;
+    ss << "Support blocks (" << supportBlockMaterialName << "): " << base << " ( " << compactAmount(base) << " )" << endl;
 
     return ss.str();
 }
