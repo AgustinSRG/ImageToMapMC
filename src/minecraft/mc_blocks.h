@@ -179,6 +179,15 @@ namespace minecraft
            * @retval The block index in the list or -1 if not found
            */
           short findBlockByVersionIndex(minecraft::McVersion version, int versionIndex);
+
+          /**
+           * @brief  Finds the block description
+           * @note
+           * @param  version: Minecraft version
+           * @param  id: Block ID
+           * @retval Th block description
+           */
+          const minecraft::BlockDescription *findBlockDescription(minecraft::McVersion version, std::string id) const;
      };
 
      /**
