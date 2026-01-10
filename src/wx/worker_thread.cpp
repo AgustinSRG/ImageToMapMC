@@ -571,6 +571,7 @@ void WorkerThread::ExportMaterialsSplit(mapart::MapArtProject &copyProject, std:
         std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
         std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
         std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
+        minecraft::BlockList supportBlockList = loadSupportBlocks();
         std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
         std::vector<bool> enabledConf(baseColors.size());
         std::vector<size_t> countsMats(MAX_COLOR_GROUPS);
@@ -593,6 +594,17 @@ void WorkerThread::ExportMaterialsSplit(mapart::MapArtProject &copyProject, std:
 
         MaterialsList materials(baseColorNames);
         stringstream resultStream;
+
+        const minecraft::BlockDescription *supportBlockDescription = supportBlockList.findBlockDescription(copyProject.version, copyProject.supportBlockMaterial);
+
+        if (supportBlockDescription != NULL)
+        {
+            materials.setSupportBlockMaterialName(supportBlockDescription->name);
+        }
+        else
+        {
+            materials.setSupportBlockMaterialName(DEFAULT_SUPPORT_BLOCK_NAME);
+        }
 
         for (int mapZ = 0; mapZ < mapsCountZ; mapZ++)
         {
