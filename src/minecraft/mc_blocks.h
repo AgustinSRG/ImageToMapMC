@@ -179,4 +179,11 @@ namespace minecraft
      * @retval List of blocks
      */
     std::vector<minecraft::BlockList> loadBlocks(std::vector<colors::Color> &baseColors);
+
+    /**
+     * @brief  Loads all support blocks
+     * @note   
+     * @retval List of support blocks
+     */
+    minecraft::BlockList loadSupportBlocks();
 }

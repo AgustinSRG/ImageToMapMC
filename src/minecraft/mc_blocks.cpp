@@ -5124,3 +5124,109 @@ std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Colo
 
     return list; // Return the list of blocks
 }
+
+minecraft::BlockList minecraft::loadSupportBlocks()
+{
+    minecraft::BlockList blockList;
+    Block *block;
+    BlockDescription *desc;
+
+    // Stone
+    block = blockList->addBlock(string("stone"));
+
+    desc = block->addBlockDescription(
+        "Stone",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "stone", // NBT name
+        1,       // Block ID
+        0        // Data value
+    );
+
+    // Stone Slab
+    block = blockList->addBlock(string("stone_slab"));
+
+    desc = block->addBlockDescription(
+        "Stone Slab",
+        McVersion::MC_1_14, MC_LAST_VERSION,
+        "stone_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("top"));
+
+    // Cobblestone
+    block = blockList->addBlock(string("cobblestone"));
+
+    desc = block->addBlockDescription(
+        "Cobblestone",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "cobblestone", // NBT name
+        4,             // Block ID
+        0              // Data value
+    );
+
+    // Cobblestone Slab
+    block = blockList->addBlock(string("cobblestone_slab"));
+
+    desc = block->addBlockDescription(
+        "Cobblestone Slab",
+        McVersion::MC_1_12, McVersion::MC_1_12,
+        "stone_slab", // NBT name
+        44,           // Block ID
+        3             // Data value
+    );
+
+    desc->addTag(string("variant"), string("cobblestone"));
+    desc->addTag(string("half"), string("top"));
+
+    desc = block->addBlockDescription(
+        "Cobblestone Slab",
+        McVersion::MC_1_13, MC_LAST_VERSION,
+        "cobblestone_slab" // NBT name
+    );
+
+    desc->addTag(string("type"), string("top"));
+
+    // Dirt
+    block = blockList->addBlock(string("dirt"));
+
+    desc = block->addBlockDescription(
+        "Dirt",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "dirt", // NBT name
+        3,      // Block ID
+        0       // Data value
+    );
+
+    // Netherrack
+    block = blockList->addBlock(string("netherrack"));
+
+    desc = block->addBlockDescription(
+        "Netherrack",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "netherrack", // NBT name
+        87,           // Block ID
+        0             // Data value
+    );
+
+    // Moss Block
+    block = blockList->addBlock(string("moss_block"));
+
+    desc = block->addBlockDescription(
+        "Moss Block",
+        McVersion::MC_1_17, MC_LAST_VERSION,
+        "moss_block" // NBT name
+    );
+
+    // Bedrock
+    block = blockList->addBlock(string("bedrock"));
+
+    desc = block->addBlockDescription(
+        "Bedrock",
+        McVersion::MC_1_12, MC_LAST_VERSION,
+        "bedrock", // NBT name
+        7,           // Block ID
+        0             // Data value
+    );
+
+    return blockList;
+}
