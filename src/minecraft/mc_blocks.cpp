@@ -123,6 +123,25 @@ short BlockList::findBlock(std::string id)
     return -1;
 }
 
+short BlockList::findBlockByVersionIndex(minecraft::McVersion version, int versionIndex)
+{
+    size_t size = this->blocks.size();
+    int vIndex = 0;
+    for (size_t i = 0; i < size; i++)
+    {
+        if (this->blocks[i].getBlockDescription(version) != NULL)
+        {
+            if (vIndex == versionIndex) {
+                return (short)i;
+            }   
+
+            vIndex++;
+        }
+    }
+
+    return -1;
+}
+
 std::vector<minecraft::BlockList> minecraft::loadBlocks(std::vector<colors::Color> &baseColors)
 {
     size_t size = baseColors.size();

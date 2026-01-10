@@ -319,7 +319,12 @@ void MaterialsPanel::onComboBoxChanged(wxCommandEvent &evt)
     int index = evt.GetId() - MIN_ID_COMBO;
     if (index >= 0 && index < blockSet.size())
     {
-        blockSet[index].useBlockIndex = groups[index].combo->GetSelection();
+        blockSet[index].useBlockIndex = blockSet[index].findBlockByVersionIndex(this->version, groups[index].combo->GetSelection());
+
+        if (blockSet[index].useBlockIndex < 0)
+        {
+            blockSet[index].useBlockIndex = 0;
+        }
     }
     onConfigChanged();
 }
@@ -401,20 +406,27 @@ void MaterialsPanel::setMaterialsConf(minecraft::McVersion version, mapart::MapB
             {
                 groups[i].combo->Clear();
 
+                int comboIndex = 0;
+                bool foundSelectedBlock = false;
+
                 for (int j = 0; j < blockSet[i].blocks.size(); j++)
                 {
 
                     if (blockSet[i].blocks[j].getBlockDescription(version) != NULL)
                     {
                         groups[i].combo->Append(blockSet[i].blocks[j].getBlockDescription(version)->name);
+
+                        if (blockSet[i].useBlockIndex == = j)
+                        {
+                            groups[i].combo->SetSelection(comboIndex);
+                            foundSelectedBlock = true;
+                        }
+
+                        comboIndex++;
                     }
                 }
 
-                if (blockSet[i].useBlockIndex >= 0 && blockSet[i].useBlockIndex < blockSet[i].blocks.size())
-                {
-                    groups[i].combo->SetSelection(blockSet[i].useBlockIndex);
-                }
-                else
+                if (!foundSelectedBlock)
                 {
                     groups[i].combo->SetSelection(0);
                 }
@@ -527,8 +539,10 @@ void MaterialsPanel::displayCountMaterials(std::vector<size_t> &counts)
     countMutex.Unlock();
 }
 
-void MaterialsWindow::OnKeyPress(wxKeyEvent &event) {
-    if (event.GetKeyCode() == WXK_ESCAPE) {
+void MaterialsWindow::OnKeyPress(wxKeyEvent &event)
+{
+    if (event.GetKeyCode() == WXK_ESCAPE)
+    {
         Hide();
         return;
     }
