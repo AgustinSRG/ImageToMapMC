@@ -48,12 +48,15 @@ namespace mapart
     {
     public:
         std::vector<MaterialListItem> materials;
+        std::string supportBlockMaterialName;
         size_t total;
         size_t base;
 
         MaterialsList(const std::vector<std::string> baseColorNames);
 
         void clear();
+
+        void setSupportBlockMaterialName(std::string supportBlockMaterialName);
 
         void addBlocks(std::vector<mapart::MapBuildingBlock> &buildingBlocks);
 

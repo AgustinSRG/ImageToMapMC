@@ -41,6 +41,7 @@ MaterialsList::MaterialsList(const std::vector<std::string> baseColorNames)
     }
     total = 0;
     base = 0;
+    supportBlockMaterialName = DEFAULT_SUPPORT_BLOCK_NAME;
 }
 
 void MaterialsList::clear()
@@ -53,6 +54,11 @@ void MaterialsList::clear()
     }
     total = 0;
     base = 0;
+}
+
+void MaterialsList::setSupportBlockMaterialName(std::string supportBlockMaterialName)
+{
+    this->supportBlockMaterialName = supportBlockMaterialName;
 }
 
 void MaterialsList::addBlocks(std::vector<mapart::MapBuildingBlock> &buildingBlocks)
@@ -168,7 +174,7 @@ std::string MaterialsList::toString()
 
     ss << endl;
 
-    ss << "Base blocks: " << base << " ( " << compactAmount(base) << " )" << endl;
+    ss << "Base blocks (" << supportBlockMaterialName << "): " << base << " ( " << compactAmount(base) << " )" << endl;
 
     return ss.str();
 }

@@ -55,7 +55,7 @@ MapArtProject::MapArtProject()
     colorSetConf = "MODE(BLACKLIST)\n";
 
     // Support blocks
-    supportBlockMaterial = std::string("stone");
+    supportBlockMaterial = DEFAULT_SUPPORT_BLOCK_ID;
     supportBlocksAlways = true;
 
     // Version

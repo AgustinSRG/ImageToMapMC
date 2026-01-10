@@ -205,3 +205,6 @@ namespace minecraft
       */
      minecraft::BlockList loadSupportBlocks();
 }
+
+#define DEFAULT_SUPPORT_BLOCK_ID (std::string("stone"))
+#define DEFAULT_SUPPORT_BLOCK_NAME (std::string("Stone"))

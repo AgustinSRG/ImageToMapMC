@@ -43,7 +43,7 @@ SupportBlockOptionsDialog::SupportBlockOptionsDialog(MainWindow *mainWindow) : w
 {
     this->mainWindow = mainWindow;
     this->version = MC_LAST_VERSION;
-    this->supportBlockMaterial = std::string("stone");
+    this->supportBlockMaterial = DEFAULT_SUPPORT_BLOCK_ID;
     this->supportBlocksAlways = true;
     supportBlockList = minecraft::loadSupportBlocks();
 
@@ -162,7 +162,7 @@ void SupportBlockOptionsDialog::OnComboBoxChanged(wxCommandEvent &evt)
     }
     else
     {
-        this->supportBlockMaterial = std::string("stone");
+        this->supportBlockMaterial = DEFAULT_SUPPORT_BLOCK_ID;
     }
 
     OnChangeParams();

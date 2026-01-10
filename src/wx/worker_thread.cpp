@@ -480,6 +480,7 @@ void WorkerThread::ExportMaterials(mapart::MapArtProject &copyProject, std::stri
         std::vector<colors::Color> baseColors = minecraft::loadBaseColors(copyProject.version);
         std::vector<minecraft::FinalColor> colorSet = minecraft::loadFinalColors(baseColors);
         std::vector<minecraft::BlockList> blockSet = loadBlocks(baseColors);
+        minecraft::BlockList supportBlockList = loadSupportBlocks();
         std::vector<std::string> baseColorNames = loadBaseColorNames(baseColors);
         std::vector<bool> enabledConf(baseColors.size());
         std::vector<size_t> countsMats(MAX_COLOR_GROUPS);
@@ -501,6 +502,17 @@ void WorkerThread::ExportMaterials(mapart::MapArtProject &copyProject, std::stri
         int totalMapsCount = mapsCountX * mapsCountZ;
 
         MaterialsList materials(baseColorNames);
+
+        const minecraft::BlockDescription *supportBlockDescription = supportBlockList.findBlockDescription(copyProject.version, copyProject.supportBlockMaterial);
+
+        if (supportBlockDescription != NULL)
+        {
+            materials.setSupportBlockMaterialName(supportBlockDescription->name);
+        }
+        else
+        {
+            materials.setSupportBlockMaterialName(DEFAULT_SUPPORT_BLOCK_NAME);
+        }
 
         for (int mapZ = 0; mapZ < mapsCountZ; mapZ++)
         {
@@ -700,7 +712,8 @@ void WorkerThread::ExportMaps(mapart::MapArtProject &copyProject, std::string &c
             }
         }
 
-        if (copyMustOpenFolderAfterExport) {
+        if (copyMustOpenFolderAfterExport)
+        {
             tools::openForDesktop(copyOutPath);
         }
     }
@@ -914,7 +927,7 @@ void WorkerThread::ExportStructSingleFile(mapart::MapArtProject &copyProject, st
 
         int originalImageWidth;
         int originalImageHeight;
-        mapart::ImageColorMatrix originalImageColorMatrix= loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, copyProject.transparencyTolerance, &originalImageWidth, &originalImageHeight);
+        mapart::ImageColorMatrix originalImageColorMatrix = loadColorMatrixFromImageAndPad(imageCopy, copyProject.background, copyProject.transparencyTolerance, &originalImageWidth, &originalImageHeight);
 
         tools::editImage(originalImageColorMatrix.colors, originalImageWidth, originalImageHeight, copyProject.saturation, copyProject.contrast, copyProject.brightness);
 
