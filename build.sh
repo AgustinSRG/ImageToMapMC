@@ -8,7 +8,7 @@ cmake --build release --config Release
 
 rm -rf release/bin || true
 
-rm -rf release/ImageToMapMC-1.8.1-linux-x64.tar.gz || true
+rm -rf release/ImageToMapMC-1.9.0-linux-x64.tar.gz || true
 
 mkdir release/bin
 
@@ -16,7 +16,7 @@ cp release/mcmap release/bin/mcmap
 cp release/mcmap-gui release/bin/mcmap-gui
 
 cd release/bin
-tar -cvzf ../ImageToMapMC-1.8.1-linux-x64.tar.gz *
+tar -cvzf ../ImageToMapMC-1.9.0-linux-x64.tar.gz *
 cd ../..
 
-echo "DONE: Created release ImageToMapMC-1.8.1-linux-x64.tar.gz"
+echo "DONE: Created release ImageToMapMC-1.9.0-linux-x64.tar.gz"
