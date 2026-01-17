@@ -132,7 +132,7 @@ void StructureExportDialog::OnShow(wxShowEvent& event) {
 
 void StructureExportDialog::OnOk(wxCommandEvent &event)
 {
-    fs::path worldPath(std::string(textFolder->GetValue()));
+    fs::path worldPath(textFolder->GetValue().utf8_string());
     if (!fs::exists(worldPath.string()))
     {
         wxMessageBox(string("Cannot find the folder: ") + worldPath.string(), wxT("Error"), wxICON_ERROR);
@@ -156,7 +156,7 @@ void StructureExportDialog::OnOk(wxCommandEvent &event)
     fs::create_directories(getPath());
     createDataPackMetadata();
 
-    tools::setRememberedValue(tools::VALUE_PURPOSE_EXPORT_STRUCTURES, getPath());
+    tools::setRememberedValue(tools::VALUE_PURPOSE_EXPORT_STRUCTURES, textFolder->GetValue().utf8_string());
 
     EndModal(wxID_OK);
 }
@@ -168,12 +168,17 @@ void StructureExportDialog::OnCancel(wxCommandEvent &event)
 
 void StructureExportDialog::OnBrowse(wxCommandEvent &event)
 {
+    std::string defaultPath = textFolder->GetValue().utf8_string();
 
     fs::path savesPath(minecraft::getMinecraftFolderLocation());
 
     savesPath /= "saves";
 
-    wxDirDialog dialog(this, wxString("Choose the output folder"), savesPath.string(), wxDD_DIR_MUST_EXIST);
+    if (defaultPath.length() == 0) {
+        defaultPath = savesPath.string();
+    }
+
+    wxDirDialog dialog(this, wxString("Choose the output folder"), wxString::FromUTF8(defaultPath), wxDD_DIR_MUST_EXIST);
 
     if (dialog.ShowModal() == wxID_CANCEL)
     {
@@ -202,7 +207,7 @@ void StructureExportDialog::createDataPackMetadata()
 
 std::string StructureExportDialog::getPath()
 {
-    fs::path structuresPath(std::string(textFolder->GetValue()));
+    fs::path structuresPath(textFolder->GetValue().utf8_string());
     std::string namespaceMC(textNamespace->GetValue());
 
     if (mode == ExportDialogMode::Function)

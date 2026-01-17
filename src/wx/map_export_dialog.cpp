@@ -226,7 +226,7 @@ void MapExportDialog::OnCancel(wxCommandEvent &event)
 
 void MapExportDialog::OnBrowse(wxCommandEvent &event)
 {
-    wxDirDialog dialog(this, wxString("Choose the output folder"), wxEmptyString, wxDD_DIR_MUST_EXIST);
+    wxDirDialog dialog(this, wxString("Choose the output folder"), textFolder->GetValue(), wxDD_DIR_MUST_EXIST);
 
     if (dialog.ShowModal() == wxID_CANCEL)
     {
