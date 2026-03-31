@@ -27,6 +27,7 @@
 #include <sstream>
 
 using namespace std;
+using namespace minecraft;
 
 enum Identifiers
 {
@@ -47,9 +48,10 @@ EVT_CHAR_HOOK(MapExportDialog::OnKeyPress)
 EVT_SHOW(MapExportDialog::OnShow)
 END_EVENT_TABLE()
 
-MapExportDialog::MapExportDialog(int projectMapCount) : wxDialog(NULL, -1, wxString("Export to map files"), wxDefaultPosition, wxDefaultSize)
+MapExportDialog::MapExportDialog(int projectMapCount, minecraft::McVersion version) : wxDialog(NULL, -1, wxString("Export to map files"), wxDefaultPosition, wxDefaultSize)
 {
     this->projectMapCount = projectMapCount;
+    this->version = version;
 
     // Create sizers and wx components
 
@@ -181,7 +183,7 @@ void MapExportDialog::OnOk(wxCommandEvent &event)
             int mapNumber = startMapNumber + i;
 
             stringstream ss;
-            ss << "map_" << (mapNumber) << ".dat";
+            ss << (version < McVersion::MC_26 ? "map_" : "") << (mapNumber) << ".dat";
 
             std::string mapFileName = ss.str();
 
@@ -293,7 +295,19 @@ void MapExportDialog::figureOutMapNumber(std::string path)
         {
             std::string fileName = entry.path().filename().string();
 
-            if (fileName.length() > 8 && fileName.substr(0, 4).compare("map_") == 0 && fileName.substr(fileName.length() - 4, 4).compare(".dat") == 0)
+            if (version >= McVersion::MC_26) {
+                if (fileName.length() > 4 && fileName.substr(fileName.length() - 4, 4).compare(".dat") == 0)
+            {
+                foundAtLeastOneMap = true;
+                std::string mapId = fileName.substr(0, fileName.length() - 4);
+                int mapIdInt = atoi(mapId.c_str());
+
+                if (mapIdInt > lastMap)
+                {
+                    lastMap = mapIdInt;
+                }
+            }
+            } else if (fileName.length() > 8 && fileName.substr(0, 4).compare("map_") == 0 && fileName.substr(fileName.length() - 4, 4).compare(".dat") == 0)
             {
                 foundAtLeastOneMap = true;
                 std::string mapId = fileName.substr(4, fileName.length() - 8);

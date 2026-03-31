@@ -13,14 +13,16 @@ A map can only store 128x128 pixels, so, for larger images, multiple maps will b
 Go to the menu **File > Export > Export as map files**
 
  - Choose the folder you created to save the maps.
- - Input the starting number for your maps, in case you already have  more maps, to prevent them from overlapping. If you only have a map, leave it to 0.
+ - Input the starting number for your maps, in case you already have more maps, to prevent them from overlapping. If you only have a map, leave it to 0.
  - Click Export
 
 ### 3. Add the files to your world
 
-You can add the map files into your world by copying them into the `data` folder.
+You can add the map files into your world by copying them into the `data/maps` folder.
 
-You may also want to change the map count number. In order to do that, you have to modify the `idcounts.dat` file with an NBT Editor of your choice.
+You may also want to change the map count number. In order to do that, you have to modify the `last_id.dat` file with an NBT Editor of your choice.
+
+**Legacy notice:** If you are operating an old version of Minecraft (older than `26.1`), maps will be directly stored in the `data` folder, and the identifier counters are stored in the `idcounts.dat` file.
 
 ### 4. Give yourself the map items in game
 

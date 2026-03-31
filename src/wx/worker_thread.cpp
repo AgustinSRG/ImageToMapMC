@@ -704,7 +704,7 @@ void WorkerThread::ExportMaps(mapart::MapArtProject &copyProject, std::string &c
 
                 // Save to file
                 stringstream ss;
-                ss << "map_" << (mapNumber++) << ".dat";
+                ss << (project.version < McVersion::MC_26 ? "map_" : "") << (mapNumber++) << ".dat";
                 fs::path outFilePath(copyOutPath);
 
                 outFilePath /= ss.str();
@@ -800,7 +800,7 @@ void WorkerThread::ExportMapsZip(mapart::MapArtProject &copyProject, std::string
 
                 // Save to file
                 stringstream ss;
-                ss << "map_" << (mapNumber++) << ".dat";
+                ss << (project.version < McVersion::MC_26 ? "map_" : "") << (mapNumber++) << ".dat";
 
                 std::string fPath = ss.str();
 

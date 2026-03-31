@@ -29,11 +29,12 @@
 #endif
 
 #include <string>
+#include "../minecraft/mc_common.h"
 
 class MapExportDialog : public wxDialog
 {
 public:
-    MapExportDialog(int projectMapCount);
+    MapExportDialog(int projectMapCount, minecraft::McVersion version);
 
     std::string getPath();
     int getMapNumber();
@@ -51,6 +52,7 @@ public:
     void OnCheckboxChanged(wxCommandEvent &event);
 private:
     int projectMapCount;
+    minecraft::McVersion version;
 
     wxTextCtrl *textFolder;
     wxTextCtrl *textMapNumber;

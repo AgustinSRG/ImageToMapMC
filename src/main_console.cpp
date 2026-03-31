@@ -889,7 +889,7 @@ int buildMap(int argc, char **argv)
 
                 // Save to file
                 stringstream ss;
-                ss << "map_" << (mapNumber++) << ".dat";
+                ss << (version < McVersion::MC_26 ? "map_" : "") << (mapNumber++) << ".dat";
                 fs::path outFilePath(outputPath);
 
                 outFilePath /= ss.str();

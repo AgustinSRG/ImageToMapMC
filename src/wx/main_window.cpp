@@ -288,7 +288,8 @@ MainWindow::MainWindow() : wxFrame(NULL, wxID_ANY, string("Minecraft Map Art Too
 
     // Version
     wxMenu *menuVersion = new wxMenu();
-    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_21_4), "&1.21.4", "Version: 1.21.4")->Check(true);
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_26), "&26.1", "Version: 26.1")->Check(true);
+    menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_21_4), "&1.21.4", "Version: 1.21.4");
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_21), "&1.21", "Version: 1.21");
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_20), "&1.20", "Version: 1.20");
     menuVersion->AppendRadioItem(getIdForVersionMenu(McVersion::MC_1_19), "&1.19", "Version: 1.19");
@@ -667,7 +668,7 @@ void MainWindow::onExportToMaps(wxCommandEvent &evt)
         return;
     }
 
-    MapExportDialog dialog(totalMapCount);
+    MapExportDialog dialog(totalMapCount, project.version);
     if (dialog.ShowModal() == wxID_CANCEL)
     {
         return; // the user changed idea...
